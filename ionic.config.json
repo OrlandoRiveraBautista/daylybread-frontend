@@ -1,0 +1,7 @@
+{
+  "name": "daylybread-frontend",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}

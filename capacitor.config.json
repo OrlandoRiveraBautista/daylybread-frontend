@@ -1,0 +1,6 @@
+{
+	"appId": "io.ionic.starter",
+	"appName": "daylybread-frontend",
+	"webDir": "build",
+	"bundledWebRuntime": false
+}
