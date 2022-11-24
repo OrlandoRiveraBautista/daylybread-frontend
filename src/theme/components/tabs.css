@@ -1,0 +1,15 @@
+@font-face {
+  font-family: "Product Sans";
+  src: url(../../assets/fonts/google-sans-fonts/ProductSans-Regular.ttf);
+}
+
+ion-tab-bar {
+  --color: #43474e;
+  --background: rgba(0, 96, 168, 8%);
+  font-family: "Product Sans";
+  letter-spacing: 0.5px;
+}
+
+ion-tab-button {
+  --background: none;
+}
