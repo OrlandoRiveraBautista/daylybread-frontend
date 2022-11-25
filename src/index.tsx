@@ -11,6 +11,7 @@ import {
   ApolloProvider,
   gql,
 } from "@apollo/client";
+import { ContextProvider } from "./context/context";
 
 const client = new ApolloClient({
   uri: "http://localhost:5001/graphql", // will need to make it an environmet variable
@@ -22,7 +23,9 @@ const root = createRoot(container!);
 root.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-      <App />
+      <ContextProvider>
+        <App />
+      </ContextProvider>
     </ApolloProvider>
   </React.StrictMode>
 );
