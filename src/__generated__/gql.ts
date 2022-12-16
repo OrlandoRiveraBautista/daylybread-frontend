@@ -13,9 +13,19 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel-plugin for production.
  */
 const documents = {
+    "\n  query GetBooks($translationId: String!) {\n    getBooks(translationId: $translationId) {\n      bookName\n      bibleId\n    }\n  }\n": types.GetBooksDocument,
+    "\n  query GetChapter($bibleId: String!) {\n    getChapter(bibleId: $bibleId) {\n      _id\n      chapterNumber\n      bibleId\n      bookName\n      verses {\n        verse\n        bibleId\n        text\n      }\n      translation {\n        abbreviation\n        name\n      }\n    }\n  }\n": types.GetChapterDocument,
     "\n  query GetTranslations {\n    getTranslations {\n      _id\n      name\n      abbreviation\n      language\n      lang\n      books {\n        bookName\n        bibleId\n      }\n    }\n  }\n": types.GetTranslationsDocument,
 };
 
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query GetBooks($translationId: String!) {\n    getBooks(translationId: $translationId) {\n      bookName\n      bibleId\n    }\n  }\n"): (typeof documents)["\n  query GetBooks($translationId: String!) {\n    getBooks(translationId: $translationId) {\n      bookName\n      bibleId\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query GetChapter($bibleId: String!) {\n    getChapter(bibleId: $bibleId) {\n      _id\n      chapterNumber\n      bibleId\n      bookName\n      verses {\n        verse\n        bibleId\n        text\n      }\n      translation {\n        abbreviation\n        name\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetChapter($bibleId: String!) {\n    getChapter(bibleId: $bibleId) {\n      _id\n      chapterNumber\n      bibleId\n      bookName\n      verses {\n        verse\n        bibleId\n        text\n      }\n      translation {\n        abbreviation\n        name\n      }\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
