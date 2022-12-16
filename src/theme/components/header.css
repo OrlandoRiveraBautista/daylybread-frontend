@@ -1,0 +1,21 @@
+@font-face {
+  font-family: "Product Sans";
+  src: url(../../assets/fonts/google-sans-fonts/ProductSans-Regular.ttf);
+}
+
+ion-header ion-toolbar {
+  font-family: "Product Sans";
+  letter-spacing: 0.5px;
+}
+
+ion-header ion-toolbar ion-button {
+  font-family: "Product Sans";
+  letter-spacing: 0.5px;
+  text-transform: capitalize;
+  font-size: 22px;
+  max-height: 44px;
+}
+ion-button ion-icon {
+  margin-left: 6px;
+  font-size: 18px;
+}

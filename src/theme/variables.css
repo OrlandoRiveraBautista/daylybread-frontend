@@ -1,5 +1,8 @@
 /* Component variables */
-@import url("./components/tabs.css");
+@import "./components/tabs.css";
+@import "./components/header.css";
+@import "./components/text.css";
+@import "./components/button.css";
 
 /* Ionic Variables and Theming. For more info, please see:
 http://ionicframework.com/docs/theming/ */

@@ -1,3 +1,12 @@
 ion-buttons ion-button {
   height: 40px;
 }
+
+ion-toolbar ion-title .toolbar-title {
+  pointer-events: all !important;
+}
+
+.header-button-translation {
+  --padding-start: 16px !important;
+  --padding-end: 16px !important;
+}

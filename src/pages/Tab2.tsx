@@ -1,61 +1,85 @@
-import { useEffect } from "react";
+import { useState } from "react";
 import {
   IonButton,
   IonButtons,
   IonContent,
   IonHeader,
+  IonIcon,
   IonPage,
-  IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import ExploreContainer from "../components/ExploreContainer";
+
+/* Context */
+import { useAppContext } from "../context/context";
+
+/* Components */
+import BibleNavModal from "../components/BibleNavModal/BibleNavModal";
+import BibleTranslationModal from "../components/BibleNavModal/BibleTranslationModal";
+import BibleChapterViewer from "../components/BibleViewer/BibleChapterViewer";
+
+/* Styles */
 import "./Tab2.css";
 
-import { useQuery } from "@apollo/client";
-import { gql } from "../__generated__/gql";
-
-const getTranslations = gql(`
-  query GetTranslations {
-    getTranslations {
-      _id
-      name
-      abbreviation
-      language
-      lang
-      books {
-        bookName
-        bibleId
-      }
-    }
-  }
-`);
+/* Graphics */
+import { caretDownOutline } from "ionicons/icons";
 
 const Tab2: React.FC = () => {
-  const { loading, error, data } = useQuery(getTranslations);
+  // Context
+  const { chosenTranslation, chosenBook } = useAppContext();
 
-  useEffect(() => {
-    console.log(loading);
-    console.log(data);
-  });
+  /* States */
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [openBibleNavModal, setOpenBibleNavModal] = useState<boolean>(false);
 
   return (
     <IonPage>
-      {/* Header for Android */}
+      {/* Header */}
       <IonHeader>
+        {/* Toolbar */}
         <IonToolbar>
-          <IonTitle>
-            {loading ? "loading..." : data?.getTranslations[0].name}
-          </IonTitle>
+          {/* Header Title Button */}
+          <IonButton
+            expand="full"
+            fill="clear"
+            color="dark"
+            className="header-button"
+            onClick={() => setOpenBibleNavModal(!openBibleNavModal)}
+            id="open-bible-nav-modal"
+            disabled={chosenTranslation ? false : true}
+          >
+            {chosenBook ? chosenBook.bookName : "Pick a translation"}
+            <IonIcon icon={caretDownOutline}></IonIcon>
+          </IonButton>
+
+          {/* Header secondary buttons */}
           <IonButtons slot="end">
-            <IonButton>
-              {loading ? "loading..." : data?.getTranslations[0].abbreviation}
+            <IonButton
+              shape="round"
+              fill="outline"
+              color="dark"
+              size="large"
+              onClick={() => setOpenModal(!openModal)}
+              id="open-modal"
+              className="header-button-translation"
+            >
+              {chosenTranslation
+                ? chosenTranslation.abbreviation
+                : "Pick translation"}
             </IonButton>
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      {/* Header for iOS */}
-      <IonContent fullscreen>
-        <ExploreContainer name="Tab 2 page" />
+
+      {/* Body */}
+      <IonContent fullscreen className="ion-padding">
+        <BibleChapterViewer />
+
+        {/* Modals */}
+        {/* translation selection */}
+        <BibleTranslationModal />
+
+        {/* bible navigation */}
+        <BibleNavModal />
       </IonContent>
     </IonPage>
   );

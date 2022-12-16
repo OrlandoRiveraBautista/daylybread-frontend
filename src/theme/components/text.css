@@ -1,0 +1,9 @@
+@font-face {
+  font-family: "Product Sans";
+  src: url(../../assets/fonts/google-sans-fonts/ProductSans-Regular.ttf);
+}
+
+ion-title {
+  font-family: "Product Sans";
+  letter-spacing: 0.5px;
+}

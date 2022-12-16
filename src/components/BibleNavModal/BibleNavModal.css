@@ -1,0 +1,36 @@
+.nav-modal {
+  --height: 75vh;
+}
+
+.nav-container {
+  max-height: 100%;
+  margin-bottom: 25% !important;
+}
+
+.nav-toolbar {
+  height: 80px;
+  position: sticky;
+  top: 5px;
+  z-index: 1;
+  background-color: inherit;
+}
+.nav-toolbar ion-col {
+  background-color: #135d54;
+  border: solid 1px #fff;
+  color: #fff;
+  text-align: center;
+}
+
+.nav-selection-container {
+  position: relative;
+}
+
+.nav-selection {
+  overflow: auto;
+}
+
+.outlined-card {
+  box-shadow: none;
+  border-radius: 12px;
+  border: 1px solid #c3c6cf;
+}
