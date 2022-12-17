@@ -1,5 +1,6 @@
 /* Component variables */
 @import "./components/tabs.css";
+@import "./components/modal.css";
 @import "./components/header.css";
 @import "./components/text.css";
 @import "./components/button.css";
