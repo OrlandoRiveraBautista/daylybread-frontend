@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   IonContent,
   IonModal,
@@ -18,24 +18,39 @@ import { useAppContext } from "../../context/context";
 import "./BibleNavModal.css";
 import { useGetChapterById, useGetBooksById } from "../../hooks/BibleHooks";
 
-const BibleNavModal: React.FC = () => {
-  // context values
-  const { chosenTranslation, setChapter } = useAppContext();
+type bibleNavOptions = "book" | "chapter" | "verse";
 
+const BibleNavModal: React.FC = () => {
+  // state
+  const [navTab, setNavTab] = useState<bibleNavOptions>("book");
+
+  // context values
+  const { chosenTranslation, setChapter, setBook, chosenBook } =
+    useAppContext();
+
+  /* Queries */
   // getting books
   const { loading: booksLoading, data: booksData } = useGetBooksById(
     chosenTranslation?._id!
   );
-
+  // getting chapters
   const { data: chapterData } = useGetChapterById(
     chosenTranslation?.books[0].bibleId + "001"
   );
 
   useEffect(() => {
+    // check for already chosen book
+    if (!booksData) return;
+
+    setBook(booksData.getBooks[0]);
+  }, [booksData]);
+
+  useEffect(() => {
     if (!chosenTranslation || !chapterData?.getChapter) return;
 
     setChapter(chapterData.getChapter);
-  });
+    console.log("hello");
+  }, [chapterData]);
 
   return (
     <IonModal
@@ -50,13 +65,24 @@ const BibleNavModal: React.FC = () => {
             {/* Navigation Toolbar */}
             <IonRow className="nav-toolbar">
               <IonCol>
-                <IonButton>1</IonButton>
+                <IonCard button onClick={() => setNavTab("book")}>
+                  <IonTitle className="chosen-bible-option">
+                    {chosenBook?.bookName.slice(0, 3)}
+                  </IonTitle>
+                  <p>Book</p>
+                </IonCard>
               </IonCol>
               <IonCol>
-                <IonButton>2</IonButton>
+                <IonCard button onClick={() => setNavTab("chapter")}>
+                  <IonTitle className="chosen-bible-option">2</IonTitle>
+                  <p>Chapter</p>
+                </IonCard>
               </IonCol>
               <IonCol>
-                <IonButton>3</IonButton>
+                <IonCard button onClick={() => setNavTab("verse")}>
+                  <IonTitle className="chosen-bible-option">3</IonTitle>
+                  <p>Verse</p>
+                </IonCard>
               </IonCol>
             </IonRow>
 
@@ -89,7 +115,11 @@ const BibleNavModal: React.FC = () => {
                           size-lg="2"
                           key={book.bibleId}
                         >
-                          <IonCard button className="outlined-card">
+                          <IonCard
+                            button
+                            className="outlined-card"
+                            onClick={() => setBook(book)}
+                          >
                             <IonCardHeader>{book.bookName}</IonCardHeader>
                           </IonCard>
                         </IonCol>

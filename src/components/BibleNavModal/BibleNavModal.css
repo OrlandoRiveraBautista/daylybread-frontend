@@ -1,10 +1,12 @@
 .nav-modal {
   --height: 75vh;
+  --border-radius: 28px 28px 0 0;
 }
 
 .nav-container {
   max-height: 100%;
   margin-bottom: 25% !important;
+  border-radius: 28px 28px 0 0;
 }
 
 .nav-toolbar {
@@ -12,13 +14,29 @@
   position: sticky;
   top: 5px;
   z-index: 1;
-  background-color: inherit;
+  background-color: white;
+  max-height: 100px;
 }
 .nav-toolbar ion-col {
-  background-color: #135d54;
-  border: solid 1px #fff;
+  height: 100%;
   color: #fff;
   text-align: center;
+}
+.nav-toolbar ion-col ion-card {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  box-shadow: none;
+}
+.nav-toolbar ion-col ion-card ion-title {
+  color: black;
+  padding: 0;
+  height: fit-content;
+}
+.nav-toolbar ion-col ion-card p {
+  margin-top: 8px;
+  color: var(--ion-text-color);
 }
 
 .nav-selection-container {
