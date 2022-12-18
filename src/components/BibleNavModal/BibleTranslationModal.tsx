@@ -1,14 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { IonContent, IonItem, IonLabel, IonList, IonModal } from "@ionic/react";
 
 /* Context */
 import { useAppContext } from "../../context/context";
 
 /* GraphQL */
-import { useGetTranslation } from "../../hooks/BibleHooks";
+import { useGetChapterById, useGetTranslation } from "../../hooks/BibleHooks";
 
 const BibleTranslationModal: React.FC = () => {
-  const { setTranslation } = useAppContext();
+  const { setTranslation, chosenTranslation, setBook, setChapter, chosenBook } =
+    useAppContext();
 
   /* Queries */
   const { data: translationData } = useGetTranslation();

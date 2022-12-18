@@ -13,9 +13,20 @@ export interface ITranslation {
 }
 
 export interface IBookInterface {
-  __typename?: "TranslationBook" | undefined;
+  __typename?: "Book" | undefined;
+  _id: string;
   bookName: string;
   bibleId: string;
+  chapters: {
+    __typename?: "BookChapter" | undefined;
+    chapterName: string;
+    bibleId: string;
+  }[];
+  translation: {
+    __typename?: "TranslationField" | undefined;
+    abbreviation: string;
+    name: string;
+  };
 }
 
 export interface IChapterInterface {

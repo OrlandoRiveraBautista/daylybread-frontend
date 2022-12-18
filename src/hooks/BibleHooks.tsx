@@ -27,6 +27,24 @@ const getBooks = gql(`
   }
 `);
 
+const getBooksById = gql(`
+  query GetBookById($bibleId: String!) {
+  getBookById(bibleId: $bibleId) {
+    _id
+    bookName
+    bibleId
+    chapters {
+      chapterName
+      bibleId
+    }
+    translation {
+      abbreviation
+      name
+    }
+  }
+}
+`);
+
 const getChapter = gql(`
   query GetChapter($bibleId: String!) {
     getChapter(bibleId: $bibleId) {
@@ -51,10 +69,18 @@ export const useGetTranslation = () => {
   return useQuery(getTranslations);
 };
 
-export const useGetBooksById = (translationId: string) => {
+export const useGetBooks = (translationId: string) => {
   return useQuery(getBooks, {
     variables: {
       translationId: translationId,
+    },
+  });
+};
+
+export const useGetBooksById = (bibleId: string) => {
+  return useQuery(getBooksById, {
+    variables: {
+      bibleId: bibleId,
     },
   });
 };
