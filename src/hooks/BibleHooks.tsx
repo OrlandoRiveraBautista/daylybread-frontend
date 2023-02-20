@@ -70,6 +70,9 @@ export const useGetTranslation = () => {
 };
 
 export const useGetBooks = (translationId: string) => {
+  // if (!translationId) {
+  //   return new Error("translation id is not found");
+  // }
   return useQuery(getBooks, {
     variables: {
       translationId: translationId,

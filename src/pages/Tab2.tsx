@@ -28,18 +28,27 @@ import { caretDownOutline } from "ionicons/icons";
 
 const Tab2: React.FC = () => {
   // Context
-  const { chosenTranslation, chosenBook, setBook, setChapter } =
+  const { chosenTranslation, chosenBook, setBook, setChapter, chosenChapter } =
     useAppContext();
 
   /* States */
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [openBibleNavModal, setOpenBibleNavModal] = useState<boolean>(false);
+  const [bookId, setBookId] = useState<string>();
 
+  /* API Hooks */
   // getting chapters
   const { data: chapterData } = useGetChapterById(chosenBook?.bibleId + "001");
-  const { data: bookData } = useGetBooksById(
-    chosenTranslation?.books[0].bibleId!
-  );
+  // getting a book
+  const { data: bookData } = useGetBooksById(bookId!);
+
+  /**
+   * Use Effect for handling changes in translation
+   */
+  useEffect(() => {
+    // check if there is already a chosen chapter
+    setBookId(chosenTranslation?.books[0].bibleId!);
+  }, [chosenTranslation]);
 
   useEffect(() => {
     if (!chosenTranslation || !bookData) return;
