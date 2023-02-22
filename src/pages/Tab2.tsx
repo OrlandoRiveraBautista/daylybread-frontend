@@ -21,7 +21,7 @@ import BibleTranslationModal from "../components/BibleNavModal/BibleTranslationM
 import BibleChapterViewer from "../components/BibleViewer/BibleChapterViewer";
 
 /* Styles */
-import "./Tab2.css";
+import "./Tab2.scss";
 
 /* Graphics */
 import { caretDownOutline } from "ionicons/icons";

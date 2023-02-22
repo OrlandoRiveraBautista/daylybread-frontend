@@ -6,7 +6,7 @@ import { chevronBack, chevronForward } from "ionicons/icons";
 import { useAppContext } from "../../context/context";
 
 /* Styles */
-import "./BibleChapterViewer.css";
+import "./BibleChapterViewer.scss";
 
 /* Images */
 import PatternImage from "../../assets/images/Patterns - 4x4.png";

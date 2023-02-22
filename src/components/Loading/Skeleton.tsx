@@ -1,6 +1,6 @@
 import React from "react";
 
-import "./Skeleton.css";
+import "./Skeleton.scss";
 
 /**
  * Interface for skeleton

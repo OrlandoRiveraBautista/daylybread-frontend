@@ -18,7 +18,7 @@ import { BooksPicker, ChapterPicker } from "./BibleNavStages";
 import { useAppContext } from "../../context/context";
 
 /* Styles */
-import "./BibleNavModal.css";
+import "./BibleNavModal.scss";
 
 type bibleNavOptions = "book" | "chapter" | "verse";
 
