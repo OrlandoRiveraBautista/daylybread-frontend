@@ -1,0 +1,38 @@
+.splash-container {
+  overflow: hidden;
+  background: linear-gradient(
+    -45deg,
+    var(--ion-color-secondary),
+    var(--ion-color-tertiary),
+    var(--ion-color-primary) 60%
+  );
+  background-size: 400% 400%;
+  animation: gradient 7s ease-in-out infinite;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  flex-direction: column;
+
+  & ion-text {
+    font-weight: medium;
+    color: white;
+    & h2 {
+      margin: 0;
+    }
+  }
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
