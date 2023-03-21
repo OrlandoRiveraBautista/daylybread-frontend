@@ -5,6 +5,71 @@
 @import "./components/text.scss";
 @import "./components/button.scss";
 
+/* Scss variables */
+$color-primary: #2989e3;
+$color-primary-rgb: 41, 137, 227;
+$color-primary-contrast: #ffffff;
+$color-primary-contrast-rgb: 255, 255, 255;
+$color-primary-shade: #2479c8;
+$color-primary-tint: #3e95e6;
+
+$color-secondary: #f02c89;
+$color-secondary-rgb: 240, 44, 137;
+$color-secondary-contrast: #ffffff;
+$color-secondary-contrast-rgb: 255, 255, 255;
+$color-secondary-shade: #d32779;
+$color-secondary-tint: #f24195;
+
+$color-tertiary: #724498;
+$color-tertiary-rgb: 114, 68, 152;
+$color-tertiary-contrast: #ffffff;
+$color-tertiary-contrast-rgb: 255, 255, 255;
+$color-tertiary-shade: #643c86;
+$color-tertiary-tint: #8057a2;
+
+$color-success: #2dd36f;
+$color-success-rgb: 45, 211, 111;
+$color-success-contrast: #000000;
+$color-success-contrast-rgb: 0, 0, 0;
+$color-success-shade: #28ba62;
+$color-success-tint: #42d77d;
+
+$color-warning: #ffc409;
+$color-warning-rgb: 255, 196, 9;
+$color-warning-contrast: #000000;
+$color-warning-contrast-rgb: 0, 0, 0;
+$color-warning-shade: #e0ac08;
+$color-warning-tint: #ffca22;
+
+$color-danger: #eb445a;
+$color-danger-rgb: 235, 68, 90;
+$color-danger-contrast: #ffffff;
+$color-danger-contrast-rgb: 255, 255, 255;
+$color-danger-shade: #cf3c4f;
+$color-danger-tint: #ed576b;
+
+$color-medium: #909094;
+$color-medium-rgb: 144, 144, 148;
+$color-medium-contrast: #000000;
+$color-medium-contrast-rgb: 0, 0, 0;
+$color-medium-shade: #7f7f82;
+$color-medium-tint: #9b9b9f;
+
+$color-light: #f4f5f8;
+$color-light-rgb: 244, 245, 248;
+$color-light-contrast: #000000;
+$color-light-contrast-rgb: 0, 0, 0;
+$color-light-shade: #d7d8da;
+$color-light-tint: #f5f6f9;
+
+/** Font Type **/
+$font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Roboto",
+  sans-serif;
+
+/** Text colors **/
+$text-color: #1a1c1e;
+$text-color-rgb: 26, 28, 30;
+
 /* Ionic Variables and Theming. For more info, please see:
 http://ionicframework.com/docs/theming/ */
 

@@ -1,0 +1,41 @@
+@import "../../theme/variables.scss";
+
+/* Without setting height the slides will take up the height of the slide's content */
+ion-slides {
+  height: 100%;
+}
+
+ion-slide {
+  flex-direction: column;
+  padding: 24px;
+  gap: 48px;
+
+  h2 {
+    font-weight: bold;
+    padding: 0;
+    margin: 0;
+  }
+  p {
+    font-family: $font-family;
+    font-size: 16px;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+.slide1 {
+  color: $color-secondary-shade;
+}
+.slide2 {
+  color: #24a657;
+}
+.slide3 {
+  color: $color-tertiary;
+  margin-top: auto;
+  ion-button {
+    text-transform: capitalize;
+    position: absolute;
+    bottom: 24px;
+    width: 75%;
+  }
+}

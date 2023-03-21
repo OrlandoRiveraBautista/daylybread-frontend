@@ -15,6 +15,7 @@ import Tab1 from "./pages/Tab1";
 import Tab2 from "./pages/Tab2";
 import Tab3 from "./pages/Tab3";
 import SplashScreen from "./pages/splash/SplashScreen";
+import WelcomeSlides from "./pages/welcomeSlides/WelcomeSlides";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -39,35 +40,38 @@ import "./theme/variables.scss";
 import { useLocalStorage as Storage } from "./context/localStorage";
 import { useEffect, useState } from "react";
 
-setupIonicReact();
+setupIonicReact({
+  mode: "md",
+});
 
 const App: React.FC = () => {
   const { localStorage, init } = Storage();
   const [hasSession, setHasSession] = useState<boolean>(true);
+  const [firstTimeFlag, setFirstTimeFlag] = useState<boolean>(false);
 
   // calls to initiate localStorage service
   useEffect(() => {
     init();
   }, []);
 
-  // watches for localStorage and
+  // watches for localStorage and hasSession
   useEffect(() => {
-    if (!localStorage) return;
+    if (!localStorage) return; // exit function if localStorage is not present
+
+    // get session
+    getSession();
 
     // check to see if there is a session, if not wait 2.5s and set the session
     if (!hasSession) {
       setTimeout(() => {
         setSession();
-      }, 2500);
+      }, 3000);
     }
-
-    // get session
-    getSession();
-  }, [localStorage, hasSession]); // watch localStorage and hasSession
+  }, [localStorage, hasSession, firstTimeFlag]); // watch localStorage and hasSession
 
   // function to set the user session
   const setSession = () => {
-    localStorage.set("session", { name: "Me" }); // set the local storage session
+    localStorage.set("session", { session: true, firstTime: true }); // set the local storage session
     setHasSession(true); // set hasSession to true
   };
 
@@ -75,46 +79,61 @@ const App: React.FC = () => {
   const getSession = async () => {
     // look for a session
     const val = await localStorage.get("session");
-    setHasSession(val ? true : false); // set hasSession depending on the response
-    return val ? true : false; // return the same just in case
+    if (!val) {
+      setHasSession(false);
+      setFirstTimeFlag(true);
+    }
+    setHasSession(val.session); // set hasSession depending on the response
+    console.log(val);
+    setFirstTimeFlag(val.firstTime);
+    return val; // return the same just in case
+  };
+
+  const removeWelcome = () => {
+    localStorage.set("session", { session: true, firstTime: false }); // set the local storage session
+    setFirstTimeFlag(false);
   };
 
   return (
     <IonApp>
       <IonReactRouter>
         {localStorage && hasSession ? (
-          <IonTabs>
-            {/* Tabs Router */}
-            <IonRouterOutlet>
-              {/* <Route exact path="/home">
+          !firstTimeFlag ? (
+            <IonTabs>
+              {/* Tabs Router */}
+              <IonRouterOutlet>
+                {/* <Route exact path="/home">
                 <Tab1 />
               </Route> */}
-              <Route exact path="/read">
-                <Tab2 />
-              </Route>
-              {/* <Route path="/you">
+                <Route exact path="/read">
+                  <Tab2 />
+                </Route>
+                {/* <Route path="/you">
                 <Tab3 />
               </Route> */}
-              <Route exact path="/">
-                <Redirect to="/read" />
-              </Route>
-            </IonRouterOutlet>
-            {/* Tabs UI */}
-            <IonTabBar slot="bottom">
-              {/* <IonTabButton tab="tab1" href="/home">
+                <Route exact path="/">
+                  <Redirect to="/read" />
+                </Route>
+              </IonRouterOutlet>
+              {/* Tabs UI */}
+              <IonTabBar slot="bottom">
+                {/* <IonTabButton tab="tab1" href="/home">
                 <IonIcon icon={ellipse} />
                 <IonLabel>Home</IonLabel>
               </IonTabButton> */}
-              <IonTabButton tab="tab2" href="/read">
-                <IonIcon icon={triangle} />
-                <IonLabel>Read</IonLabel>
-              </IonTabButton>
-              {/* <IonTabButton tab="tab3" href="/you">
+                <IonTabButton tab="tab2" href="/read">
+                  <IonIcon icon={triangle} />
+                  <IonLabel>Read</IonLabel>
+                </IonTabButton>
+                {/* <IonTabButton tab="tab3" href="/you">
                 <IonIcon icon={square} />
                 <IonLabel>You</IonLabel>
               </IonTabButton> */}
-            </IonTabBar>
-          </IonTabs>
+              </IonTabBar>
+            </IonTabs>
+          ) : (
+            <WelcomeSlides onFinish={removeWelcome} />
+          )
         ) : (
           <SplashScreen />
         )}
