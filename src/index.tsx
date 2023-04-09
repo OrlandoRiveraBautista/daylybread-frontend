@@ -14,7 +14,7 @@ import {
 import { ContextProvider } from "./context/context";
 
 const client = new ApolloClient({
-  uri: "http://localhost:5001/graphql", // will need to make it an environmet variable
+  uri: process.env.REACT_APP_API_URL, // will need to make it an environmet variable
   cache: new InMemoryCache(),
 });
 
