@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { IonFab, IonFabButton, IonIcon, IonImg, IonText } from "@ionic/react";
 import { chevronBack, chevronForward } from "ionicons/icons";
 
@@ -27,6 +27,8 @@ const BibleChapterViewer: React.FC = () => {
   const [navAction, setNavAction] = useState<
     "previous chapter" | "next chapter" | undefined
   >(undefined);
+  const [selectedElement, setSelectedElement] = useState<Array<string>>([]);
+  const timeoutRef = useRef<any>(null);
 
   // getting chapters
   const { data: chapterData } = useGetChapterById(chapterId!);
@@ -94,9 +96,19 @@ const BibleChapterViewer: React.FC = () => {
     }
   };
 
+  /**
+   * Function will be used to reset anything that is chapter specific
+   * @returns N/A
+   */
+  const handleReset = () => {
+    // reset the selected elements
+    setSelectedElement([]);
+  };
+
   // useEffect to call the handleNavAction function whenever a book changes
   useEffect(() => {
     handleNavAction();
+    handleReset();
   }, [chosenBook]);
 
   // function to handle going to the next chapter
@@ -189,6 +201,42 @@ const BibleChapterViewer: React.FC = () => {
     return;
   };
 
+  const handleMouseDown = (event: string) => {
+    // get the desired html element
+    const span = document.getElementById(event);
+    // get the verse numbers
+    const text = span?.innerText.split(":")[0];
+
+    // if no text exit function
+    if (!text) return;
+
+    // check if the state is empty
+    if (selectedElement.length === 0) {
+      setSelectedElement([text]);
+      span.classList.add("verse-selected");
+      return;
+    }
+
+    // check if the value selected is in the list
+    if (selectedElement.includes(text)) {
+      const valueIndex = selectedElement.indexOf(text);
+      if (valueIndex > -1) {
+        selectedElement.splice(valueIndex, 1);
+        setSelectedElement(selectedElement);
+        span.classList.remove("verse-selected");
+      }
+
+      return;
+    }
+
+    var tempValue = [...selectedElement];
+    tempValue.push(text);
+
+    setSelectedElement(tempValue);
+    span.classList.add("verse-selected");
+    console.log(tempValue);
+  };
+
   return (
     <div id="chapter-viewer">
       <div className="text-viewer">
@@ -198,7 +246,11 @@ const BibleChapterViewer: React.FC = () => {
               {chosenChapter?.chapterNumber}
             </strong>
             {chosenChapter.verses.map((verse) => (
-              <span key={verse.bibleId}>
+              <span
+                onClick={() => handleMouseDown(verse.bibleId)}
+                id={verse.bibleId}
+                key={verse.bibleId}
+              >
                 <b>{verse.verse}:</b> {verse.text}
               </span>
             ))}

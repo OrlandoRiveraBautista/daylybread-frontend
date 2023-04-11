@@ -1,3 +1,5 @@
+@import "../../theme/variables.scss";
+
 #chapter-viewer {
   display: flex;
   flex-direction: column;
@@ -7,6 +9,11 @@
 .text-viewer {
   position: relative;
   min-height: 100%;
+  .verse-selected {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-decoration-color: $color-primary;
+  }
 }
 .chapter-number {
   font-size: 24px;

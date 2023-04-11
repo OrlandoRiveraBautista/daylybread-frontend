@@ -84,7 +84,6 @@ const App: React.FC = () => {
       setFirstTimeFlag(true);
     }
     setHasSession(val.session); // set hasSession depending on the response
-    console.log(val);
     setFirstTimeFlag(val.firstTime);
     return val; // return the same just in case
   };
