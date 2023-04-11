@@ -137,6 +137,7 @@ const BibleChapterViewer: React.FC = () => {
         newBookAndChapterNumber.toString();
 
       setChapterId(newChapter);
+      handleReset();
 
       // exit function
       return;
@@ -150,6 +151,8 @@ const BibleChapterViewer: React.FC = () => {
       nextChapterNumber.toString();
 
     setChapterId(newChapter);
+    handleReset();
+
     return;
   };
 
@@ -185,6 +188,7 @@ const BibleChapterViewer: React.FC = () => {
 
       setNavAction("previous chapter");
       setBookId(newBookId);
+      handleReset();
 
       // exit function
       return;
@@ -198,6 +202,8 @@ const BibleChapterViewer: React.FC = () => {
       nextChapterNumber.toString();
 
     setChapterId(newChapter);
+    handleReset();
+
     return;
   };
 
