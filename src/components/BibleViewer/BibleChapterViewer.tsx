@@ -1,6 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { IonFab, IonFabButton, IonIcon, IonImg, IonText } from "@ionic/react";
-import { chevronBack, chevronForward } from "ionicons/icons";
+import {
+  chevronBack,
+  chevronForward,
+  ellipsisHorizontalOutline,
+} from "ionicons/icons";
 
 /* Context */
 import { useAppContext } from "../../context/context";
@@ -28,7 +32,8 @@ const BibleChapterViewer: React.FC = () => {
     "previous chapter" | "next chapter" | undefined
   >(undefined);
   const [selectedElement, setSelectedElement] = useState<Array<string>>([]);
-  const timeoutRef = useRef<any>(null);
+  const [openSelectedVersesModal, setOpenSelectedVersesModal] =
+    useState<Boolean>(false);
 
   // getting chapters
   const { data: chapterData } = useGetChapterById(chapterId!);
@@ -279,6 +284,13 @@ const BibleChapterViewer: React.FC = () => {
               icon={chevronBack}
               onClick={() => backChapter(chosenChapter.bibleId)}
             />
+          </IonFabButton>
+          <IonFabButton
+            size="small"
+            onClick={() => setOpenSelectedVersesModal(!openSelectedVersesModal)}
+            id="open-selected-verses-modal"
+          >
+            <IonIcon icon={ellipsisHorizontalOutline} />
           </IonFabButton>
           <IonFabButton size="small" className="right">
             <IonIcon

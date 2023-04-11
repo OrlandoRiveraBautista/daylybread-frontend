@@ -19,6 +19,7 @@ import { useGetBooksById, useGetChapterById } from "../hooks/BibleHooks";
 import BibleNavModal from "../components/BibleNavModal/BibleNavModal";
 import BibleTranslationModal from "../components/BibleNavModal/BibleTranslationModal";
 import BibleChapterViewer from "../components/BibleViewer/BibleChapterViewer";
+import SelectedVersesModal from "../components/BibleNavModal/SelectedVersesModal";
 
 /* Styles */
 import "./Tab2.scss";
@@ -111,6 +112,9 @@ const Tab2: React.FC = () => {
 
         {/* bible navigation */}
         <BibleNavModal />
+
+        {/* selected verses modal */}
+        <SelectedVersesModal />
       </IonContent>
     </IonPage>
   );
