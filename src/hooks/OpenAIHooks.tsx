@@ -10,8 +10,6 @@ const getOpenAI = gql(`
 `);
 
 export const useOpenAI = (promptText: string) => {
-  if (!promptText) return;
-
   const response = useQuery(getOpenAI, {
     variables: {
       promptText: promptText,
