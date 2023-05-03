@@ -13,15 +13,20 @@ ion-header ion-toolbar ion-button {
   letter-spacing: 0.5px;
   text-transform: capitalize;
   font-size: 22px;
+  height: 40px !important;
   max-height: 44px;
+  &.header-button-translation,
+  ion-button {
+    font-size: 14px;
+    --border-color: #73777f !important;
+  }
 }
 ion-button ion-icon {
   margin-left: 6px;
   font-size: 18px;
 }
 
-ion-text,
-.product-sans {
+ion-text .product-sans {
   font-family: "Product Sans";
   letter-spacing: 0.5px;
 }

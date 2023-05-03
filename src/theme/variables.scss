@@ -1,9 +1,4 @@
-/* Component variables */
-@import "./components/tabs.scss";
-@import "./components/modal.scss";
-@import "./components/header.scss";
-@import "./components/text.scss";
-@import "./components/button.scss";
+/* "--" attributes like --background cannot read scss variables */
 
 /* Scss variables */
 $color-primary: #2989e3;
@@ -70,11 +65,21 @@ $font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Roboto",
 $text-color: #1a1c1e;
 $text-color-rgb: 26, 28, 30;
 
+/** Material You */
+$outline-color: #73777f;
+$outline-variant-color: #c3c6cf;
+
+$surface: #faf9fd;
+$surface-variant: #dfe2eb;
+
 /* Ionic Variables and Theming. For more info, please see:
 http://ionicframework.com/docs/theming/ */
 
 /** Ionic CSS Variables **/
 :root {
+  // background color
+  --ion-background-color: #faf9fd;
+
   --ion-color-primary: #2989e3;
   --ion-color-primary-rgb: 41, 137, 227;
   --ion-color-primary-contrast: #ffffff;
