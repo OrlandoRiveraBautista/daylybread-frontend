@@ -19,7 +19,6 @@ import { useGetBooksById, useGetChapterById } from "../hooks/BibleHooks";
 import BibleNavModal from "../components/BibleNavModal/BibleNavModal";
 import BibleTranslationModal from "../components/BibleNavModal/BibleTranslationModal";
 import BibleChapterViewer from "../components/BibleViewer/BibleChapterViewer";
-import SelectedVersesModal from "../components/BibleNavModal/SelectedVersesModal";
 
 /* Styles */
 import "./Tab2.scss";
@@ -88,7 +87,7 @@ const Tab2: React.FC = () => {
             <IonButton
               shape="round"
               fill="outline"
-              color="dark"
+              color="primary"
               size="large"
               onClick={() => setOpenModal(!openModal)}
               id="open-modal"
@@ -112,9 +111,6 @@ const Tab2: React.FC = () => {
 
         {/* bible navigation */}
         <BibleNavModal />
-
-        {/* selected verses modal */}
-        <SelectedVersesModal />
       </IonContent>
     </IonPage>
   );

@@ -1,3 +1,5 @@
+@import "../../theme/variables.scss";
+
 .nav-modal {
   --height: 75vh;
   --border-radius: 28px 28px 0 0;
@@ -69,4 +71,89 @@
   align-items: center;
   border-radius: 100%;
   background-color: #b7f567;
+}
+
+// BreadCrumbs Modal
+#bread-crumbs-modal {
+  .selected-indicator {
+    display: flex;
+    gap: 4px;
+    flex-direction: column;
+  }
+
+  ion-grid {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+  }
+
+  .chat-container {
+    max-height: 540px;
+    overflow-y: auto;
+    position: relative;
+    bottom: 0;
+    ion-grid {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+  }
+
+  .breadcrumbs-header {
+    position: sticky;
+    width: 100%;
+    background: $surface;
+    z-index: 2;
+    top: 0;
+  }
+
+  .right-align-text {
+    text-align: right;
+  }
+
+  .right-align-self {
+    justify-content: flex-end;
+  }
+
+  .chat-respond {
+    ion-card {
+      background: $outline-variant-color;
+    }
+  }
+
+  .chat-input-row {
+    position: sticky;
+    bottom: 0;
+    background: $surface-variant;
+    border-radius: 12px;
+    ion-textarea,
+    .textarea-fill-solid.sc-ion-textarea-md-h {
+      background: $surface-variant;
+      --background: $surface-variant;
+      border: none;
+      border-radius: 12px;
+      --border-style: none;
+      --border-width: 50%;
+      --highlight-color-focused: none;
+      // --placeholder-opacity: 1;
+    }
+
+    .textarea-label-placement-floating.sc-ion-textarea-md-h
+      textarea.sc-ion-textarea-md {
+      opacity: 1;
+    }
+
+    ion-col {
+      padding: 0;
+      display: flex;
+      align-items: center;
+      .textarea-send-button {
+        height: 100% !important;
+        margin: 0;
+        --border-radius: 12px;
+        --padding-start: 12px !important;
+        --padding-end: 12px !important;
+      }
+    }
+  }
 }

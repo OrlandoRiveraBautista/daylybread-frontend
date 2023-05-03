@@ -8,6 +8,7 @@ import {
 
 /* Context */
 import { useAppContext } from "../../context/context";
+import BreadCrumbsModal from "../BibleNavModal/BreadCrumbsModal";
 
 /* Styles */
 import "./BibleChapterViewer.scss";
@@ -33,7 +34,7 @@ const BibleChapterViewer: React.FC = () => {
   >(undefined);
   const [selectedElement, setSelectedElement] = useState<Array<string>>([]);
   const [openSelectedVersesModal, setOpenSelectedVersesModal] =
-    useState<Boolean>(false);
+    useState<boolean>(false);
 
   // getting chapters
   const { data: chapterData } = useGetChapterById(chapterId!);
@@ -248,6 +249,9 @@ const BibleChapterViewer: React.FC = () => {
     console.log(tempValue);
   };
 
+  const handleOpenModal = () =>
+    setOpenSelectedVersesModal(!openSelectedVersesModal);
+
   return (
     <div id="chapter-viewer">
       <div className="text-viewer">
@@ -279,19 +283,20 @@ const BibleChapterViewer: React.FC = () => {
       </div>
       {chosenChapter ? (
         <IonFab>
+          {/* Back button */}
           <IonFabButton size="small" className="right">
             <IonIcon
               icon={chevronBack}
               onClick={() => backChapter(chosenChapter.bibleId)}
             />
           </IonFabButton>
-          <IonFabButton
-            size="small"
-            onClick={() => setOpenSelectedVersesModal(!openSelectedVersesModal)}
-            id="open-selected-verses-modal"
-          >
+
+          {/* Button to open the bible assistant modal */}
+          <IonFabButton size="small" onClick={handleOpenModal}>
             <IonIcon icon={ellipsisHorizontalOutline} />
           </IonFabButton>
+
+          {/* Forward button */}
           <IonFabButton size="small" className="right">
             <IonIcon
               icon={chevronForward}
@@ -300,6 +305,13 @@ const BibleChapterViewer: React.FC = () => {
           </IonFabButton>
         </IonFab>
       ) : null}
+
+      {/* bible assistant modal */}
+      <BreadCrumbsModal
+        isOpen={openSelectedVersesModal}
+        onDismiss={handleOpenModal}
+        selectedText={selectedElement}
+      />
     </div>
   );
 };
