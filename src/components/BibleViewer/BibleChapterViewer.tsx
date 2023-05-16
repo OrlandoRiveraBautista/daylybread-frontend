@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IonFab, IonFabButton, IonIcon, IonImg, IonText } from "@ionic/react";
 import {
   chevronBack,
@@ -246,7 +246,6 @@ const BibleChapterViewer: React.FC = () => {
 
     setSelectedElement(tempValue);
     span.classList.add("verse-selected");
-    console.log(tempValue);
   };
 
   const handleOpenModal = () =>
