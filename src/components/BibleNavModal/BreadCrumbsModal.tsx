@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   IonContent,
   IonModal,
@@ -49,6 +49,29 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChatl> = ({
   messages,
 }: IBreadCrumbsChatl) => {
   const [value, setValue] = useState<string | undefined | null>();
+  const messagesContainer = useRef<HTMLInputElement>(null);
+  /**
+   * Function to handle submitting a message
+   * it should call the function passed in the props and delete the current message state
+   */
+  const handleSubmit = (value: string) => {
+    onSubmit(value);
+    setValue(""); // reset value
+  };
+
+  const scrollToBottom = () => {
+    if (!messagesContainer.current) return;
+
+    messagesContainer.current.scrollIntoView({
+      block: "end",
+      behavior: "smooth",
+    });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   return (
     <IonGrid>
       <IonRow className="breadcrumbs-header">
@@ -57,23 +80,31 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChatl> = ({
         </IonCol>
       </IonRow>
 
-      {messages.length
-        ? messages.map(({ message, sender }) => (
-            <IonRow
-              className={sender === "You" ? "right-align-self" : "chat-respond"}
-            >
-              <IonCard
-                mode="md"
-                className={sender === "You" ? "right-align-text" : ""}
+      <div className="messages-container">
+        {messages.length
+          ? messages.map(({ message, sender }, index) => (
+              <IonRow
+                className={
+                  sender === "You" ? "right-align-self" : "chat-respond"
+                }
+                key={index}
               >
-                <IonCardContent>
-                  <IonCardTitle>{sender}</IonCardTitle>
-                  {message}
-                </IonCardContent>
-              </IonCard>
-            </IonRow>
-          ))
-        : null}
+                <IonCard
+                  mode="md"
+                  className={sender === "You" ? "right-align-text" : ""}
+                >
+                  <IonCardContent>
+                    <IonCardTitle>{sender}</IonCardTitle>
+                    {message}
+                  </IonCardContent>
+                </IonCard>
+              </IonRow>
+            ))
+          : null}
+        {/* Div to move the panel down when a new message is created */}
+        <div ref={messagesContainer} />
+      </div>
+
       <IonRow className="chat-input-row">
         <IonCol>
           <IonTextarea
@@ -91,7 +122,7 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChatl> = ({
             fill="clear"
             className="textarea-send-button"
             color="dark"
-            onClick={() => (value ? onSubmit(value) : null)}
+            onClick={() => (value ? handleSubmit(value) : null)}
           >
             <IonIcon icon={send} />
           </IonButton>
@@ -134,9 +165,9 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
   const openAIResponse = useOpenAI(inputPrompt);
 
   useEffect(() => {
-    console.log(selectedText);
-    console.log(chosenChapter);
-    console.log(chosenBook?.bookName);
+    // console.log(selectedText);
+    // console.log(chosenChapter);
+    // console.log(chosenBook?.bookName);
     const text = `${chosenBook?.bookName}: ${chosenChapter?.chapterNumber}`;
     console.log(text);
   }, [selectedText]);
@@ -166,7 +197,7 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
   };
   return (
     <IonModal
-      initialBreakpoint={0.5}
+      initialBreakpoint={1}
       breakpoints={[0, 1]}
       className="nav-modal"
       isOpen={isOpen}

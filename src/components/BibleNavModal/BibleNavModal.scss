@@ -90,9 +90,9 @@
 
   .chat-container {
     max-height: 540px;
-    overflow-y: auto;
     position: relative;
     bottom: 0;
+    height: 100%;
     ion-grid {
       padding-top: 0;
       padding-bottom: 0;
@@ -100,11 +100,13 @@
   }
 
   .breadcrumbs-header {
-    position: sticky;
     width: 100%;
     background: $surface;
-    z-index: 2;
-    top: 0;
+  }
+
+  .messages-container {
+    height: 100%;
+    overflow-y: auto;
   }
 
   .right-align-text {
@@ -122,8 +124,6 @@
   }
 
   .chat-input-row {
-    position: sticky;
-    bottom: 0;
     background: $surface-variant;
     border-radius: 12px;
     ion-textarea,
