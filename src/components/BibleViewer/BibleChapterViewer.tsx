@@ -233,8 +233,9 @@ const BibleChapterViewer: React.FC = () => {
     if (selectedElement.includes(text)) {
       const valueIndex = selectedElement.indexOf(text);
       if (valueIndex > -1) {
-        selectedElement.splice(valueIndex, 1);
-        setSelectedElement(selectedElement);
+        var tempValue = [...selectedElement];
+        tempValue.splice(valueIndex, 1);
+        setSelectedElement(tempValue);
         span.classList.remove("verse-selected");
       }
 

@@ -12,6 +12,8 @@ import {
   IonIcon,
   IonCardTitle,
   IonCardContent,
+  IonCheckbox,
+  IonChip,
 } from "@ionic/react";
 import { send } from "ionicons/icons";
 
@@ -26,6 +28,10 @@ import { useOpenAI } from "../../hooks/OpenAIHooks";
 /* Styles */
 import "./BibleNavModal.scss";
 
+/* Utils */
+import { clusterNumbers } from "../../utils/support";
+import breadCrumbsSuggestions from "../../assets/ts/breadCrumbsSuggestions";
+
 /**
  * Interface for the BreadCrumbs modal
  * @property {(value: string) => void} prompt
@@ -33,6 +39,7 @@ import "./BibleNavModal.scss";
 interface IBreadCrumbsChatl {
   onSubmit: (value: string) => void;
   messages: IMessagesObject[];
+  useChosenTextVerbage: boolean;
 }
 
 /**
@@ -47,12 +54,15 @@ interface IMessagesObject {
 const BreadCrumbsChat: React.FC<IBreadCrumbsChatl> = ({
   onSubmit,
   messages,
+  useChosenTextVerbage,
 }: IBreadCrumbsChatl) => {
   const [value, setValue] = useState<string | undefined | null>();
   const messagesContainer = useRef<HTMLInputElement>(null);
   /**
    * Function to handle submitting a message
    * it should call the function passed in the props and delete the current message state
+   * This function can also be used for the chip suggestions and useChosenTextVerbage
+   * which will direct the handler function in the parent
    */
   const handleSubmit = (value: string) => {
     onSubmit(value);
@@ -105,6 +115,25 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChatl> = ({
         <div ref={messagesContainer} />
       </div>
 
+      {useChosenTextVerbage ? (
+        <div className="breadcrumbs-suggestions-row">
+          <div className="breadcrumbs-suggestions-col">
+            {Object.entries(breadCrumbsSuggestions).map(([key, value]) => {
+              return (
+                <IonChip
+                  onClick={() => handleSubmit(value)}
+                  color="secondary"
+                  key={key}
+                >
+                  {key}
+                </IonChip>
+              );
+            })}
+          </div>
+        </div>
+      ) : null}
+
+      {/* Chat Input */}
       <IonRow className="chat-input-row">
         <IonCol>
           <IonTextarea
@@ -112,7 +141,7 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChatl> = ({
             color="primary"
             placeholder="Ask me anything!"
             autoGrow={true}
-            fill="solid"
+            fill="outline"
             value={value}
             onIonInput={(e) => setValue(e.target.value)}
           ></IonTextarea>
@@ -157,6 +186,9 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
   // state
   const [inputPrompt, setInputPrompt] = useState<string>("");
   const [messages, setMessages] = useState<IMessagesObject[]>([]);
+  const [chosenTextVerbage, setChosenTextVerbage] = useState<string>();
+  const [useChosenTextVerbage, setUseChosenTextVerbage] =
+    useState<boolean>(false);
 
   // const chatPromptResponse = useOpenAI(inputPrompt);
 
@@ -165,11 +197,45 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
   const openAIResponse = useOpenAI(inputPrompt);
 
   useEffect(() => {
-    // console.log(selectedText);
-    // console.log(chosenChapter);
-    // console.log(chosenBook?.bookName);
-    const text = `${chosenBook?.bookName}: ${chosenChapter?.chapterNumber}`;
-    console.log(text);
+    // exit function if there are no selected verses
+    if (!selectedText || !selectedText.length) return;
+
+    // sort the verse numbers in the array in ascenting order
+    const sortedNumbersAsc = selectedText
+      .map(Number)
+      .slice()
+      .sort((a, b) => a - b);
+
+    // cluster the verses that are close together to diminish token usage on openai
+    const clusterVerses = clusterNumbers(sortedNumbersAsc);
+    // temp variable for verbage of clustered verses
+    let clusterVersesVerb = "";
+
+    // loop through each cluster
+    clusterVerses.forEach((verseList, index) => {
+      // add proper verbage
+      clusterVersesVerb += `${
+        index !== 0 //check for the first value
+          ? index >= 1 && index < clusterVerses.length - 1 //check if the index is not the last
+            ? "," // use comma on the not last clusters
+            : " and " //use and for the last cluster
+          : "" //if first value, requires no prefix
+      }${verseList[0]} ${
+        verseList[0] !== verseList[verseList.length - 1]
+          ? "- " + verseList[verseList.length - 1]
+          : ""
+      }`;
+    });
+
+    // put all the chosen data together in a string
+    const text = `${chosenBook?.bookName} ${
+      chosenChapter?.chapterNumber
+    }:${clusterVersesVerb} ${chosenBook?.translation.abbreviation.replace(
+      /\s/g,
+      ""
+    )}`;
+
+    setChosenTextVerbage(text);
   }, [selectedText]);
 
   useEffect(() => {
@@ -187,9 +253,13 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
   }, [openAIResponse]);
 
   const handleSubmit = (value: string) => {
-    setInputPrompt(value);
+    let inputValue = value;
+    if (useChosenTextVerbage) {
+      inputValue += chosenTextVerbage;
+    }
+    setInputPrompt(inputValue);
     const messageObject: IMessagesObject = {
-      message: value,
+      message: inputValue,
       sender: "You",
     };
 
@@ -204,22 +274,38 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
       onDidDismiss={onDismiss}
       id="bread-crumbs-modal"
     >
-      <IonContent className="ion-padding nav-container">
+      <IonContent className="ion-padding ">
         <IonGrid>
-          <IonRow>
-            <IonCol className="selected-indicator">
-              <IonRow>
-                <IonText>
-                  <sub>Selected Text</sub>
-                </IonText>
-              </IonRow>
-              <IonRow>
-                <IonText>Selected Text</IonText>
-              </IonRow>
-            </IonCol>
-          </IonRow>
+          {chosenTextVerbage ? (
+            <IonRow>
+              <IonCol className="selected-indicator">
+                <IonRow>
+                  <IonText>
+                    <sub>Selected Text</sub>
+                  </IonText>
+                </IonRow>
+                <IonRow>
+                  <IonCol>
+                    <IonCheckbox
+                      className="selected-text-checkbox"
+                      checked={useChosenTextVerbage}
+                      onIonChange={() =>
+                        setUseChosenTextVerbage(!useChosenTextVerbage)
+                      }
+                    >
+                      <IonText>{chosenTextVerbage}</IonText>
+                    </IonCheckbox>
+                  </IonCol>
+                </IonRow>
+              </IonCol>
+            </IonRow>
+          ) : null}
           <div className="chat-container">
-            <BreadCrumbsChat onSubmit={handleSubmit} messages={messages} />
+            <BreadCrumbsChat
+              onSubmit={handleSubmit}
+              messages={messages}
+              useChosenTextVerbage={useChosenTextVerbage}
+            />
           </div>
         </IonGrid>
       </IonContent>

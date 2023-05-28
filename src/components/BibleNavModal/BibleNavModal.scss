@@ -83,6 +83,10 @@
     flex-direction: column;
   }
 
+  .selected-text-checkbox {
+    width: 100%;
+  }
+
   ion-grid {
     display: flex;
     flex-direction: column;
@@ -91,7 +95,7 @@
   }
 
   .chat-container {
-    max-height: 540px;
+    max-height: calc(100% - 60px);
     position: relative;
     bottom: 0;
     height: 100%;
@@ -105,8 +109,10 @@
   }
 
   .messages-container {
-    height: 100%;
+    max-height: 100%;
+    min-height: 20px;
     overflow-y: auto;
+    margin-top: auto;
   }
 
   .right-align-text {
@@ -120,6 +126,20 @@
   .chat-respond {
     ion-card {
       background: var(--ion-background-variant);
+    }
+  }
+
+  .breadcrumbs-suggestions-row {
+    overflow-x: auto;
+    height: fit-content;
+    min-height: 40px;
+
+    .breadcrumbs-suggestions-col {
+      display: flex;
+      flex-wrap: nowrap;
+      width: max-content;
+      height: fit-content;
+      //   overflow-x: auto;
     }
   }
 
