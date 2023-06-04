@@ -15,6 +15,10 @@ import {
   IonCheckbox,
   IonChip,
 } from "@ionic/react";
+import {
+  IonModalCustomEvent,
+  ModalBreakpointChangeEventDetail,
+} from "@ionic/core";
 import { send } from "ionicons/icons";
 
 /** Components */
@@ -190,6 +194,9 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
   const [useChosenTextVerbage, setUseChosenTextVerbage] =
     useState<boolean>(false);
 
+  // reference
+  const breadCrumbsModalGrid = useRef<HTMLIonGridElement>(null);
+
   // const chatPromptResponse = useOpenAI(inputPrompt);
 
   // context values
@@ -265,17 +272,43 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
 
     setMessages((prevMessage) => [...prevMessage, messageObject]);
   };
+
+  /**
+   *  Function will check for modal breakpoint change and set the inner grid accordingly
+   * @param e: IonModalCustomEvent<ModalBreakpointChangeEventDetail>
+   * @returns void
+   */
+  const handleBreakpointChange = (
+    e: IonModalCustomEvent<ModalBreakpointChangeEventDetail>
+  ) => {
+    // get modal
+    const target = breadCrumbsModalGrid.current;
+    if (!target) return; // if no modal end function
+
+    // check for breakpoint being less than or equal to .75 and if full-height is set
+    if (
+      e.detail.breakpoint <= 0.75 &&
+      target.classList.contains("full-height")
+    ) {
+      // remove full-height
+      target.classList.remove("full-height");
+    } else {
+      // else set full-height
+      target.classList.add("full-height");
+    }
+  };
   return (
     <IonModal
-      initialBreakpoint={1}
-      breakpoints={[0, 1]}
+      initialBreakpoint={0.75}
+      breakpoints={[0, 0.75, 1]}
       className="nav-modal"
       isOpen={isOpen}
       onDidDismiss={onDismiss}
       id="bread-crumbs-modal"
+      onIonBreakpointDidChange={(e) => handleBreakpointChange(e)}
     >
       <IonContent className="ion-padding ">
-        <IonGrid>
+        <IonGrid ref={breadCrumbsModalGrid}>
           {chosenTextVerbage ? (
             <IonRow>
               <IonCol className="selected-indicator">
