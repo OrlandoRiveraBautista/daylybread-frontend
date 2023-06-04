@@ -100,10 +100,12 @@
   }
 
   .chat-container {
-    max-height: calc(100% - 60px);
     position: relative;
     bottom: 0;
     height: 100%;
+    &.max-height {
+      max-height: calc(100% - 70px);
+    }
     ion-grid {
       padding: 0;
       height: 100%;

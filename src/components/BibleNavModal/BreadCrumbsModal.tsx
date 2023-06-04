@@ -333,7 +333,11 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
               </IonCol>
             </IonRow>
           ) : null}
-          <div className="chat-container">
+          <div
+            className={`chat-container ${
+              chosenTextVerbage ? "max-height" : ""
+            }`}
+          >
             <BreadCrumbsChat
               onSubmit={handleSubmit}
               messages={messages}
