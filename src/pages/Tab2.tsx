@@ -78,8 +78,12 @@ const Tab2: React.FC = () => {
             id="open-bible-nav-modal"
             disabled={chosenTranslation ? false : true}
           >
-            {chosenBook ? chosenBook.bookName : "Pick a translation"}
-            <IonIcon icon={caretDownOutline}></IonIcon>
+            {chosenBook ? (
+              <>
+                {chosenBook.bookName}{" "}
+                <IonIcon icon={caretDownOutline}></IonIcon>
+              </>
+            ) : null}
           </IonButton>
 
           {/* Header secondary buttons */}
