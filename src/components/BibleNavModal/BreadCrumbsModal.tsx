@@ -14,6 +14,7 @@ import {
   IonCardContent,
   IonCheckbox,
   IonChip,
+  IonSpinner,
 } from "@ionic/react";
 import {
   IonModalCustomEvent,
@@ -60,7 +61,12 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChatl> = ({
   messages,
   useChosenTextVerbage,
 }: IBreadCrumbsChatl) => {
+  // state
   const [value, setValue] = useState<string | undefined | null>();
+  const [loadingChatResponse, setLoadingChatResponse] =
+    useState<boolean>(false);
+
+  // references
   const messagesContainer = useRef<HTMLInputElement>(null);
   /**
    * Function to handle submitting a message
@@ -71,6 +77,7 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChatl> = ({
   const handleSubmit = (value: string) => {
     onSubmit(value);
     setValue(""); // reset value
+    setLoadingChatResponse(true);
   };
 
   const scrollToBottom = () => {
@@ -84,6 +91,9 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChatl> = ({
 
   useEffect(() => {
     scrollToBottom();
+    if (messages[messages.length - 1].sender !== "You") {
+      setLoadingChatResponse(false);
+    }
   }, [messages]);
 
   return (
@@ -156,8 +166,13 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChatl> = ({
             className="textarea-send-button"
             color="dark"
             onClick={() => (value ? handleSubmit(value) : null)}
+            disabled={loadingChatResponse}
           >
-            <IonIcon icon={send} />
+            {loadingChatResponse ? (
+              <IonSpinner color="dark" />
+            ) : (
+              <IonIcon icon={send} />
+            )}
           </IonButton>
         </IonCol>
       </IonRow>
