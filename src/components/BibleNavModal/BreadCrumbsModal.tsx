@@ -91,7 +91,7 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChatl> = ({
 
   useEffect(() => {
     scrollToBottom();
-    if (messages[messages.length - 1].sender !== "You") {
+    if (messages.length > 0 && messages[messages.length - 1].sender !== "You") {
       setLoadingChatResponse(false);
     }
   }, [messages]);
