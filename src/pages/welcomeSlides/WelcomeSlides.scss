@@ -1,11 +1,11 @@
 @import "../../theme/variables.scss";
 
 /* Without setting height the slides will take up the height of the slide's content */
-ion-slides {
+.swiper {
   height: 100%;
 }
 
-ion-slide {
+.swiper-slide {
   flex-direction: column;
   padding: 24px;
   gap: 48px;

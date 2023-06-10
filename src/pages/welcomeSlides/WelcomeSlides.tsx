@@ -13,7 +13,7 @@ import WelcomeImage2 from "../../assets/images/welcome-slide-img-2.svg";
 import WelcomeImage3 from "../../assets/images/welcome-slide-img-3.svg";
 
 const slideOpts = {
-  initalSlide: 1,
+  initalSlide: 0,
   speed: 400,
 };
 
