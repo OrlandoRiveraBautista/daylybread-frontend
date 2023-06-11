@@ -284,7 +284,7 @@ const BibleChapterViewer: React.FC = () => {
       {chosenChapter ? (
         <IonFab>
           {/* Back button */}
-          <IonFabButton size="small" className="right">
+          <IonFabButton color="light" size="small" className="right">
             <IonIcon
               icon={chevronBack}
               onClick={() => backChapter(chosenChapter.bibleId)}
@@ -292,12 +292,12 @@ const BibleChapterViewer: React.FC = () => {
           </IonFabButton>
 
           {/* Button to open the bible assistant modal */}
-          <IonFabButton size="small" onClick={handleOpenModal}>
+          <IonFabButton color="light" size="small" onClick={handleOpenModal}>
             <IonIcon icon={ellipsisHorizontalOutline} />
           </IonFabButton>
 
           {/* Forward button */}
-          <IonFabButton size="small" className="right">
+          <IonFabButton color="light" size="small" className="right">
             <IonIcon
               icon={chevronForward}
               onClick={() => nextChapter(chosenChapter.bibleId)}
