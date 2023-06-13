@@ -119,7 +119,7 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChatl> = ({
                 >
                   <IonCardContent>
                     <IonCardTitle>{sender}</IonCardTitle>
-                    {message}
+                    <span className="chat-message">{message}</span>
                   </IonCardContent>
                 </IonCard>
               </IonRow>
@@ -264,6 +264,8 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
     if (openAIResponse.loading) return;
     if (!openAIResponse.data?.getOpen) return;
     const openAIMessage = openAIResponse.data.getOpen;
+
+    console.log(openAIMessage);
 
     const messageObject: IMessagesObject = {
       message: openAIMessage,

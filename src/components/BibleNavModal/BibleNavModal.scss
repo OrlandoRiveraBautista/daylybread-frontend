@@ -121,6 +121,10 @@
     min-height: 20px;
     overflow-y: auto;
     margin-top: auto;
+
+    .chat-message {
+      white-space: pre-wrap;
+    }
   }
 
   .right-align-text {
