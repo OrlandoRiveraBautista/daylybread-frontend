@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { IonFab, IonFabButton, IonIcon, IonImg, IonText } from "@ionic/react";
+import {
+  IonButton,
+  IonFab,
+  IonFabButton,
+  IonIcon,
+  IonImg,
+  IonText,
+} from "@ionic/react";
 import {
   chevronBack,
   chevronForward,
@@ -21,10 +28,12 @@ import { useGetChapterById, useGetBooksById } from "../../hooks/BibleHooks";
 
 /* Utils */
 import { zeroPad } from "../../utils/support";
+import BibleTranslationModal from "../BibleNavModal/BibleTranslationModal";
 
 const BibleChapterViewer: React.FC = () => {
   /* Context */
-  const { chosenChapter, setChapter, chosenBook, setBook } = useAppContext();
+  const { chosenChapter, setChapter, chosenBook, setBook, chosenTranslation } =
+    useAppContext();
 
   /* State */
   const [chapterId, setChapterId] = useState(chosenChapter?.bibleId);
@@ -34,6 +43,8 @@ const BibleChapterViewer: React.FC = () => {
   >(undefined);
   const [selectedElement, setSelectedElement] = useState<Array<string>>([]);
   const [openSelectedVersesModal, setOpenSelectedVersesModal] =
+    useState<boolean>(false);
+  const [openSelectedTranslationModal, setOpenSelectedTranslationModal] =
     useState<boolean>(false);
 
   // getting chapters
@@ -249,8 +260,11 @@ const BibleChapterViewer: React.FC = () => {
     span.classList.add("verse-selected");
   };
 
-  const handleOpenModal = () =>
+  const handleOpenVerseModal = () =>
     setOpenSelectedVersesModal(!openSelectedVersesModal);
+
+  const handleOpenTranslationModal = () =>
+    setOpenSelectedTranslationModal(!openSelectedTranslationModal);
 
   return (
     <div id="chapter-viewer">
@@ -278,6 +292,16 @@ const BibleChapterViewer: React.FC = () => {
               className="helper-image"
             />
             <IonText>Please pick a translation to begin</IonText>
+            <IonButton
+              shape="round"
+              fill="outline"
+              color="primary"
+              size="large"
+              onClick={handleOpenTranslationModal}
+              className="translation-button"
+            >
+              {chosenTranslation?.abbreviation ?? "Pick translation"}
+            </IonButton>
           </div>
         )}
       </div>
@@ -292,7 +316,11 @@ const BibleChapterViewer: React.FC = () => {
           </IonFabButton>
 
           {/* Button to open the bible assistant modal */}
-          <IonFabButton color="light" size="small" onClick={handleOpenModal}>
+          <IonFabButton
+            color="light"
+            size="small"
+            onClick={handleOpenVerseModal}
+          >
             <IonIcon icon={ellipsisHorizontalOutline} />
           </IonFabButton>
 
@@ -309,8 +337,12 @@ const BibleChapterViewer: React.FC = () => {
       {/* bible assistant modal */}
       <BreadCrumbsModal
         isOpen={openSelectedVersesModal}
-        onDismiss={handleOpenModal}
+        onDismiss={handleOpenVerseModal}
         selectedText={selectedElement}
+      />
+      <BibleTranslationModal
+        isOpen={openSelectedTranslationModal}
+        onDismiss={handleOpenTranslationModal}
       />
     </div>
   );

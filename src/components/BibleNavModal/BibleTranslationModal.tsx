@@ -7,7 +7,23 @@ import { useAppContext } from "../../context/context";
 /* GraphQL */
 import { useGetTranslation } from "../../hooks/BibleHooks";
 
-const BibleTranslationModal: React.FC = () => {
+/**
+ * Interface for the BreadCrumbs modal
+ * @property {boolean} isOpen
+ * @property {() => void} onDismiss
+ * @property {string[]} selectedText
+ */
+interface IBibleTranslationModal {
+  isOpen?: boolean;
+  onDismiss?: () => void;
+  selectedText?: string[];
+}
+
+const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
+  isOpen,
+  onDismiss,
+  selectedText,
+}) => {
   const { setTranslation } = useAppContext();
 
   /* Queries */
@@ -37,9 +53,10 @@ const BibleTranslationModal: React.FC = () => {
 
   return (
     <IonModal
-      trigger="open-modal"
       initialBreakpoint={0.25}
       breakpoints={[0, 0.25, 0.5, 0.75]}
+      isOpen={isOpen}
+      onDidDismiss={onDismiss}
     >
       <IonContent className="ion-padding">{renderModalOptions()}</IonContent>
     </IonModal>

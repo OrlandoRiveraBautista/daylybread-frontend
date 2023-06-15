@@ -95,7 +95,7 @@ const Tab2: React.FC = () => {
               size="large"
               onClick={() => setOpenModal(!openModal)}
               id="open-modal"
-              className="header-button-translation"
+              className="translation-button"
             >
               {chosenTranslation
                 ? chosenTranslation.abbreviation
@@ -111,7 +111,10 @@ const Tab2: React.FC = () => {
 
         {/* Modals */}
         {/* translation selection */}
-        <BibleTranslationModal />
+        <BibleTranslationModal
+          isOpen={openModal}
+          onDismiss={() => setOpenModal(!openModal)}
+        />
 
         {/* bible navigation */}
         <BibleNavModal />

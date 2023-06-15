@@ -3,4 +3,14 @@ ion-button {
   --padding-start: 24px !important;
   --padding-end: 24px !important;
   height: 40px;
+
+  &.translation-button {
+    font-size: 14px;
+    --border-color: #73777f !important;
+    font-family: "Product Sans";
+    letter-spacing: 0.5px;
+    text-transform: capitalize;
+    height: 40px !important;
+    max-height: 44px;
+  }
 }
