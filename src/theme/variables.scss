@@ -1,9 +1,4 @@
-/* Component variables */
-@import "./components/tabs.scss";
-@import "./components/modal.scss";
-@import "./components/header.scss";
-@import "./components/text.scss";
-@import "./components/button.scss";
+/* "--" attributes like --background cannot read scss variables */
 
 /* Scss variables */
 $color-primary: #2989e3;
@@ -70,11 +65,21 @@ $font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Roboto",
 $text-color: #1a1c1e;
 $text-color-rgb: 26, 28, 30;
 
+/** Material You */
+$outline-color: #73777f;
+$outline-variant-color: #c3c6cf;
+
+$surface: #faf9fd;
+$surface-variant: #dfe2eb;
+
 /* Ionic Variables and Theming. For more info, please see:
 http://ionicframework.com/docs/theming/ */
 
 /** Ionic CSS Variables **/
 :root {
+  // background color
+  --ion-background-color: #faf9fd;
+
   --ion-color-primary: #2989e3;
   --ion-color-primary-rgb: 41, 137, 227;
   --ion-color-primary-contrast: #ffffff;
@@ -95,6 +100,8 @@ http://ionicframework.com/docs/theming/ */
   --ion-color-tertiary-contrast-rgb: 255, 255, 255;
   --ion-color-tertiary-shade: #643c86;
   --ion-color-tertiary-tint: #8057a2;
+
+  --ion-color-tertiary-container: #b7f567;
 
   --ion-color-success: #2dd36f;
   --ion-color-success-rgb: 45, 211, 111;
@@ -138,6 +145,9 @@ http://ionicframework.com/docs/theming/ */
   /** Text colors **/
   --ion-text-color: #1a1c1e;
   --ion-text-color-rgb: 26, 28, 30;
+
+  --ion-background-color: #faf9fd;
+  --ion-background-variant: #dfe2eb;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -147,7 +157,7 @@ http://ionicframework.com/docs/theming/ */
    */
 
   body {
-    --ion-color-primary: #428cff;
+    --ion-color-primary: #a2c9ff;
     --ion-color-primary-rgb: 66, 140, 255;
     --ion-color-primary-contrast: #ffffff;
     --ion-color-primary-contrast-rgb: 255, 255, 255;
@@ -167,6 +177,8 @@ http://ionicframework.com/docs/theming/ */
     --ion-color-tertiary-contrast-rgb: 255, 255, 255;
     --ion-color-tertiary-shade: #5d58e0;
     --ion-color-tertiary-tint: #7974ff;
+
+    --ion-color-tertiary-container: #304f00;
 
     --ion-color-success: #2fdf75;
     --ion-color-success-rgb: 47, 223, 117;
@@ -209,6 +221,13 @@ http://ionicframework.com/docs/theming/ */
     --ion-color-light-contrast-rgb: 255, 255, 255;
     --ion-color-light-shade: #1e2023;
     --ion-color-light-tint: #383a3e;
+
+    /** Text colors **/
+    --ion-text-color: #c6c6ca;
+    --ion-text-color-rgb: 198, 198, 202;
+
+    --ion-background-color: #121316;
+    --ion-background-variant: #43474e;
   }
 
   /*

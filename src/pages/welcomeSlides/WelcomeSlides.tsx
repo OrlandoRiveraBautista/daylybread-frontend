@@ -1,15 +1,11 @@
 import React, { useState } from "react";
-import {
-  IonSlides,
-  IonSlide,
-  IonContent,
-  IonImg,
-  IonText,
-  IonButton,
-} from "@ionic/react";
+import { IonContent, IonImg, IonText, IonButton } from "@ionic/react";
+import { Swiper, SwiperSlide } from "swiper/react";
 
 /** Styles */
 import "./WelcomeSlides.scss";
+import "swiper/scss";
+import "@ionic/react/css/ionic-swiper.css";
 
 /** Images */
 import PinkLogo from "../../assets/images/daylybread-logo-pink.svg";
@@ -17,7 +13,7 @@ import WelcomeImage2 from "../../assets/images/welcome-slide-img-2.svg";
 import WelcomeImage3 from "../../assets/images/welcome-slide-img-3.svg";
 
 const slideOpts = {
-  initalSlide: 1,
+  initalSlide: 0,
   speed: 400,
 };
 
@@ -39,12 +35,13 @@ const WelcomeSlides: React.FC<IWelcomeSlides> = ({
 
   return (
     <IonContent>
-      <IonSlides
-        pager={true}
-        options={slideOpts}
-        onIonSlideReachEnd={() => lastSlides()}
+      <Swiper
+        pagination={true}
+        initialSlide={slideOpts.initalSlide}
+        speed={slideOpts.speed}
+        onReachEnd={() => lastSlides()}
       >
-        <IonSlide className="slide1">
+        <SwiperSlide className="slide1">
           <IonImg className="logo" src={PinkLogo}></IonImg>
           <IonText>
             <h2>Welcome to Daylybread!</h2>
@@ -59,8 +56,8 @@ const WelcomeSlides: React.FC<IWelcomeSlides> = ({
               resource on your spiritual journey.
             </p>
           </IonText>
-        </IonSlide>
-        <IonSlide className="slide2">
+        </SwiperSlide>
+        <SwiperSlide className="slide2">
           <IonImg className="logo" src={WelcomeImage2}></IonImg>
           <IonText>
             <h2>Discover the Bible in a new way</h2>
@@ -75,8 +72,8 @@ const WelcomeSlides: React.FC<IWelcomeSlides> = ({
               have the opportunity to connect with the text on a deeper level.
             </p>
           </IonText>
-        </IonSlide>
-        <IonSlide className="slide3">
+        </SwiperSlide>
+        <SwiperSlide className="slide3">
           <IonImg className="logo" src={WelcomeImage3}></IonImg>
           <IonText>
             <h2>Grow your faith with our app</h2>
@@ -97,8 +94,8 @@ const WelcomeSlides: React.FC<IWelcomeSlides> = ({
               Enter
             </IonButton>
           ) : null}
-        </IonSlide>
-      </IonSlides>
+        </SwiperSlide>
+      </Swiper>
     </IonContent>
   );
 };

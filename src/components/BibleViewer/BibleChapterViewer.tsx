@@ -1,25 +1,40 @@
 import React, { useEffect, useState } from "react";
-import { IonFab, IonFabButton, IonIcon, IonImg, IonText } from "@ionic/react";
-import { chevronBack, chevronForward } from "ionicons/icons";
+import {
+  IonButton,
+  IonFab,
+  IonFabButton,
+  IonIcon,
+  IonImg,
+  IonText,
+} from "@ionic/react";
+import {
+  chevronBack,
+  chevronForward,
+  ellipsisHorizontalOutline,
+} from "ionicons/icons";
 
 /* Context */
 import { useAppContext } from "../../context/context";
+import BreadCrumbsModal from "../BibleNavModal/BreadCrumbsModal";
 
 /* Styles */
 import "./BibleChapterViewer.scss";
 
 /* Images */
 import PatternImage from "../../assets/images/Patterns - 4x4.png";
+import BreadCrumbsIcon from "../../assets/icons/BreadCrumbs-icon.svg";
 
 /* Query Hooks */
 import { useGetChapterById, useGetBooksById } from "../../hooks/BibleHooks";
 
 /* Utils */
 import { zeroPad } from "../../utils/support";
+import BibleTranslationModal from "../BibleNavModal/BibleTranslationModal";
 
 const BibleChapterViewer: React.FC = () => {
   /* Context */
-  const { chosenChapter, setChapter, chosenBook, setBook } = useAppContext();
+  const { chosenChapter, setChapter, chosenBook, setBook, chosenTranslation } =
+    useAppContext();
 
   /* State */
   const [chapterId, setChapterId] = useState(chosenChapter?.bibleId);
@@ -27,6 +42,11 @@ const BibleChapterViewer: React.FC = () => {
   const [navAction, setNavAction] = useState<
     "previous chapter" | "next chapter" | undefined
   >(undefined);
+  const [selectedElement, setSelectedElement] = useState<Array<string>>([]);
+  const [openSelectedVersesModal, setOpenSelectedVersesModal] =
+    useState<boolean>(false);
+  const [openSelectedTranslationModal, setOpenSelectedTranslationModal] =
+    useState<boolean>(false);
 
   // getting chapters
   const { data: chapterData } = useGetChapterById(chapterId!);
@@ -52,6 +72,8 @@ const BibleChapterViewer: React.FC = () => {
     if (chosenChapter.bibleId.slice(0, -3) !== bookId) {
       setBookId(chosenChapter.bibleId.slice(0, -3));
     }
+
+    console.log(chosenChapter);
   }, [chosenChapter]);
 
   // useEffect to set a new book to the context state
@@ -94,9 +116,19 @@ const BibleChapterViewer: React.FC = () => {
     }
   };
 
+  /**
+   * Function will be used to reset anything that is chapter specific
+   * @returns N/A
+   */
+  const handleReset = () => {
+    // reset the selected elements
+    setSelectedElement([]);
+  };
+
   // useEffect to call the handleNavAction function whenever a book changes
   useEffect(() => {
     handleNavAction();
+    handleReset();
   }, [chosenBook]);
 
   // function to handle going to the next chapter
@@ -125,6 +157,7 @@ const BibleChapterViewer: React.FC = () => {
         newBookAndChapterNumber.toString();
 
       setChapterId(newChapter);
+      handleReset();
 
       // exit function
       return;
@@ -138,6 +171,8 @@ const BibleChapterViewer: React.FC = () => {
       nextChapterNumber.toString();
 
     setChapterId(newChapter);
+    handleReset();
+
     return;
   };
 
@@ -173,6 +208,7 @@ const BibleChapterViewer: React.FC = () => {
 
       setNavAction("previous chapter");
       setBookId(newBookId);
+      handleReset();
 
       // exit function
       return;
@@ -186,8 +222,52 @@ const BibleChapterViewer: React.FC = () => {
       nextChapterNumber.toString();
 
     setChapterId(newChapter);
+    handleReset();
+
     return;
   };
+
+  const handleMouseDown = (event: string) => {
+    // get the desired html element
+    const span = document.getElementById(event);
+    // get the verse numbers
+    const text = span?.innerText.split(":")[0];
+
+    // if no text exit function
+    if (!text) return;
+
+    // check if the state is empty
+    if (selectedElement.length === 0) {
+      setSelectedElement([text]);
+      span.classList.add("verse-selected");
+      return;
+    }
+
+    // check if the value selected is in the list
+    if (selectedElement.includes(text)) {
+      const valueIndex = selectedElement.indexOf(text);
+      if (valueIndex > -1) {
+        var tempValue = [...selectedElement];
+        tempValue.splice(valueIndex, 1);
+        setSelectedElement(tempValue);
+        span.classList.remove("verse-selected");
+      }
+
+      return;
+    }
+
+    var tempValue = [...selectedElement];
+    tempValue.push(text);
+
+    setSelectedElement(tempValue);
+    span.classList.add("verse-selected");
+  };
+
+  const handleOpenVerseModal = () =>
+    setOpenSelectedVersesModal(!openSelectedVersesModal);
+
+  const handleOpenTranslationModal = () =>
+    setOpenSelectedTranslationModal(!openSelectedTranslationModal);
 
   return (
     <div id="chapter-viewer">
@@ -198,7 +278,11 @@ const BibleChapterViewer: React.FC = () => {
               {chosenChapter?.chapterNumber}
             </strong>
             {chosenChapter.verses.map((verse) => (
-              <span key={verse.bibleId}>
+              <span
+                onClick={() => handleMouseDown(verse.bibleId)}
+                id={verse.bibleId}
+                key={verse.bibleId}
+              >
                 <b>{verse.verse}:</b> {verse.text}
               </span>
             ))}
@@ -211,18 +295,40 @@ const BibleChapterViewer: React.FC = () => {
               className="helper-image"
             />
             <IonText>Please pick a translation to begin</IonText>
+            <IonButton
+              shape="round"
+              fill="outline"
+              color="primary"
+              size="large"
+              onClick={handleOpenTranslationModal}
+              className="translation-button"
+            >
+              {chosenTranslation?.abbreviation ?? "Pick translation"}
+            </IonButton>
           </div>
         )}
       </div>
       {chosenChapter ? (
         <IonFab>
-          <IonFabButton size="small" className="right">
+          {/* Back button */}
+          <IonFabButton color="light" size="small" className="right">
             <IonIcon
               icon={chevronBack}
               onClick={() => backChapter(chosenChapter.bibleId)}
             />
           </IonFabButton>
-          <IonFabButton size="small" className="right">
+
+          {/* Button to open the bible assistant modal */}
+          <IonFabButton
+            color="light"
+            size="small"
+            onClick={handleOpenVerseModal}
+          >
+            <IonIcon color="light" icon={BreadCrumbsIcon} />
+          </IonFabButton>
+
+          {/* Forward button */}
+          <IonFabButton color="light" size="small" className="right">
             <IonIcon
               icon={chevronForward}
               onClick={() => nextChapter(chosenChapter.bibleId)}
@@ -230,6 +336,17 @@ const BibleChapterViewer: React.FC = () => {
           </IonFabButton>
         </IonFab>
       ) : null}
+
+      {/* bible assistant modal */}
+      <BreadCrumbsModal
+        isOpen={openSelectedVersesModal}
+        onDismiss={handleOpenVerseModal}
+        selectedText={selectedElement}
+      />
+      <BibleTranslationModal
+        isOpen={openSelectedTranslationModal}
+        onDismiss={handleOpenTranslationModal}
+      />
     </div>
   );
 };

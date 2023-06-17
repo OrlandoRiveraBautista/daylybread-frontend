@@ -10,10 +10,8 @@ import {
   setupIonicReact,
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import { ellipse, square, triangle } from "ionicons/icons";
-import Tab1 from "./pages/Tab1";
+import { triangle } from "ionicons/icons";
 import Tab2 from "./pages/Tab2";
-import Tab3 from "./pages/Tab3";
 import SplashScreen from "./pages/splash/SplashScreen";
 import WelcomeSlides from "./pages/welcomeSlides/WelcomeSlides";
 
@@ -35,6 +33,7 @@ import "@ionic/react/css/display.css";
 
 /* Theme variables */
 import "./theme/variables.scss";
+import "./theme/components/index.scss";
 
 /* Context */
 import { useLocalStorage as Storage } from "./context/localStorage";
@@ -84,7 +83,6 @@ const App: React.FC = () => {
       setFirstTimeFlag(true);
     }
     setHasSession(val.session); // set hasSession depending on the response
-    console.log(val);
     setFirstTimeFlag(val.firstTime);
     return val; // return the same just in case
   };

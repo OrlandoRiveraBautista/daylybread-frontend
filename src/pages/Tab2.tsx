@@ -28,7 +28,7 @@ import { caretDownOutline } from "ionicons/icons";
 
 const Tab2: React.FC = () => {
   // Context
-  const { chosenTranslation, chosenBook, setBook, setChapter, chosenChapter } =
+  const { chosenTranslation, chosenBook, setBook, setChapter } =
     useAppContext();
 
   /* States */
@@ -78,8 +78,12 @@ const Tab2: React.FC = () => {
             id="open-bible-nav-modal"
             disabled={chosenTranslation ? false : true}
           >
-            {chosenBook ? chosenBook.bookName : "Pick a translation"}
-            <IonIcon icon={caretDownOutline}></IonIcon>
+            {chosenBook ? (
+              <>
+                {chosenBook.bookName}{" "}
+                <IonIcon icon={caretDownOutline}></IonIcon>
+              </>
+            ) : null}
           </IonButton>
 
           {/* Header secondary buttons */}
@@ -87,11 +91,11 @@ const Tab2: React.FC = () => {
             <IonButton
               shape="round"
               fill="outline"
-              color="dark"
+              color="primary"
               size="large"
               onClick={() => setOpenModal(!openModal)}
               id="open-modal"
-              className="header-button-translation"
+              className="translation-button"
             >
               {chosenTranslation
                 ? chosenTranslation.abbreviation
@@ -107,7 +111,10 @@ const Tab2: React.FC = () => {
 
         {/* Modals */}
         {/* translation selection */}
-        <BibleTranslationModal />
+        <BibleTranslationModal
+          isOpen={openModal}
+          onDismiss={() => setOpenModal(!openModal)}
+        />
 
         {/* bible navigation */}
         <BibleNavModal />

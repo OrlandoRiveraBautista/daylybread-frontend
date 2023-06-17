@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   IonContent,
   IonModal,
@@ -7,8 +7,6 @@ import {
   IonRow,
   IonTitle,
   IonCard,
-  IonCardHeader,
-  IonButton,
 } from "@ionic/react";
 
 /** Components */
