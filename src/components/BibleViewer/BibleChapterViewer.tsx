@@ -22,6 +22,7 @@ import "./BibleChapterViewer.scss";
 
 /* Images */
 import PatternImage from "../../assets/images/Patterns - 4x4.png";
+import BreadCrumbsIcon from "../../assets/icons/BreadCrumbs-icon.svg";
 
 /* Query Hooks */
 import { useGetChapterById, useGetBooksById } from "../../hooks/BibleHooks";
@@ -71,6 +72,8 @@ const BibleChapterViewer: React.FC = () => {
     if (chosenChapter.bibleId.slice(0, -3) !== bookId) {
       setBookId(chosenChapter.bibleId.slice(0, -3));
     }
+
+    console.log(chosenChapter);
   }, [chosenChapter]);
 
   // useEffect to set a new book to the context state
@@ -321,7 +324,7 @@ const BibleChapterViewer: React.FC = () => {
             size="small"
             onClick={handleOpenVerseModal}
           >
-            <IonIcon icon={ellipsisHorizontalOutline} />
+            <IonIcon color="light" icon={BreadCrumbsIcon} />
           </IonFabButton>
 
           {/* Forward button */}
