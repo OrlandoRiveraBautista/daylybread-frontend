@@ -28,7 +28,7 @@ import { caretDownOutline } from "ionicons/icons";
 
 const Tab2: React.FC = () => {
   // Context
-  const { chosenTranslation, chosenBook, setBook, setChapter, chosenChapter } =
+  const { chosenTranslation, chosenBook, setBook, setChapter } =
     useAppContext();
 
   /* States */
