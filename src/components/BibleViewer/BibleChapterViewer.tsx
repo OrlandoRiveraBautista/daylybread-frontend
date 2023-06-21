@@ -7,11 +7,7 @@ import {
   IonImg,
   IonText,
 } from "@ionic/react";
-import {
-  chevronBack,
-  chevronForward,
-  ellipsisHorizontalOutline,
-} from "ionicons/icons";
+import { chevronBack, chevronForward } from "ionicons/icons";
 
 /* Context */
 import { useAppContext } from "../../context/context";
@@ -33,8 +29,16 @@ import BibleTranslationModal from "../BibleNavModal/BibleTranslationModal";
 
 const BibleChapterViewer: React.FC = () => {
   /* Context */
-  const { chosenChapter, setChapter, chosenBook, setBook, chosenTranslation } =
-    useAppContext();
+  const {
+    chosenChapter,
+    chosenBook,
+    chosenTranslation,
+    selectedVerseList,
+    setChapter,
+    setBook,
+    addVerseToList,
+    removeVerseFromList,
+  } = useAppContext();
 
   /* State */
   const [chapterId, setChapterId] = useState(chosenChapter?.bibleId);
@@ -72,8 +76,6 @@ const BibleChapterViewer: React.FC = () => {
     if (chosenChapter.bibleId.slice(0, -3) !== bookId) {
       setBookId(chosenChapter.bibleId.slice(0, -3));
     }
-
-    console.log(chosenChapter);
   }, [chosenChapter]);
 
   // useEffect to set a new book to the context state
@@ -236,21 +238,31 @@ const BibleChapterViewer: React.FC = () => {
     // if no text exit function
     if (!text) return;
 
+    const verseObj = chosenChapter?.verses[Number(text) - 1];
+
+    if (!verseObj) return;
+
     // check if the state is empty
     if (selectedElement.length === 0) {
       setSelectedElement([text]);
       span.classList.add("verse-selected");
+      setOpenSelectedVersesModal(true);
+      addVerseToList(verseObj);
       return;
     }
 
     // check if the value selected is in the list
     if (selectedElement.includes(text)) {
       const valueIndex = selectedElement.indexOf(text);
+      var tempValue = [...selectedElement];
       if (valueIndex > -1) {
-        var tempValue = [...selectedElement];
         tempValue.splice(valueIndex, 1);
+        removeVerseFromList(verseObj);
         setSelectedElement(tempValue);
         span.classList.remove("verse-selected");
+      }
+      if (tempValue.length === 0) {
+        setOpenSelectedVersesModal(false);
       }
 
       return;
@@ -261,6 +273,9 @@ const BibleChapterViewer: React.FC = () => {
 
     setSelectedElement(tempValue);
     span.classList.add("verse-selected");
+    setOpenSelectedVersesModal(true);
+
+    addVerseToList(verseObj!);
   };
 
   const handleOpenVerseModal = () =>
