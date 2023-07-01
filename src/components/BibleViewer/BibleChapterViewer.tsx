@@ -11,7 +11,7 @@ import { chevronBack, chevronForward } from "ionicons/icons";
 
 /* Context */
 import { useAppContext } from "../../context/context";
-import BreadCrumbsModal from "../BibleNavModal/BreadCrumbsModal";
+import BreadCrumbsModal from "../BreadCrumbsModal/BreadCrumbsModal";
 
 /* Styles */
 import "./BibleChapterViewer.scss";
@@ -276,6 +276,7 @@ const BibleChapterViewer: React.FC = () => {
     setOpenSelectedVersesModal(true);
 
     addVerseToList(verseObj!);
+    return;
   };
 
   const handleOpenVerseModal = () =>
