@@ -1,3 +1,9 @@
+import {
+  IBookInterface,
+  IChapterInterface,
+  IVerseInterface,
+} from "../interfaces/BibleInterfaces";
+
 const zeroPad = (value: any, padding: number) => {
   var zeroes = new Array(padding + 1).join("0");
   return (zeroes + value).slice(-padding);
@@ -7,7 +13,6 @@ const zeroPad = (value: any, padding: number) => {
  * Function to cluster numbers  in an array that are close together
  * This will be used to tell openai which verses are selected
  */
-
 const clusterNumbers = (numbers: number[]): number[][] => {
   //init local values
   const clusters: number[][] = [];
@@ -33,4 +38,51 @@ const clusterNumbers = (numbers: number[]): number[][] => {
   return clusters;
 };
 
-export { zeroPad, clusterNumbers };
+/**
+ * Returns a string citation verbage
+ * @param verseList IVerseInterface[]
+ * @param chosenBook IBookInterface
+ * @param chosenChapter IChapterInterface
+ */
+const getCitationVerbage = (
+  verseList: IVerseInterface[],
+  chosenBook: IBookInterface,
+  chosenChapter: IChapterInterface
+) => {
+  const selectedText = verseList.map((obj) => obj.verse);
+  // sort the verse numbers in the array in ascenting order
+  const sortedNumbersAsc = selectedText
+    .map(Number)
+    .slice()
+    .sort((a, b) => a - b);
+  // cluster the verses that are close together to diminish token usage on openai
+  const clusterVerses = clusterNumbers(sortedNumbersAsc);
+  // temp variable for verbage of clustered verses
+  let clusterVersesVerb = "";
+  // loop through each cluster
+  clusterVerses.forEach((verseList, index) => {
+    // add proper verbage
+    clusterVersesVerb += `${
+      index !== 0 //check for the first value
+        ? index >= 1 && index < clusterVerses.length - 1 //check if the index is not the last
+          ? "," // use comma on the not last clusters
+          : " and " //use and for the last cluster
+        : "" //if first value, requires no prefix
+    }${verseList[0]} ${
+      verseList[0] !== verseList[verseList.length - 1]
+        ? "- " + verseList[verseList.length - 1]
+        : ""
+    }`;
+  });
+  // put all the chosen data together in a string
+  const text = `${chosenBook?.bookName} ${
+    chosenChapter?.chapterNumber
+  }:${clusterVersesVerb} ${chosenBook?.translation.abbreviation.replace(
+    /\s/g,
+    ""
+  )}`;
+
+  return text;
+};
+
+export { zeroPad, clusterNumbers, getCitationVerbage };
