@@ -20,13 +20,13 @@ import { send } from "ionicons/icons";
 import breadCrumbsSuggestions from "../../../assets/ts/breadCrumbsSuggestions";
 
 /* Interfaces */
-import { IBreadCrumbsChatl } from "../../../interfaces/BreadCrumbsModalInterfaces";
+import { IBreadCrumbsChat } from "../../../interfaces/BreadCrumbsModalInterfaces";
 
-const BreadCrumbsChat: React.FC<IBreadCrumbsChatl> = ({
+const BreadCrumbsChat: React.FC<IBreadCrumbsChat> = ({
   onSubmit,
   messages,
   useChosenTextVerbage,
-}: IBreadCrumbsChatl) => {
+}: IBreadCrumbsChat) => {
   // state
   const [value, setValue] = useState<string | undefined | null>();
   const [loadingChatResponse, setLoadingChatResponse] =

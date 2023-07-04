@@ -14,7 +14,7 @@ export interface IMessagesObject {
  * @property {IMessagesObject} messages
  * @property {boolean} useChosenTextVerbage
  */
-export interface IBreadCrumbsChatl {
+export interface IBreadCrumbsChat {
   onSubmit: (value: string) => void;
   messages: IMessagesObject[];
   useChosenTextVerbage: boolean;
@@ -30,4 +30,5 @@ export interface IBreadCrumbsModal {
   isOpen: boolean;
   onDismiss: () => void;
   selectedText?: string[];
+  initialBreakpoint?: number;
 }

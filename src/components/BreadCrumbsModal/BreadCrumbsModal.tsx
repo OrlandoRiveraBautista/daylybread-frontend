@@ -46,6 +46,7 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
   isOpen,
   onDismiss,
   selectedText,
+  initialBreakpoint,
 }: IBreadCrumbsModal) => {
   // state
   const [inputPrompt, setInputPrompt] = useState<string>("");
@@ -132,7 +133,7 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
   };
   return (
     <IonModal
-      initialBreakpoint={0.25}
+      initialBreakpoint={initialBreakpoint || 0.25}
       breakpoints={[0, 0.25, 0.75, 1]}
       className="nav-modal"
       isOpen={isOpen}

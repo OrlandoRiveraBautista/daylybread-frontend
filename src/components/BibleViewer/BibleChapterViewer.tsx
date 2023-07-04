@@ -51,6 +51,8 @@ const BibleChapterViewer: React.FC = () => {
     useState<boolean>(false);
   const [openSelectedTranslationModal, setOpenSelectedTranslationModal] =
     useState<boolean>(false);
+  const [initialModalBreakpoint, setInitialModalBreakpoint] =
+    useState<number>(0.25);
 
   // getting chapters
   const { data: chapterData } = useGetChapterById(chapterId!);
@@ -241,13 +243,14 @@ const BibleChapterViewer: React.FC = () => {
     const verseObj = chosenChapter?.verses[Number(text) - 1];
 
     if (!verseObj) return;
+    setInitialModalBreakpoint(0.25);
 
     // check if the state is empty
     if (selectedElement.length === 0) {
-      setSelectedElement([text]);
       span.classList.add("verse-selected");
-      setOpenSelectedVersesModal(true);
       addVerseToList(verseObj);
+      setSelectedElement([text]);
+      setOpenSelectedVersesModal(true);
       return;
     }
 
@@ -279,8 +282,10 @@ const BibleChapterViewer: React.FC = () => {
     return;
   };
 
-  const handleOpenVerseModal = () =>
+  const handleOpenVerseModal = () => {
     setOpenSelectedVersesModal(!openSelectedVersesModal);
+    setInitialModalBreakpoint(0.75);
+  };
 
   const handleOpenTranslationModal = () =>
     setOpenSelectedTranslationModal(!openSelectedTranslationModal);
@@ -358,6 +363,7 @@ const BibleChapterViewer: React.FC = () => {
         isOpen={openSelectedVersesModal}
         onDismiss={handleOpenVerseModal}
         selectedText={selectedElement}
+        initialBreakpoint={initialModalBreakpoint}
       />
       <BibleTranslationModal
         isOpen={openSelectedTranslationModal}
