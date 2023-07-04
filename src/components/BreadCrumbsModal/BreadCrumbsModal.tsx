@@ -151,20 +151,6 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
                 {/* Row is for quick actions on the selected text, it is always on the selected text */}
                 <IonRow>
                   <SelectedTextQuickActions />
-                  <IonChip
-                    // onClick={() => handleSubmit(value)}
-                    color="secondary"
-                    // key={key}
-                  >
-                    Copy
-                  </IonChip>
-                  <IonChip
-                    // onClick={() => handleSubmit(value)}
-                    color="secondary"
-                    // key={key}
-                  >
-                    Related
-                  </IonChip>
                 </IonRow>
                 <IonRow>
                   <IonText>
