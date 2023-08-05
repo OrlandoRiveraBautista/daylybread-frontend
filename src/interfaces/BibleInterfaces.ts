@@ -29,18 +29,20 @@ export interface IBookInterface {
   };
 }
 
+export interface IVerseInterface {
+  __typename?: "ChapterVerse" | undefined;
+  verse: string;
+  bibleId: string;
+  text: string;
+}
+
 export interface IChapterInterface {
   __typename?: "Chapter" | undefined;
   _id: string;
   chapterNumber: string;
   bibleId: string;
   bookName: string;
-  verses: {
-    __typename?: "ChapterVerse" | undefined;
-    verse: string;
-    bibleId: string;
-    text: string;
-  }[];
+  verses: IVerseInterface[];
   translation: {
     __typename?: "TranslationField" | undefined;
     abbreviation: string;
