@@ -13,13 +13,19 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel-plugin for production.
  */
 const documents = {
+    "\n    query Login($options: UsernamePasswordInput!) {\n        login(options: $options) {\n            user {\n                _id\n                count\n                createdAt\n                email\n                updatedAt\n                firstName\n                gender\n                lastName\n            }\n            errors {\n              field\n              message\n            }\n        }\n    }\n": types.LoginDocument,
     "\n  query GetTranslations {\n    getTranslations {\n      _id\n      name\n      abbreviation\n      language\n      lang\n      books {\n        bookName\n        bibleId\n      }\n    }\n  }\n": types.GetTranslationsDocument,
     "\n  query GetBooks($translationId: String!) {\n    getBooks(translationId: $translationId) {\n      bookName\n      bibleId\n    }\n  }\n": types.GetBooksDocument,
     "\n  query GetBookById($bibleId: String!) {\n  getBookById(bibleId: $bibleId) {\n    _id\n    bookName\n    bibleId\n    chapters {\n      chapterName\n      bibleId\n    }\n    translation {\n      abbreviation\n      name\n    }\n  }\n}\n": types.GetBookByIdDocument,
     "\n  query GetChapter($bibleId: String!) {\n    getChapter(bibleId: $bibleId) {\n      _id\n      chapterNumber\n      bibleId\n      bookName\n      verses {\n        verse\n        bibleId\n        text\n      }\n      translation {\n        abbreviation\n        name\n      }\n    }\n  }\n": types.GetChapterDocument,
     "\n    query OpenAi($promptText: String!) {\n        getOpen(promptText: $promptText)\n    }\n": types.OpenAiDocument,
+    "\n    query Me {\n        me {\n            user {\n                 _id\n                count\n                createdAt\n                email\n                updatedAt\n                firstName\n                gender\n                lastName\n            }\n        }\n    }\n": types.MeDocument,
 };
 
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n    query Login($options: UsernamePasswordInput!) {\n        login(options: $options) {\n            user {\n                _id\n                count\n                createdAt\n                email\n                updatedAt\n                firstName\n                gender\n                lastName\n            }\n            errors {\n              field\n              message\n            }\n        }\n    }\n"): (typeof documents)["\n    query Login($options: UsernamePasswordInput!) {\n        login(options: $options) {\n            user {\n                _id\n                count\n                createdAt\n                email\n                updatedAt\n                firstName\n                gender\n                lastName\n            }\n            errors {\n              field\n              message\n            }\n        }\n    }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -40,6 +46,10 @@ export function gql(source: "\n  query GetChapter($bibleId: String!) {\n    getC
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n    query OpenAi($promptText: String!) {\n        getOpen(promptText: $promptText)\n    }\n"): (typeof documents)["\n    query OpenAi($promptText: String!) {\n        getOpen(promptText: $promptText)\n    }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n    query Me {\n        me {\n            user {\n                 _id\n                count\n                createdAt\n                email\n                updatedAt\n                firstName\n                gender\n                lastName\n            }\n        }\n    }\n"): (typeof documents)["\n    query Me {\n        me {\n            user {\n                 _id\n                count\n                createdAt\n                email\n                updatedAt\n                firstName\n                gender\n                lastName\n            }\n        }\n    }\n"];
 
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.

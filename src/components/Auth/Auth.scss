@@ -1,0 +1,92 @@
+@import "../../theme/variables.scss";
+
+#auth {
+  &.container {
+    height: 100%;
+    padding: 0 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .auth-welcome-container {
+    display: flex;
+    flex-direction: column;
+    gap: 53px;
+    margin-bottom: 53px;
+
+    ion-img {
+      height: 24px;
+    }
+
+    .auth-welcome-text {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      gap: 8px;
+    }
+  }
+
+  .auth-form-input {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    ion-input,
+    .sc-ion-input-md-h {
+      background: var(--ion-background-variant);
+      --background: var(--ion-background-variant);
+      border: none;
+      border-radius: 12px;
+      --border-radius: 12px;
+      --border-style: none;
+      --border-width: 50%;
+      --highlight-color-focused: none;
+      --padding-start: 16px;
+      --padding-end: 16px;
+    }
+
+    .textarea-label-placement-floating.sc-ion-textarea-md-h
+      textarea.sc-ion-textarea-md {
+      opacity: 1;
+    }
+
+    .password-row {
+      background: var(--ion-background-variant);
+      border-radius: 12px;
+      width: 100%;
+
+      ion-col {
+        padding: 0;
+        display: flex;
+        align-items: center;
+        .passoword-button {
+          height: 100% !important;
+          margin: 0;
+          --border-radius: 12px;
+          --padding-start: 12px !important;
+          --padding-end: 12px !important;
+        }
+      }
+    }
+  }
+
+  .auth-form-submit {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin-top: 24px;
+    ion-button {
+      width: 100%;
+      --box-shadow: none;
+      text-transform: capitalize;
+      u {
+        color: $color-primary;
+      }
+    }
+  }
+}
