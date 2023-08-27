@@ -10,8 +10,9 @@ import {
   setupIonicReact,
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import { triangle } from "ionicons/icons";
+import { square, triangle } from "ionicons/icons";
 import Tab2 from "./pages/Tab2";
+import Tab3 from "./pages/Tab3";
 import SplashScreen from "./pages/splash/SplashScreen";
 import WelcomeSlides from "./pages/welcomeSlides/WelcomeSlides";
 
@@ -38,6 +39,7 @@ import "./theme/components/index.scss";
 /* Context */
 import { useLocalStorage as Storage } from "./context/localStorage";
 import { useEffect, useState } from "react";
+import Auth from "./components/Auth/Auth";
 
 setupIonicReact({
   mode: "md",
@@ -106,11 +108,18 @@ const App: React.FC = () => {
                 <Route exact path="/read">
                   <Tab2 />
                 </Route>
-                {/* <Route path="/you">
-                <Tab3 />
-              </Route> */}
+                <Route path="/you">
+                  <Tab3 />
+                  <Redirect to="/login" />
+                </Route>
                 <Route exact path="/">
                   <Redirect to="/read" />
+                </Route>
+                <Route path="/login">
+                  <Auth />
+                </Route>
+                <Route path="/signup">
+                  <Auth />
                 </Route>
               </IonRouterOutlet>
               {/* Tabs UI */}
@@ -123,10 +132,10 @@ const App: React.FC = () => {
                   <IonIcon icon={triangle} />
                   <IonLabel>Read</IonLabel>
                 </IonTabButton>
-                {/* <IonTabButton tab="tab3" href="/you">
-                <IonIcon icon={square} />
-                <IonLabel>You</IonLabel>
-              </IonTabButton> */}
+                <IonTabButton tab="tab3" href="/you">
+                  <IonIcon icon={square} />
+                  <IonLabel>You</IonLabel>
+                </IonTabButton>
               </IonTabBar>
             </IonTabs>
           ) : (
