@@ -50,12 +50,16 @@ const App: React.FC = () => {
   const [hasSession, setHasSession] = useState<boolean>(true);
   const [firstTimeFlag, setFirstTimeFlag] = useState<boolean>(false);
 
-  // calls to initiate localStorage service
+  /**
+   * calls to initiate localStorage service once upon start up
+   */
   useEffect(() => {
     init();
   }, []);
 
-  // watches for localStorage and hasSession
+  /**
+   * Use Effect function to watch for localStorage and hasSession
+   */
   useEffect(() => {
     if (!localStorage) return; // exit function if localStorage is not present
 
@@ -70,13 +74,18 @@ const App: React.FC = () => {
     }
   }, [localStorage, hasSession, firstTimeFlag]); // watch localStorage and hasSession
 
-  // function to set the user session
+  /**
+   * Function sets the user session for when the user has been on the site for a while
+   * This function will only be called on the first time a user has come to the site
+   */
   const setSession = () => {
     localStorage.set("session", { session: true, firstTime: true }); // set the local storage session
     setHasSession(true); // set hasSession to true
   };
 
-  // function to get a session
+  /**
+   * Function to get session
+   */
   const getSession = async () => {
     // look for a session
     const val = await localStorage.get("session");

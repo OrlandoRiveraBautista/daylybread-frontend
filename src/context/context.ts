@@ -17,37 +17,60 @@ const context = constate(() => {
     []
   );
 
+  /**
+   * Sets the bible translation to global state
+   */
   const setTranslation = (dto: ITranslation) => {
     setChosenTranslation(dto);
   };
 
+  /**
+   * Sets the bible book to global state
+   */
   const setBook = (dto: IBookInterface) => {
     setChosenBook(dto);
   };
 
+  /**
+   * Sets the bible chapter to global state
+   */
   const setChapter = (dto: IChapterInterface) => {
     setChosenChapter(dto);
   };
 
+  /**
+   * Adds chosen bible verses to the list of selecteVerseList
+   */
   const addVerseToList = (dto: IVerseInterface) => {
     //grab the selected verse list into temp
     var temp = selectedVerseList;
 
     // add to the temp
-    temp?.push(dto);
+    temp.push(dto);
 
     //set to state
     setSelectedVerseList(temp);
   };
 
+  /**
+   * Removes chosen bible verses from the list of selecteVerseList
+   */
   const removeVerseFromList = (dto: IVerseInterface) => {
     //grab the selected verse list into temp
-    var temp = selectedVerseList?.filter((obj) => {
+    var temp = selectedVerseList.filter((obj) => {
       return obj.verse !== dto.verse;
     });
 
     //set to state
     setSelectedVerseList(temp);
+  };
+
+  /**
+   * Resets chosen bible verses in the list of selecteVerseList
+   */
+  const resetVersesInList = () => {
+    //set to state
+    setSelectedVerseList([]);
   };
 
   return {
@@ -60,6 +83,7 @@ const context = constate(() => {
     setChapter,
     addVerseToList,
     removeVerseFromList,
+    resetVersesInList,
   };
 });
 
