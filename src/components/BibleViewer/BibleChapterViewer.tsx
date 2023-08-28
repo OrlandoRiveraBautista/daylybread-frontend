@@ -38,6 +38,7 @@ const BibleChapterViewer: React.FC = () => {
     setBook,
     addVerseToList,
     removeVerseFromList,
+    resetVersesInList,
   } = useAppContext();
 
   /* State */
@@ -127,6 +128,7 @@ const BibleChapterViewer: React.FC = () => {
   const handleReset = () => {
     // reset the selected elements
     setSelectedElement([]);
+    resetVersesInList();
   };
 
   // useEffect to call the handleNavAction function whenever a book changes
@@ -135,7 +137,9 @@ const BibleChapterViewer: React.FC = () => {
     handleReset();
   }, [chosenBook]);
 
-  // function to handle going to the next chapter
+  /**
+   * Function to handle navigating to the next chapter in the bible
+   */
   const nextChapter = (currentBibleId: string) => {
     const bookChapters = chosenBook?.chapters;
 
@@ -180,7 +184,9 @@ const BibleChapterViewer: React.FC = () => {
     return;
   };
 
-  // function to handle going to the previous chapter
+  /**
+   * Function to handle navigating to the previous chapter in the bible
+   */
   const backChapter = (currentBibleId: string) => {
     // get current chapter number as a number
     const currentChapterNumber = parseInt(
