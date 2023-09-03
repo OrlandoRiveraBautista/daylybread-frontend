@@ -8,14 +8,21 @@ import {
   IChapterInterface,
   IVerseInterface,
 } from "../interfaces/BibleInterfaces";
+/**
+ * !Potentially we should start using the graphql types that are being generated from the backend
+ * Unless it is unneccessary
+ */
+import { User } from "../__generated__/graphql";
 
 const context = constate(() => {
+  /** State declaration */
   const [chosenTranslation, setChosenTranslation] = useState<ITranslation>();
   const [chosenBook, setChosenBook] = useState<IBookInterface>();
   const [chosenChapter, setChosenChapter] = useState<IChapterInterface>();
   const [selectedVerseList, setSelectedVerseList] = useState<IVerseInterface[]>(
     []
   );
+  const [userInfo, setUserInfo] = useState<User>();
 
   /**
    * Sets the bible translation to global state
@@ -73,14 +80,23 @@ const context = constate(() => {
     setSelectedVerseList([]);
   };
 
+  /**
+   * Sets the user into the context
+   */
+  const setUser = (dto: User) => {
+    setUserInfo(dto);
+  };
+
   return {
     chosenTranslation,
     chosenBook,
     chosenChapter,
+    userInfo,
     selectedVerseList,
     setTranslation,
     setBook,
     setChapter,
+    setUser,
     addVerseToList,
     removeVerseFromList,
     resetVersesInList,

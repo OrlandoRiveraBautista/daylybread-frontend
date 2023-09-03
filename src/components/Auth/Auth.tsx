@@ -4,13 +4,13 @@ import { useLocation } from "react-router-dom";
 
 /* Components */
 import Login from "./Login";
+import Signup from "./Signup";
 
 /* Styles */
 import "./Auth.scss";
 
 /* Images */
 import SmallWordLogo from "../../assets/images/small-word-logo.svg";
-import Signup from "./Signup";
 
 const Auth: React.FC = () => {
   const location = useLocation();
