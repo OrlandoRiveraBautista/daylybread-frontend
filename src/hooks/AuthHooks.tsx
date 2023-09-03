@@ -1,5 +1,5 @@
 import { gql } from "../__generated__/gql";
-import { useLazyQuery } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client";
 
 /* Queries */
 const Login = gql(`
@@ -23,12 +23,45 @@ const Login = gql(`
     }
 `);
 
+const Register = gql(`
+    mutation Register($options: UsernamePasswordInput!) {
+      register(options: $options) {
+        user {
+          _id
+          count
+          createdAt
+          email
+          updatedAt
+          firstName
+          gender
+          lastName
+        }
+        errors {
+          field
+          message
+        }
+      }
+    }
+`);
+
 /* When using lazy  */
 export const useLogin = () => {
   const [getLogin, { loading, error, data }] = useLazyQuery(Login);
 
   return {
     getLogin,
+    loading,
+    error,
+    data,
+  };
+};
+
+/* When using lazy  */
+export const useSignup = () => {
+  const [getSignup, { loading, error, data }] = useMutation(Register);
+
+  return {
+    getSignup,
     loading,
     error,
     data,
