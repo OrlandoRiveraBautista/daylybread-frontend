@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Redirect, Route } from "react-router-dom";
 import {
   IonApp,
@@ -11,10 +12,13 @@ import {
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 import { square, triangle } from "ionicons/icons";
+
+/* Pages */
 import Tab2 from "./pages/Tab2";
 import Tab3 from "./pages/Tab3";
 import SplashScreen from "./pages/splash/SplashScreen";
 import WelcomeSlides from "./pages/welcomeSlides/WelcomeSlides";
+import Auth from "./components/Auth/Auth"; // this should be moved to a page does not belong in components
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -38,8 +42,10 @@ import "./theme/components/index.scss";
 
 /* Context */
 import { useLocalStorage as Storage } from "./context/localStorage";
-import { useEffect, useState } from "react";
-import Auth from "./components/Auth/Auth";
+import { useAppContext } from "./context/context";
+
+/** Graphql API Hooks */
+import { useMe } from "./hooks/UserHooks";
 
 setupIonicReact({
   mode: "md",
@@ -47,14 +53,37 @@ setupIonicReact({
 
 const App: React.FC = () => {
   const { localStorage, init } = Storage();
+  const { setUser } = useAppContext();
   const [hasSession, setHasSession] = useState<boolean>(true);
   const [firstTimeFlag, setFirstTimeFlag] = useState<boolean>(false);
 
+  /** Hooks declaration */
+  const { getMe, data: userData } = useMe();
+
   /**
-   * calls to initiate localStorage service once upon start up
+   * Function to get and set the user if signed in
+   */
+  const getSignInUser = () => {
+    getMe();
+  };
+
+  /**
+   * Calls to set the user data into the global context
+   */
+  useEffect(() => {
+    if (!userData?.me?.user) return;
+    setUser(userData.me.user);
+  }, [userData]);
+
+  /**
+   * calls to
+   * initiate localStorage service
+   * get the signed in user
+   * once upon start up
    */
   useEffect(() => {
     init();
+    getSignInUser();
   }, []);
 
   /**
@@ -119,7 +148,6 @@ const App: React.FC = () => {
                 </Route>
                 <Route path="/you">
                   <Tab3 />
-                  <Redirect to="/login" />
                 </Route>
                 <Route exact path="/">
                   <Redirect to="/read" />
