@@ -106,6 +106,8 @@ const Login: React.FC = () => {
    */
   const handleLogin = () => {
     if (!loginOptions.email || !loginOptions.password) return;
+    if (!isValid.email || !isValid.password) return; // check the validation
+
     getLogin({
       variables: {
         options: { email: "someemail@email.com", password: "somepass123" },
