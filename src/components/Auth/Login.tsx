@@ -6,6 +6,7 @@ import {
   IonRow,
   IonCol,
   IonIcon,
+  IonSpinner,
 } from "@ionic/react";
 import { useHistory } from "react-router";
 
@@ -24,6 +25,9 @@ import { validateEmail, validatePassword } from "./utils";
 /* Icons */
 import { eyeOutline, eyeOffOutline } from "ionicons/icons";
 
+/* Context */
+import { useAppContext } from "../../context/context";
+
 /* Validation Interfaces */
 interface IIsValid {
   email?: boolean;
@@ -32,6 +36,7 @@ interface IIsValid {
 
 const Login: React.FC = () => {
   const history = useHistory();
+  const { setUser } = useAppContext();
   const [loginOptions, setLoginOptions] = useState<IUsernamePasswordInput>({
     email: "",
     password: "",
@@ -45,7 +50,9 @@ const Login: React.FC = () => {
     password: undefined,
   });
   const [showPass, setShowPass] = useState<boolean>(false);
-  const { getLogin, loading, data, error } = useLogin();
+
+  /** Hooks declaration */
+  const { getLogin, loading, data } = useLogin();
 
   /**
    * Function will validate the inputed email or password
@@ -106,19 +113,14 @@ const Login: React.FC = () => {
     });
   };
 
+  /**
+   * Calls after login has been successfull to get the user
+   */
   useEffect(() => {
-    console.log("data");
-    console.log(data);
+    if (!data?.login.user?._id) return;
+    setUser(data.login.user);
+    history.push("/you");
   }, [data]);
-
-  useEffect(() => {
-    console.log("error");
-    console.log(error);
-  }, [error]);
-
-  useEffect(() => {
-    console.log(process.env.REACT_APP_API_URL);
-  });
 
   return (
     <>
@@ -168,8 +170,18 @@ const Login: React.FC = () => {
         ) : null}
       </div>
       <div className="auth-form-submit">
-        <IonButton shape="round" onClick={handleLogin}>
-          Login
+        <IonButton
+          shape="round"
+          onClick={handleLogin}
+          color={!data ? "primary" : "success"}
+        >
+          {!loading && !data ? (
+            "Login"
+          ) : loading && !data ? (
+            <IonSpinner />
+          ) : (
+            "Success"
+          )}
         </IonButton>
         <IonButton
           shape="round"
