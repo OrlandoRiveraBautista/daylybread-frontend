@@ -5,6 +5,7 @@ import { useLocation } from "react-router-dom";
 /* Components */
 import Login from "./Login";
 import Signup from "./Signup";
+import UpdateUserAfterSignup from "./UpdateUserAfterSignup";
 
 /* Styles */
 import "./Auth.scss";
@@ -34,6 +35,8 @@ const Auth: React.FC = () => {
         <Login />
       ) : location.pathname === "/signup" ? (
         <Signup />
+      ) : location.pathname === "/signupupdateuser" ? (
+        <UpdateUserAfterSignup />
       ) : null}
     </div>
   );
