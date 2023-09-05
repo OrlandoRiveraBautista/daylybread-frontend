@@ -5,12 +5,22 @@ import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
 
 /* GraphQL Imports */
-import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  createHttpLink,
+} from "@apollo/client";
 import { ContextProvider } from "./context/context";
 
-const client = new ApolloClient({
+const link = createHttpLink({
   uri: process.env.REACT_APP_API_URL, // will need to make it an environmet variable
+  credentials: "include",
+});
+
+const client = new ApolloClient({
   cache: new InMemoryCache(),
+  link,
 });
 
 const container = document.getElementById("root");

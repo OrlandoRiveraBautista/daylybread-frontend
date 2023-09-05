@@ -1,8 +1,11 @@
+@import "../variables.scss";
+
 ion-button {
   --border-width: 1px;
   --padding-start: 24px !important;
   --padding-end: 24px !important;
   height: 40px;
+  font-family: $font-family;
 
   &.translation-button {
     font-size: 14px;

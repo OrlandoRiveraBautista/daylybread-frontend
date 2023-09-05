@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Redirect, Route } from "react-router-dom";
 import {
   IonApp,
@@ -10,10 +11,14 @@ import {
   setupIonicReact,
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import { triangle } from "ionicons/icons";
+import { square, triangle } from "ionicons/icons";
+
+/* Pages */
 import Tab2 from "./pages/Tab2";
+import Tab3 from "./pages/Tab3";
 import SplashScreen from "./pages/splash/SplashScreen";
 import WelcomeSlides from "./pages/welcomeSlides/WelcomeSlides";
+import Auth from "./components/Auth/Auth"; // this should be moved to a page does not belong in components
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -37,7 +42,10 @@ import "./theme/components/index.scss";
 
 /* Context */
 import { useLocalStorage as Storage } from "./context/localStorage";
-import { useEffect, useState } from "react";
+import { useAppContext } from "./context/context";
+
+/** Graphql API Hooks */
+import { useMe } from "./hooks/UserHooks";
 
 setupIonicReact({
   mode: "md",
@@ -45,15 +53,42 @@ setupIonicReact({
 
 const App: React.FC = () => {
   const { localStorage, init } = Storage();
+  const { setUser } = useAppContext();
   const [hasSession, setHasSession] = useState<boolean>(true);
   const [firstTimeFlag, setFirstTimeFlag] = useState<boolean>(false);
 
-  // calls to initiate localStorage service
+  /** Hooks declaration */
+  const { getMe, data: userData } = useMe();
+
+  /**
+   * Function to get and set the user if signed in
+   */
+  const getSignInUser = () => {
+    getMe();
+  };
+
+  /**
+   * Calls to set the user data into the global context
+   */
+  useEffect(() => {
+    if (!userData?.me?.user) return;
+    setUser(userData.me.user);
+  }, [userData]);
+
+  /**
+   * calls to
+   * initiate localStorage service
+   * get the signed in user
+   * once upon start up
+   */
   useEffect(() => {
     init();
+    getSignInUser();
   }, []);
 
-  // watches for localStorage and hasSession
+  /**
+   * Use Effect function to watch for localStorage and hasSession
+   */
   useEffect(() => {
     if (!localStorage) return; // exit function if localStorage is not present
 
@@ -68,13 +103,18 @@ const App: React.FC = () => {
     }
   }, [localStorage, hasSession, firstTimeFlag]); // watch localStorage and hasSession
 
-  // function to set the user session
+  /**
+   * Function sets the user session for when the user has been on the site for a while
+   * This function will only be called on the first time a user has come to the site
+   */
   const setSession = () => {
     localStorage.set("session", { session: true, firstTime: true }); // set the local storage session
     setHasSession(true); // set hasSession to true
   };
 
-  // function to get a session
+  /**
+   * Function to get session
+   */
   const getSession = async () => {
     // look for a session
     const val = await localStorage.get("session");
@@ -106,11 +146,20 @@ const App: React.FC = () => {
                 <Route exact path="/read">
                   <Tab2 />
                 </Route>
-                {/* <Route path="/you">
-                <Tab3 />
-              </Route> */}
+                <Route path="/you">
+                  <Tab3 />
+                </Route>
                 <Route exact path="/">
                   <Redirect to="/read" />
+                </Route>
+                <Route path="/login">
+                  <Auth />
+                </Route>
+                <Route path="/signup">
+                  <Auth />
+                </Route>
+                <Route path="/signupupdateuser">
+                  <Auth />
                 </Route>
               </IonRouterOutlet>
               {/* Tabs UI */}
@@ -123,10 +172,10 @@ const App: React.FC = () => {
                   <IonIcon icon={triangle} />
                   <IonLabel>Read</IonLabel>
                 </IonTabButton>
-                {/* <IonTabButton tab="tab3" href="/you">
-                <IonIcon icon={square} />
-                <IonLabel>You</IonLabel>
-              </IonTabButton> */}
+                <IonTabButton tab="tab3" href="/you">
+                  <IonIcon icon={square} />
+                  <IonLabel>You</IonLabel>
+                </IonTabButton>
               </IonTabBar>
             </IonTabs>
           ) : (
