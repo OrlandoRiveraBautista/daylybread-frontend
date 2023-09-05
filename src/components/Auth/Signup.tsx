@@ -135,7 +135,7 @@ const Signup: React.FC = () => {
    * Function handles calling the signup route.
    * @returns void
    */
-  const handleLogin = () => {
+  const handleSignup = () => {
     if (!signupOptions.email || !signupOptions.password) return; // check for empty values
     if (!isValid.email || !isValid.password || !isValid.rePassword) return; // check the validation
 
@@ -156,7 +156,7 @@ const Signup: React.FC = () => {
   useEffect(() => {
     if (!data?.register.user?._id) return;
     setUser(data.register.user);
-    history.push("/you");
+    history.push("/signupupdateuser");
   }, [data]);
 
   return (
@@ -242,7 +242,7 @@ const Signup: React.FC = () => {
       <div className="auth-form-submit">
         <IonButton
           shape="round"
-          onClick={handleLogin}
+          onClick={handleSignup}
           color={!data ? "primary" : "success"}
         >
           {!loading && !data ? (
