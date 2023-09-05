@@ -6,14 +6,15 @@ const Me = gql(`
     query Me {
         me {
             user {
-                 _id
-                count
-                createdAt
-                email
-                updatedAt
-                firstName
-                gender
-                lastName
+              _id
+              createdAt
+              updatedAt
+              email
+              firstName
+              lastName
+              churchName
+              dob
+              count
             }
         }
     }

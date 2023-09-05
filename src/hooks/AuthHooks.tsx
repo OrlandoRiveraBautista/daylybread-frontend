@@ -6,14 +6,15 @@ const Login = gql(`
     query Login($options: UsernamePasswordInput!) {
         login(options: $options) {
             user {
-                _id
-                count
+               _id
                 createdAt
-                email
                 updatedAt
+                email
                 firstName
-                gender
                 lastName
+                churchName
+                dob
+                count
             }
             errors {
               field
@@ -28,13 +29,14 @@ const Register = gql(`
       register(options: $options) {
         user {
           _id
-          count
           createdAt
-          email
           updatedAt
+          email
           firstName
-          gender
           lastName
+          churchName
+          dob
+          count
         }
         errors {
           field
@@ -43,6 +45,28 @@ const Register = gql(`
       }
     }
 `);
+
+const RegisterUpdate = gql(`
+    mutation UpdateUser($options: RegisterUpdateUser!) {
+      updateUser(options: $options) {
+        user {
+          _id
+          createdAt
+          updatedAt
+          email
+          firstName
+          lastName
+          churchName
+          dob
+          count
+        }
+        errors {
+          field
+          message
+        }
+      }
+    }
+    `);
 
 /* When using lazy  */
 export const useLogin = () => {
@@ -62,6 +86,19 @@ export const useSignup = () => {
 
   return {
     getSignup,
+    loading,
+    error,
+    data,
+  };
+};
+
+/* When using lazy  */
+export const useSignupUpdate = () => {
+  const [getSignupUpdate, { loading, error, data }] =
+    useMutation(RegisterUpdate);
+
+  return {
+    getSignupUpdate,
     loading,
     error,
     data,
