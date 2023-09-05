@@ -158,6 +158,9 @@ const App: React.FC = () => {
                 <Route path="/signup">
                   <Auth />
                 </Route>
+                <Route path="/signupupdateuser">
+                  <Auth />
+                </Route>
               </IonRouterOutlet>
               {/* Tabs UI */}
               <IonTabBar slot="bottom">
