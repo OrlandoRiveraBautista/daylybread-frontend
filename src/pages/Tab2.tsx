@@ -65,7 +65,7 @@ const Tab2: React.FC = () => {
   return (
     <IonPage>
       {/* Header */}
-      <IonHeader className="ion-no-border">
+      <IonHeader className="ion-no-border padding-left-right">
         {/* Toolbar */}
         <IonToolbar>
           {/* Header Title Button */}
