@@ -1,26 +1,21 @@
-import { IonContent, IonPage } from "@ionic/react";
+import { IonPage } from "@ionic/react";
+import { Redirect } from "react-router";
 
 /* Components */
+import Profile from "./Profile/Profile";
 
 /* Styles */
 import "./Tab3.scss";
 
 /* Context */
 import { useAppContext } from "../context/context";
-import { Redirect } from "react-router";
 
 const Tab3: React.FC = () => {
   const { userInfo } = useAppContext();
 
   return (
     <IonPage>
-      <IonContent>
-        {!userInfo ? (
-          <Redirect to="/login" />
-        ) : (
-          <div>Hello welcome mate to your profile {userInfo.firstName}</div>
-        )}
-      </IonContent>
+      <>{!userInfo ? <Redirect to="/login" /> : <Profile />}</>
     </IonPage>
   );
 };
