@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { IonChip } from "@ionic/react";
 import { Share } from "@capacitor/share";
 
@@ -6,27 +6,18 @@ import { Share } from "@capacitor/share";
 import { useAppContext } from "../../../context/context";
 
 /* Utils */
-import { getCitationVerbage } from "../../../utils/support";
+import { getSelectedText } from "../../../utils/support";
+
+/* Components */
+import BookmarkModal from "../../Modals/BookmarkModal";
 
 const SendTextQuickActions: React.FC = () => {
   //global state
   const { selectedVerseList, chosenBook, chosenChapter } = useAppContext();
 
-  const getSelectedText = () => {
-    // check if the verse is selected
-    if (!selectedVerseList || !chosenBook || !chosenChapter) return;
-    const chosenTextVerbage = getCitationVerbage(
-      selectedVerseList,
-      chosenBook,
-      chosenChapter
-    );
-
-    const copyText = selectedVerseList
-      .sort((a, b) => Number(a.verse) - Number(b.verse)) //sort the selected verses
-      .map((verseObj) => verseObj.text); //only return the text
-    copyText.push(chosenTextVerbage!); //push the chose text verbage at the end of the list
-    return copyText.join(" ");
-  };
+  // local state
+  const [bookMarkModalIsOpen, setBookMarkModalIsOpen] =
+    useState<boolean>(false);
 
   /**
    * Quick actions object for selected text
@@ -34,7 +25,11 @@ const SendTextQuickActions: React.FC = () => {
   const selectedTextQuickActions = {
     // copy quick action
     copy: () => {
-      const text = getSelectedText();
+      const text = getSelectedText(
+        selectedVerseList,
+        chosenBook!,
+        chosenChapter!
+      );
       if (!text) {
         window.alert("No text selected, please select a text.");
         return;
@@ -44,7 +39,11 @@ const SendTextQuickActions: React.FC = () => {
     },
     // share quick action
     share: async () => {
-      const text = getSelectedText();
+      const text = getSelectedText(
+        selectedVerseList,
+        chosenBook!,
+        chosenChapter!
+      );
       if (!text) {
         window.alert("No text selected, please select a text.");
         return;
@@ -56,6 +55,10 @@ const SendTextQuickActions: React.FC = () => {
         // url: "http://ionicframework.com/", // add this back in a later itteration
         dialogTitle: "Share with everyone!",
       });
+    },
+    // bookmarking quick action
+    bookmark: () => {
+      setBookMarkModalIsOpen(true);
     },
   };
 
@@ -73,6 +76,12 @@ const SendTextQuickActions: React.FC = () => {
           </IonChip>
         );
       })}
+
+      {/* Modals */}
+      <BookmarkModal
+        isOpen={bookMarkModalIsOpen}
+        onDismiss={() => setBookMarkModalIsOpen(!bookMarkModalIsOpen)}
+      />
     </>
   );
 };
