@@ -5,6 +5,10 @@
     height: 400px !important;
   }
 
+  .bookmark-modal {
+    --padding-top: 24px;
+  }
+
   .bookmark-form {
     position: relative;
     display: flex;
