@@ -85,4 +85,31 @@ const getCitationVerbage = (
   return text;
 };
 
-export { zeroPad, clusterNumbers, getCitationVerbage };
+/**
+ * Returns a copy ready text for sharing or copying
+ * @param selectedVerseList IVerseInterface[]
+ * @param chosenBook IBookInterface
+ * @param chosenChapter IChapterInterface
+ * @returns string | undefined
+ */
+const getSelectedText = (
+  selectedVerseList: IVerseInterface[],
+  chosenBook: IBookInterface,
+  chosenChapter: IChapterInterface
+) => {
+  // check if the verse is selected
+  if (!selectedVerseList || !chosenBook || !chosenChapter) return;
+  const chosenTextVerbage = getCitationVerbage(
+    selectedVerseList,
+    chosenBook,
+    chosenChapter
+  );
+
+  const copyText = selectedVerseList
+    .sort((a, b) => Number(a.verse) - Number(b.verse)) //sort the selected verses
+    .map((verseObj) => verseObj.text); //only return the text
+  copyText.push(chosenTextVerbage!); //push the chose text verbage at the end of the list
+  return copyText.join(" ");
+};
+
+export { zeroPad, clusterNumbers, getCitationVerbage, getSelectedText };

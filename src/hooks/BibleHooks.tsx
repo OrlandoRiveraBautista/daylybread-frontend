@@ -1,5 +1,5 @@
 import { gql } from "../__generated__/gql";
-import { useQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 
 /* Queries */
 const getTranslations = gql(`
@@ -65,6 +65,23 @@ const getChapter = gql(`
   }
 `);
 
+const getVerseByIdQuery = gql(`
+  query GetVerseById($bibleId: String!) {
+    getVerseByBibleId(bibleId: $bibleId) {
+      _id
+      translation {
+        name
+        abbreviation
+      }
+      bookName
+      chapterNumber
+      verse
+      text
+      bibleId
+    }
+  }
+`);
+
 export const useGetTranslation = () => {
   return useQuery(getTranslations);
 };
@@ -94,4 +111,17 @@ export const useGetChapterById = (bibleId: string) => {
       bibleId: bibleId,
     },
   });
+};
+
+/* When using lazy  */
+export const useGetVerseById = () => {
+  const [getVerseById, { loading, error, data }] =
+    useLazyQuery(getVerseByIdQuery);
+
+  return {
+    getVerseById,
+    loading,
+    error,
+    data,
+  };
 };

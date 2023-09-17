@@ -1,0 +1,15 @@
+#openBookmarkModal {
+  --height: auto;
+
+  #ion-react-wrapper {
+    height: 400px !important;
+  }
+
+  .bookmark-form {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: calc(100% - 70px);
+  }
+}

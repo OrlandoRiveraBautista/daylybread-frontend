@@ -20,8 +20,10 @@ const documents = {
     "\n  query GetBooks($translationId: String!) {\n    getBooks(translationId: $translationId) {\n      bookName\n      bibleId\n    }\n  }\n": types.GetBooksDocument,
     "\n  query GetBookById($bibleId: String!) {\n  getBookById(bibleId: $bibleId) {\n    _id\n    bookName\n    bibleId\n    chapters {\n      chapterName\n      bibleId\n    }\n    translation {\n      abbreviation\n      name\n    }\n  }\n}\n": types.GetBookByIdDocument,
     "\n  query GetChapter($bibleId: String!) {\n    getChapter(bibleId: $bibleId) {\n      _id\n      chapterNumber\n      bibleId\n      bookName\n      verses {\n        verse\n        bibleId\n        text\n      }\n      translation {\n        abbreviation\n        name\n      }\n    }\n  }\n": types.GetChapterDocument,
+    "\n  query GetVerseById($bibleId: String!) {\n    getVerseByBibleId(bibleId: $bibleId) {\n      _id\n      translation {\n        name\n        abbreviation\n      }\n      bookName\n      chapterNumber\n      verse\n      text\n      bibleId\n    }\n  }\n": types.GetVerseByIdDocument,
     "\n    query OpenAi($promptText: String!) {\n        getOpen(promptText: $promptText)\n    }\n": types.OpenAiDocument,
     "\n    query Me {\n        me {\n            user {\n              _id\n              createdAt\n              updatedAt\n              email\n              firstName\n              lastName\n              churchName\n              dob\n              count\n            }\n        }\n    }\n": types.MeDocument,
+    "\n  mutation Mutation($options: BookmarkOptions!) {\n    createBookmark(options: $options) {\n      errors {\n        field\n        message\n      }\n      results {\n        _id\n        createdAt\n        updatedAt\n        author {\n          _id\n          firstName\n          lastName\n        }\n        note\n        verses {\n          _id\n          translation {\n            name\n            abbreviation\n          }\n          bookName\n          chapterNumber\n          verse\n          text\n          bibleId\n        }\n      }\n    }\n  }\n": types.MutationDocument,
 };
 
 /**
@@ -55,11 +57,19 @@ export function gql(source: "\n  query GetChapter($bibleId: String!) {\n    getC
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function gql(source: "\n  query GetVerseById($bibleId: String!) {\n    getVerseByBibleId(bibleId: $bibleId) {\n      _id\n      translation {\n        name\n        abbreviation\n      }\n      bookName\n      chapterNumber\n      verse\n      text\n      bibleId\n    }\n  }\n"): (typeof documents)["\n  query GetVerseById($bibleId: String!) {\n    getVerseByBibleId(bibleId: $bibleId) {\n      _id\n      translation {\n        name\n        abbreviation\n      }\n      bookName\n      chapterNumber\n      verse\n      text\n      bibleId\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function gql(source: "\n    query OpenAi($promptText: String!) {\n        getOpen(promptText: $promptText)\n    }\n"): (typeof documents)["\n    query OpenAi($promptText: String!) {\n        getOpen(promptText: $promptText)\n    }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n    query Me {\n        me {\n            user {\n              _id\n              createdAt\n              updatedAt\n              email\n              firstName\n              lastName\n              churchName\n              dob\n              count\n            }\n        }\n    }\n"): (typeof documents)["\n    query Me {\n        me {\n            user {\n              _id\n              createdAt\n              updatedAt\n              email\n              firstName\n              lastName\n              churchName\n              dob\n              count\n            }\n        }\n    }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation Mutation($options: BookmarkOptions!) {\n    createBookmark(options: $options) {\n      errors {\n        field\n        message\n      }\n      results {\n        _id\n        createdAt\n        updatedAt\n        author {\n          _id\n          firstName\n          lastName\n        }\n        note\n        verses {\n          _id\n          translation {\n            name\n            abbreviation\n          }\n          bookName\n          chapterNumber\n          verse\n          text\n          bibleId\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation Mutation($options: BookmarkOptions!) {\n    createBookmark(options: $options) {\n      errors {\n        field\n        message\n      }\n      results {\n        _id\n        createdAt\n        updatedAt\n        author {\n          _id\n          firstName\n          lastName\n        }\n        note\n        verses {\n          _id\n          translation {\n            name\n            abbreviation\n          }\n          bookName\n          chapterNumber\n          verse\n          text\n          bibleId\n        }\n      }\n    }\n  }\n"];
 
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
