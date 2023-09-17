@@ -1,0 +1,20 @@
+ion-segment-button::part(indicator-background) {
+  background: $color-primary;
+}
+
+/* Material Design styles */
+ion-segment-button.md::part(native) {
+  color: $text-variant-color;
+  font-size: 14px;
+  font-family: "Product Sans";
+  text-transform: none;
+}
+
+.segment-button-checked.md::part(native) {
+  color: $color-primary;
+}
+
+ion-segment-button.md::part(indicator-background) {
+  height: 2px;
+  border-radius: 2px;
+}

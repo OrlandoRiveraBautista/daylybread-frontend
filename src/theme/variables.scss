@@ -1,7 +1,12 @@
+@font-face {
+  font-family: "Product Sans";
+  src: url(../assets/fonts/google-sans-fonts/ProductSans-Regular.ttf);
+}
+
 /* "--" attributes like --background cannot read scss variables */
 
 /* Scss variables */
-$color-primary: #2989e3;
+$color-primary: #0060a8;
 $color-primary-rgb: 41, 137, 227;
 $color-primary-contrast: #ffffff;
 $color-primary-contrast-rgb: 255, 255, 255;
@@ -64,6 +69,7 @@ $font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Roboto",
 /** Text colors **/
 $text-color: #1a1c1e;
 $text-color-rgb: 26, 28, 30;
+$text-variant-color: #43474e;
 
 /** Material You */
 $outline-color: #73777f;
@@ -71,6 +77,9 @@ $outline-variant-color: #c3c6cf;
 
 $surface: #faf9fd;
 $surface-variant: #dfe2eb;
+
+/** Spacing and padding */
+$padding: 16px;
 
 /* Ionic Variables and Theming. For more info, please see:
 http://ionicframework.com/docs/theming/ */
@@ -80,7 +89,7 @@ http://ionicframework.com/docs/theming/ */
   // background color
   --ion-background-color: #faf9fd;
 
-  --ion-color-primary: #2989e3;
+  --ion-color-primary: #0060a8;
   --ion-color-primary-rgb: 41, 137, 227;
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-contrast-rgb: 255, 255, 255;

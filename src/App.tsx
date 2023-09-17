@@ -22,6 +22,7 @@ import Auth from "./pages/Auth/Auth"; // this should be moved to a page does not
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
+import "./App.scss";
 
 /* Basic CSS for apps built with Ionic */
 import "@ionic/react/css/normalize.css";
