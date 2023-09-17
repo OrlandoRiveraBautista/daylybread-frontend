@@ -1,0 +1,38 @@
+@import "../variables.scss";
+
+ion-input,
+.sc-ion-input-md-h {
+  background: var(--ion-background-variant);
+  --background: var(--ion-background-variant);
+  border: none;
+  border-radius: 12px;
+  --border-radius: 12px;
+  --border-style: none;
+  --border-width: 50%;
+  --highlight-color-focused: none;
+  --padding-start: 16px;
+  --padding-end: 16px;
+}
+
+.textarea-label-placement-floating.sc-ion-textarea-md-h
+  textarea.sc-ion-textarea-md {
+  opacity: 1;
+}
+
+ion-textarea,
+.textarea-fill-outline.sc-ion-textarea-md-h {
+  background: var(--ion-background-variant);
+  --background: var(--ion-background-variant);
+  border: none;
+  border-radius: 12px;
+  --border-radius: 12px;
+  --border-style: none;
+  --border-width: 50%;
+  --highlight-color-focused: none;
+  // --placeholder-opacity: 1;
+}
+
+.textarea-label-placement-floating.sc-ion-textarea-md-h
+  textarea.sc-ion-textarea-md {
+  opacity: 1;
+}
