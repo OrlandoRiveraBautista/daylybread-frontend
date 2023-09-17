@@ -22,7 +22,7 @@ import { useAppContext } from "../../context/context";
 import "./BookmarkModal.scss";
 
 /* Graphql API/Hooks */
-// import { useCreateBookmarks } from "../../hooks/UserHooks";
+import { useCreateBookmarks } from "../../hooks/UserHooks";
 
 /* Interfaces */
 interface IBookmarkModal {
