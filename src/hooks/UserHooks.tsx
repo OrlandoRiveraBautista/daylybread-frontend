@@ -1,5 +1,5 @@
 import { gql } from "../__generated__/gql";
-import { useLazyQuery, useMutation } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 
 /* Queries */
 const Me = gql(`
@@ -54,6 +54,40 @@ const createBookmark = gql(`
   }
 `);
 
+const getBookmarks = gql(`
+  query getBookmarks {
+    getMyBookmarks {
+      errors {
+        field
+        message
+      }
+      results {
+        _id
+        createdAt
+        updatedAt
+        author {
+          _id
+          firstName
+          lastName
+        }
+        note
+        verses {
+          _id
+          bookName
+          chapterNumber
+          verse
+          text
+          bibleId
+          translation {
+            abbreviation
+            name
+          }
+        }
+      }
+    }
+  }
+`);
+
 /* When using lazy  */
 export const useMe = () => {
   const [getMe, { loading, error, data }] = useLazyQuery(Me);
@@ -75,4 +109,8 @@ export const useCreateBookmarks = () => {
     error,
     data,
   };
+};
+
+export const useGetBookmarks = () => {
+  return useQuery(getBookmarks);
 };
