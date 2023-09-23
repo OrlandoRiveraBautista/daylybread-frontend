@@ -109,7 +109,7 @@ const UpdateUserAfterSignup: React.FC = () => {
   useEffect(() => {
     if (!data?.updateUser.user?._id) return;
     setUser(data.updateUser.user);
-    history.push("/you");
+    history.push("/me");
   }, [data]);
 
   return (

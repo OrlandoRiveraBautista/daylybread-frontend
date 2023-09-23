@@ -121,7 +121,7 @@ const Login: React.FC = () => {
   useEffect(() => {
     if (!data?.login.user?._id) return;
     setUser(data.login.user);
-    history.push("/you");
+    history.push("/me");
   }, [data]);
 
   return (
