@@ -15,6 +15,7 @@ $color-primary-tint: #3e95e6;
 
 $color-secondary: #f02c89;
 $color-secondary-rgb: 240, 44, 137;
+$color-secondary-container: #ffd9e2;
 $color-secondary-contrast: #ffffff;
 $color-secondary-contrast-rgb: 255, 255, 255;
 $color-secondary-shade: #d32779;
@@ -102,6 +103,8 @@ http://ionicframework.com/docs/theming/ */
   --ion-color-secondary-contrast-rgb: 255, 255, 255;
   --ion-color-secondary-shade: #d32779;
   --ion-color-secondary-tint: #f24195;
+
+  --ion-color-secondary-container: #ffd9e2;
 
   --ion-color-tertiary: #724498;
   --ion-color-tertiary-rgb: 114, 68, 152;

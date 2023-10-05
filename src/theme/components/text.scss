@@ -2,6 +2,17 @@
   font-family: "Product Sans";
   src: url(../../assets/fonts/google-sans-fonts/ProductSans-Regular.ttf);
 }
+@import "../variables.scss";
+
+ion-text {
+  font-family: $font-family;
+}
+
+ion-text,
+p,
+span {
+  letter-spacing: 0.2px;
+}
 
 ion-title {
   font-family: "Product Sans";
