@@ -7,5 +7,13 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+
+    .bio-text-input-actions {
+      display: flex;
+      justify-content: flex-end;
+      ion-button {
+        width: 100%;
+      }
+    }
   }
 }
