@@ -52,7 +52,7 @@ const Login: React.FC = () => {
   const [showPass, setShowPass] = useState<boolean>(false);
 
   /** Hooks declaration */
-  const { getLogin, loading, data } = useLogin();
+  const { getLogin, loading, data, error } = useLogin();
 
   /**
    * Function will validate the inputed email or password
@@ -60,15 +60,15 @@ const Login: React.FC = () => {
    * @returns void
    */
   const validateAndSet = (ev: Event) => {
-    const type = (ev.target as HTMLInputElement).type;
+    const name = (ev.target as HTMLInputElement).name;
     const value = (ev.target as HTMLInputElement).value;
 
-    setLoginOptions({ ...loginOptions, [type]: value }); // set the values to the options object
+    setLoginOptions({ ...loginOptions, [name]: value }); // set the values to the options object
 
     if (value === "") return; // check to validate an empty value
 
     // email validation
-    if (type === "email") {
+    if (name === "email") {
       setIsValid({ ...isValid, email: undefined });
       validateEmail(value) !== null
         ? setIsValid({ ...isValid, email: true })
@@ -76,7 +76,7 @@ const Login: React.FC = () => {
     }
 
     // password validation
-    if (type === "password") {
+    if (name === "password") {
       setIsValid({ ...isValid, password: undefined });
       validatePassword(value)
         ? setIsValid({ ...isValid, password: true })
@@ -89,13 +89,13 @@ const Login: React.FC = () => {
    * @param ev event delivered by ion-input
    */
   const markTouched = (ev: Event) => {
-    const type = (ev.target as HTMLInputElement).type;
+    const name = (ev.target as HTMLInputElement).name;
 
-    if (type === "email") {
+    if (name === "email") {
       setIsTouched({ ...isTouched, email: true });
     }
 
-    if (type === "password") {
+    if (name === "password") {
       setIsTouched({ ...isTouched, password: true });
     }
   };
@@ -105,12 +105,15 @@ const Login: React.FC = () => {
    * @returns void
    */
   const handleLogin = () => {
+    console.log(loginOptions);
     if (!loginOptions.email || !loginOptions.password) return;
     if (!isValid.email || !isValid.password) return; // check the validation
 
+    const { email, password } = loginOptions;
+
     getLogin({
       variables: {
-        options: { email: "someemail@email.com", password: "somepass123" },
+        options: { email, password },
       },
     });
   };
@@ -128,6 +131,7 @@ const Login: React.FC = () => {
     <>
       <div className="auth-form-input">
         <IonInput
+          name="email"
           label="Email"
           type="email"
           labelPlacement="floating"
@@ -142,6 +146,7 @@ const Login: React.FC = () => {
         <IonRow className="password-row">
           <IonCol>
             <IonInput
+              name="password"
               label="Password"
               type={showPass ? "text" : "password"}
               labelPlacement="floating"
@@ -172,19 +177,42 @@ const Login: React.FC = () => {
         ) : null}
       </div>
       <div className="auth-form-submit">
+        {/* Login button */}
         <IonButton
           shape="round"
+          expand="block"
+          disabled={loading ? true : false}
+          fill={
+            !loading && !data
+              ? "solid"
+              : data?.login.errors
+              ? "clear"
+              : loading && !data
+              ? "default"
+              : "outline"
+          }
           onClick={handleLogin}
-          color={!data ? "primary" : "success"}
+          color={
+            !loading && !data
+              ? "primary"
+              : data?.login.errors
+              ? "danger"
+              : loading && !data
+              ? "warning"
+              : "success"
+          }
         >
           {!loading && !data ? (
             "Login"
           ) : loading && !data ? (
             <IonSpinner />
+          ) : data?.login.errors ? (
+            "Something went wrong. Try again"
           ) : (
             "Success"
           )}
         </IonButton>
+        {/* Go to signup button */}
         <IonButton
           shape="round"
           color="light"

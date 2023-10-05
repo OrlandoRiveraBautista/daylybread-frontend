@@ -240,6 +240,7 @@ const Signup: React.FC = () => {
         ) : null}
       </div>
       <div className="auth-form-submit">
+        {/* Sign up button */}
         <IonButton
           shape="round"
           onClick={handleSignup}
@@ -253,6 +254,7 @@ const Signup: React.FC = () => {
             "Success"
           )}
         </IonButton>
+        {/* Go to login */}
         <IonButton
           shape="round"
           color="light"
