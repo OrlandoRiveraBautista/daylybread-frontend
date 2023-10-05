@@ -105,7 +105,6 @@ const Login: React.FC = () => {
    * @returns void
    */
   const handleLogin = () => {
-    console.log(loginOptions);
     if (!loginOptions.email || !loginOptions.password) return;
     if (!isValid.email || !isValid.password) return; // check the validation
 

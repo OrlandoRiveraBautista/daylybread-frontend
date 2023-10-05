@@ -31,10 +31,6 @@ const UserBio: React.FC<IUserBio> = ({ user }: IUserBio) => {
     setInputActive(!inputActive);
   }, [data]);
 
-  useEffect(() => {
-    console.log(user);
-  });
-
   const handleSubmit = () => {
     if (!bioText) return;
 

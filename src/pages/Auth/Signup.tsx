@@ -101,9 +101,6 @@ const Signup: React.FC = () => {
 
     // password validation
     if (label === "Re-Password") {
-      console.log(signupOptions.password);
-      console.log(validatePassword(value) && value == signupOptions.password);
-
       setIsValid({ ...isValid, rePassword: undefined });
       validatePassword(value) && value == signupOptions.password
         ? setIsValid({ ...isValid, rePassword: true })
