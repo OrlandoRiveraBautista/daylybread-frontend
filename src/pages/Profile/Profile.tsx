@@ -1,14 +1,5 @@
 import React from "react";
-import {
-  IonAvatar,
-  IonButton,
-  IonButtons,
-  IonContent,
-  IonHeader,
-  IonIcon,
-  IonPage,
-  IonToolbar,
-} from "@ionic/react";
+import { IonButton, IonContent, IonHeader, IonToolbar } from "@ionic/react";
 
 /* Components */
 import UserBio from "../../components/UserBio/UserBio";
@@ -37,12 +28,12 @@ const Profile: React.FC = () => {
           >
             <img
               alt="Silhouette of a person's head"
-              src="https://ionicframework.com/docs/img/demos/avatar.svg"
+              src={`https://source.boringavatars.com/beam/120/${userInfo.firstName}-${userInfo.lastName}`} // randomized images for now
             />
           </IonButton>
 
           {/* Header secondary buttons */}
-          <IonButtons slot="end">
+          {/* <IonButtons slot="end">
             <IonButton
               shape="round"
               fill="outline"
@@ -50,7 +41,7 @@ const Profile: React.FC = () => {
               size="large"
               className="translation-button"
             ></IonButton>
-          </IonButtons>
+          </IonButtons> */}
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen className="ion-padding">
