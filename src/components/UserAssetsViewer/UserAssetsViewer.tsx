@@ -8,6 +8,7 @@ import {
   IonSegmentCustomEvent,
   SegmentChangeEventDetail,
 } from "@ionic/core/dist/types/components";
+import BookmarkAssetList from "./BookmarkAssetList";
 
 /* Styles */
 import "./UserAssetsViewer.scss";
@@ -34,7 +35,7 @@ const UserAssetsViewer: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="user-assets-viewer-container">
       <IonSegment value={segmentState} onIonChange={(e) => onSegmentChange(e)}>
         {/* <IonSegmentButton value="posts">
           <IonLabel>Posts</IonLabel>
@@ -51,7 +52,9 @@ const UserAssetsViewer: React.FC = () => {
         onSwiper={(s) => setSwiper(s)}
       >
         {/* <SwiperSlide>Slide 1</SwiperSlide> */}
-        <SwiperSlide>Slide 1</SwiperSlide>
+        <SwiperSlide>
+          <BookmarkAssetList />
+        </SwiperSlide>
       </Swiper>
     </div>
   );
