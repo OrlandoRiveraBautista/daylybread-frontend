@@ -15,7 +15,13 @@ const Tab3: React.FC = () => {
 
   return (
     <IonPage>
-      <>{!userInfo ? <Redirect to="/login" /> : <Profile />}</>
+      <>
+        {!document.cookie.includes("refresh-token") && !userInfo ? (
+          <Redirect to="/login" />
+        ) : (
+          <Profile />
+        )}
+      </>
     </IonPage>
   );
 };

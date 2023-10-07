@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Redirect, Route } from "react-router-dom";
+import { Redirect, Route, Switch } from "react-router-dom";
 import {
   IonApp,
   IonIcon,
@@ -141,27 +141,29 @@ const App: React.FC = () => {
             <IonTabs>
               {/* Tabs Router */}
               <IonRouterOutlet>
-                {/* <Route exact path="/home">
-                <Tab1 />
-              </Route> */}
-                <Route exact path="/read">
-                  <Tab2 />
-                </Route>
-                <Route path="/me">
-                  <Tab3 />
-                </Route>
                 <Route exact path="/">
                   <Redirect to="/read" />
                 </Route>
-                <Route path="/login">
-                  <Auth />
+                {/* <Route exact path="/home">
+                    <Tab1 />
+                  </Route> */}
+                <Route exact path="/read">
+                  <Tab2 />
                 </Route>
-                <Route path="/signup">
-                  <Auth />
-                </Route>
-                <Route path="/signupupdateuser">
-                  <Auth />
-                </Route>
+                <Switch>
+                  <Route path="/me">
+                    <Tab3 />
+                  </Route>
+                  <Route path="/login">
+                    <Auth />
+                  </Route>
+                  <Route path="/signup">
+                    <Auth />
+                  </Route>
+                  <Route path="/signupupdateuser">
+                    <Auth />
+                  </Route>
+                </Switch>
               </IonRouterOutlet>
               {/* Tabs UI */}
               <IonTabBar slot="bottom">
