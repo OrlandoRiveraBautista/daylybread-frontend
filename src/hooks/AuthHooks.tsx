@@ -15,6 +15,7 @@ const Login = gql(`
                 churchName
                 dob
                 count
+                bioText
             }
             errors {
               field
@@ -37,6 +38,7 @@ const Register = gql(`
           churchName
           dob
           count
+          bioText
         }
         errors {
           field
