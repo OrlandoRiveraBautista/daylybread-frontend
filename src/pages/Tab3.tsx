@@ -15,7 +15,7 @@ const Tab3: React.FC = () => {
 
   return (
     <IonPage>
-      <>{!userInfo ? <Redirect to="/login" /> : <Profile />}</>
+      <>{userInfo ? <Profile /> : <Redirect to="/login" />}</>
     </IonPage>
   );
 };
