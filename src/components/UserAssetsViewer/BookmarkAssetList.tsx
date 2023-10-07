@@ -22,7 +22,10 @@ import "./BookmarkAssetList.scss";
 /* Images */
 import CommentIcon from "../../assets/icons/comment-icon.svg";
 
+/* Utility */
 import { getVerseVerbageByVerses } from "../../utils/support";
+
+/* Interfaces */
 import { Bookmark } from "../../__generated__/graphql";
 
 const BookmarkAssetList: React.FC = () => {
