@@ -127,15 +127,6 @@ const updateBookmark = gql(`
         note
         verses {
           _id
-          translation {
-            name
-            abbreviation
-          }
-          bookName
-          chapterNumber
-          verse
-          text
-          bibleId
         }
       }
     }
