@@ -6,14 +6,22 @@ ion-button {
   --padding-end: 24px !important;
   height: 40px;
   font-family: $font-family;
+  text-transform: none;
 
   &.translation-button {
     font-size: 14px;
     --border-color: #73777f !important;
-    font-family: "Product Sans";
-    letter-spacing: 0.5px;
-    text-transform: capitalize;
     height: 40px !important;
     max-height: 44px;
+  }
+
+  &.ion-color-secondary {
+    --ion-color-base: #ffd9e2 !important;
+    --ion-color-contrast: #3e001e !important;
+    font-weight: 600;
+
+    &.flat {
+      --box-shadow: none;
+    }
   }
 }

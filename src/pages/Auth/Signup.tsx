@@ -101,9 +101,6 @@ const Signup: React.FC = () => {
 
     // password validation
     if (label === "Re-Password") {
-      console.log(signupOptions.password);
-      console.log(validatePassword(value) && value == signupOptions.password);
-
       setIsValid({ ...isValid, rePassword: undefined });
       validatePassword(value) && value == signupOptions.password
         ? setIsValid({ ...isValid, rePassword: true })
@@ -240,6 +237,7 @@ const Signup: React.FC = () => {
         ) : null}
       </div>
       <div className="auth-form-submit">
+        {/* Sign up button */}
         <IonButton
           shape="round"
           onClick={handleSignup}
@@ -253,6 +251,7 @@ const Signup: React.FC = () => {
             "Success"
           )}
         </IonButton>
+        {/* Go to login */}
         <IonButton
           shape="round"
           color="light"

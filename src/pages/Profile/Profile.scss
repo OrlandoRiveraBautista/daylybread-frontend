@@ -1,4 +1,5 @@
 #profile {
+  height: 100%;
   .header-profile-button {
     width: 40px;
     margin: 0;
@@ -16,5 +17,7 @@
   ion-content {
     display: flex;
     gap: 8px;
+    --padding-bottom: 100px;
+    --padding-top: 0px;
   }
 }

@@ -147,7 +147,7 @@ const App: React.FC = () => {
                 <Route exact path="/read">
                   <Tab2 />
                 </Route>
-                <Route path="/you">
+                <Route path="/me">
                   <Tab3 />
                 </Route>
                 <Route exact path="/">
@@ -173,9 +173,9 @@ const App: React.FC = () => {
                   <IonIcon icon={triangle} />
                   <IonLabel>Read</IonLabel>
                 </IonTabButton>
-                <IonTabButton tab="tab3" href="/you">
+                <IonTabButton tab="tab3" href="/me">
                   <IonIcon icon={square} />
-                  <IonLabel>You</IonLabel>
+                  <IonLabel>Me</IonLabel>
                 </IonTabButton>
               </IonTabBar>
             </IonTabs>

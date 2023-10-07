@@ -8,7 +8,7 @@ import { useHistory } from "react-router";
 import "./Auth.scss";
 
 /* Graphql Hooks */
-import { useSignupUpdate } from "../../hooks/AuthHooks";
+import { useUserUpdate } from "../../hooks/UserHooks";
 
 /* Context */
 import { useAppContext } from "../../context/context";
@@ -51,7 +51,7 @@ const UpdateUserAfterSignup: React.FC = () => {
   });
 
   /** Hooks declaration */
-  const { getSignupUpdate, loading, data } = useSignupUpdate();
+  const { setUserUpdate, loading, data } = useUserUpdate();
 
   /**
    * Function will validate the inputed fiields
@@ -96,7 +96,7 @@ const UpdateUserAfterSignup: React.FC = () => {
     )
       return; // check for empty values
     if (!isValid.firstName || !isValid.lastName || !isValid.dob) return; // check the validation
-    getSignupUpdate({
+    setUserUpdate({
       variables: {
         options: updateOptions,
       },
@@ -109,7 +109,7 @@ const UpdateUserAfterSignup: React.FC = () => {
   useEffect(() => {
     if (!data?.updateUser.user?._id) return;
     setUser(data.updateUser.user);
-    history.push("/you");
+    history.push("/me");
   }, [data]);
 
   return (

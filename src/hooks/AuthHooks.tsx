@@ -46,28 +46,6 @@ const Register = gql(`
     }
 `);
 
-const RegisterUpdate = gql(`
-    mutation UpdateUser($options: RegisterUpdateUser!) {
-      updateUser(options: $options) {
-        user {
-          _id
-          createdAt
-          updatedAt
-          email
-          firstName
-          lastName
-          churchName
-          dob
-          count
-        }
-        errors {
-          field
-          message
-        }
-      }
-    }
-    `);
-
 /* When using lazy  */
 export const useLogin = () => {
   const [getLogin, { loading, error, data }] = useLazyQuery(Login);
@@ -86,19 +64,6 @@ export const useSignup = () => {
 
   return {
     getSignup,
-    loading,
-    error,
-    data,
-  };
-};
-
-/* When using lazy  */
-export const useSignupUpdate = () => {
-  const [getSignupUpdate, { loading, error, data }] =
-    useMutation(RegisterUpdate);
-
-  return {
-    getSignupUpdate,
     loading,
     error,
     data,
