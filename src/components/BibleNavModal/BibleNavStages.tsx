@@ -20,6 +20,7 @@ import {
   useGetBooks,
   useGetBooksById,
   useGetChapterById,
+  useLazyGetBooksById,
 } from "../../hooks/BibleHooks";
 
 export const BooksPicker: React.FC = () => {
@@ -33,14 +34,22 @@ export const BooksPicker: React.FC = () => {
   );
 
   // api call for chosen book id
-  const { data: bookData } = useGetBooksById(bookId!);
+  // const { data: bookData } = useGetBooksById(bookId!);
+  const { getBooksById, data: bookData } = useLazyGetBooksById();
 
   useEffect(() => {
+    if (!bookId) return;
+    getBooksById({
+      variables: {
+        bibleId: bookId,
+      },
+    });
+
     if (!bookData) return;
 
     // set chosen book data to global state
     setBook(bookData.getBookById);
-  }, [bookData]); //watch book api data
+  }, [bookId]); //watch book api data
 
   /**
    * Function to render loading skeleton animation

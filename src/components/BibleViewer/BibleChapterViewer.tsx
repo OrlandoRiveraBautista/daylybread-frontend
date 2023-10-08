@@ -21,7 +21,11 @@ import PatternImage from "../../assets/images/Patterns - 4x4.png";
 import BreadCrumbsIcon from "../../assets/icons/BreadCrumbs-icon.svg";
 
 /* Query Hooks */
-import { useGetChapterById, useGetBooksById } from "../../hooks/BibleHooks";
+import {
+  useGetBooksById,
+  useLazyGetChapterById,
+  useLazyGetBooksById,
+} from "../../hooks/BibleHooks";
 
 /* Utils */
 import { zeroPad } from "../../utils/support";
@@ -56,10 +60,21 @@ const BibleChapterViewer: React.FC = () => {
     useState<number>(0.25);
 
   // getting chapters
-  const { data: chapterData } = useGetChapterById(chapterId!);
-  const { data: bookData } = useGetBooksById(bookId!);
+  const { getChapterById, data: chapterData } = useLazyGetChapterById();
+  const { getBooksById, data: bookData } = useLazyGetBooksById();
+  // const { data: bookData } = useGetBooksById(bookId!);
 
   useEffect(() => {
+    // !-------- check that this always works
+
+    // check if the chapter id is available
+    if (!chapterId) return;
+    getChapterById({
+      variables: {
+        bibleId: chapterId,
+      },
+    });
+
     // check if chapter data is empty
     if (!chapterData) return;
 
@@ -67,11 +82,9 @@ const BibleChapterViewer: React.FC = () => {
     // check if the chapter is the same as the in the context
     if (chosenChapter?.bibleId === chapter.bibleId) return;
 
-    // !-------- check that this doesnt call the api too often
-
     // set new chapter to the context
     setChapter(chapter);
-  }, [chapterData]);
+  }, [chapterId]);
 
   useEffect(() => {
     if (!chosenChapter) return;
@@ -83,9 +96,17 @@ const BibleChapterViewer: React.FC = () => {
 
   // useEffect to set a new book to the context state
   useEffect(() => {
+    // check if the book id is availble
+    if (!bookId) return;
+    getBooksById({
+      variables: {
+        bibleId: bookId,
+      },
+    });
+
     if (!bookData?.getBookById) return;
     setBook(bookData.getBookById);
-  }, [bookData]);
+  }, [bookId]);
 
   /**
    *  function will check navAction to do something

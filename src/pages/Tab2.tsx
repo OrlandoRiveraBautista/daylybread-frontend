@@ -13,7 +13,11 @@ import {
 import { useAppContext } from "../context/context";
 
 /** Hooks */
-import { useGetBooksById, useGetChapterById } from "../hooks/BibleHooks";
+import {
+  useGetBooksById,
+  useGetChapterById,
+  useLazyGetBooksById,
+} from "../hooks/BibleHooks";
 
 /* Components */
 import BibleNavModal from "../components/BibleNavModal/BibleNavModal";
@@ -40,7 +44,9 @@ const Tab2: React.FC = () => {
   // getting chapters
   const { data: chapterData } = useGetChapterById(chosenBook?.bibleId + "001");
   // getting a book
-  const { data: bookData } = useGetBooksById(bookId!);
+  const { getBooksById, data: bookData } = useLazyGetBooksById();
+
+  // const { data: bookData } = useGetBooksById(bookId!);
 
   /**
    * Use Effect for handling changes in translation
@@ -51,10 +57,15 @@ const Tab2: React.FC = () => {
   }, [chosenTranslation]);
 
   useEffect(() => {
+    if (!bookId) return;
+
+    getBooksById({ variables: { bibleId: bookId } });
+
+    console.log(bookData);
     if (!chosenTranslation || !bookData) return;
 
-    setBook(bookData?.getBookById);
-  }, [bookData]);
+    setBook(bookData.getBookById);
+  }, [bookId]);
 
   useEffect(() => {
     if (!chosenBook || !chapterData) return;

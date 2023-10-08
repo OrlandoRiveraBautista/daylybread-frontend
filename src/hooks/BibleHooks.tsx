@@ -2,7 +2,7 @@ import { gql } from "../__generated__/gql";
 import { useLazyQuery, useQuery } from "@apollo/client";
 
 /* Queries */
-const getTranslations = gql(`
+const GetTranslations = gql(`
   query GetTranslations {
     getTranslations {
       _id
@@ -18,7 +18,7 @@ const getTranslations = gql(`
   }
 `);
 
-const getBooks = gql(`
+const GetBooks = gql(`
   query GetBooks($translationId: String!) {
     getBooks(translationId: $translationId) {
       bookName
@@ -27,7 +27,7 @@ const getBooks = gql(`
   }
 `);
 
-const getBooksById = gql(`
+const GetBooksById = gql(`
   query GetBookById($bibleId: String!) {
   getBookById(bibleId: $bibleId) {
     _id
@@ -45,7 +45,7 @@ const getBooksById = gql(`
 }
 `);
 
-const getChapter = gql(`
+const GetChapter = gql(`
   query GetChapter($bibleId: String!) {
     getChapter(bibleId: $bibleId) {
       _id
@@ -65,7 +65,7 @@ const getChapter = gql(`
   }
 `);
 
-const getVerseByIdQuery = gql(`
+const GetVerseByIdQuery = gql(`
   query GetVerseById($bibleId: String!) {
     getVerseByBibleId(bibleId: $bibleId) {
       _id
@@ -83,14 +83,14 @@ const getVerseByIdQuery = gql(`
 `);
 
 export const useGetTranslation = () => {
-  return useQuery(getTranslations);
+  return useQuery(GetTranslations);
 };
 
 export const useGetBooks = (translationId: string) => {
   // if (!translationId) {
   //   return new Error("translation id is not found");
   // }
-  return useQuery(getBooks, {
+  return useQuery(GetBooks, {
     variables: {
       translationId: translationId,
     },
@@ -98,25 +98,47 @@ export const useGetBooks = (translationId: string) => {
 };
 
 export const useGetBooksById = (bibleId: string) => {
-  return useQuery(getBooksById, {
+  return useQuery(GetBooksById, {
     variables: {
       bibleId: bibleId,
     },
   });
 };
 
+export const useLazyGetBooksById = () => {
+  const [getBooksById, { loading, error, data }] = useLazyQuery(GetBooksById);
+
+  return {
+    getBooksById,
+    loading,
+    error,
+    data,
+  };
+};
+
 export const useGetChapterById = (bibleId: string) => {
-  return useQuery(getChapter, {
+  return useQuery(GetChapter, {
     variables: {
       bibleId: bibleId,
     },
   });
+};
+
+export const useLazyGetChapterById = () => {
+  const [getChapterById, { loading, error, data }] = useLazyQuery(GetChapter);
+
+  return {
+    getChapterById,
+    loading,
+    error,
+    data,
+  };
 };
 
 /* When using lazy  */
 export const useGetVerseById = () => {
   const [getVerseById, { loading, error, data }] =
-    useLazyQuery(getVerseByIdQuery);
+    useLazyQuery(GetVerseByIdQuery);
 
   return {
     getVerseById,
