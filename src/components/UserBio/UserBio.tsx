@@ -32,8 +32,6 @@ const UserBio: React.FC<IUserBio> = ({ user }: IUserBio) => {
   }, [data]);
 
   const handleSubmit = () => {
-    if (!bioText) return;
-
     setUserUpdate({
       variables: {
         options: {
@@ -64,7 +62,7 @@ const UserBio: React.FC<IUserBio> = ({ user }: IUserBio) => {
             />
           )}
           <div className="bio-text-input-actions">
-            {user.bioText && inputActive ? (
+            {inputActive ? (
               <>
                 <IonButton
                   shape="round"
