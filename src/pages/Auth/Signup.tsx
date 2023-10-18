@@ -71,14 +71,13 @@ const Signup: React.FC = () => {
    * @returns void
    */
   const validateAndSet = (ev: Event) => {
-    const type = (ev.target as HTMLInputElement).type;
     const value = (ev.target as HTMLInputElement).value;
     const label = (ev.target as any).label;
 
     if (label === "Re-Password") {
       setSignupOptions({ ...signupOptions, rePassword: value }); // set the values to the options object
     } else {
-      setSignupOptions({ ...signupOptions, [type]: value }); // set the values to the options object
+      setSignupOptions({ ...signupOptions, [label.toLowerCase()]: value }); // set the values to the options object
     }
 
     if (value === "") return; // check to validate an empty value
