@@ -48,8 +48,8 @@ const UserAssetsViewer: React.FC = () => {
         initialSlide={slideOpts.initalSlide}
         tabIndex={1}
         speed={slideOpts.speed}
-        onSlideChange={(e) => onSlideChange(e)}
-        onSwiper={(s) => setSwiper(s)}
+        onSlideChange={(e: SwiperEvent) => onSlideChange(e)}
+        onSwiper={(s: SwiperEvent) => setSwiper(s)}
       >
         {/* <SwiperSlide>Slide 1</SwiperSlide> */}
         <SwiperSlide>
