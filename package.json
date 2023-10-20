@@ -33,7 +33,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "^5.0.0",
     "sass": "^1.58.3",
-    "swiper": "^9.2.4",
+    "swiper": "^10.3.1",
     "web-vitals": "^0.2.4",
     "workbox-background-sync": "^5.1.4",
     "workbox-broadcast-update": "^5.1.4",

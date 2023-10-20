@@ -1,10 +1,18 @@
 import React, { useState } from "react";
-import { IonContent, IonImg, IonText, IonButton } from "@ionic/react";
+import {
+  IonContent,
+  IonImg,
+  IonText,
+  IonButton,
+  IonicSlides,
+} from "@ionic/react";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination } from "swiper/modules";
 
 /** Styles */
 import "./WelcomeSlides.scss";
 import "swiper/scss";
+import "swiper/css/pagination";
 import "@ionic/react/css/ionic-swiper.css";
 
 /** Images */
@@ -36,7 +44,10 @@ const WelcomeSlides: React.FC<IWelcomeSlides> = ({
   return (
     <IonContent>
       <Swiper
-        pagination={true}
+        pagination={{
+          dynamicBullets: true,
+        }}
+        modules={[Pagination, IonicSlides]}
         initialSlide={slideOpts.initalSlide}
         speed={slideOpts.speed}
         onReachEnd={() => lastSlides()}
