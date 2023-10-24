@@ -160,6 +160,9 @@ http://ionicframework.com/docs/theming/ */
 
   --ion-background-color: #faf9fd;
   --ion-background-variant: #dfe2eb;
+
+  --ion-outline-color: #73777f;
+  --ion-outline-variant-color: #c3c6cf;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -326,5 +329,7 @@ http://ionicframework.com/docs/theming/ */
     --ion-tab-bar-background: #1f1f1f;
 
     --ion-card-background: #1e1e1e;
+
+    --ion-outline-color: #8d9199;
   }
 }
