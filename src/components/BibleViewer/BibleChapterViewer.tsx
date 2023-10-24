@@ -351,7 +351,11 @@ const BibleChapterViewer: React.FC = () => {
             size="small"
             onClick={handleOpenVerseModal}
           >
-            <IonIcon color="light" icon={BreadCrumbsIcon} />
+            <IonIcon
+              class="bread-crumbs-icon"
+              color="light"
+              icon={BreadCrumbsIcon}
+            />
           </IonFabButton>
 
           {/* Forward button */}
