@@ -116,6 +116,13 @@ const context = constate(() => {
   };
 
   /**
+   * Checks if asset is in list
+   */
+  const isUserAssetInList = (dto: Bookmark) => {
+    return selectedUserAssets.includes(dto);
+  };
+
+  /**
    * Resets selected user asset list
    */
   const resetUserAssetList = () => {
@@ -140,6 +147,7 @@ const context = constate(() => {
     addUserAssetToList,
     removeUserAssetFromList,
     resetUserAssetList,
+    isUserAssetInList,
   };
 });
 
