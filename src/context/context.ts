@@ -12,17 +12,18 @@ import {
  * !Potentially we should start using the graphql types that are being generated from the backend
  * Unless it is unneccessary
  */
-import { User } from "../__generated__/graphql";
+import { Bookmark, User } from "../__generated__/graphql";
 
 const context = constate(() => {
   /** State declaration */
+  const [userInfo, setUserInfo] = useState<User>();
   const [chosenTranslation, setChosenTranslation] = useState<ITranslation>();
   const [chosenBook, setChosenBook] = useState<IBookInterface>();
   const [chosenChapter, setChosenChapter] = useState<IChapterInterface>();
   const [selectedVerseList, setSelectedVerseList] = useState<IVerseInterface[]>(
     []
   );
-  const [userInfo, setUserInfo] = useState<User>();
+  const [selectedUserAssets, setSelectedUserAssets] = useState<Bookmark[]>([]);
 
   /**
    * Sets the bible translation to global state
@@ -87,12 +88,48 @@ const context = constate(() => {
     setUserInfo(dto);
   };
 
+  /**
+   * Adds a user asset to the selected asset list
+   */
+  const addUserAssetToList = (dto: Bookmark) => {
+    // grab the selected assets into a temp
+    var temp = selectedUserAssets;
+
+    // add the new asset into the list;
+    temp.push(dto);
+
+    // set to state
+    setSelectedUserAssets(temp);
+  };
+
+  /**
+   * Removes a user asset from the selected asset list
+   */
+  const removeUserAssetFromList = (dto: Bookmark) => {
+    //grab the selected verse list into temp
+    var temp = selectedUserAssets.filter((obj) => {
+      return obj._id !== dto._id;
+    });
+
+    //set to state
+    setSelectedUserAssets(temp);
+  };
+
+  /**
+   * Resets selected user asset list
+   */
+  const resetUserAssetList = () => {
+    //set to state
+    setSelectedUserAssets([]);
+  };
+
   return {
     chosenTranslation,
     chosenBook,
     chosenChapter,
     userInfo,
     selectedVerseList,
+    selectedUserAssets,
     setTranslation,
     setBook,
     setChapter,
@@ -100,6 +137,9 @@ const context = constate(() => {
     addVerseToList,
     removeVerseFromList,
     resetVersesInList,
+    addUserAssetToList,
+    removeUserAssetFromList,
+    resetUserAssetList,
   };
 });
 
