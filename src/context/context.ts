@@ -50,14 +50,8 @@ const context = constate(() => {
    * Adds chosen bible verses to the list of selecteVerseList
    */
   const addVerseToList = (dto: IVerseInterface) => {
-    //grab the selected verse list into temp
-    var temp = selectedVerseList;
-
-    // add to the temp
-    temp.push(dto);
-
-    //set to state
-    setSelectedVerseList(temp);
+    // add new verse into state
+    setSelectedVerseList([...selectedVerseList, dto]);
   };
 
   /**
@@ -92,14 +86,8 @@ const context = constate(() => {
    * Adds a user asset to the selected asset list
    */
   const addUserAssetToList = (dto: Bookmark) => {
-    // grab the selected assets into a temp
-    var temp = selectedUserAssets;
-
-    // add the new asset into the list;
-    temp.push(dto);
-
-    // set to state
-    setSelectedUserAssets(temp);
+    // add new item into state
+    setSelectedUserAssets([...selectedUserAssets, dto]);
   };
 
   /**
