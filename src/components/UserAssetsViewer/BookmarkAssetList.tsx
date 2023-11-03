@@ -122,7 +122,9 @@ const BookmarkAssetList: React.FC = () => {
               {bookmarks.getMyBookmarks.results.map((bookmarkEntry, index) => (
                 <IonCard
                   button
-                  className="outlined-card"
+                  className={`outlined-card ${
+                    isUserAssetInList(bookmarkEntry as any) ? "selected" : null
+                  }`}
                   key={index}
                   onClick={() => handleSelection(bookmarkEntry as any)}
                   onMouseDown={() => handleOnMouseDown(bookmarkEntry as any)}
