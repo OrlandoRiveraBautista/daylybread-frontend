@@ -133,6 +133,12 @@ const updateBookmark = gql(`
   }
 `);
 
+const deleteBooksmarksGQL = gql(`
+  mutation DeleteBookmarks($ids: [String!]!) {
+    deleteBookmarks(ids: $ids)
+  }
+`);
+
 /* When using lazy  */
 export const useMe = () => {
   const [getMe, { loading, error, data }] = useLazyQuery(Me);
@@ -173,6 +179,18 @@ export const useCreateBookmarks = () => {
 
   return {
     setBookmarks,
+    loading,
+    error,
+    data,
+  };
+};
+
+export const useDeleteBookmarks = () => {
+  const [deleteBookmarks, { loading, error, data }] =
+    useMutation(deleteBooksmarksGQL);
+
+  return {
+    deleteBookmarks,
     loading,
     error,
     data,
