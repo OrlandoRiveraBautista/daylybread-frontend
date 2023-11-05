@@ -26,6 +26,7 @@ const documents = {
     "\n  mutation Mutation($options: BookmarkOptions!) {\n    createBookmark(options: $options) {\n      errors {\n        field\n        message\n      }\n      results {\n        _id\n        createdAt\n        updatedAt\n        author {\n          _id\n          firstName\n          lastName\n        }\n        note\n        verses {\n          _id\n          translation {\n            name\n            abbreviation\n          }\n          bookName\n          chapterNumber\n          verse\n          text\n          bibleId\n        }\n      }\n    }\n  }\n": types.MutationDocument,
     "\n  mutation UpdateUser($options: UserUpdateInput!) {\n    updateUser(options: $options) {\n      user {\n        _id\n        createdAt\n        updatedAt\n        email\n        firstName\n        lastName\n        churchName\n        bioText\n        dob\n        count\n      }\n      errors {\n        field\n        message\n      }\n    }\n  }\n": types.UpdateUserDocument,
     "\n  mutation UpdateBookmark($updateBookmarkId: String!, $options: BookmarkOptions!) {\n    updateBookmark(id: $updateBookmarkId, options: $options) {\n      errors {\n        field\n        message\n      }\n      results {\n        _id\n        createdAt\n        updatedAt\n        author {\n          _id\n        }\n        note\n        verses {\n          _id\n        }\n      }\n    }\n  }\n": types.UpdateBookmarkDocument,
+    "\n  mutation DeleteBookmarks($ids: [String!]!) {\n    deleteBookmarks(ids: $ids)\n  }\n": types.DeleteBookmarksDocument,
 };
 
 /**
@@ -80,6 +81,10 @@ export function gql(source: "\n  mutation UpdateUser($options: UserUpdateInput!)
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  mutation UpdateBookmark($updateBookmarkId: String!, $options: BookmarkOptions!) {\n    updateBookmark(id: $updateBookmarkId, options: $options) {\n      errors {\n        field\n        message\n      }\n      results {\n        _id\n        createdAt\n        updatedAt\n        author {\n          _id\n        }\n        note\n        verses {\n          _id\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateBookmark($updateBookmarkId: String!, $options: BookmarkOptions!) {\n    updateBookmark(id: $updateBookmarkId, options: $options) {\n      errors {\n        field\n        message\n      }\n      results {\n        _id\n        createdAt\n        updatedAt\n        author {\n          _id\n        }\n        note\n        verses {\n          _id\n        }\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation DeleteBookmarks($ids: [String!]!) {\n    deleteBookmarks(ids: $ids)\n  }\n"): (typeof documents)["\n  mutation DeleteBookmarks($ids: [String!]!) {\n    deleteBookmarks(ids: $ids)\n  }\n"];
 
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.

@@ -6,6 +6,10 @@
 
 ion-text {
   font-family: $font-family;
+
+  &.header-helper {
+    font-weight: 500;
+  }
 }
 
 ion-text,
