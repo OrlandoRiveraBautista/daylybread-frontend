@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   IonButton,
   IonButtons,
   IonContent,
   IonHeader,
+  IonSpinner,
   IonText,
   IonToolbar,
 } from "@ionic/react";
@@ -15,15 +16,38 @@ import UserAssetsViewer from "../../components/UserAssetsViewer/UserAssetsViewer
 /* Context */
 import { useAppContext } from "../../context/context";
 
+/* Graphql API/Hooks */
+import { useDeleteBookmarks } from "../../hooks/UserHooks";
+
 /* Styles */
 import "./Profile.scss";
 
 const Profile: React.FC = () => {
-  const { userInfo, selectedUserAssets, resetUserAssetList } = useAppContext();
+  // global context
+  const {
+    userInfo,
+    selectedUserAssets,
+    resetUserAssetList,
+    handleGetBookmarks,
+  } = useAppContext();
+
+  // api/graphql
+  const { deleteBookmarks, loading, data } = useDeleteBookmarks();
+
+  useEffect(() => {
+    if (!data || !data.deleteBookmarks) return;
+    resetUserAssetList();
+
+    // ?-- for some reason just waiting 50ms allows for the refresh to work, I guess cache takes some time to update
+    setTimeout(() => {
+      handleGetBookmarks();
+    }, 50);
+  }, [data]);
 
   const handleDeleteAssets = () => {
     const assetIds = selectedUserAssets.map((asset) => asset._id);
-    console.log(assetIds);
+
+    deleteBookmarks({ variables: { ids: assetIds } });
   };
 
   return !userInfo ? null : (
@@ -79,8 +103,13 @@ const Profile: React.FC = () => {
                   color="dark"
                   className="header-profile-button"
                   onClick={handleDeleteAssets}
+                  disabled={loading}
                 >
-                  <span className="material-icons-round">delete_outline</span>
+                  {loading ? (
+                    <IonSpinner />
+                  ) : (
+                    <span className="material-icons-round">delete_outline</span>
+                  )}
                 </IonButton>
               </IonButtons>
             </>
