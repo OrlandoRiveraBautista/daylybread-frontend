@@ -11,6 +11,7 @@ import {
   IonTextarea,
 } from "@ionic/react";
 import { IonTextareaCustomEvent, TextareaInputEventDetail } from "@ionic/core";
+import { useHistory } from "react-router";
 
 /* Support */
 import { getCitationVerbage } from "../../../utils/support";
@@ -33,8 +34,10 @@ const BookmarkModal: React.FC<IBookmarkModal> = ({
   isOpen,
   onDismiss,
 }: IBookmarkModal) => {
+  const history = useHistory();
   // global state
-  const { selectedVerseList, chosenBook, chosenChapter } = useAppContext();
+  const { selectedVerseList, chosenBook, chosenChapter, userInfo } =
+    useAppContext();
 
   // graphql hooks
   const { setBookmarks, data, error, loading } = useCreateBookmarks();
@@ -82,77 +85,101 @@ const BookmarkModal: React.FC<IBookmarkModal> = ({
       <IonContent className="ion-padding bookmark-modal">
         <div className="modal-content-container">
           <IonTitle className="ion-text-center">Bookmark</IonTitle>
-          <div>
-            <IonRow>
-              <IonText>
-                <sub>Selected Text</sub>
-              </IonText>
-            </IonRow>
-            <IonRow>
-              <IonCol>
-                <IonText>
-                  {getCitationVerbage(
-                    selectedVerseList,
-                    chosenBook!,
-                    chosenChapter!
-                  )}
-                </IonText>
-              </IonCol>
-            </IonRow>
-          </div>
-          <div className="bookmark-form">
-            <IonRow>
-              <IonCol>
-                <IonTextarea
-                  labelPlacement="floating"
-                  color="primary"
-                  placeholder="Leave a note!"
-                  autoGrow={true}
-                  fill="outline"
-                  value={note}
-                  onIonInput={(event) => handleBookmarkNoteInput(event)}
-                ></IonTextarea>
-              </IonCol>
-            </IonRow>
-            <IonRow>
-              <IonCol>
-                <IonButton
-                  shape="round"
-                  expand="block"
-                  disabled={loading ? true : false}
-                  fill={
-                    !loading && !data
-                      ? "solid"
-                      : error
-                      ? "clear"
-                      : loading && !data
-                      ? "default"
-                      : "outline"
-                  }
-                  onClick={handleSubmit}
-                  color={
-                    !loading && !data
-                      ? "primary"
-                      : error
-                      ? "danger"
-                      : loading && !data
-                      ? "warning"
-                      : "success"
-                  }
-                >
-                  {!loading && !data ? (
-                    "Save"
-                  ) : loading && !data ? (
-                    <IonSpinner />
-                  ) : error ? (
-                    "Something went wrong"
-                  ) : (
-                    "Success"
-                  )}
-                </IonButton>
-              </IonCol>
-            </IonRow>
-          </div>
+          {userInfo ? (
+            <>
+              <div>
+                <IonRow>
+                  <IonText>
+                    <sub>Selected Text</sub>
+                  </IonText>
+                </IonRow>
+                <IonRow>
+                  <IonCol>
+                    <IonText>
+                      {getCitationVerbage(
+                        selectedVerseList,
+                        chosenBook!,
+                        chosenChapter!
+                      )}
+                    </IonText>
+                  </IonCol>
+                </IonRow>
+              </div>
+              <div className="bookmark-form">
+                <IonRow>
+                  <IonCol>
+                    <IonTextarea
+                      labelPlacement="floating"
+                      color="primary"
+                      placeholder="Leave a note!"
+                      autoGrow={true}
+                      fill="outline"
+                      value={note}
+                      onIonInput={(event) => handleBookmarkNoteInput(event)}
+                    ></IonTextarea>
+                  </IonCol>
+                </IonRow>
+                <IonRow>
+                  <IonCol>
+                    <IonButton
+                      shape="round"
+                      expand="block"
+                      disabled={loading ? true : false}
+                      fill={
+                        !loading && !data
+                          ? "solid"
+                          : error
+                          ? "clear"
+                          : loading && !data
+                          ? "default"
+                          : "outline"
+                      }
+                      onClick={handleSubmit}
+                      color={
+                        !loading && !data
+                          ? "primary"
+                          : error
+                          ? "danger"
+                          : loading && !data
+                          ? "warning"
+                          : "success"
+                      }
+                    >
+                      {!loading && !data ? (
+                        "Save"
+                      ) : loading && !data ? (
+                        <IonSpinner />
+                      ) : error ? (
+                        "Something went wrong"
+                      ) : (
+                        "Success"
+                      )}
+                    </IonButton>
+                  </IonCol>
+                </IonRow>
+              </div>
+            </>
+          ) : (
+            <div className="bookmark-form">
+              <IonTitle className="ion-text-center">
+                Sign in to create a bookmark
+              </IonTitle>
+              <IonRow>
+                <IonCol>
+                  <IonButton
+                    shape="round"
+                    expand="block"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      history.push("/login");
+                    }}
+                  >
+                    Sign in
+                  </IonButton>
+                </IonCol>
+              </IonRow>
+            </div>
+          )}
         </div>
       </IonContent>
     </IonModal>
