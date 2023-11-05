@@ -1,6 +1,9 @@
 import constate from "constate";
 import { useState } from "react";
 
+/* API/GraphQL */
+import { useLazyGetBookmarks } from "../hooks/UserHooks";
+
 /* Interfaces */
 import {
   ITranslation,
@@ -15,14 +18,28 @@ import {
 import { Bookmark, User } from "../__generated__/graphql";
 
 const context = constate(() => {
+  /** API/GraphQL Decunstruction */
+  // Bookmarks API
+  const {
+    getLazyBookmarks,
+    data: bookmarksResponse,
+    loading: bookmarksLoading,
+    error: bookmarksError,
+  } = useLazyGetBookmarks();
+
   /** State declaration */
-  const [userInfo, setUserInfo] = useState<User>();
+  // Bible State
   const [chosenTranslation, setChosenTranslation] = useState<ITranslation>();
   const [chosenBook, setChosenBook] = useState<IBookInterface>();
   const [chosenChapter, setChosenChapter] = useState<IChapterInterface>();
   const [selectedVerseList, setSelectedVerseList] = useState<IVerseInterface[]>(
     []
   );
+
+  // User State
+  const [userInfo, setUserInfo] = useState<User>();
+
+  // Assets State
   const [selectedUserAssets, setSelectedUserAssets] = useState<Bookmark[]>([]);
 
   /**
@@ -104,6 +121,14 @@ const context = constate(() => {
   };
 
   /**
+   * Resets selected user asset list
+   */
+  const resetUserAssetList = () => {
+    //set to state
+    setSelectedUserAssets([]);
+  };
+
+  /**
    * Checks if asset is in list
    */
   const isUserAssetInList = (dto: Bookmark) => {
@@ -111,11 +136,11 @@ const context = constate(() => {
   };
 
   /**
-   * Resets selected user asset list
+   * Gets user booksmarks
+   * Returns the bookmark list and sets the bookmarks to state
    */
-  const resetUserAssetList = () => {
-    //set to state
-    setSelectedUserAssets([]);
+  const handleGetBookmarks = async () => {
+    getLazyBookmarks();
   };
 
   return {
@@ -125,6 +150,9 @@ const context = constate(() => {
     userInfo,
     selectedVerseList,
     selectedUserAssets,
+    bookmarksResponse,
+    bookmarksLoading,
+    bookmarksError,
     setTranslation,
     setBook,
     setChapter,
@@ -136,6 +164,7 @@ const context = constate(() => {
     removeUserAssetFromList,
     resetUserAssetList,
     isUserAssetInList,
+    handleGetBookmarks,
   };
 });
 
