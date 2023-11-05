@@ -32,15 +32,14 @@ import { Bookmark } from "../../__generated__/graphql";
 import { useAppContext } from "../../context/context";
 
 const BookmarkAssetList: React.FC = () => {
-  // graphql
-  const { getLazyBookmarks, data: bookmarks } = useLazyGetBookmarks();
-
   // global context state
   const {
     addUserAssetToList,
     removeUserAssetFromList,
     selectedUserAssets,
     isUserAssetInList,
+    handleGetBookmarks,
+    bookmarksResponse,
   } = useAppContext();
 
   // local state
@@ -50,7 +49,7 @@ const BookmarkAssetList: React.FC = () => {
   const timerRef = useRef<any>();
 
   useEffect(() => {
-    getLazyBookmarks();
+    handleGetBookmarks();
   }, []); //upon mount
 
   const onDismiss = () => {
@@ -59,7 +58,7 @@ const BookmarkAssetList: React.FC = () => {
   };
 
   const handleRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
-    getLazyBookmarks();
+    handleGetBookmarks();
     event.detail.complete();
   };
 
@@ -107,7 +106,7 @@ const BookmarkAssetList: React.FC = () => {
         <IonRefresherContent></IonRefresherContent>
       </IonRefresher>
       <>
-        {!bookmarks?.getMyBookmarks.results ? (
+        {!bookmarksResponse?.getMyBookmarks.results ? (
           <div id="empty-text-container">
             <IonText className="main-text">No Bookmarks</IonText>
             <IonText className="sub-text">
@@ -119,30 +118,38 @@ const BookmarkAssetList: React.FC = () => {
             columnsCountBreakPoints={{ 350: 2, 750: 2, 900: 3 }}
           >
             <Masonry columnsCount={2} gutter="16px">
-              {bookmarks.getMyBookmarks.results.map((bookmarkEntry, index) => (
-                <IonCard
-                  button
-                  className={`outlined-card ${
-                    isUserAssetInList(bookmarkEntry as any) ? "selected" : null
-                  }`}
-                  key={index}
-                  onClick={() => handleSelection(bookmarkEntry as any)}
-                  onMouseDown={() => handleOnMouseDown(bookmarkEntry as any)}
-                  onMouseUp={() => handleOnMouseUp()}
-                  onTouchStart={() => handleOnTouchStart(bookmarkEntry as any)}
-                  onTouchEnd={() => handleOnTouchEnd()}
-                >
-                  <IonCardContent>
-                    <IonText className="bookmark-card-verse">
-                      {bookmarkEntry.verses.map((verse) => verse.text)}
-                    </IonText>
-                    <IonText className="bookmark-card-citation">
-                      {getVerseVerbageByVerses(bookmarkEntry.verses!)}
-                    </IonText>
-                    {bookmarkEntry.note ? <IonIcon icon={CommentIcon} /> : null}
-                  </IonCardContent>
-                </IonCard>
-              ))}
+              {bookmarksResponse.getMyBookmarks.results.map(
+                (bookmarkEntry, index) => (
+                  <IonCard
+                    button
+                    className={`outlined-card ${
+                      isUserAssetInList(bookmarkEntry as any)
+                        ? "selected"
+                        : null
+                    }`}
+                    key={index}
+                    onClick={() => handleSelection(bookmarkEntry as any)}
+                    onMouseDown={() => handleOnMouseDown(bookmarkEntry as any)}
+                    onMouseUp={() => handleOnMouseUp()}
+                    onTouchStart={() =>
+                      handleOnTouchStart(bookmarkEntry as any)
+                    }
+                    onTouchEnd={() => handleOnTouchEnd()}
+                  >
+                    <IonCardContent>
+                      <IonText className="bookmark-card-verse">
+                        {bookmarkEntry.verses.map((verse) => verse.text)}
+                      </IonText>
+                      <IonText className="bookmark-card-citation">
+                        {getVerseVerbageByVerses(bookmarkEntry.verses!)}
+                      </IonText>
+                      {bookmarkEntry.note ? (
+                        <IonIcon icon={CommentIcon} />
+                      ) : null}
+                    </IonCardContent>
+                  </IonCard>
+                )
+              )}
             </Masonry>
           </ResponsiveMasonry>
         )}
