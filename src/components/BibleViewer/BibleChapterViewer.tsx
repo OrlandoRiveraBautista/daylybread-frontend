@@ -253,7 +253,6 @@ const BibleChapterViewer: React.FC = () => {
 
     // check if the state is empty
     if (selectedElement.length === 0) {
-      span.classList.add("verse-selected");
       addVerseToList(verseObj);
       setSelectedElement([text]);
       setOpenSelectedVersesModal(true);
@@ -268,7 +267,6 @@ const BibleChapterViewer: React.FC = () => {
         tempValue.splice(valueIndex, 1);
         removeVerseFromList(verseObj);
         setSelectedElement(tempValue);
-        span.classList.remove("verse-selected");
       }
       if (tempValue.length === 0) {
         setOpenSelectedVersesModal(false);
@@ -281,7 +279,6 @@ const BibleChapterViewer: React.FC = () => {
     tempValue.push(text);
 
     setSelectedElement(tempValue);
-    span.classList.add("verse-selected");
     setOpenSelectedVersesModal(true);
 
     addVerseToList(verseObj!);
@@ -289,6 +286,9 @@ const BibleChapterViewer: React.FC = () => {
   };
 
   const handleOpenVerseModal = () => {
+    if (!openSelectedVersesModal === false) {
+      resetVersesInList();
+    }
     setOpenSelectedVersesModal(!openSelectedVersesModal);
     setInitialModalBreakpoint(0.75);
   };
@@ -309,6 +309,11 @@ const BibleChapterViewer: React.FC = () => {
                 onClick={() => handleMouseDown(verse.bibleId)}
                 id={verse.bibleId}
                 key={verse.bibleId}
+                className={
+                  selectedVerseList.some((sv) => sv.bibleId === verse.bibleId)
+                    ? "verse-selected"
+                    : ""
+                }
               >
                 <b>{verse.verse}:</b> {verse.text}
               </span>
