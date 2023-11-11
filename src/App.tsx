@@ -48,9 +48,7 @@ import { useAppContext } from "./context/context";
 /** Graphql API Hooks */
 import { useMe } from "./hooks/UserHooks";
 
-setupIonicReact({
-  mode: "md",
-});
+setupIonicReact({ mode: "md" });
 
 const App: React.FC = () => {
   const { localStorage, init } = Storage();
@@ -140,7 +138,7 @@ const App: React.FC = () => {
           !firstTimeFlag ? (
             <IonTabs>
               {/* Tabs Router */}
-              <IonRouterOutlet>
+              <IonRouterOutlet animated={false}>
                 <Route exact path="/">
                   <Redirect to="/read" />
                 </Route>
@@ -148,6 +146,9 @@ const App: React.FC = () => {
                     <Tab1 />
                   </Route> */}
                 <Route exact path="/read">
+                  <Tab2 />
+                </Route>
+                <Route exact path="/read/:currentBibleId">
                   <Tab2 />
                 </Route>
                 <Switch>
