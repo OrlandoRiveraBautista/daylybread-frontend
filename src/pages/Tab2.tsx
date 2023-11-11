@@ -46,8 +46,13 @@ const Tab2: React.FC = () => {
    * Use Effect for handling changes in translation
    */
   useEffect(() => {
-    // check if there is already a chosen chapter
-    setBookId(chosenTranslation?.books[0].bibleId!);
+    if (
+      !chosenBook ||
+      chosenTranslation?.abbreviation !== chosenBook.translation.abbreviation
+    ) {
+      // check if there is already a chosen chapter
+      setBookId(chosenTranslation?.books[0].bibleId!);
+    }
   }, [chosenTranslation]);
 
   useEffect(() => {

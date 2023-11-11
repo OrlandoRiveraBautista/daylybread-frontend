@@ -8,6 +8,7 @@ import {
   IonText,
 } from "@ionic/react";
 import { chevronBack, chevronForward } from "ionicons/icons";
+import { useHistory, useParams } from "react-router";
 
 /* Context */
 import { useAppContext } from "../../context/context";
@@ -21,11 +22,20 @@ import PatternImage from "../../assets/images/Patterns - 4x4.png";
 import BreadCrumbsIcon from "../../assets/icons/BreadCrumbs-icon.svg";
 
 /* Query Hooks */
-import { useGetChapterById, useGetBooksById } from "../../hooks/BibleHooks";
+import {
+  useGetChapterById,
+  useGetBooksById,
+  useLazyGetTranslation,
+} from "../../hooks/BibleHooks";
 
 /* Utils */
 import { zeroPad } from "../../utils/support";
 import BibleTranslationModal from "../BibleNavModal/BibleTranslationModal";
+
+/* Types */
+type BibleChapterViewerUrlParams = {
+  currentBibleId: string;
+};
 
 const BibleChapterViewer: React.FC = () => {
   /* Context */
@@ -36,6 +46,7 @@ const BibleChapterViewer: React.FC = () => {
     selectedVerseList,
     setChapter,
     setBook,
+    setTranslation,
     addVerseToList,
     removeVerseFromList,
     resetVersesInList,
@@ -55,9 +66,21 @@ const BibleChapterViewer: React.FC = () => {
   const [initialModalBreakpoint, setInitialModalBreakpoint] =
     useState<number>(0.25);
 
-  // getting chapters
+  // api/graphql
   const { data: chapterData } = useGetChapterById(chapterId!);
   const { data: bookData } = useGetBooksById(bookId!);
+  const { getAllTranslations, data: translationData } = useLazyGetTranslation();
+
+  // router
+  const history = useHistory();
+  const { currentBibleId } = useParams<BibleChapterViewerUrlParams>();
+
+  useEffect(() => {
+    if (!currentBibleId) return;
+    if (chapterId === currentBibleId) return;
+
+    setChapterId(currentBibleId);
+  }, [currentBibleId]);
 
   useEffect(() => {
     // check if chapter data is empty
@@ -79,6 +102,17 @@ const BibleChapterViewer: React.FC = () => {
     if (chosenChapter.bibleId.slice(0, -3) !== bookId) {
       setBookId(chosenChapter.bibleId.slice(0, -3));
     }
+
+    // check if the translation is set
+    if (!chosenTranslation) {
+      getAllTranslations();
+      let currentTranslation = translationData?.getTranslations.find(
+        (translation) =>
+          translation.abbreviation === chosenChapter.translation.abbreviation
+      );
+      setTranslation(currentTranslation!);
+    }
+    history.push(`/read/${chosenChapter?.bibleId}`);
   }, [chosenChapter]);
 
   // useEffect to set a new book to the context state
