@@ -122,19 +122,22 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
     if (!target) return; // if no modal end function
 
     // check for breakpoint being less than or equal to .75 and if full-height is set
-    if (e.detail.breakpoint <= 0.75) {
-      if (!target.classList.contains("full-height")) return;
-      // remove full-height
-      target.classList.remove("full-height");
-    } else {
-      // else set full-height
-      target.classList.add("full-height");
+    if (e.detail.breakpoint >= 0.7) {
+      target.style.height = `${e.detail.breakpoint * 100}%`;
     }
   };
+
+  const getBreakpoints = () => {
+    if (navigator.userAgent.includes("iPhone")) {
+      return [0, 0.25, 0.75, 0.98];
+    }
+    return [0, 0.25, 0.75, 1];
+  };
+
   return (
     <IonModal
       initialBreakpoint={initialBreakpoint || 0.25}
-      breakpoints={[0, 0.25, 0.75, 1]}
+      breakpoints={getBreakpoints()}
       className="nav-modal"
       isOpen={isOpen}
       onDidDismiss={() => (isOpen ? onDismiss() : null)}
