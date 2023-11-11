@@ -51,11 +51,11 @@ export const BooksPicker: React.FC = () => {
     const items = [];
     for (let i = 0; i < 12; i++) {
       items.push(
-        <>
+        <React.Fragment key={i}>
           <IonCol size="6" size-md="4" size-lg="4" key={i}>
             <Skeleton height="120px" width="100%" shape="square" />
           </IonCol>
-        </>
+        </React.Fragment>
       );
     }
 
