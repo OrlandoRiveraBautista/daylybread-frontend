@@ -86,6 +86,18 @@ export const useGetTranslation = () => {
   return useQuery(getTranslations);
 };
 
+export const useLazyGetTranslation = () => {
+  const [getAllTranslations, { loading, error, data }] =
+    useLazyQuery(getTranslations);
+
+  return {
+    getAllTranslations,
+    loading,
+    error,
+    data,
+  };
+};
+
 export const useGetBooks = (translationId: string) => {
   // if (!translationId) {
   //   return new Error("translation id is not found");
