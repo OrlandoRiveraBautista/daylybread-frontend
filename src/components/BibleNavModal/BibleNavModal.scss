@@ -20,26 +20,28 @@
   z-index: 1;
   background-color: var(--ion-background-color);
   max-height: 100px;
-  padding-top: 16px;
+  padding-top: 24px;
 }
 .nav-toolbar ion-col {
   height: 100%;
   text-align: center;
+  padding: 0;
 }
 .nav-toolbar ion-col ion-card {
   height: 100%;
   margin: 0;
+  padding: 8px;
   display: flex;
-  flex-direction: row;
+  gap: 8px;
+  flex-direction: column;
   box-shadow: none;
 }
 .nav-toolbar ion-col ion-card ion-title {
   color: var(--ion-text-color);
   padding: 0;
-  height: fit-content;
+  margin-bottom: 4px;
 }
-.nav-toolbar ion-col ion-card p {
-  margin-top: 8px;
+.nav-toolbar ion-col ion-card ion-text {
   color: var(--ion-text-color);
 }
 
