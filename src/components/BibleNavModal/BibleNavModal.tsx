@@ -21,7 +21,12 @@ import "./BibleNavModal.scss";
 
 type bibleNavOptions = "book" | "chapter" | "verse";
 
-const BibleNavModal: React.FC = () => {
+interface IBibleNavModal {
+  isOpen?: boolean;
+  onDismiss?: () => void;
+}
+
+const BibleNavModal: React.FC<IBibleNavModal> = ({ isOpen, onDismiss }) => {
   // state
   const [navTab, setNavTab] = useState<bibleNavOptions>("book");
 
@@ -33,7 +38,7 @@ const BibleNavModal: React.FC = () => {
     const stages = {
       book: chosenBook?.bookName.slice(0, 3),
       chapter: chosenChapter?.chapterNumber,
-      verse: "verse",
+      verse: "All",
     };
 
     const render = Object.keys(stages).map((stage) => (
@@ -59,6 +64,8 @@ const BibleNavModal: React.FC = () => {
       initialBreakpoint={1}
       breakpoints={[0, 1]}
       className="nav-modal"
+      isOpen={isOpen}
+      onDidDismiss={onDismiss}
     >
       <IonContent className="ion-padding nav-container">
         {/* Navigation Toolbar */}
