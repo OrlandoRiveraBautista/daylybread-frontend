@@ -7,6 +7,7 @@ import {
   IonRow,
   IonTitle,
   IonCard,
+  IonText,
 } from "@ionic/react";
 
 /** Components */
@@ -20,12 +21,42 @@ import "./BibleNavModal.scss";
 
 type bibleNavOptions = "book" | "chapter" | "verse";
 
-const BibleNavModal: React.FC = () => {
+interface IBibleNavModal {
+  isOpen?: boolean;
+  onDismiss?: () => void;
+}
+
+const BibleNavModal: React.FC<IBibleNavModal> = ({ isOpen, onDismiss }) => {
   // state
   const [navTab, setNavTab] = useState<bibleNavOptions>("book");
 
   // context values
   const { chosenChapter, chosenBook } = useAppContext();
+
+  // bible navigation butons
+  const renderNavButtons = () => {
+    const stages = {
+      book: chosenBook?.bookName.slice(0, 3),
+      chapter: chosenChapter?.chapterNumber,
+      verse: "All",
+    };
+
+    const render = Object.keys(stages).map((stage) => (
+      <IonCol>
+        <IonCard
+          button
+          onClick={() => setNavTab(stage as bibleNavOptions)}
+          className={navTab === stage ? "selected" : ""}
+        >
+          <IonTitle className="chosen-bible-option">
+            {stages[stage as bibleNavOptions]}
+          </IonTitle>
+          <IonText>{stage}</IonText>
+        </IonCard>
+      </IonCol>
+    ));
+    return render;
+  };
 
   return (
     <IonModal
@@ -33,34 +64,13 @@ const BibleNavModal: React.FC = () => {
       initialBreakpoint={1}
       breakpoints={[0, 1]}
       className="nav-modal"
+      isOpen={isOpen}
+      onDidDismiss={onDismiss}
     >
       <IonContent className="ion-padding nav-container">
         {/* Navigation Toolbar */}
         <IonGrid className="nav-toolbar">
-          <IonRow>
-            <IonCol>
-              <IonCard button onClick={() => setNavTab("book")}>
-                <IonTitle className="chosen-bible-option">
-                  {chosenBook?.bookName.slice(0, 3)}
-                </IonTitle>
-                <p>Book</p>
-              </IonCard>
-            </IonCol>
-            <IonCol>
-              <IonCard button onClick={() => setNavTab("chapter")}>
-                <IonTitle className="chosen-bible-option">
-                  {chosenChapter?.chapterNumber}
-                </IonTitle>
-                <p>Chapter</p>
-              </IonCard>
-            </IonCol>
-            <IonCol>
-              <IonCard button onClick={() => setNavTab("verse")}>
-                <IonTitle className="chosen-bible-option">All</IonTitle>
-                <p>Verse</p>
-              </IonCard>
-            </IonCol>
-          </IonRow>
+          <IonRow>{renderNavButtons()}</IonRow>
         </IonGrid>
         {/* Options */}
         <IonGrid className="nav-selection-container">

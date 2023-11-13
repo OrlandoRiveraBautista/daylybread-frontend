@@ -122,7 +122,10 @@ const Tab2: React.FC = () => {
         />
 
         {/* bible navigation */}
-        <BibleNavModal />
+        <BibleNavModal
+          isOpen={openBibleNavModal}
+          onDismiss={() => setOpenBibleNavModal(!openBibleNavModal)}
+        />
       </IonContent>
     </IonPage>
   );

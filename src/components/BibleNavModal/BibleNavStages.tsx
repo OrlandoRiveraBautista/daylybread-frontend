@@ -23,8 +23,10 @@ import {
 } from "../../hooks/BibleHooks";
 
 export const BooksPicker: React.FC = () => {
-  const [bookId, setBookId] = useState<string>();
-  const { chosenTranslation, setBook } = useAppContext();
+  const { chosenTranslation, setBook, chosenBook } = useAppContext();
+  const [bookId, setBookId] = useState<string>(
+    chosenBook ? chosenBook.bibleId : ""
+  );
 
   /* Queries */
   // getting books for displaying in the book selector
@@ -36,7 +38,14 @@ export const BooksPicker: React.FC = () => {
   const { data: bookData } = useGetBooksById(bookId!);
 
   useEffect(() => {
+    const element = document.getElementById(chosenBook?.bibleId!);
+
+    element?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, []);
+
+  useEffect(() => {
     if (!bookData) return;
+    if (bookData.getBookById === chosenBook) return; // only update if the chapter has changed
 
     // set chosen book data to global state
     setBook(bookData.getBookById);
@@ -91,8 +100,11 @@ export const BooksPicker: React.FC = () => {
               {/* options rendering */}
               <IonCol size="6" size-md="4" size-lg="4" key={book.bibleId}>
                 <IonCard
+                  id={book.bibleId}
                   button
-                  className="outlined-card"
+                  className={`outlined-card ${
+                    book.bibleId === bookId ? "selected" : ""
+                  }`}
                   onClick={() => setBookId(book.bibleId)}
                 >
                   <IonCardContent>
@@ -113,7 +125,7 @@ export const BooksPicker: React.FC = () => {
 
 export const ChapterPicker: React.FC = () => {
   const [chapterId, setChapterId] = useState<string>();
-  const { chosenBook, setChapter } = useAppContext();
+  const { chosenBook, setChapter, chosenChapter } = useAppContext();
 
   // getting chapters
   const { data: chapterData } = useGetChapterById(chapterId!);
@@ -123,6 +135,12 @@ export const ChapterPicker: React.FC = () => {
 
     setChapter(chapterData.getChapter);
   }, [chapterData]);
+
+  useEffect(() => {
+    const element = document.getElementById(chosenChapter?.bibleId!);
+
+    element?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, []);
 
   /**
    * Function to render loading skeleton animation
@@ -155,8 +173,13 @@ export const ChapterPicker: React.FC = () => {
                 {/* options rendering */}
                 <IonCol size="6" size-md="4" size-lg="4" key={chapter.bibleId}>
                   <IonCard
+                    id={chapter.bibleId}
                     button
-                    className="outlined-card"
+                    className={`outlined-card ${
+                      chosenChapter?.bibleId === chapter.bibleId
+                        ? "selected"
+                        : ""
+                    }`}
                     onClick={() => setChapterId(chapter.bibleId)}
                   >
                     <IonCardContent>
