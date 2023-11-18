@@ -20,7 +20,7 @@ const Tab1: React.FC = () => {
     setTimeout(() => {
       setPlayAnimation(!playAnimation);
     }, 2000);
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <IonPage>

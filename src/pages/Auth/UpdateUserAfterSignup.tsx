@@ -65,7 +65,7 @@ const UpdateUserAfterSignup: React.FC = () => {
     setUpdateOptions({ ...updateOptions, [type]: value }); // set the values to the options object
 
     // email validation
-    if (!value || value == "") {
+    if (!value || value === "") {
       setIsValid({ ...isValid, [type]: undefined });
       setIsValid({ ...isValid, [type]: false });
     } else {
@@ -110,7 +110,7 @@ const UpdateUserAfterSignup: React.FC = () => {
     if (!data?.updateUser.user?._id) return;
     setUser(data.updateUser.user);
     history.push("/me");
-  }, [data]);
+  }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>

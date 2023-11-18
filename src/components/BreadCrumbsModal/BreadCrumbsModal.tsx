@@ -7,7 +7,6 @@ import {
   IonRow,
   IonText,
   IonCheckbox,
-  IonChip,
 } from "@ionic/react";
 import {
   IonModalCustomEvent,
@@ -79,7 +78,8 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
     );
 
     setChosenTextVerbage(text);
-  }, [selectedVerseList, selectedText]); //for some reason selectedText needs to be watched to timely modify
+    //for some reason selectedText needs to be watched to timely modify
+  }, [selectedVerseList, selectedText]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (openAIResponse.loading) return;

@@ -72,7 +72,7 @@ const App: React.FC = () => {
   useEffect(() => {
     if (!userData?.me?.user) return;
     setUser(userData.me.user);
-  }, [userData]);
+  }, [userData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /**
    * calls to
@@ -83,7 +83,7 @@ const App: React.FC = () => {
   useEffect(() => {
     init();
     getSignInUser();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   /**
    * Use Effect function to watch for localStorage and hasSession
@@ -100,7 +100,8 @@ const App: React.FC = () => {
         setSession();
       }, 3000);
     }
-  }, [localStorage, hasSession, firstTimeFlag]); // watch localStorage and hasSession
+    // watch localStorage and hasSession
+  }, [localStorage, hasSession, firstTimeFlag]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /**
    * Function sets the user session for when the user has been on the site for a while
