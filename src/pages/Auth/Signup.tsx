@@ -101,7 +101,7 @@ const Signup: React.FC = () => {
     // password validation
     if (label === "Re-Password") {
       setIsValid({ ...isValid, rePassword: undefined });
-      validatePassword(value) && value == signupOptions.password
+      validatePassword(value) && value === signupOptions.password
         ? setIsValid({ ...isValid, rePassword: true })
         : setIsValid({ ...isValid, rePassword: false });
     }
@@ -153,7 +153,7 @@ const Signup: React.FC = () => {
     if (!data?.register.user?._id) return;
     setUser(data.register.user);
     history.push("/signupupdateuser");
-  }, [data]);
+  }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>

@@ -29,7 +29,7 @@ const UserBio: React.FC<IUserBio> = ({ user }: IUserBio) => {
     if (!data) return;
 
     setInputActive(!inputActive);
-  }, [data]);
+  }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSubmit = () => {
     setUserUpdate({

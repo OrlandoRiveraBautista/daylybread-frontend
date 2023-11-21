@@ -53,19 +53,19 @@ const Tab2: React.FC = () => {
       // check if there is already a chosen chapter
       setBookId(chosenTranslation?.books[0].bibleId!);
     }
-  }, [chosenTranslation]);
+  }, [chosenTranslation]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!chosenTranslation || !bookData) return;
 
     setBook(bookData?.getBookById);
-  }, [bookData]);
+  }, [bookData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!chosenBook || !chapterData) return;
 
     setChapter(chapterData.getChapter);
-  }, [chosenBook, chapterData]);
+  }, [chosenBook, chapterData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <IonPage>

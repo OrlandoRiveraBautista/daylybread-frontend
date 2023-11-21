@@ -42,7 +42,7 @@ const Profile: React.FC = () => {
     setTimeout(() => {
       handleGetBookmarks();
     }, 50);
-  }, [data]);
+  }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleDeleteAssets = () => {
     const assetIds = selectedUserAssets.map((asset) => asset._id);

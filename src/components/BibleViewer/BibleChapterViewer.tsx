@@ -80,7 +80,7 @@ const BibleChapterViewer: React.FC = () => {
     if (chapterId === currentBibleId) return;
 
     setChapterId(currentBibleId);
-  }, [currentBibleId]);
+  }, [currentBibleId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     // check if chapter data is empty
@@ -94,7 +94,7 @@ const BibleChapterViewer: React.FC = () => {
 
     // set new chapter to the context
     setChapter(chapter);
-  }, [chapterData]);
+  }, [chapterData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!chosenChapter) return;
@@ -113,13 +113,13 @@ const BibleChapterViewer: React.FC = () => {
       setTranslation(currentTranslation!);
     }
     history.push(`/read/${chosenChapter?.bibleId}`);
-  }, [chosenChapter]);
+  }, [chosenChapter]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // useEffect to set a new book to the context state
   useEffect(() => {
     if (!bookData?.getBookById) return;
     setBook(bookData.getBookById);
-  }, [bookData]);
+  }, [bookData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /**
    *  function will check navAction to do something
@@ -169,7 +169,7 @@ const BibleChapterViewer: React.FC = () => {
   useEffect(() => {
     handleNavAction();
     handleReset();
-  }, [chosenBook]);
+  }, [chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /**
    * Function to handle navigating to the next chapter in the bible
@@ -293,10 +293,10 @@ const BibleChapterViewer: React.FC = () => {
       return;
     }
 
+    var tempValue = [...selectedElement];
     // check if the value selected is in the list
     if (selectedElement.includes(text)) {
       const valueIndex = selectedElement.indexOf(text);
-      var tempValue = [...selectedElement];
       if (valueIndex > -1) {
         tempValue.splice(valueIndex, 1);
         removeVerseFromList(verseObj);
@@ -309,7 +309,6 @@ const BibleChapterViewer: React.FC = () => {
       return;
     }
 
-    var tempValue = [...selectedElement];
     tempValue.push(text);
 
     setSelectedElement(tempValue);

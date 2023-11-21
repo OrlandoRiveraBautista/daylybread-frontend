@@ -38,10 +38,11 @@ export const BooksPicker: React.FC = () => {
   const { data: bookData } = useGetBooksById(bookId!);
 
   useEffect(() => {
-    const element = document.getElementById(chosenBook?.bibleId!);
+    if (!chosenBook?.bibleId) return;
+    const element = document.getElementById(chosenBook?.bibleId);
 
     element?.scrollIntoView({ behavior: "smooth", block: "center" });
-  }, []);
+  }, [chosenBook?.bibleId]);
 
   useEffect(() => {
     if (!bookData) return;
@@ -49,7 +50,8 @@ export const BooksPicker: React.FC = () => {
 
     // set chosen book data to global state
     setBook(bookData.getBookById);
-  }, [bookData]); //watch book api data
+    //watch book api data
+  }, [bookData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /**
    * Function to render loading skeleton animation
@@ -134,13 +136,14 @@ export const ChapterPicker: React.FC = () => {
     if (!chapterData) return;
 
     setChapter(chapterData.getChapter);
-  }, [chapterData]);
+  }, [chapterData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    const element = document.getElementById(chosenChapter?.bibleId!);
+    if (!chosenChapter?.bibleId) return;
+    const element = document.getElementById(chosenChapter?.bibleId);
 
     element?.scrollIntoView({ behavior: "smooth", block: "center" });
-  }, []);
+  }, [chosenChapter?.bibleId]);
 
   /**
    * Function to render loading skeleton animation

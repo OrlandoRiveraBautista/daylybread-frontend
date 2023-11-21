@@ -42,7 +42,7 @@ const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
     if (!data) return;
 
     setInputActive(!inputActive);
-  }, [data]);
+  }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSubmit = () => {
     setBookmarkUpdate({

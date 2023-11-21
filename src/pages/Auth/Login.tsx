@@ -52,7 +52,7 @@ const Login: React.FC = () => {
   const [showPass, setShowPass] = useState<boolean>(false);
 
   /** Hooks declaration */
-  const { getLogin, loading, data, error } = useLogin();
+  const { getLogin, loading, data } = useLogin();
 
   /**
    * Function will validate the inputed email or password
@@ -124,7 +124,7 @@ const Login: React.FC = () => {
     if (!data?.login.user?._id) return;
     setUser(data.login.user);
     history.push("/me");
-  }, [data]);
+  }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>

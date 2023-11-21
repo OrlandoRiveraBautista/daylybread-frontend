@@ -13,9 +13,6 @@ import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 /* Components */
 import { SelectedBookmarkModal } from "../Modals";
 
-/* Graphql API/Hooks */
-import { useLazyGetBookmarks } from "../../hooks/UserHooks";
-
 /* Styles */
 import "./BookmarkAssetList.scss";
 
@@ -50,7 +47,8 @@ const BookmarkAssetList: React.FC = () => {
 
   useEffect(() => {
     handleGetBookmarks();
-  }, []); //upon mount
+    //upon mount
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onDismiss = () => {
     setSelectedBookmark(undefined);
