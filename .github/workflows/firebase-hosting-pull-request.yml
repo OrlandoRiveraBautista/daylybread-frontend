@@ -7,6 +7,8 @@ jobs:
   build_and_preview:
     if: "${{ github.event.pull_request.head.repo.full_name == github.repository }}"
     runs-on: ubuntu-latest
+    env:
+      REACT_APP_API_URL: "${{ secrets.PRODUCTION_API_URL }}"
     steps:
       - uses: actions/checkout@v3
       - run: npm ci && npm install -g @ionic/cli && npm run build
