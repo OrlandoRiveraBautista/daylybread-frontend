@@ -1,6 +1,6 @@
 // BreadCrumbs Modal
 #bread-crumbs-modal {
-  --height: 98vh;
+  --height: 98%;
   .selected-indicator {
     display: flex;
     gap: 4px;
@@ -31,7 +31,7 @@
     bottom: 0;
     height: 100%;
     &.max-height {
-      max-height: calc(100% - 100px);
+      max-height: calc(100% - 118px);
     }
     ion-grid {
       padding: 0;

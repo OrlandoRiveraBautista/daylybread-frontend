@@ -129,7 +129,7 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
 
   const getBreakpoints = () => {
     if (navigator.userAgent.includes("iPhone")) {
-      return [0, 0.25, 0.75, 0.98];
+      return [0, 0.25, 0.75, 0.97];
     }
     return [0, 0.25, 0.75, 1];
   };
