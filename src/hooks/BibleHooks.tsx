@@ -117,12 +117,34 @@ export const useGetBooksById = (bibleId: string) => {
   });
 };
 
+export const useLazyGetBookById = () => {
+  const [getBookById, { loading, error, data }] = useLazyQuery(getBooksById);
+
+  return {
+    getBookById,
+    loading,
+    error,
+    data,
+  };
+};
+
 export const useGetChapterById = (bibleId: string) => {
   return useQuery(getChapter, {
     variables: {
       bibleId: bibleId,
     },
   });
+};
+
+export const useLazyGetChapterById = () => {
+  const [getChapterById, { loading, error, data }] = useLazyQuery(getChapter);
+
+  return {
+    getChapterById,
+    loading,
+    error,
+    data,
+  };
 };
 
 /* When using lazy  */

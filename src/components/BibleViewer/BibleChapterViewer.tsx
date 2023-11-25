@@ -66,15 +66,20 @@ const BibleChapterViewer: React.FC = () => {
   const [initialModalBreakpoint, setInitialModalBreakpoint] =
     useState<number>(0.25);
 
-  // api/graphql
+  /* API/GraphQL */
+  // calls the api to get chapterData by id upon local state value chapterId change
   const { data: chapterData } = useGetChapterById(chapterId!);
+  // calls the api to get bookData by id upon local state value bookId change
   const { data: bookData } = useGetBooksById(bookId!);
+  // lazy api call for getting all translation
   const { getAllTranslations, data: translationData } = useLazyGetTranslation();
 
-  // router
+  /* Router */
   const history = useHistory();
   const { currentBibleId } = useParams<BibleChapterViewerUrlParams>();
 
+  /* Side Effects */
+  // checks the urls param [currentBibleId] to set the current bible id in local state
   useEffect(() => {
     if (!currentBibleId) return;
     if (chapterId === currentBibleId) return;
@@ -82,6 +87,7 @@ const BibleChapterViewer: React.FC = () => {
     setChapterId(currentBibleId);
   }, [currentBibleId]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // checks the chapter api call response [chapterData] to set the chapter data into the global state
   useEffect(() => {
     // check if chapter data is empty
     if (!chapterData) return;
@@ -90,29 +96,34 @@ const BibleChapterViewer: React.FC = () => {
     // check if the chapter is the same as the in the context
     if (chosenChapter?.bibleId === chapter.bibleId) return;
 
-    // !-------- check that this doesnt call the api too often
-
     // set new chapter to the context
     setChapter(chapter);
-  }, [chapterData]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
-    if (!chosenChapter) return;
-
-    if (chosenChapter.bibleId.slice(0, -3) !== bookId) {
-      setBookId(chosenChapter.bibleId.slice(0, -3));
+    // check if the chapter's bible's id is not the same as the current chosenBook and set current chapter's book's id
+    if (chapter.bibleId.slice(0, -3) !== chosenBook?.bibleId) {
+      setBookId(chapter.bibleId.slice(0, -3));
     }
 
     // check if the translation is set
     if (!chosenTranslation) {
-      getAllTranslations();
-      let currentTranslation = translationData?.getTranslations.find(
+      if (!translationData) {
+        getAllTranslations();
+        return;
+      }
+      let currentTranslation = translationData.getTranslations.find(
         (translation) =>
-          translation.abbreviation === chosenChapter.translation.abbreviation
+          translation.abbreviation === chapter.translation.abbreviation
       );
       setTranslation(currentTranslation!);
     }
-    history.push(`/read/${chosenChapter?.bibleId}`);
+  }, [chapterData]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // checks for change in the global state for [chosenChapter] and pushes the route with param
+  useEffect(() => {
+    if (!chosenChapter) return;
+
+    // push route to include chapter id
+    history.push(`/read/${chosenChapter.bibleId}`);
   }, [chosenChapter]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // useEffect to set a new book to the context state
@@ -167,6 +178,7 @@ const BibleChapterViewer: React.FC = () => {
 
   // useEffect to call the handleNavAction function whenever a book changes
   useEffect(() => {
+    if (!chosenBook) return;
     handleNavAction();
     handleReset();
   }, [chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps

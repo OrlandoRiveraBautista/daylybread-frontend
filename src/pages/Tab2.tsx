@@ -13,7 +13,7 @@ import {
 import { useAppContext } from "../context/context";
 
 /** Hooks */
-import { useGetBooksById, useGetChapterById } from "../hooks/BibleHooks";
+import { useGetBooksById, useLazyGetChapterById } from "../hooks/BibleHooks";
 
 /* Components */
 import BibleNavModal from "../components/BibleNavModal/BibleNavModal";
@@ -38,7 +38,8 @@ const Tab2: React.FC = () => {
 
   /* API Hooks */
   // getting chapters
-  const { data: chapterData } = useGetChapterById(chosenBook?.bibleId + "001");
+  // const { data: chapterData } = useGetChapterById(chosenBook?.bibleId + "001");
+  const { getChapterById, data: chapterData } = useLazyGetChapterById();
   // getting a book
   const { data: bookData } = useGetBooksById(bookId!);
 
@@ -46,26 +47,37 @@ const Tab2: React.FC = () => {
    * Use Effect for handling changes in translation
    */
   useEffect(() => {
+    if (!chosenTranslation) return;
+
     if (
       !chosenBook ||
-      chosenTranslation?.abbreviation !== chosenBook.translation.abbreviation
+      chosenTranslation.abbreviation !== chosenBook.translation.abbreviation
     ) {
       // check if there is already a chosen chapter
-      setBookId(chosenTranslation?.books[0].bibleId!);
+      setBookId(chosenTranslation.books[0].bibleId!);
     }
   }, [chosenTranslation]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  /**
+   * This side effect runs when the translation changes
+   */
   useEffect(() => {
     if (!chosenTranslation || !bookData) return;
 
-    setBook(bookData?.getBookById);
+    const bookObj = bookData.getBookById;
+
+    getChapterById({
+      variables: { bibleId: bookObj.chapters[0].bibleId },
+    });
+
+    setBook(bookObj);
   }, [bookData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (!chosenBook || !chapterData) return;
+    if (!chapterData) return;
 
     setChapter(chapterData.getChapter);
-  }, [chosenBook, chapterData]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [chapterData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <IonPage>
