@@ -132,6 +132,18 @@ const BibleChapterViewer: React.FC = () => {
     setBook(bookData.getBookById);
   }, [bookData]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => {
+    const chapterViewerWrapper = document.getElementById("chapter-viewer");
+
+    if (chapterViewerWrapper?.style) {
+      if (!openSelectedVersesModal) {
+        chapterViewerWrapper.style.gap = "0px";
+      } else {
+        chapterViewerWrapper.style.gap = "106px";
+      }
+    }
+  }, [openSelectedVersesModal]);
+
   /**
    *  function will check navAction to do something
    *  "previous chapter" will cause the function to set the final chapter in a book. This is useful when a user wants to navigate back one chapter from the begging of another
@@ -334,6 +346,7 @@ const BibleChapterViewer: React.FC = () => {
     if (!openSelectedVersesModal === false) {
       resetVersesInList();
     }
+
     setOpenSelectedVersesModal(!openSelectedVersesModal);
     setInitialModalBreakpoint(0.75);
   };
