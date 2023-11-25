@@ -20,23 +20,29 @@ import {
   useGetBooks,
   useGetBooksById,
   useGetChapterById,
+  useLazyGetChapterById,
 } from "../../hooks/BibleHooks";
 
 export const BooksPicker: React.FC = () => {
-  const { chosenTranslation, setBook, chosenBook } = useAppContext();
+  /* Context and state */
+  const { chosenTranslation, setBook, chosenBook, setChapter } =
+    useAppContext();
   const [bookId, setBookId] = useState<string>(
     chosenBook ? chosenBook.bibleId : ""
   );
 
   /* Queries */
-  // getting books for displaying in the book selector
+  // api call for getting books for displaying in the book selector
   const { loading: booksLoading, data: booksData } = useGetBooks(
     chosenTranslation?._id!
   );
-
-  // api call for chosen book id
+  // api call for getting full book data by id
   const { data: bookData } = useGetBooksById(bookId!);
+  // lazy api call for getting a chapter by id
+  const { getChapterById, data: chapterData } = useLazyGetChapterById();
 
+  /* Side Effects */
+  // checks chosenBooks from context and scrolls the view to the selected book
   useEffect(() => {
     if (!chosenBook?.bibleId) return;
     const element = document.getElementById(chosenBook?.bibleId);
@@ -44,14 +50,27 @@ export const BooksPicker: React.FC = () => {
     element?.scrollIntoView({ behavior: "smooth", block: "center" });
   }, [chosenBook?.bibleId]);
 
+  // checks the book api call response to set the book and call the api to get the first chapter in the book
   useEffect(() => {
     if (!bookData) return;
     if (bookData.getBookById === chosenBook) return; // only update if the chapter has changed
 
     // set chosen book data to global state
     setBook(bookData.getBookById);
+
+    // set to first chapter in the book
+    getChapterById({
+      variables: { bibleId: bookData.getBookById.chapters[0].bibleId },
+    });
     //watch book api data
   }, [bookData]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // checks for the chapter api call response to set the chosen chapter
+  useEffect(() => {
+    if (!chapterData) return;
+
+    setChapter(chapterData.getChapter);
+  }, [chapterData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /**
    * Function to render loading skeleton animation

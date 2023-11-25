@@ -22,7 +22,6 @@ interface IBibleTranslationModal {
 const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
   isOpen,
   onDismiss,
-  selectedText,
 }) => {
   const { setTranslation } = useAppContext();
 
