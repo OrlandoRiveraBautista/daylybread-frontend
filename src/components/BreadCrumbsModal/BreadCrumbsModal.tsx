@@ -21,7 +21,7 @@ import SelectedTextQuickActions from "./SelectedTextQuickActions/SelectedTextQui
 import { useAppContext } from "../../context/context";
 
 /* Query Hooks */
-import { useOpenAI } from "../../hooks/OpenAIHooks";
+import { useOpenAI, useOpenAIResponseStream } from "../../hooks/OpenAIHooks";
 
 /* Styles */
 import "../BibleNavModal/BibleNavModal.scss";
@@ -62,6 +62,7 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
   // context values
   const { chosenChapter, chosenBook, selectedVerseList } = useAppContext();
   const openAIResponse = useOpenAI(inputPrompt);
+  const { data: openAIReponseStream } = useOpenAIResponseStream();
 
   useEffect(() => {
     // exit function if there are no selected verses
@@ -86,14 +87,30 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
     if (!openAIResponse.data?.getOpen) return;
     const openAIMessage = openAIResponse.data.getOpen;
 
-    const messageObject: IMessagesObject = {
-      message: openAIMessage,
-      sender: "BreadCrumbs",
-    };
+    messages[messages.length - 1].message = openAIMessage;
 
-    setMessages((prevMessage) => [...prevMessage, messageObject]);
+    setMessages(messages);
     setInputPrompt("");
   }, [openAIResponse]);
+
+  useEffect(() => {
+    if (openAIReponseStream?.aiChatReponseUpdated === undefined) return;
+    const streamResponse = openAIReponseStream?.aiChatReponseUpdated;
+
+    if (messages[messages.length - 1].sender === "You") {
+      const messageObject: IMessagesObject = {
+        message: streamResponse,
+        sender: "BreadCrumbs",
+      };
+      setMessages((prevMessage) => [...prevMessage, messageObject]);
+      return;
+    }
+    const temp = [...messages];
+
+    temp[temp.length - 1].message += streamResponse;
+
+    setMessages(temp);
+  }, [openAIReponseStream]);
 
   const handleSubmit = (value: string) => {
     let inputValue = value;
