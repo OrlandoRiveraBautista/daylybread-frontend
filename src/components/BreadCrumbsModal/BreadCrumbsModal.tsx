@@ -57,8 +57,6 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
   // reference
   const breadCrumbsModalGrid = useRef<HTMLIonGridElement>(null);
 
-  // const chatPromptResponse = useOpenAI(inputPrompt);
-
   // context values
   const { chosenChapter, chosenBook, selectedVerseList } = useAppContext();
   const openAIResponse = useOpenAI(inputPrompt);
@@ -91,7 +89,7 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
 
     setMessages(messages);
     setInputPrompt("");
-  }, [openAIResponse]);
+  }, [openAIResponse]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (openAIReponseStream?.aiChatReponseUpdated === undefined) return;
@@ -110,7 +108,7 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
     temp[temp.length - 1].message += streamResponse;
 
     setMessages(temp);
-  }, [openAIReponseStream]);
+  }, [openAIReponseStream]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSubmit = (value: string) => {
     let inputValue = value;
