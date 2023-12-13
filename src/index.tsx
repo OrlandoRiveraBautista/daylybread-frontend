@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
+import { ContextProvider } from "./context/context";
 
 /* GraphQL Imports */
 import {
@@ -10,17 +11,38 @@ import {
   InMemoryCache,
   ApolloProvider,
   createHttpLink,
+  split,
 } from "@apollo/client";
-import { ContextProvider } from "./context/context";
+import { getMainDefinition } from "@apollo/client/utilities";
+import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
+import { createClient } from "graphql-ws";
 
-const link = createHttpLink({
+const wsLink = new GraphQLWsLink(
+  createClient({
+    url: process.env.REACT_APP_API_WS_URL!,
+  })
+);
+
+const httpLink = createHttpLink({
   uri: process.env.REACT_APP_API_URL, // will need to make it an environmet variable
   credentials: "include",
 });
 
+const splitLink = split(
+  ({ query }) => {
+    const definition = getMainDefinition(query);
+    return (
+      definition.kind === "OperationDefinition" &&
+      definition.operation === "subscription"
+    );
+  },
+  wsLink,
+  httpLink
+);
+
 const client = new ApolloClient({
   cache: new InMemoryCache(),
-  link,
+  link: splitLink,
 });
 
 const container = document.getElementById("root");
