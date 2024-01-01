@@ -95,7 +95,12 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
     if (openAIReponseStream?.aiChatReponseUpdated === undefined) return;
     const streamResponse = openAIReponseStream?.aiChatReponseUpdated;
 
-    if (messages[messages.length - 1].sender === "You") {
+    if (!messages.length) return;
+
+    if (
+      messages[messages.length - 1] &&
+      messages[messages.length - 1].sender === "You"
+    ) {
       const messageObject: IMessagesObject = {
         message: streamResponse,
         sender: "BreadCrumbs",
