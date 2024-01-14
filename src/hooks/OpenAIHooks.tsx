@@ -1,11 +1,11 @@
 import { gql } from "../__generated__/gql";
-import { useQuery, useSubscription } from "@apollo/client";
+import { useLazyQuery, useSubscription } from "@apollo/client";
 
 /* Queries */
 // Name should be changed to getChatGpt
-const getOpenAI = gql(`
-    query OpenAi($promptText: String!) {
-        getOpen(promptText: $promptText)
+const GET_CHAT_GPT = gql(`
+    query OpenAi($options: GptArgs!) {
+        getOpen(options: $options)
     }
 `);
 
@@ -15,14 +15,15 @@ const OPEN_AI_STREAM_RESPONSE = gql(`
   }
 `);
 
-export const useOpenAI = (promptText: string) => {
-  const response = useQuery(getOpenAI, {
-    variables: {
-      promptText: promptText,
-    },
-  });
+export const useLazyOpenAI = () => {
+  const [getChatGpt, { loading, error, data }] = useLazyQuery(GET_CHAT_GPT);
 
-  return response;
+  return {
+    getChatGpt,
+    loading,
+    error,
+    data,
+  };
 };
 
 export const useOpenAIResponseStream = () => {
