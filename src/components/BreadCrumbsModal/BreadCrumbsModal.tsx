@@ -21,7 +21,10 @@ import SelectedTextQuickActions from "./SelectedTextQuickActions/SelectedTextQui
 import { useAppContext } from "../../context/context";
 
 /* Query Hooks */
-import { useOpenAI, useOpenAIResponseStream } from "../../hooks/OpenAIHooks";
+import {
+  useLazyOpenAI,
+  useOpenAIResponseStream,
+} from "../../hooks/OpenAIHooks";
 
 /* Styles */
 import "../BibleNavModal/BibleNavModal.scss";
@@ -48,7 +51,6 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
   initialBreakpoint,
 }: IBreadCrumbsModal) => {
   // state
-  const [inputPrompt, setInputPrompt] = useState<string>("");
   const [messages, setMessages] = useState<IMessagesObject[]>([]);
   const [chosenTextVerbage, setChosenTextVerbage] = useState<string>();
   const [useChosenTextVerbage, setUseChosenTextVerbage] =
@@ -58,8 +60,9 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
   const breadCrumbsModalGrid = useRef<HTMLIonGridElement>(null);
 
   // context values
-  const { chosenChapter, chosenBook, selectedVerseList } = useAppContext();
-  const openAIResponse = useOpenAI(inputPrompt);
+  const { chosenChapter, chosenBook, selectedVerseList, deviceInfo } =
+    useAppContext();
+  const { getChatGpt, data } = useLazyOpenAI();
   const { data: openAIReponseStream } = useOpenAIResponseStream();
 
   useEffect(() => {
@@ -81,16 +84,17 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
   }, [selectedVerseList, selectedText]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (openAIResponse.loading) return;
-    if (!openAIResponse.data?.getOpen) return;
-    const openAIMessage = openAIResponse.data.getOpen;
+    if (!data) return;
+    if (!data?.getOpen) return;
+    const temp = [...messages];
+    const openAIMessage = data.getOpen;
 
-    messages[messages.length - 1].message = openAIMessage;
+    temp[temp.length - 1].message = openAIMessage;
 
-    setMessages(messages);
-    setInputPrompt("");
-  }, [openAIResponse]); // eslint-disable-line react-hooks/exhaustive-deps
+    setMessages(temp);
+  }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // use effect for the stream of response
   useEffect(() => {
     if (openAIReponseStream?.aiChatReponseUpdated === undefined) return;
     const streamResponse = openAIReponseStream?.aiChatReponseUpdated;
@@ -113,6 +117,7 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
     temp[temp.length - 1].message += streamResponse;
 
     setMessages(temp);
+    return;
   }, [openAIReponseStream]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSubmit = (value: string) => {
@@ -120,13 +125,22 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
     if (useChosenTextVerbage) {
       inputValue += chosenTextVerbage;
     }
-    setInputPrompt(inputValue);
     const messageObject: IMessagesObject = {
       message: inputValue,
       sender: "You",
     };
-
     setMessages((prevMessage) => [...prevMessage, messageObject]);
+
+    getChatGpt({
+      variables: {
+        options: {
+          promptText: inputValue,
+          deviceId: deviceInfo!.id,
+        },
+      },
+    });
+
+    return;
   };
 
   /**
