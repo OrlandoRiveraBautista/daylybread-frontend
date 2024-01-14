@@ -153,24 +153,34 @@ const App: React.FC = () => {
         {localStorage && hasSession ? (
           !firstTimeFlag ? (
             <IonTabs>
-              {/* Tabs Router */}
+              {/* App Router */}
               <IonRouterOutlet animated={false}>
-                <Route exact path="/">
-                  <Redirect to="/read" />
-                </Route>
-                {/* <Route exact path="/home">
+                {/* Switch needs to wrap all the routes */}
+                {/* 
+                  Anything inside of the switch can be used with the
+                  useHistory hook, anything outside will now.
+                 */}
+                <Switch>
+                  {/* Default route */}
+                  <Route exact path="/">
+                    <Redirect to="/read" />
+                  </Route>
+
+                  {/* Tab Routes */}
+                  {/* <Route exact path="/home">
                     <Tab1 />
                   </Route> */}
-                <Route exact path="/read">
-                  <Tab2 />
-                </Route>
-                <Route exact path="/read/:currentBibleId">
-                  <Tab2 />
-                </Route>
-                <Switch>
+                  <Route exact path="/read">
+                    <Tab2 />
+                  </Route>
+                  <Route exact path="/read/:currentBibleId">
+                    <Tab2 />
+                  </Route>
                   <Route path="/me">
                     <Tab3 />
                   </Route>
+
+                  {/* Auth routes */}
                   <Route path="/login">
                     <Auth />
                   </Route>
@@ -182,7 +192,8 @@ const App: React.FC = () => {
                   </Route>
                 </Switch>
               </IonRouterOutlet>
-              {/* Tabs UI */}
+
+              {/* Tab Bar UI */}
               <IonTabBar slot="bottom">
                 {/* <IonTabButton tab="tab1" href="/home">
                 <IonIcon icon={ellipse} />

@@ -9,7 +9,7 @@ import { useAppContext } from "../../../context/context";
 import { getSelectedText } from "../../../utils/support";
 
 /* Components */
-import BookmarkModal from "../../Modals/BookmarkModals/BookmarkModal";
+import { BookmarkModal } from "../../Modals";
 
 const SendTextQuickActions: React.FC = () => {
   //global state
