@@ -52,7 +52,7 @@ setupIonicReact({ mode: "md" });
 
 const App: React.FC = () => {
   const { localStorage, init } = Storage();
-  const { setUser } = useAppContext();
+  const { setUser, setDevice } = useAppContext();
   const [hasSession, setHasSession] = useState<boolean>(true);
   const [firstTimeFlag, setFirstTimeFlag] = useState<boolean>(false);
 
@@ -108,7 +108,13 @@ const App: React.FC = () => {
    * This function will only be called on the first time a user has come to the site
    */
   const setSession = () => {
-    localStorage.set("session", { session: true, firstTime: true }); // set the local storage session
+    const deviceId = crypto.randomUUID();
+    localStorage.set("session", {
+      session: true,
+      firstTime: true,
+      deviceId: deviceId,
+    }); // set the local storage session
+    setDevice({ id: deviceId });
     setHasSession(true); // set hasSession to true
   };
 
@@ -118,12 +124,21 @@ const App: React.FC = () => {
   const getSession = async () => {
     // look for a session
     const val = await localStorage.get("session");
+    // check if there is a session
     if (!val) {
       setHasSession(false);
       setFirstTimeFlag(true);
     }
+    /**
+     * ! This will be deleted later, for now we need to check if the deviceId has been set so that the ai works properly
+     */
+    if (!val.deviceId) {
+      val.deviceId = crypto.randomUUID();
+      localStorage.set("session", val);
+    }
     setHasSession(val.session); // set hasSession depending on the response
     setFirstTimeFlag(val.firstTime);
+    setDevice({ id: val.deviceId });
     return val; // return the same just in case
   };
 

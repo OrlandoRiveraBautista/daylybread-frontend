@@ -11,6 +11,7 @@ import {
   IChapterInterface,
   IVerseInterface,
 } from "../interfaces/BibleInterfaces";
+import { IDeviceInfo } from "../interfaces/AuthInterfaces";
 /**
  * !Potentially we should start using the graphql types that are being generated from the backend
  * Unless it is unneccessary
@@ -38,6 +39,7 @@ const context = constate(() => {
 
   // User State
   const [userInfo, setUserInfo] = useState<User>();
+  const [deviceInfo, setDeviceInfo] = useState<IDeviceInfo>();
 
   // Assets State
   const [selectedUserAssets, setSelectedUserAssets] = useState<Bookmark[]>([]);
@@ -100,6 +102,13 @@ const context = constate(() => {
   };
 
   /**
+   * Sets the device info to the context
+   */
+  const setDevice = (dto: IDeviceInfo) => {
+    setDeviceInfo(dto);
+  };
+
+  /**
    * Adds a user asset to the selected asset list
    */
   const addUserAssetToList = (dto: Bookmark) => {
@@ -148,6 +157,7 @@ const context = constate(() => {
     chosenBook,
     chosenChapter,
     userInfo,
+    deviceInfo,
     selectedVerseList,
     selectedUserAssets,
     bookmarksResponse,
@@ -157,6 +167,7 @@ const context = constate(() => {
     setBook,
     setChapter,
     setUser,
+    setDevice,
     addVerseToList,
     removeVerseFromList,
     resetVersesInList,
