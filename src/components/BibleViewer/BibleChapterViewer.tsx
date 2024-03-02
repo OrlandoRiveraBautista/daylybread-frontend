@@ -10,9 +10,12 @@ import {
 import { chevronBack, chevronForward } from "ionicons/icons";
 import { useHistory, useParams } from "react-router";
 
+/* Components */
+import BreadCrumbsModal from "../BreadCrumbsModal/BreadCrumbsModal";
+import BibleTranslationModal from "../BibleNavModal/BibleTranslationModal";
+
 /* Context */
 import { useAppContext } from "../../context/context";
-import BreadCrumbsModal from "../BreadCrumbsModal/BreadCrumbsModal";
 
 /* Styles */
 import "./BibleChapterViewer.scss";
@@ -29,8 +32,7 @@ import {
 } from "../../hooks/BibleHooks";
 
 /* Utils */
-import { zeroPad } from "../../utils/support";
-import BibleTranslationModal from "../BibleNavModal/BibleTranslationModal";
+import { zeroPad, timestampToSeconds } from "../../utils/support";
 
 /* Types */
 type BibleChapterViewerUrlParams = {
@@ -44,6 +46,7 @@ const BibleChapterViewer: React.FC = () => {
     chosenBook,
     chosenTranslation,
     selectedVerseList,
+    selectedAudioCurrentTime,
     setChapter,
     setBook,
     setTranslation,
@@ -131,18 +134,6 @@ const BibleChapterViewer: React.FC = () => {
     if (!bookData?.getBookById) return;
     setBook(bookData.getBookById);
   }, [bookData]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    const chapterViewerWrapper = document.getElementById("chapter-viewer");
-
-    if (chapterViewerWrapper?.style) {
-      if (!openSelectedVersesModal) {
-        chapterViewerWrapper.style.gap = "0px";
-      } else {
-        chapterViewerWrapper.style.gap = "106px";
-      }
-    }
-  }, [openSelectedVersesModal]);
 
   /**
    *  function will check navAction to do something
@@ -367,11 +358,27 @@ const BibleChapterViewer: React.FC = () => {
                 onClick={() => handleMouseDown(verse.bibleId)}
                 id={verse.bibleId}
                 key={verse.bibleId}
-                className={
+                className={`${
                   selectedVerseList.some((sv) => sv.bibleId === verse.bibleId)
                     ? "verse-selected"
                     : ""
-                }
+                } ${
+                  selectedAudioCurrentTime &&
+                  selectedAudioCurrentTime >=
+                    timestampToSeconds(
+                      verse.audioTimestamp.start.minutes +
+                        ":" +
+                        verse.audioTimestamp.start.seconds
+                    ) &&
+                  selectedAudioCurrentTime <
+                    timestampToSeconds(
+                      verse.audioTimestamp.end.minutes +
+                        ":" +
+                        verse.audioTimestamp.end.seconds
+                    )
+                    ? "currently-playing-verse"
+                    : ""
+                }`}
               >
                 <b>{verse.verse}:</b> {verse.text}
               </span>
@@ -399,36 +406,38 @@ const BibleChapterViewer: React.FC = () => {
         )}
       </div>
       {chosenChapter ? (
-        <IonFab>
-          {/* Back button */}
-          <IonFabButton color="light" size="small" className="right">
-            <IonIcon
-              icon={chevronBack}
-              onClick={() => backChapter(chosenChapter.bibleId)}
-            />
-          </IonFabButton>
+        <div className="chapter-viewer-control-container">
+          <IonFab>
+            {/* Back button */}
+            <IonFabButton color="light" size="small" className="right">
+              <IonIcon
+                icon={chevronBack}
+                onClick={() => backChapter(chosenChapter.bibleId)}
+              />
+            </IonFabButton>
 
-          {/* Button to open the bible assistant modal */}
-          <IonFabButton
-            color="light"
-            size="small"
-            onClick={handleOpenVerseModal}
-          >
-            <IonIcon
-              class="bread-crumbs-icon"
+            {/* Button to open the bible assistant modal */}
+            <IonFabButton
               color="light"
-              icon={BreadCrumbsIcon}
-            />
-          </IonFabButton>
+              size="small"
+              onClick={handleOpenVerseModal}
+            >
+              <IonIcon
+                class="bread-crumbs-icon"
+                color="light"
+                icon={BreadCrumbsIcon}
+              />
+            </IonFabButton>
 
-          {/* Forward button */}
-          <IonFabButton color="light" size="small" className="right">
-            <IonIcon
-              icon={chevronForward}
-              onClick={() => nextChapter(chosenChapter.bibleId)}
-            />
-          </IonFabButton>
-        </IonFab>
+            {/* Forward button */}
+            <IonFabButton color="light" size="small" className="right">
+              <IonIcon
+                icon={chevronForward}
+                onClick={() => nextChapter(chosenChapter.bibleId)}
+              />
+            </IonFabButton>
+          </IonFab>
+        </div>
       ) : null}
 
       {/* bible assistant modal */}

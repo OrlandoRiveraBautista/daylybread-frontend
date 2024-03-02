@@ -5,52 +5,70 @@
   flex-direction: column;
   justify-content: space-between;
   min-height: 100%;
-}
-.text-viewer {
-  position: relative;
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  .verse-selected {
-    text-decoration: underline;
-    text-decoration-thickness: 2px;
-    text-decoration-color: $color-primary;
+  gap: 90px;
+  .text-viewer {
+    position: relative;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    .chapter-number {
+      font-size: 24px;
+      margin-right: 8px;
+    }
+
+    .helper-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 120px;
+    }
+    .helper-container ion-img {
+      width: 81px;
+    }
+    .helper-container ion-text {
+      font-weight: 600;
+    }
+
+    .verse-selected {
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-decoration-color: $color-primary;
+    }
+
+    .currently-playing-verse {
+      background: fade-out($color-primary, 0.5);
+      border-radius: 12px;
+      padding: 8px;
+    }
   }
 }
-.chapter-number {
-  font-size: 24px;
-  margin-right: 8px;
-}
-#chapter-viewer ion-fab {
+
+.chapter-viewer-control-container {
   position: sticky;
   bottom: 0;
   display: flex;
-  justify-content: space-between;
-}
-#chapter-viewer ion-fab-button {
-  margin: 0;
-
-  --box-shadow: 0px 4px 8px 3px rgba(0, 0, 0, 0.15),
-    0px 1px 3px rgba(0, 0, 0, 0.3);
-  --border-radius: 12px;
-
-  .bread-crumbs-icon {
-    fill: var(--ion-color-primary);
-  }
-}
-
-.helper-container {
-  display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 120px;
-}
-.helper-container ion-img {
-  width: 81px;
-}
-.helper-container ion-text {
-  font-weight: 600;
+  gap: 4px;
+
+  ion-fab {
+    position: sticky;
+    bottom: 0;
+    display: flex;
+    justify-content: space-between;
+  }
+  ion-fab-button {
+    margin: 0;
+
+    --box-shadow: 0px 4px 8px 3px rgba(0, 0, 0, 0.15),
+      0px 1px 3px rgba(0, 0, 0, 0.3);
+    --border-radius: 12px;
+
+    .bread-crumbs-icon {
+      fill: var(--ion-color-primary);
+    }
+  }
 }
