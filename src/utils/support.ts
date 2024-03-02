@@ -151,10 +151,26 @@ const getVerseVerbageByVerses = (verses: Verse[]) => {
   return text;
 };
 
+/**
+ * Function to turn a timestamp like minutes:seconds into seconds
+ */
+const timestampToSeconds = (timestamp: string) => {
+  // Split the timestamp into minutes and seconds
+  const [minutesStr, secondsStr] = timestamp.split(":");
+  const minutes = parseInt(minutesStr, 10); // Convert minutes string to integer
+  const seconds = parseInt(secondsStr, 10); // Convert seconds string to integer
+
+  // Convert minutes to seconds and add seconds
+  const totalTimeInSeconds = minutes * 60 + seconds;
+
+  return totalTimeInSeconds;
+};
+
 export {
   zeroPad,
   clusterNumbers,
   getCitationVerbage,
   getSelectedText,
   getVerseVerbageByVerses,
+  timestampToSeconds,
 };
