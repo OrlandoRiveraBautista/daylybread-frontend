@@ -16,7 +16,7 @@ import { IDeviceInfo } from "../interfaces/AuthInterfaces";
  * !Potentially we should start using the graphql types that are being generated from the backend
  * Unless it is unneccessary
  */
-import { Bookmark, User } from "../__generated__/graphql";
+import { Bookmark, User, Chapter } from "../__generated__/graphql";
 
 const context = constate(() => {
   /** API/GraphQL Decunstruction */
@@ -32,7 +32,7 @@ const context = constate(() => {
   // Bible State
   const [chosenTranslation, setChosenTranslation] = useState<ITranslation>();
   const [chosenBook, setChosenBook] = useState<IBookInterface>();
-  const [chosenChapter, setChosenChapter] = useState<IChapterInterface>();
+  const [chosenChapter, setChosenChapter] = useState<Chapter>();
   const [selectedVerseList, setSelectedVerseList] = useState<IVerseInterface[]>(
     []
   );
@@ -44,6 +44,9 @@ const context = constate(() => {
   // Assets State
   const [selectedUserAssets, setSelectedUserAssets] = useState<Bookmark[]>([]);
 
+  // Media state
+  const [selectedAudioCurrentTime, setSelectedAudioCurrentTime] =
+    useState<number>();
   /**
    * Sets the bible translation to global state
    */
@@ -61,7 +64,7 @@ const context = constate(() => {
   /**
    * Sets the bible chapter to global state
    */
-  const setChapter = (dto: IChapterInterface) => {
+  const setChapter = (dto: Chapter) => {
     setChosenChapter(dto);
   };
 
@@ -152,6 +155,10 @@ const context = constate(() => {
     getLazyBookmarks();
   };
 
+  const setAudioCurrentTime = (dto: number) => {
+    setSelectedAudioCurrentTime(dto);
+  };
+
   return {
     chosenTranslation,
     chosenBook,
@@ -163,6 +170,7 @@ const context = constate(() => {
     bookmarksResponse,
     bookmarksLoading,
     bookmarksError,
+    selectedAudioCurrentTime,
     setTranslation,
     setBook,
     setChapter,
@@ -176,6 +184,7 @@ const context = constate(() => {
     resetUserAssetList,
     isUserAssetInList,
     handleGetBookmarks,
+    setAudioCurrentTime,
   };
 });
 
