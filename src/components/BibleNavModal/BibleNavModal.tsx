@@ -42,7 +42,7 @@ const BibleNavModal: React.FC<IBibleNavModal> = ({ isOpen, onDismiss }) => {
     };
 
     const render = Object.keys(stages).map((stage) => (
-      <IonCol>
+      <IonCol key={stage}>
         <IonCard
           button
           onClick={() => setNavTab(stage as bibleNavOptions)}

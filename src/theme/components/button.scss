@@ -10,7 +10,8 @@ ion-button {
 
   &.translation-button {
     font-size: 14px;
-    --border-color: #73777f !important;
+    background-color: var(--ion-background-variant);
+    border-radius: 64px;
     height: 40px !important;
     max-height: 44px;
   }

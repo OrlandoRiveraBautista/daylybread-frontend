@@ -107,8 +107,8 @@ const Tab2: React.FC = () => {
           <IonButtons slot="end">
             <IonButton
               shape="round"
-              fill="outline"
-              color="primary"
+              fill="clear"
+              color="dark"
               size="large"
               onClick={() => setOpenModal(!openModal)}
               id="open-modal"
