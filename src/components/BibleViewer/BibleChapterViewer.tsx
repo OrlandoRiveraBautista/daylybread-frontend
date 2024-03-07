@@ -387,8 +387,8 @@ const BibleChapterViewer: React.FC = () => {
             <IonText>Please pick a translation to begin</IonText>
             <IonButton
               shape="round"
-              fill="outline"
-              color="primary"
+              fill="clear"
+              color="dark"
               size="large"
               onClick={handleOpenTranslationModal}
               className="translation-button"
