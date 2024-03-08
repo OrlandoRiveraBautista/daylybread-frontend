@@ -19,6 +19,7 @@ import { useGetBooksById, useLazyGetChapterById } from "../hooks/BibleHooks";
 import BibleNavModal from "../components/BibleNavModal/BibleNavModal";
 import BibleTranslationModal from "../components/BibleNavModal/BibleTranslationModal";
 import BibleChapterViewer from "../components/BibleViewer/BibleChapterViewer";
+import Player from "../components/Player/Player";
 
 /* Styles */
 import "./Tab2.scss";
@@ -28,7 +29,7 @@ import { caretDownOutline } from "ionicons/icons";
 
 const Tab2: React.FC = () => {
   // Context
-  const { chosenTranslation, chosenBook, setBook, setChapter } =
+  const { chosenTranslation, chosenChapter, chosenBook, setBook, setChapter } =
     useAppContext();
 
   /* States */
@@ -118,6 +119,7 @@ const Tab2: React.FC = () => {
                 ? chosenTranslation.abbreviation
                 : "Pick translation"}
             </IonButton>
+            <Player src={chosenChapter?.audioLink} type="button" />
           </IonButtons>
         </IonToolbar>
       </IonHeader>

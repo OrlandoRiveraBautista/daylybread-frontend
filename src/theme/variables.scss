@@ -63,6 +63,9 @@ $color-light-contrast-rgb: 0, 0, 0;
 $color-light-shade: #d7d8da;
 $color-light-tint: #f5f6f9;
 
+$ion-color-primary-fixed-dim: #a2c9ff;
+$ion-color-primary-fixed-variant: #004881;
+
 /** Font Type **/
 $font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Roboto",
   sans-serif;
@@ -149,6 +152,9 @@ http://ionicframework.com/docs/theming/ */
   --ion-color-light-contrast-rgb: 0, 0, 0;
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
+
+  --ion-color-primary-fixed-dim: #a2c9ff;
+  --ion-color-primary-fixed-variant: #004881;
 
   /** Font Type **/
   --ion-font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue",

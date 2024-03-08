@@ -52,10 +52,21 @@ const getChapter = gql(`
       chapterNumber
       bibleId
       bookName
+      audioLink
       verses {
         verse
         bibleId
         text
+        audioTimestamp {
+          start {
+            minutes
+            seconds
+          }
+          end {
+            minutes
+            seconds
+          }
+        }
       }
       translation {
         abbreviation
