@@ -17,6 +17,9 @@ import {
 /* Components */
 import Skeleton from "../Loading/Skeleton";
 
+/* Context */
+import { useAppContext } from "../../context/context";
+
 /* GraphQL */
 import { useLazySearchListOfLanguages } from "../../hooks/BibleBrainHooks";
 
@@ -24,7 +27,9 @@ import { useLazySearchListOfLanguages } from "../../hooks/BibleBrainHooks";
 import "./BibleSearchLanguages.scss";
 
 const BibleSearchLanguages: React.FC = () => {
-  // lazy api call for getting a chapter by id
+  const { setBibleLanguage } = useAppContext();
+
+  // lazy api call to search languages
   const { searchListOfLanguages, data, error, loading } =
     useLazySearchListOfLanguages();
 
@@ -32,14 +37,9 @@ const BibleSearchLanguages: React.FC = () => {
     e: IonSearchbarCustomEvent<SearchbarInputEventDetail>
   ) => {
     const { value } = e.detail;
-    console.log(value);
 
     searchListOfLanguages({ variables: { options: { search: value } } });
   };
-
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
 
   /**
    * Function to render loading skeleton animation
@@ -50,9 +50,7 @@ const BibleSearchLanguages: React.FC = () => {
     const items = [];
     for (let i = 0; i < 10; i++) {
       items.push(
-        <>
-          <Skeleton height="66px" width="100%" shape="square" />
-        </>
+        <Skeleton height="66px" width="100%" shape="square" key={i} />
       );
     }
 
@@ -80,7 +78,7 @@ const BibleSearchLanguages: React.FC = () => {
               <IonItem
                 button
                 key={index}
-                // onClick={() => setTranslation(translation)}
+                onClick={() => setBibleLanguage(lang)}
               >
                 <IonLabel>
                   <h2>{lang.name}</h2>

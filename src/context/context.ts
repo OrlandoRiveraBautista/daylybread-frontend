@@ -16,7 +16,7 @@ import { IDeviceInfo } from "../interfaces/AuthInterfaces";
  * !Potentially we should start using the graphql types that are being generated from the backend
  * Unless it is unneccessary
  */
-import { Bookmark, User } from "../__generated__/graphql";
+import { Bookmark, User, BbLanguage } from "../__generated__/graphql";
 
 const context = constate(() => {
   /** API/GraphQL Decunstruction */
@@ -30,6 +30,7 @@ const context = constate(() => {
 
   /** State declaration */
   // Bible State
+  const [chosenLanguage, setChosenLanguage] = useState<BbLanguage>();
   const [chosenTranslation, setChosenTranslation] = useState<ITranslation>();
   const [chosenBook, setChosenBook] = useState<IBookInterface>();
   const [chosenChapter, setChosenChapter] = useState<IChapterInterface>();
@@ -43,6 +44,13 @@ const context = constate(() => {
 
   // Assets State
   const [selectedUserAssets, setSelectedUserAssets] = useState<Bookmark[]>([]);
+
+  /**
+   * Sets the bible translation to global state
+   */
+  const setBibleLanguage = (dto: BbLanguage) => {
+    setChosenLanguage(dto);
+  };
 
   /**
    * Sets the bible translation to global state
@@ -153,6 +161,7 @@ const context = constate(() => {
   };
 
   return {
+    chosenLanguage,
     chosenTranslation,
     chosenBook,
     chosenChapter,
@@ -163,6 +172,7 @@ const context = constate(() => {
     bookmarksResponse,
     bookmarksLoading,
     bookmarksError,
+    setBibleLanguage,
     setTranslation,
     setBook,
     setChapter,
