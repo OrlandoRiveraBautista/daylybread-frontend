@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   IonButton,
   IonContent,
+  IonHeader,
   IonItem,
   IonLabel,
   IonList,
@@ -17,6 +18,7 @@ import { useAppContext } from "../../context/context";
 
 /* GraphQL */
 import { useGetTranslation } from "../../hooks/BibleHooks";
+import { useLazyGetListOfBibles } from "../../hooks/BibleBrainHooks";
 
 /**
  * Interface for the BreadCrumbs modal
@@ -34,10 +36,27 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
   isOpen,
   onDismiss,
 }) => {
-  const { setTranslation } = useAppContext();
+  const { setBible, chosenLanguage, chosenBible } = useAppContext();
 
   /* Queries */
   const { data: translationData } = useGetTranslation();
+  const { getListOfBibles, data: biblesData } = useLazyGetListOfBibles();
+
+  useEffect(() => {
+    if (!chosenLanguage) return;
+
+    getListOfBibles({
+      variables: {
+        options: {
+          languageCode: chosenLanguage.id.toString(),
+        },
+      },
+    });
+  }, [chosenLanguage]);
+
+  useEffect(() => {
+    console.log(chosenBible);
+  }, [chosenBible]);
 
   // function to render modal options
   const renderModalOptions = () => {
@@ -45,31 +64,33 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
 
     return (
       <IonList>
-        {translationData?.getTranslations.map((translation, index) => (
-          <IonItem
-            button
-            key={index}
-            onClick={() => setTranslation(translation)}
-          >
-            <IonLabel>
-              <h2>{translation.name}</h2>
-              <p>{translation.language}</p>
-            </IonLabel>
-          </IonItem>
-        ))}
+        {biblesData ? (
+          biblesData.getListOFBibles.data.map((bible, index) => (
+            <IonItem button key={index} onClick={() => setBible(bible)}>
+              <IonLabel>
+                <h2>{bible.name}</h2>
+                <p>Date: {bible.date}</p>
+              </IonLabel>
+            </IonItem>
+          ))
+        ) : (
+          <div className="ion-text-center">Please select a language</div>
+        )}
       </IonList>
     );
   };
 
   return (
     <IonModal
-      initialBreakpoint={0.5}
-      breakpoints={[0, 0.25, 0.5, 0.75]}
+      initialBreakpoint={0.75}
+      breakpoints={[0, 0.75, 1]}
       isOpen={isOpen}
       onDidDismiss={onDismiss}
     >
-      <IonContent className="ion-padding">
-        <IonTitle className="ion-text-center">Bibles</IonTitle>
+      <IonHeader className="ion-padding">
+        <IonTitle className="ion-text-center">
+          {chosenLanguage ? chosenLanguage.bibles : null} Bibles
+        </IonTitle>
         <IonButton
           shape="round"
           fill="clear"
@@ -78,15 +99,15 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
           id="select-language"
           className="flat full-width"
         >
-          Language:
+          Language: {chosenLanguage ? chosenLanguage.name : null}
         </IonButton>
-        {renderModalOptions()}
-      </IonContent>
+      </IonHeader>
+      <IonContent className="ion-padding">{renderModalOptions()}</IonContent>
 
       {/* Languages Modal */}
       <IonModal
         initialBreakpoint={0.75}
-        // breakpoints={[0, 0.25, 0.5, 0.75]}
+        breakpoints={[0, 0.75, 1]}
         trigger="select-language"
       >
         <BibleSearchLanguages />
