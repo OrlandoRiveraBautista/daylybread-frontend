@@ -384,7 +384,7 @@ const BibleChapterViewer: React.FC = () => {
               alt="Pattern image"
               className="helper-image"
             />
-            <IonText>Please pick a translation to begin</IonText>
+            <IonText>Please pick a bible to begin</IonText>
             <IonButton
               shape="round"
               fill="clear"
@@ -393,7 +393,7 @@ const BibleChapterViewer: React.FC = () => {
               onClick={handleOpenTranslationModal}
               className="translation-button"
             >
-              {chosenTranslation?.abbreviation ?? "Pick translation"}
+              {chosenTranslation?.abbreviation ?? "Pick bible"}
             </IonButton>
           </div>
         )}

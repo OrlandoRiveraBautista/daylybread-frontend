@@ -116,7 +116,7 @@ const Tab2: React.FC = () => {
             >
               {chosenTranslation
                 ? chosenTranslation.abbreviation
-                : "Pick translation"}
+                : "Pick bible"}
             </IonButton>
           </IonButtons>
         </IonToolbar>
