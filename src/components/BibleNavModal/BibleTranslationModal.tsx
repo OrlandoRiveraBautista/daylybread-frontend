@@ -54,10 +54,6 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
     });
   }, [chosenLanguage]);
 
-  useEffect(() => {
-    console.log(chosenBible);
-  }, [chosenBible]);
-
   // function to render modal options
   const renderModalOptions = () => {
     if (!translationData) return; // dont show anything if no data is present
