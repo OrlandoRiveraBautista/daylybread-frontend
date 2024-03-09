@@ -1,5 +1,16 @@
 import React from "react";
-import { IonContent, IonItem, IonLabel, IonList, IonModal } from "@ionic/react";
+import {
+  IonButton,
+  IonContent,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonModal,
+  IonTitle,
+} from "@ionic/react";
+
+/* Components */
+import BibleSearchLanguages from "./BibleSearchLanguages";
 
 /* Context */
 import { useAppContext } from "../../context/context";
@@ -52,12 +63,34 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
 
   return (
     <IonModal
-      initialBreakpoint={0.25}
+      initialBreakpoint={0.5}
       breakpoints={[0, 0.25, 0.5, 0.75]}
       isOpen={isOpen}
       onDidDismiss={onDismiss}
     >
-      <IonContent className="ion-padding">{renderModalOptions()}</IonContent>
+      <IonContent className="ion-padding">
+        <IonTitle className="ion-text-center">Bibles</IonTitle>
+        <IonButton
+          shape="round"
+          fill="clear"
+          color="dark"
+          size="large"
+          id="select-language"
+          className="flat full-width"
+        >
+          Language:
+        </IonButton>
+        {renderModalOptions()}
+      </IonContent>
+
+      {/* Languages Modal */}
+      <IonModal
+        initialBreakpoint={0.75}
+        // breakpoints={[0, 0.25, 0.5, 0.75]}
+        trigger="select-language"
+      >
+        <BibleSearchLanguages />
+      </IonModal>
     </IonModal>
   );
 };
