@@ -18,7 +18,10 @@ import { useAppContext } from "../../context/context";
 
 /* GraphQL */
 import { useGetTranslation } from "../../hooks/BibleHooks";
-import { useLazyGetListOfBibles } from "../../hooks/BibleBrainHooks";
+import {
+  useLazyGetListOfBibles,
+  useLazyGetListOfBooksFromBible,
+} from "../../hooks/BibleBrainHooks";
 
 /**
  * Interface for the BreadCrumbs modal
@@ -36,12 +39,22 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
   isOpen,
   onDismiss,
 }) => {
-  const { setBible, chosenLanguage, chosenBible } = useAppContext();
+  // context global state
+  const {
+    setBible,
+    setBibleBooks,
+    setBook,
+    setChapterNumber,
+    chosenLanguage,
+    chosenBible,
+  } = useAppContext();
 
   /* Queries */
-  const { data: translationData } = useGetTranslation();
   const { getListOfBibles, data: biblesData } = useLazyGetListOfBibles();
+  const { getListOfBooksFromBible, data: booksData } =
+    useLazyGetListOfBooksFromBible();
 
+  // use effect watching the change of language and searching for bibles
   useEffect(() => {
     if (!chosenLanguage) return;
 
@@ -54,25 +67,43 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
     });
   }, [chosenLanguage]);
 
+  // use effect watching for change in chosen bible to search for the books of the bible
+  useEffect(() => {
+    if (!chosenBible) return;
+
+    getListOfBooksFromBible({
+      variables: {
+        options: {
+          bibleId: chosenBible.abbr!,
+        },
+      },
+    });
+  }, [chosenBible]);
+
+  // use effect watching the change in the books data to set the books to state and setting the chosen book to the first book to start
+  useEffect(() => {
+    if (!booksData) return;
+
+    setBibleBooks(booksData.getListOfBooksForBible.data);
+    setBook(booksData.getListOfBooksForBible.data[0]);
+    setChapterNumber(1); // set the chapter to 1
+  }, [booksData]);
+
   // function to render modal options
   const renderModalOptions = () => {
-    if (!translationData) return; // dont show anything if no data is present
-
-    return (
+    return biblesData ? (
       <IonList>
-        {biblesData ? (
-          biblesData.getListOFBibles.data.map((bible, index) => (
-            <IonItem button key={index} onClick={() => setBible(bible)}>
-              <IonLabel>
-                <h2>{bible.name}</h2>
-                <p>Date: {bible.date}</p>
-              </IonLabel>
-            </IonItem>
-          ))
-        ) : (
-          <div className="ion-text-center">Please select a language</div>
-        )}
+        {biblesData.getListOFBibles.data.map((bible, index) => (
+          <IonItem button key={index} onClick={() => setBible(bible)}>
+            <IonLabel>
+              <h2>{bible.name}</h2>
+              <p>Date: {bible.date}</p>
+            </IonLabel>
+          </IonItem>
+        ))}
       </IonList>
+    ) : (
+      <div className="ion-text-center">Please select a language</div>
     );
   };
 
