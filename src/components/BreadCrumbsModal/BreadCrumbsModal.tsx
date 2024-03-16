@@ -52,7 +52,6 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
 }: IBreadCrumbsModal) => {
   // state
   const [messages, setMessages] = useState<IMessagesObject[]>([]);
-  const [chosenTextVerbage, setChosenTextVerbage] = useState<string>();
   const [useChosenTextVerbage, setUseChosenTextVerbage] =
     useState<boolean>(false);
 
@@ -60,28 +59,9 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
   const breadCrumbsModalGrid = useRef<HTMLIonGridElement>(null);
 
   // context values
-  const { chosenChapter, chosenBook, selectedVerseList, deviceInfo } =
-    useAppContext();
+  const { selectedVersesCitation, deviceInfo } = useAppContext();
   const { getChatGpt, data } = useLazyOpenAI();
   const { data: openAIReponseStream } = useOpenAIResponseStream();
-
-  useEffect(() => {
-    // exit function if there are no selected verses
-    if (!selectedVerseList || !chosenBook || !chosenChapter) return;
-    if (selectedVerseList.length < 1) {
-      setChosenTextVerbage(undefined);
-      return;
-    }
-
-    const text = getCitationVerbage(
-      selectedVerseList,
-      chosenBook,
-      chosenChapter
-    );
-
-    setChosenTextVerbage(text);
-    //for some reason selectedText needs to be watched to timely modify
-  }, [selectedVerseList, selectedText]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!data) return;
@@ -123,7 +103,7 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
   const handleSubmit = (value: string) => {
     let inputValue = value;
     if (useChosenTextVerbage) {
-      inputValue += chosenTextVerbage;
+      inputValue += selectedVersesCitation;
     }
     const messageObject: IMessagesObject = {
       message: inputValue,
@@ -182,7 +162,7 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
     >
       <IonContent className="ion-padding ">
         <IonGrid ref={breadCrumbsModalGrid}>
-          {chosenTextVerbage ? (
+          {selectedVersesCitation ? (
             <IonRow>
               <IonCol className="selected-indicator">
                 {/* Row is for quick actions on the selected text, it is always on the selected text */}
@@ -203,7 +183,7 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
                         setUseChosenTextVerbage(!useChosenTextVerbage)
                       }
                     >
-                      <IonText>{chosenTextVerbage}</IonText>
+                      <IonText>{selectedVersesCitation}</IonText>
                     </IonCheckbox>
                   </IonCol>
                 </IonRow>
@@ -212,7 +192,7 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
           ) : null}
           <div
             className={`chat-container ${
-              chosenTextVerbage ? "max-height" : ""
+              selectedVersesCitation ? "max-height" : ""
             }`}
           >
             <BreadCrumbsChat
