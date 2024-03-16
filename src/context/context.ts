@@ -5,18 +5,20 @@ import { useState } from "react";
 import { useLazyGetBookmarks } from "../hooks/UserHooks";
 
 /* Interfaces */
-import {
-  ITranslation,
-  IBookInterface,
-  IChapterInterface,
-  IVerseInterface,
-} from "../interfaces/BibleInterfaces";
+import { ITranslation, IVerseInterface } from "../interfaces/BibleInterfaces";
 import { IDeviceInfo } from "../interfaces/AuthInterfaces";
 /**
  * !Potentially we should start using the graphql types that are being generated from the backend
  * Unless it is unneccessary
  */
-import { Bookmark, User, BbLanguage, BbBible } from "../__generated__/graphql";
+import {
+  Bookmark,
+  User,
+  BbLanguage,
+  BbBible,
+  BbBook,
+  BbVerse,
+} from "../__generated__/graphql";
 
 const context = constate(() => {
   /** API/GraphQL Decunstruction */
@@ -32,12 +34,13 @@ const context = constate(() => {
   // Bible State
   const [chosenLanguage, setChosenLanguage] = useState<BbLanguage>();
   const [chosenBible, setChosenBible] = useState<BbBible>();
+  const [chosenBibleBooks, setChosenBibleBooks] = useState<BbBook[]>();
+  const [chosenBook, setChosenBook] = useState<BbBook>();
   const [chosenTranslation, setChosenTranslation] = useState<ITranslation>();
-  const [chosenBook, setChosenBook] = useState<IBookInterface>();
-  const [chosenChapter, setChosenChapter] = useState<IChapterInterface>();
-  const [selectedVerseList, setSelectedVerseList] = useState<IVerseInterface[]>(
-    []
-  );
+  // const [chosenBook, setChosenBook] = useState<IBookInterface>();
+  const [chosenChapterNumber, setChosenChapterNumber] = useState<number>();
+  const [chosenChapterVerses, setChosenChapterVerses] = useState<BbVerse[]>();
+  const [selectedVerseList, setSelectedVerseList] = useState<BbVerse[]>([]);
 
   // User State
   const [userInfo, setUserInfo] = useState<User>();
@@ -61,6 +64,20 @@ const context = constate(() => {
   };
 
   /**
+   * Sets the bible book to global state
+   */
+  const setBibleBooks = (dto: BbBook[]) => {
+    setChosenBibleBooks(dto);
+  };
+
+  /**
+   * Sets the bible book to global state
+   */
+  const setBook = (dto: BbBook) => {
+    setChosenBook(dto);
+  };
+
+  /**
    * Sets the bible translation to global state
    */
   const setTranslation = (dto: ITranslation) => {
@@ -68,23 +85,23 @@ const context = constate(() => {
   };
 
   /**
-   * Sets the bible book to global state
+   * Sets the bible chapter to global state
    */
-  const setBook = (dto: IBookInterface) => {
-    setChosenBook(dto);
+  const setChapterNumber = (dto: number) => {
+    setChosenChapterNumber(dto);
   };
 
   /**
    * Sets the bible chapter to global state
    */
-  const setChapter = (dto: IChapterInterface) => {
-    setChosenChapter(dto);
+  const setChapterVerses = (dto: BbVerse[]) => {
+    setChosenChapterVerses(dto);
   };
 
   /**
    * Adds chosen bible verses to the list of selecteVerseList
    */
-  const addVerseToList = (dto: IVerseInterface) => {
+  const addVerseToList = (dto: BbVerse) => {
     // add new verse into state
     setSelectedVerseList([...selectedVerseList, dto]);
   };
@@ -92,10 +109,10 @@ const context = constate(() => {
   /**
    * Removes chosen bible verses from the list of selecteVerseList
    */
-  const removeVerseFromList = (dto: IVerseInterface) => {
+  const removeVerseFromList = (dto: BbVerse) => {
     //grab the selected verse list into temp
     var temp = selectedVerseList.filter((obj) => {
-      return obj.verse !== dto.verse;
+      return obj.verseStart !== dto.verseStart;
     });
 
     //set to state
@@ -171,9 +188,11 @@ const context = constate(() => {
   return {
     chosenLanguage,
     chosenBible,
+    chosenBibleBooks,
     chosenTranslation,
     chosenBook,
-    chosenChapter,
+    chosenChapterNumber,
+    chosenChapterVerses,
     userInfo,
     deviceInfo,
     selectedVerseList,
@@ -183,9 +202,11 @@ const context = constate(() => {
     bookmarksError,
     setBibleLanguage,
     setBible,
+    setBibleBooks,
     setTranslation,
     setBook,
-    setChapter,
+    setChapterNumber,
+    setChapterVerses,
     setUser,
     setDevice,
     addVerseToList,
