@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import {
   IonRow,
   IonCol,
-  IonTitle,
   IonCard,
   IonCardHeader,
   IonCardContent,
   IonCardTitle,
+  IonCardSubtitle,
 } from "@ionic/react";
 
 /* Components */
@@ -15,62 +15,25 @@ import Skeleton from "../Loading/Skeleton";
 /* Context */
 import { useAppContext } from "../../context/context";
 
-/** Hooks */
-import {
-  useGetBooks,
-  useGetBooksById,
-  useGetChapterById,
-  useLazyGetChapterById,
-} from "../../hooks/BibleHooks";
-
 export const BooksPicker: React.FC = () => {
   /* Context and state */
-  const { chosenTranslation, setBook, chosenBook, setChapter } =
+  const { setBook, chosenBook, setChapterNumber, chosenBibleBooks } =
     useAppContext();
   const [bookId, setBookId] = useState<string>(
-    chosenBook ? chosenBook.bibleId : ""
+    chosenBook ? chosenBook.bookId! : ""
   );
-
-  /* Queries */
-  // api call for getting books for displaying in the book selector
-  const { loading: booksLoading, data: booksData } = useGetBooks(
-    chosenTranslation?._id!
-  );
-  // api call for getting full book data by id
-  const { data: bookData } = useGetBooksById(bookId!);
-  // lazy api call for getting a chapter by id
-  const { getChapterById, data: chapterData } = useLazyGetChapterById();
 
   /* Side Effects */
   // checks chosenBooks from context and scrolls the view to the selected book
   useEffect(() => {
-    if (!chosenBook?.bibleId) return;
-    const element = document.getElementById(chosenBook?.bibleId);
+    if (!chosenBook?.bookId || chosenBook.bookId === bookId) return;
+    const element = document.getElementById(chosenBook.bookId);
 
     element?.scrollIntoView({ behavior: "smooth", block: "center" });
-  }, [chosenBook?.bibleId]);
 
-  // checks the book api call response to set the book and call the api to get the first chapter in the book
-  useEffect(() => {
-    if (!bookData) return;
-    if (bookData.getBookById === chosenBook) return; // only update if the chapter has changed
-
-    // set chosen book data to global state
-    setBook(bookData.getBookById);
-
-    // set to first chapter in the book
-    getChapterById({
-      variables: { bibleId: bookData.getBookById.chapters[0].bibleId },
-    });
-    //watch book api data
-  }, [bookData]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // checks for the chapter api call response to set the chosen chapter
-  useEffect(() => {
-    if (!chapterData) return;
-
-    setChapter(chapterData.getChapter);
-  }, [chapterData]); // eslint-disable-line react-hooks/exhaustive-deps
+    setChapterNumber(1); // set the chapter to 1
+    setBookId(chosenBook.bookId);
+  }, [chosenBook]);
 
   /**
    * Function to render loading skeleton animation
@@ -95,44 +58,31 @@ export const BooksPicker: React.FC = () => {
   return (
     <div className="nav-selection">
       <IonRow>
-        {booksLoading ? (
+        {!chosenBibleBooks ? (
           <>
             <Skeleton height="24px" width="100%" shape="square" />
             {renderSkeleton()}
           </>
         ) : (
           // looping through options
-          booksData?.getBooks.map((book, index) => (
+          chosenBibleBooks.map((book, index) => (
             <React.Fragment key={index}>
-              {/* old testament title */}
-              {index === 0 ? (
-                <IonCol size="12">
-                  <IonTitle>Old Testament</IonTitle>
-                </IonCol>
-              ) : null}
-
-              {/* new testament title */}
-              {index + 1 === 40 ? (
-                <IonCol size="12">
-                  <IonTitle>New Testament</IonTitle>
-                </IonCol>
-              ) : null}
-
               {/* options rendering */}
-              <IonCol size="6" size-md="4" size-lg="4" key={book.bibleId}>
+              <IonCol size="6" size-md="4" size-lg="4" key={book.bookId}>
                 <IonCard
-                  id={book.bibleId}
+                  id={book.bookId!}
                   button
                   className={`outlined-card ${
-                    book.bibleId === bookId ? "selected" : ""
+                    book.bookId === chosenBook?.bookId ? "selected" : ""
                   }`}
-                  onClick={() => setBookId(book.bibleId)}
+                  onClick={() => setBook(book)}
                 >
                   <IonCardContent>
                     <div className="book-number">{index + 1}</div>
                   </IonCardContent>
                   <IonCardHeader>
-                    <IonCardTitle>{book.bookName}</IonCardTitle>
+                    <IonCardTitle>{book.name}</IonCardTitle>
+                    <IonCardSubtitle>{book.bookGroup}</IonCardSubtitle>
                   </IonCardHeader>
                 </IonCard>
               </IonCol>
@@ -145,24 +95,15 @@ export const BooksPicker: React.FC = () => {
 };
 
 export const ChapterPicker: React.FC = () => {
-  const [chapterId, setChapterId] = useState<string>();
-  const { chosenBook, setChapter, chosenChapter } = useAppContext();
+  const { chosenBook, setChapterNumber, chosenChapterNumber } = useAppContext();
 
-  // getting chapters
-  const { data: chapterData } = useGetChapterById(chapterId!);
-
+  /* Use Effects */
   useEffect(() => {
-    if (!chapterData) return;
-
-    setChapter(chapterData.getChapter);
-  }, [chapterData]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    if (!chosenChapter?.bibleId) return;
-    const element = document.getElementById(chosenChapter?.bibleId);
+    if (!chosenChapterNumber) return;
+    const element = document.getElementById(chosenChapterNumber.toString());
 
     element?.scrollIntoView({ behavior: "smooth", block: "center" });
-  }, [chosenChapter?.bibleId]);
+  }, [chosenChapterNumber]);
 
   /**
    * Function to render loading skeleton animation
@@ -190,22 +131,20 @@ export const ChapterPicker: React.FC = () => {
         {!chosenBook
           ? renderSkeleton()
           : // looping through options
-            chosenBook.chapters.map((chapter, index) => (
+            chosenBook.chapters?.map((chapter, index) => (
               <React.Fragment key={index}>
                 {/* options rendering */}
-                <IonCol size="6" size-md="4" size-lg="4" key={chapter.bibleId}>
+                <IonCol size="6" size-md="4" size-lg="4" key={chapter}>
                   <IonCard
-                    id={chapter.bibleId}
+                    id={chapter.toString()}
                     button
                     className={`outlined-card ${
-                      chosenChapter?.bibleId === chapter.bibleId
-                        ? "selected"
-                        : ""
+                      chosenChapterNumber === chapter ? "selected" : ""
                     }`}
-                    onClick={() => setChapterId(chapter.bibleId)}
+                    onClick={() => setChapterNumber(chapter)}
                   >
                     <IonCardContent>
-                      <div className="book-number">{chapter.chapterName}</div>
+                      <div className="book-number">{chapter}</div>
                     </IonCardContent>
                   </IonCard>
                 </IonCol>
