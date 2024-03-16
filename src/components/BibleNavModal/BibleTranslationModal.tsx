@@ -17,7 +17,6 @@ import BibleSearchLanguages from "./BibleSearchLanguages";
 import { useAppContext } from "../../context/context";
 
 /* GraphQL */
-import { useGetTranslation } from "../../hooks/BibleHooks";
 import {
   useLazyGetListOfBibles,
   useLazyGetListOfBooksFromBible,

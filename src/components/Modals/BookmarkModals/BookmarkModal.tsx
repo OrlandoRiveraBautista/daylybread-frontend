@@ -36,7 +36,7 @@ const BookmarkModal: React.FC<IBookmarkModal> = ({
 }: IBookmarkModal) => {
   const history = useHistory();
   // global state
-  const { selectedVerseList, chosenBook, chosenChapter, userInfo } =
+  const { selectedVerseList, selectedVersesCitation, userInfo } =
     useAppContext();
 
   // graphql hooks
@@ -95,13 +95,7 @@ const BookmarkModal: React.FC<IBookmarkModal> = ({
                 </IonRow>
                 <IonRow>
                   <IonCol>
-                    <IonText>
-                      {getCitationVerbage(
-                        selectedVerseList,
-                        chosenBook!,
-                        chosenChapter!
-                      )}
-                    </IonText>
+                    <IonText>{selectedVersesCitation}</IonText>
                   </IonCol>
                 </IonRow>
               </div>
