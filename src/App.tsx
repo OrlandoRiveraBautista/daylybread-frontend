@@ -173,7 +173,10 @@ const App: React.FC = () => {
                   <Route exact path="/read">
                     <Tab2 />
                   </Route>
-                  <Route exact path="/read/:currentBibleId">
+                  <Route
+                    exact
+                    path="/read/:currentBibleId/:currentChapterId/:currentChapterNumber"
+                  >
                     <Tab2 />
                   </Route>
                   <Route path="/me">
