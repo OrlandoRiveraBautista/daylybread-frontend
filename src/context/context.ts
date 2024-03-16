@@ -1,5 +1,5 @@
 import constate from "constate";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 /* API/GraphQL */
 import { useLazyGetBookmarks } from "../hooks/UserHooks";
@@ -19,6 +19,7 @@ import {
   BbBook,
   BbVerse,
 } from "../__generated__/graphql";
+import { getCitationVerbage } from "../utils/support";
 
 const context = constate(() => {
   /** API/GraphQL Decunstruction */
@@ -37,10 +38,12 @@ const context = constate(() => {
   const [chosenBibleBooks, setChosenBibleBooks] = useState<BbBook[]>();
   const [chosenBook, setChosenBook] = useState<BbBook>();
   const [chosenTranslation, setChosenTranslation] = useState<ITranslation>();
-  // const [chosenBook, setChosenBook] = useState<IBookInterface>();
   const [chosenChapterNumber, setChosenChapterNumber] = useState<number>();
   const [chosenChapterVerses, setChosenChapterVerses] = useState<BbVerse[]>();
   const [selectedVerseList, setSelectedVerseList] = useState<BbVerse[]>([]);
+  const [selectedVersesCitation, setSelectedVersesCitation] = useState<
+    string | undefined
+  >();
 
   // User State
   const [userInfo, setUserInfo] = useState<User>();
@@ -127,6 +130,31 @@ const context = constate(() => {
     setSelectedVerseList([]);
   };
 
+  useEffect(() => {
+    // exit function if there are no selected verses
+    if (
+      !selectedVerseList ||
+      !chosenBible ||
+      !chosenBook ||
+      !chosenChapterNumber
+    )
+      return;
+    if (selectedVerseList.length < 1) {
+      setSelectedVersesCitation(undefined);
+      return;
+    }
+
+    const text = getCitationVerbage(
+      selectedVerseList,
+      chosenBible,
+      chosenBook,
+      chosenChapterNumber
+    );
+
+    setSelectedVersesCitation(text);
+    //for some reason selectedText needs to be watched to timely modify
+  }, [selectedVerseList]); // eslint-disable-line react-hooks/exhaustive-deps
+
   /**
    * Sets the user into the context
    */
@@ -196,6 +224,7 @@ const context = constate(() => {
     userInfo,
     deviceInfo,
     selectedVerseList,
+    selectedVersesCitation,
     selectedUserAssets,
     bookmarksResponse,
     bookmarksLoading,
