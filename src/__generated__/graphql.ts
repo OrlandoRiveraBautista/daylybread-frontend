@@ -97,6 +97,7 @@ export type BbVerse = {
 export type BibleArgs = {
   languageCode?: InputMaybe<Scalars['String']>;
   mediaExclude?: InputMaybe<Scalars['String']>;
+  mediaInclude?: InputMaybe<Scalars['String']>;
   page?: InputMaybe<Scalars['Float']>;
 };
 
@@ -358,6 +359,7 @@ export type QuerySearchListOfLanguagesArgs = {
 };
 
 export type SearchLanguageArgs = {
+  mediaInclude?: InputMaybe<Scalars['String']>;
   search?: InputMaybe<Scalars['String']>;
 };
 
