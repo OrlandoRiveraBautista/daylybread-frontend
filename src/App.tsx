@@ -175,7 +175,7 @@ const App: React.FC = () => {
                   </Route>
                   <Route
                     exact
-                    path="/read/:currentBibleId/:currentChapterId/:currentChapterNumber"
+                    path="/read/:currentLanguage?/:currentBibleId?/:currentChapterId?/:currentChapterNumber?"
                   >
                     <Tab2 />
                   </Route>
