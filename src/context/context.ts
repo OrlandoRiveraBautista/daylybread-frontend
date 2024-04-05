@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useLazyGetBookmarks } from "../hooks/UserHooks";
 
 /* Interfaces */
-import { ITranslation, IVerseInterface } from "../interfaces/BibleInterfaces";
+import { ITranslation } from "../interfaces/BibleInterfaces";
 import { IDeviceInfo } from "../interfaces/AuthInterfaces";
 /**
  * !Potentially we should start using the graphql types that are being generated from the backend
