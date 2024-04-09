@@ -1,18 +1,17 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
-  IonCol,
   IonContent,
   IonHeader,
   IonItem,
   IonLabel,
   IonSearchbar,
-  IonSpinner,
   IonTitle,
 } from "@ionic/react";
 import {
   IonSearchbarCustomEvent,
   SearchbarInputEventDetail,
 } from "@ionic/core";
+import { useHistory } from "react-router";
 
 /* Components */
 import Skeleton from "../Loading/Skeleton";
@@ -26,19 +25,42 @@ import { useLazySearchListOfLanguages } from "../../hooks/BibleBrainHooks";
 /* Styles */
 import "./BibleSearchLanguages.scss";
 
+/* Types */
+import { BbLanguage } from "../../__generated__/graphql";
+
 const BibleSearchLanguages: React.FC = () => {
   const { setBibleLanguage } = useAppContext();
+
+  const history = useHistory();
 
   // lazy api call to search languages
   const { searchListOfLanguages, data, error, loading } =
     useLazySearchListOfLanguages();
+
+  /**
+   * Function to handle setting the language for the bible and pushing the url.
+   */
+  const handleSettingLanguage = (language: BbLanguage) => {
+    setBibleLanguage(language);
+    history.push("/read/" + language.id);
+  };
 
   const handleSearch = (
     e: IonSearchbarCustomEvent<SearchbarInputEventDetail>
   ) => {
     const { value } = e.detail;
 
-    searchListOfLanguages({ variables: { options: { search: value } } });
+    searchListOfLanguages({
+      variables: {
+        options: {
+          search: value,
+          /**
+           * ! 3/29/2024 mediaInclude is down
+           */
+          // mediaInclude: "text_plain",
+        },
+      },
+    });
   };
 
   /**
@@ -78,7 +100,7 @@ const BibleSearchLanguages: React.FC = () => {
               <IonItem
                 button
                 key={index}
-                onClick={() => setBibleLanguage(lang)}
+                onClick={() => handleSettingLanguage(lang)}
               >
                 <IonLabel>
                   <h2>{lang.name}</h2>
