@@ -26,6 +26,7 @@ import { useLazyGetListOfVersesFromBookChapter } from "../../hooks/BibleBrainHoo
 
 /* Utils */
 import BibleTranslationModal from "../BibleNavModal/BibleTranslationModal";
+import { BibleReadParams } from "../../assets/ts/types";
 
 const BibleChapterViewer: React.FC = () => {
   /* Context */
@@ -35,7 +36,6 @@ const BibleChapterViewer: React.FC = () => {
     chosenBook,
     chosenBible,
     chosenBibleBooks,
-    chosenLanguage,
     setChapterVerses,
     setChapterNumber,
     setBook,
@@ -46,6 +46,7 @@ const BibleChapterViewer: React.FC = () => {
   } = useAppContext();
 
   /* State */
+  const [urlParams, setUrlParams] = useState<BibleReadParams>();
   const [selectedElement, setSelectedElement] = useState<Array<string>>([]);
   const [openSelectedVersesModal, setOpenSelectedVersesModal] =
     useState<boolean>(false);
@@ -58,15 +59,21 @@ const BibleChapterViewer: React.FC = () => {
   const {
     getListOfVersesFromBookChapter,
     data: versesData,
-    error,
     loading,
   } = useLazyGetListOfVersesFromBookChapter();
 
   /* Router */
   const history = useHistory();
-  // const { currentBibleId } = useParams<BibleChapterViewerUrlParams>();
+  const params = useParams<BibleReadParams>();
 
   /* Side Effects */
+  // watches for url params
+  useEffect(() => {
+    if (Object.keys(params).length > 0) {
+      setUrlParams(params);
+    }
+  }, [params]);
+
   useEffect(() => {
     const testament = chosenBook?.testament;
     const filesets = chosenBible?.filesets["dbp-prod"];
@@ -98,19 +105,34 @@ const BibleChapterViewer: React.FC = () => {
 
   // checks for change in the global state for bible changes and pushes the route with param
   useEffect(() => {
-    // push route to include chapter id
-    history.push(
-      [
-        "/read",
-        chosenLanguage?.id,
-        chosenBible?.abbr,
-        chosenBook?.bookId,
-        chosenChapterNumber,
-      ]
-        .filter(Boolean)
-        .join("/")
-    );
-  }, [chosenLanguage, chosenChapterNumber, chosenBook, chosenBible]); // eslint-disable-line react-hooks/exhaustive-deps
+    if (!chosenBook || !chosenChapterNumber) return;
+
+    /*--- Setting Url --- */
+    // Get the current URL
+    const currentUrl = history.location.pathname;
+
+    // Split the current URL into parts
+    const parts = currentUrl.split("/");
+
+    // Check if the position exists
+    if (!parts[4]) {
+      history.push(`${currentUrl}/${chosenBook?.bookId}`);
+      return;
+    }
+    // Check if the position exists
+    if (!parts[5]) {
+      history.push(`${currentUrl}/${chosenChapterNumber}`);
+      return;
+    }
+
+    // Replace the value at the third position with the new Bible ID
+    parts[4] = chosenBook?.bookId!;
+    parts[5] = chosenChapterNumber?.toString()!;
+
+    // Join the parts back together to form the new URL
+    const newUrl = parts.join("/");
+    history.push(newUrl);
+  }, [chosenChapterNumber, chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const chapterViewerWrapper = document.getElementById("chapter-viewer");
