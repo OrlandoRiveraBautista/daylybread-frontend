@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   IonButton,
   IonContent,
@@ -9,6 +9,7 @@ import {
   IonModal,
   IonTitle,
 } from "@ionic/react";
+import { useParams, useHistory } from "react-router";
 
 /* Components */
 import BibleSearchLanguages from "./BibleSearchLanguages";
@@ -20,7 +21,12 @@ import { useAppContext } from "../../context/context";
 import {
   useLazyGetListOfBibles,
   useLazyGetListOfBooksFromBible,
+  useLazySearchListOfLanguages,
 } from "../../hooks/BibleBrainHooks";
+
+/* Types */
+import { BibleReadParams } from "../../assets/ts/types";
+import { BbBible } from "../../__generated__/graphql";
 
 /**
  * Interface for the BreadCrumbs modal
@@ -40,35 +46,117 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
 }) => {
   // context global state
   const {
+    setBibleLanguage,
     setBible,
     setBibleBooks,
     setBook,
     setChapterNumber,
     chosenLanguage,
     chosenBible,
+    chosenBook,
   } = useAppContext();
 
+  const history = useHistory();
+
+  /* Local state */
+  const [urlParams, setUrlParams] = useState<BibleReadParams>();
+  const [isNewBible, setIsNewBible] = useState<boolean>(false); // flag to determine if the bible should be set to the begining
+
   /* Queries */
+  // lazy api call to search languages
+  const { searchListOfLanguages, data: languageData } =
+    useLazySearchListOfLanguages();
   const { getListOfBibles, data: biblesData } = useLazyGetListOfBibles();
   const { getListOfBooksFromBible, data: booksData } =
     useLazyGetListOfBooksFromBible();
 
+  /* Url params */
+  const params = useParams<BibleReadParams>();
+
+  // watches for url params and sets them to local state
+  useEffect(() => {
+    if (Object.keys(params).length > 0) {
+      setUrlParams(params);
+    }
+  }, [params]);
+
+  /*
+   * Functions bellow deal with the changing of languages
+   */
+  // use effect watching the params of current language to change
+  useEffect(() => {
+    // checks if any language was already chosen and if it's the same as the url param
+    if (
+      chosenLanguage &&
+      chosenLanguage.id.toString() == urlParams?.currentLanguage
+    )
+      return;
+
+    getListOfBibles({
+      variables: {
+        options: {
+          languageCode: urlParams?.currentLanguage,
+          mediaInclude: "text_plain",
+        },
+      },
+    });
+  }, [urlParams?.currentLanguage]);
+
   // use effect watching the change of language and searching for bibles
   useEffect(() => {
-    if (!chosenLanguage) return;
+    // check if there is no chosen bible or if the bibles returned are the same language as the chosen language
+    if (
+      !chosenLanguage ||
+      biblesData?.getListOFBibles.data[0].language === chosenLanguage.name
+    )
+      return;
 
     getListOfBibles({
       variables: {
         options: {
           languageCode: chosenLanguage.id.toString(),
+          mediaInclude: "text_plain",
         },
       },
     });
   }, [chosenLanguage]);
 
+  // use effect watching over the language data that we get once we have set a bible from url params
+  useEffect(() => {
+    if (!languageData) return;
+    setBibleLanguage(languageData?.searchListOfLanguages.data[0]);
+  }, [languageData]);
+
+  // use effect watching the params of current bible id to change
+  useEffect(() => {
+    // check for empty url param and bibles data
+    if (!urlParams?.currentBibleId || !biblesData) return;
+    // check if the url param is the same as the chosen bible
+    if (chosenBible && chosenBible.abbr === urlParams.currentBibleId) return;
+
+    // find the bible that the url param is refering to
+    const urlBible = biblesData.getListOFBibles.data.find((bible) => {
+      return bible.abbr == urlParams.currentBibleId;
+    });
+
+    // check if no bible was returned
+    if (!urlBible) return;
+
+    // set the returned bible
+    setBible(urlBible);
+
+    searchListOfLanguages({
+      variables: { options: { search: urlBible.language } },
+    });
+  }, [urlParams?.currentBibleId, biblesData]);
+
   // use effect watching for change in chosen bible to search for the books of the bible
   useEffect(() => {
-    if (!chosenBible) return;
+    if (
+      !chosenBible ||
+      booksData?.getListOfBooksForBible.data[0].bookId === chosenBible.abbr
+    )
+      return;
 
     getListOfBooksFromBible({
       variables: {
@@ -82,20 +170,73 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
   // use effect watching the change in the books data to set the books to state and setting the chosen book to the first book to start
   useEffect(() => {
     if (!booksData) return;
+    if (booksData?.getListOfBooksForBible.data[0] !== chosenBook)
+      setBibleBooks(booksData.getListOfBooksForBible.data);
+    if (
+      !isNewBible &&
+      urlParams?.currentBookId &&
+      urlParams.currentChapterNumber
+    ) {
+      const urlBook = booksData.getListOfBooksForBible.data.find(
+        (book) => book.bookId == urlParams.currentBookId
+      );
 
-    setBibleBooks(booksData.getListOfBooksForBible.data);
+      setBook(urlBook!);
+      setChapterNumber(Number(urlParams.currentChapterNumber));
+      return;
+    }
+
     setBook(booksData.getListOfBooksForBible.data[0]);
     setChapterNumber(1); // set the chapter to 1
+    setIsNewBible(false);
   }, [booksData]);
+
+  /**
+   * Function to handle setting the bible and pushing the path
+   */
+  const handleSettingBible = (bible: BbBible) => {
+    // set the bible to the global state
+    setBible(bible);
+    setIsNewBible(true);
+
+    // find the books associated with the bible
+    getListOfBooksFromBible({
+      variables: {
+        options: {
+          bibleId: bible.abbr!,
+        },
+      },
+    });
+
+    /*--- Setting Url --- */
+    // Get the current URL
+    const currentUrl = history.location.pathname;
+
+    // Split the current URL into parts
+    const parts = currentUrl.split("/");
+
+    // Check if the position exists
+    if (!parts[3]) {
+      history.push(`${currentUrl}/${bible.abbr}`);
+      return;
+    }
+
+    // Replace the value at the third position with the new Bible ID
+    parts[3] = bible.abbr!;
+
+    // Join the parts back together to form the new URL
+    const newUrl = parts.join("/");
+    history.push(newUrl);
+  };
 
   // function to render modal options
   const renderModalOptions = () => {
     return biblesData ? (
       <IonList>
         {biblesData.getListOFBibles.data.map((bible, index) => (
-          <IonItem button key={index} onClick={() => setBible(bible)}>
+          <IonItem button key={index} onClick={() => handleSettingBible(bible)}>
             <IonLabel>
-              <h2>{bible.name}</h2>
+              <h2>{bible.vname ? bible.vname : bible.name}</h2>
               <p>Date: {bible.date}</p>
             </IonLabel>
           </IonItem>
@@ -115,7 +256,7 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
     >
       <IonHeader className="ion-padding">
         <IonTitle className="ion-text-center">
-          {chosenLanguage ? chosenLanguage.bibles : null} Bibles
+          {biblesData ? biblesData?.getListOFBibles.data.length : null} Bibles
         </IonTitle>
         <IonButton
           shape="round"
