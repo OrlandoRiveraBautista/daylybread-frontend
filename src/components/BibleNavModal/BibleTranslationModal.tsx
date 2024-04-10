@@ -85,17 +85,18 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
    */
   // use effect watching the params of current language to change
   useEffect(() => {
-    // checks if any language was already chosen and if it's the same as the url param
+    if (!urlParams?.currentLanguage) return;
     if (
       chosenLanguage &&
-      chosenLanguage.id.toString() == urlParams?.currentLanguage
+      chosenLanguage.id.toString() == urlParams.currentLanguage
     )
+      // checks if any language was already chosen and if it's the same as the url param
       return;
 
     getListOfBibles({
       variables: {
         options: {
-          languageCode: urlParams?.currentLanguage,
+          languageCode: urlParams.currentLanguage,
           mediaInclude: "text_plain",
         },
       },
@@ -172,24 +173,23 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
     if (!booksData) return;
     if (booksData?.getListOfBooksForBible.data[0] !== chosenBook)
       setBibleBooks(booksData.getListOfBooksForBible.data);
-    if (
-      !isNewBible &&
-      urlParams?.currentBookId &&
-      urlParams.currentChapterNumber
-    ) {
+    if (!isNewBible) {
+      if (!urlParams?.currentBookId && !urlParams?.currentChapterNumber) return;
+
       const urlBook = booksData.getListOfBooksForBible.data.find(
         (book) => book.bookId == urlParams.currentBookId
       );
 
       setBook(urlBook!);
       setChapterNumber(Number(urlParams.currentChapterNumber));
+
       return;
     }
 
     setBook(booksData.getListOfBooksForBible.data[0]);
     setChapterNumber(1); // set the chapter to 1
     setIsNewBible(false);
-  }, [booksData]);
+  }, [booksData, urlParams?.currentBookId, urlParams?.currentChapterNumber]);
 
   /**
    * Function to handle setting the bible and pushing the path
