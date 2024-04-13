@@ -115,13 +115,10 @@ const BibleChapterViewer: React.FC = () => {
     const parts = currentUrl.split("/");
 
     // Check if the position exists
-    if (!parts[4]) {
-      history.push(`${currentUrl}/${chosenBook?.bookId}`);
-      return;
-    }
-    // Check if the position exists
     if (!parts[5]) {
-      history.push(`${currentUrl}/${chosenChapterNumber}`);
+      history.push(
+        `${currentUrl}/${chosenBook?.bookId}/${chosenChapterNumber}`
+      );
       return;
     }
 
