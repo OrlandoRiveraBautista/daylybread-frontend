@@ -36,7 +36,7 @@ const BookmarkModal: React.FC<IBookmarkModal> = ({
 }: IBookmarkModal) => {
   const history = useHistory();
   // global state
-  const { selectedVerseList, selectedVersesCitation, userInfo } =
+  const { selectedVerseList, selectedVersesCitation, userInfo, chosenBible } =
     useAppContext();
 
   // graphql hooks
@@ -56,11 +56,14 @@ const BookmarkModal: React.FC<IBookmarkModal> = ({
   };
 
   const handleSubmit = () => {
+    const jsonifiedVerses = selectedVerseList.map((obj) => JSON.stringify(obj));
+
     setBookmarks({
       variables: {
         options: {
+          bibleId: chosenBible?.abbr,
+          verses: jsonifiedVerses,
           note: note,
-          verses: selectedVerseList.map((v) => v.bibleId),
         },
       },
     });
