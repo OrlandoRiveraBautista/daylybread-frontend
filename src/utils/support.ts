@@ -69,7 +69,7 @@ const getCitationVerbage = (
         : ""
     }`;
   });
-  console.log(chosenBook);
+
   // put all the chosen data together in a string
   const text = `${
     chosenBook.name
@@ -149,10 +149,46 @@ const getVerseVerbageByVerses = (verses: Verse[]) => {
   return text;
 };
 
+const getVerseVerbageByNewVerses = (verses: BbVerse[], bibleId: string) => {
+  // sort the verse numbers in the array in ascenting order
+  const sortedNumbersAsc = verses
+    .map((v) => v.verseStart)
+    .map(Number)
+    .slice()
+    .sort((a, b) => a - b);
+  // cluster the verses that are close together to diminish token usage on openai
+  const clusterVerses = clusterNumbers(sortedNumbersAsc);
+  // temp variable for verbage of clustered verses
+  let clusterVersesVerb = "";
+  // loop through each cluster
+  clusterVerses.forEach((verseList, index) => {
+    // add proper verbage
+    clusterVersesVerb += `${
+      index !== 0 //check for the first value
+        ? index >= 1 && index < clusterVerses.length - 1 //check if the index is not the last
+          ? "," // use comma on the not last clusters
+          : " and " //use and for the last cluster
+        : "" //if first value, requires no prefix
+    }${verseList[0]} ${
+      verseList[0] !== verseList[verseList.length - 1]
+        ? "- " + verseList[verseList.length - 1]
+        : ""
+    }`;
+  });
+  // const citation = `${verses}`;
+  // put all the chosen data together in a string
+  const text = `${verses[0].bookName} ${
+    verses[0].chapter
+  }:${clusterVersesVerb} ${bibleId.replace(/\s/g, "")}`;
+
+  return text;
+};
+
 export {
   zeroPad,
   clusterNumbers,
   getCitationVerbage,
   getSelectedText,
   getVerseVerbageByVerses,
+  getVerseVerbageByNewVerses,
 };
