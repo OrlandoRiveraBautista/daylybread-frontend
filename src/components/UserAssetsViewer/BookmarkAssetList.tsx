@@ -139,7 +139,11 @@ const BookmarkAssetList: React.FC = () => {
                   >
                     <IonCardContent>
                       <IonText className="bookmark-card-verse">
-                        {bookmarkEntry.verses.map((verse) => verse.text)}
+                        {bookmarkEntry.verses[0]
+                          ? bookmarkEntry.verses.map((verse) => verse.text)
+                          : bookmarkEntry.newVerses?.map(
+                              (verse) => verse.verseText
+                            )}
                       </IonText>
                       <IonText className="bookmark-card-citation">
                         {bookmarkEntry.verses[0]
