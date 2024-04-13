@@ -13,9 +13,6 @@ import {
 import { IonTextareaCustomEvent, TextareaInputEventDetail } from "@ionic/core";
 import { useHistory } from "react-router";
 
-/* Support */
-import { getCitationVerbage } from "../../../utils/support";
-
 /* Context */
 import { useAppContext } from "../../../context/context";
 

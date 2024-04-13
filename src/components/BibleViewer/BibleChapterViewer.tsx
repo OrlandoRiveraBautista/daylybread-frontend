@@ -8,7 +8,7 @@ import {
   IonText,
 } from "@ionic/react";
 import { chevronBack, chevronForward } from "ionicons/icons";
-import { useHistory, useParams } from "react-router";
+import { useHistory } from "react-router";
 
 /* Context */
 import { useAppContext } from "../../context/context";
@@ -26,7 +26,6 @@ import { useLazyGetListOfVersesFromBookChapter } from "../../hooks/BibleBrainHoo
 
 /* Utils */
 import BibleTranslationModal from "../BibleNavModal/BibleTranslationModal";
-import { BibleReadParams } from "../../assets/ts/types";
 
 const BibleChapterViewer: React.FC = () => {
   /* Context */
@@ -46,7 +45,6 @@ const BibleChapterViewer: React.FC = () => {
   } = useAppContext();
 
   /* State */
-  const [urlParams, setUrlParams] = useState<BibleReadParams>();
   const [selectedElement, setSelectedElement] = useState<Array<string>>([]);
   const [openSelectedVersesModal, setOpenSelectedVersesModal] =
     useState<boolean>(false);
@@ -64,16 +62,8 @@ const BibleChapterViewer: React.FC = () => {
 
   /* Router */
   const history = useHistory();
-  const params = useParams<BibleReadParams>();
 
   /* Side Effects */
-  // watches for url params
-  useEffect(() => {
-    if (Object.keys(params).length > 0) {
-      setUrlParams(params);
-    }
-  }, [params]);
-
   useEffect(() => {
     const testament = chosenBook?.testament;
     const filesets = chosenBible?.filesets["dbp-prod"];
@@ -95,13 +85,13 @@ const BibleChapterViewer: React.FC = () => {
         },
       },
     });
-  }, [chosenChapterNumber, chosenBook]);
+  }, [chosenChapterNumber, chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (loading || !versesData) return;
 
     setChapterVerses(versesData.getListOfVerseFromBookChapter.data);
-  }, [versesData]);
+  }, [versesData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // checks for change in the global state for bible changes and pushes the route with param
   useEffect(() => {
@@ -189,7 +179,6 @@ const BibleChapterViewer: React.FC = () => {
    */
   const backChapter = () => {
     if (!chosenChapterNumber) return;
-    const bookChapters = chosenBook?.chapters!;
 
     // check if the book is at the beginng
     if (chosenChapterNumber === 1) {

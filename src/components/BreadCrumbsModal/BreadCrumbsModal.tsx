@@ -30,9 +30,6 @@ import {
 import "../BibleNavModal/BibleNavModal.scss";
 import "./BreadCrumbsModal.scss";
 
-/* Utils */
-import { getCitationVerbage } from "../../utils/support";
-
 /* Interfaces */
 import {
   IBreadCrumbsModal,

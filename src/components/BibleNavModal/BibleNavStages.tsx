@@ -33,7 +33,7 @@ export const BooksPicker: React.FC = () => {
 
     setChapterNumber(1); // set the chapter to 1
     setBookId(chosenBook.bookId);
-  }, [chosenBook]);
+  }, [chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /**
    * Function to render loading skeleton animation

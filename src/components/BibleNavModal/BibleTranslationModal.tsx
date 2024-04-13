@@ -88,7 +88,7 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
     if (!urlParams?.currentLanguage) return;
     if (
       chosenLanguage &&
-      chosenLanguage.id.toString() == urlParams.currentLanguage
+      chosenLanguage.id.toString() === urlParams.currentLanguage
     )
       // checks if any language was already chosen and if it's the same as the url param
       return;
@@ -101,7 +101,7 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
         },
       },
     });
-  }, [urlParams?.currentLanguage]);
+  }, [urlParams?.currentLanguage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // use effect watching the change of language and searching for bibles
   useEffect(() => {
@@ -120,13 +120,13 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
         },
       },
     });
-  }, [chosenLanguage]);
+  }, [chosenLanguage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // use effect watching over the language data that we get once we have set a bible from url params
   useEffect(() => {
     if (!languageData) return;
     setBibleLanguage(languageData?.searchListOfLanguages.data[0]);
-  }, [languageData]);
+  }, [languageData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // use effect watching the params of current bible id to change
   useEffect(() => {
@@ -137,7 +137,7 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
 
     // find the bible that the url param is refering to
     const urlBible = biblesData.getListOFBibles.data.find((bible) => {
-      return bible.abbr == urlParams.currentBibleId;
+      return bible.abbr === urlParams.currentBibleId;
     });
 
     // check if no bible was returned
@@ -149,7 +149,7 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
     searchListOfLanguages({
       variables: { options: { search: urlBible.language } },
     });
-  }, [urlParams?.currentBibleId, biblesData]);
+  }, [urlParams?.currentBibleId, biblesData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // use effect watching for change in chosen bible to search for the books of the bible
   useEffect(() => {
@@ -166,7 +166,7 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
         },
       },
     });
-  }, [chosenBible]);
+  }, [chosenBible]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // use effect watching the change in the books data to set the books to state and setting the chosen book to the first book to start
   useEffect(() => {
@@ -177,7 +177,7 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
       if (!urlParams?.currentBookId && !urlParams?.currentChapterNumber) return;
 
       const urlBook = booksData.getListOfBooksForBible.data.find(
-        (book) => book.bookId == urlParams.currentBookId
+        (book) => book.bookId === urlParams.currentBookId
       );
 
       setBook(urlBook!);
@@ -189,7 +189,7 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
     setBook(booksData.getListOfBooksForBible.data[0]);
     setChapterNumber(1); // set the chapter to 1
     setIsNewBible(false);
-  }, [booksData, urlParams?.currentBookId, urlParams?.currentChapterNumber]);
+  }, [booksData, urlParams?.currentBookId, urlParams?.currentChapterNumber]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /**
    * Function to handle setting the bible and pushing the path

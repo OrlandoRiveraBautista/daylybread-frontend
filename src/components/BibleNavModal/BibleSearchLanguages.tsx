@@ -34,7 +34,7 @@ const BibleSearchLanguages: React.FC = () => {
   const history = useHistory();
 
   // lazy api call to search languages
-  const { searchListOfLanguages, data, error, loading } =
+  const { searchListOfLanguages, data, loading } =
     useLazySearchListOfLanguages();
 
   /**
