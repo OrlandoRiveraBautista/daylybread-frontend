@@ -20,9 +20,21 @@ ion-button {
     --ion-color-base: #ffd9e2 !important;
     --ion-color-contrast: #3e001e !important;
     font-weight: 600;
+  }
 
-    &.flat {
-      --box-shadow: none;
+  &.flat {
+    --box-shadow: none;
+
+    &.ion-color-dark {
+      font-size: 14px;
+      background-color: var(--ion-background-variant);
+      border-radius: 64px;
+      height: 40px !important;
+      max-height: 44px;
     }
+  }
+
+  &.full-width {
+    width: 100%;
   }
 }

@@ -20,7 +20,10 @@ import "./BookmarkAssetList.scss";
 import CommentIcon from "../../assets/icons/comment-icon.svg";
 
 /* Utility */
-import { getVerseVerbageByVerses } from "../../utils/support";
+import {
+  getVerseVerbageByNewVerses,
+  getVerseVerbageByVerses,
+} from "../../utils/support";
 
 /* Interfaces */
 import { Bookmark } from "../../__generated__/graphql";
@@ -136,10 +139,19 @@ const BookmarkAssetList: React.FC = () => {
                   >
                     <IonCardContent>
                       <IonText className="bookmark-card-verse">
-                        {bookmarkEntry.verses.map((verse) => verse.text)}
+                        {bookmarkEntry.verses[0]
+                          ? bookmarkEntry.verses.map((verse) => verse.text)
+                          : bookmarkEntry.newVerses?.map(
+                              (verse) => verse.verseText
+                            )}
                       </IonText>
                       <IonText className="bookmark-card-citation">
-                        {getVerseVerbageByVerses(bookmarkEntry.verses!)}
+                        {bookmarkEntry.verses[0]
+                          ? getVerseVerbageByVerses(bookmarkEntry.verses!)
+                          : getVerseVerbageByNewVerses(
+                              bookmarkEntry.newVerses!,
+                              bookmarkEntry.bibleId!
+                            )}
                       </IonText>
                       {bookmarkEntry.note ? (
                         <IonIcon icon={CommentIcon} />

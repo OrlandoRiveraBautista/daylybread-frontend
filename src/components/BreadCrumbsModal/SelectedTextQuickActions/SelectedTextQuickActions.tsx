@@ -13,7 +13,8 @@ import { BookmarkModal } from "../../Modals";
 
 const SendTextQuickActions: React.FC = () => {
   //global state
-  const { selectedVerseList, chosenBook, chosenChapter } = useAppContext();
+  const { selectedVerseList, chosenBible, chosenBook, chosenChapterNumber } =
+    useAppContext();
 
   // local state
   const [bookMarkModalIsOpen, setBookMarkModalIsOpen] =
@@ -27,8 +28,9 @@ const SendTextQuickActions: React.FC = () => {
     copy: () => {
       const text = getSelectedText(
         selectedVerseList,
+        chosenBible!,
         chosenBook!,
-        chosenChapter!
+        chosenChapterNumber!
       );
       if (!text) {
         window.alert("No text selected, please select a text.");
@@ -41,8 +43,9 @@ const SendTextQuickActions: React.FC = () => {
     share: async () => {
       const text = getSelectedText(
         selectedVerseList,
+        chosenBible!,
         chosenBook!,
-        chosenChapter!
+        chosenChapterNumber!
       );
       if (!text) {
         window.alert("No text selected, please select a text.");

@@ -31,13 +31,13 @@ const BibleNavModal: React.FC<IBibleNavModal> = ({ isOpen, onDismiss }) => {
   const [navTab, setNavTab] = useState<bibleNavOptions>("book");
 
   // context values
-  const { chosenChapter, chosenBook } = useAppContext();
+  const { chosenChapterNumber, chosenBook } = useAppContext();
 
   // bible navigation butons
   const renderNavButtons = () => {
     const stages = {
-      book: chosenBook?.bookName.slice(0, 3),
-      chapter: chosenChapter?.chapterNumber,
+      book: chosenBook?.name?.slice(0, 3),
+      chapter: chosenChapterNumber,
       verse: "All",
     };
 
