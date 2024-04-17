@@ -3,6 +3,14 @@
   src: url(../../assets/fonts/google-sans-fonts/ProductSans-Regular.ttf);
 }
 
+ion-header {
+  .header-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
 ion-header ion-toolbar {
   font-family: "Product Sans";
   letter-spacing: 0.5px;

@@ -20,13 +20,10 @@ const Me = gql(`
         }
     }
 `);
+
 const getBookmarks = gql(`
   query getBookmarks {
     getMyBookmarks {
-      errors {
-        field
-        message
-      }
       results {
         _id
         createdAt
@@ -34,19 +31,32 @@ const getBookmarks = gql(`
         author {
           _id
         }
-        note
+        bibleId
+        newVerses {
+          bookId
+          bookName
+          bookNameAlt
+          chapter
+          chapterAlt
+          verseStart
+          verseStartAlt
+          verseEnd
+          verseEndAlt
+          verseText
+        }
         verses {
           _id
+          translation {
+            name
+            abbreviation
+          }
           bookName
           chapterNumber
           verse
           text
           bibleId
-          translation {
-            abbreviation
-            name
-          }
         }
+        note
       }
     }
   }
@@ -54,22 +64,44 @@ const getBookmarks = gql(`
 
 /* Mutations */
 const createBookmark = gql(`
-  mutation Mutation($options: BookmarkOptions!) {
+  mutation CreateBookmark($options: BookmarkOptions!) {
     createBookmark(options: $options) {
-      errors {
-        field
-        message
-      }
       results {
         _id
         createdAt
         updatedAt
         author {
           _id
+          createdAt
+          updatedAt
+          email
           firstName
           lastName
+          churchName
+          dob
+          count
+          bookmarks {
+            _id
+            createdAt
+            updatedAt
+            bibleId
+            note
+          }
+          bioText
         }
-        note
+        bibleId
+        newVerses {
+          bookId
+          bookName
+          bookNameAlt
+          chapter
+          chapterAlt
+          verseStart
+          verseStartAlt
+          verseEnd
+          verseEndAlt
+          verseText
+        }
         verses {
           _id
           translation {
@@ -82,6 +114,7 @@ const createBookmark = gql(`
           text
           bibleId
         }
+        note
       }
     }
   }

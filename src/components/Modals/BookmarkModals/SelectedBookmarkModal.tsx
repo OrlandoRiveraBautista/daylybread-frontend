@@ -12,7 +12,10 @@ import {
 } from "@ionic/react";
 
 /* Utils */
-import { getVerseVerbageByVerses } from "../../../utils/support";
+import {
+  getVerseVerbageByNewVerses,
+  getVerseVerbageByVerses,
+} from "../../../utils/support";
 
 /* GraphQL API/Hook */
 import { useUpdateBookmark } from "../../../hooks/UserHooks";
@@ -84,24 +87,52 @@ const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
                       <sub>Text:</sub>
                     </IonText>
                   </IonRow>
-                  {selectedBookmark.verses
-                    .slice()
-                    .sort((a, b) => Number(a.verse) - Number(b.verse))
-                    .map((verse) => {
-                      return (
-                        <IonRow key={verse.bibleId}>
-                          <IonCol>
-                            <IonText>{Number(verse.verse)}.</IonText>
-                            <IonText>{verse.text}</IonText>
-                          </IonCol>
-                        </IonRow>
-                      );
-                    })}
+                  {selectedBookmark.verses[0]
+                    ? selectedBookmark.verses
+                        .slice()
+                        .sort((a, b) => Number(a.verse) - Number(b.verse))
+                        .map((verse) => {
+                          return (
+                            <IonRow key={verse.bibleId}>
+                              <IonCol>
+                                <IonText>{Number(verse.verse)}.</IonText>
+                                <IonText>{verse.text}</IonText>
+                              </IonCol>
+                            </IonRow>
+                          );
+                        })
+                    : selectedBookmark
+                        .newVerses!.slice()
+                        .sort(
+                          (a, b) => Number(a.verseStart) - Number(b.verseStart)
+                        )
+                        .map((verse) => {
+                          return (
+                            <IonRow
+                              key={
+                                selectedBookmark.bibleId! +
+                                verse.bookId! +
+                                verse.chapter! +
+                                verse.verseStart!
+                              }
+                            >
+                              <IonCol>
+                                <IonText>{Number(verse.verseStart)}.</IonText>
+                                <IonText>{verse.verseText}</IonText>
+                              </IonCol>
+                            </IonRow>
+                          );
+                        })}
                 </div>
                 {/* Verse verbage */}
                 <IonRow className="ion-justify-content-end">
                   <IonText>
-                    {getVerseVerbageByVerses(selectedBookmark.verses)}
+                    {selectedBookmark.verses[0]
+                      ? getVerseVerbageByVerses(selectedBookmark.verses!)
+                      : getVerseVerbageByNewVerses(
+                          selectedBookmark.newVerses!,
+                          selectedBookmark.bibleId!
+                        )}
                   </IonText>
                 </IonRow>
 

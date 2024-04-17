@@ -8,7 +8,7 @@ import {
   IonText,
 } from "@ionic/react";
 import { chevronBack, chevronForward } from "ionicons/icons";
-import { useHistory, useParams } from "react-router";
+import { useHistory } from "react-router";
 
 /* Context */
 import { useAppContext } from "../../context/context";
@@ -22,42 +22,29 @@ import PatternImage from "../../assets/images/Patterns - 4x4.png";
 import BreadCrumbsIcon from "../../assets/icons/BreadCrumbs-icon.svg";
 
 /* Query Hooks */
-import {
-  useGetChapterById,
-  useGetBooksById,
-  useLazyGetTranslation,
-} from "../../hooks/BibleHooks";
+import { useLazyGetListOfVersesFromBookChapter } from "../../hooks/BibleBrainHooks";
 
 /* Utils */
-import { zeroPad } from "../../utils/support";
 import BibleTranslationModal from "../BibleNavModal/BibleTranslationModal";
-
-/* Types */
-type BibleChapterViewerUrlParams = {
-  currentBibleId: string;
-};
 
 const BibleChapterViewer: React.FC = () => {
   /* Context */
   const {
-    chosenChapter,
+    chosenChapterNumber,
+    chosenChapterVerses,
     chosenBook,
-    chosenTranslation,
-    selectedVerseList,
-    setChapter,
+    chosenBible,
+    chosenBibleBooks,
+    setChapterVerses,
+    setChapterNumber,
     setBook,
-    setTranslation,
+    selectedVerseList,
     addVerseToList,
     removeVerseFromList,
     resetVersesInList,
   } = useAppContext();
 
   /* State */
-  const [chapterId, setChapterId] = useState(chosenChapter?.bibleId);
-  const [bookId, setBookId] = useState<string>();
-  const [navAction, setNavAction] = useState<
-    "previous chapter" | "next chapter" | undefined
-  >(undefined);
   const [selectedElement, setSelectedElement] = useState<Array<string>>([]);
   const [openSelectedVersesModal, setOpenSelectedVersesModal] =
     useState<boolean>(false);
@@ -67,70 +54,72 @@ const BibleChapterViewer: React.FC = () => {
     useState<number>(0.25);
 
   /* API/GraphQL */
-  // calls the api to get chapterData by id upon local state value chapterId change
-  const { data: chapterData } = useGetChapterById(chapterId!);
-  // calls the api to get bookData by id upon local state value bookId change
-  const { data: bookData } = useGetBooksById(bookId!);
-  // lazy api call for getting all translation
-  const { getAllTranslations, data: translationData } = useLazyGetTranslation();
+  const {
+    getListOfVersesFromBookChapter,
+    data: versesData,
+    loading,
+  } = useLazyGetListOfVersesFromBookChapter();
 
   /* Router */
   const history = useHistory();
-  const { currentBibleId } = useParams<BibleChapterViewerUrlParams>();
 
   /* Side Effects */
-  // checks the urls param [currentBibleId] to set the current bible id in local state
   useEffect(() => {
-    if (!currentBibleId) return;
-    if (chapterId === currentBibleId) return;
+    const testament = chosenBook?.testament;
+    const filesets = chosenBible?.filesets["dbp-prod"];
+    if (!filesets) return;
 
-    setChapterId(currentBibleId);
-  }, [currentBibleId]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // checks the chapter api call response [chapterData] to set the chapter data into the global state
-  useEffect(() => {
-    // check if chapter data is empty
-    if (!chapterData) return;
-
-    const chapter = chapterData.getChapter;
-    // check if the chapter is the same as the in the context
-    if (chosenChapter?.bibleId === chapter.bibleId) return;
-
-    // set new chapter to the context
-    setChapter(chapter);
-
-    // check if the chapter's bible's id is not the same as the current chosenBook and set current chapter's book's id
-    if (chapter.bibleId.slice(0, -3) !== chosenBook?.bibleId) {
-      setBookId(chapter.bibleId.slice(0, -3));
-    }
-
-    // check if the translation is set
-    if (!chosenTranslation) {
-      if (!translationData) {
-        getAllTranslations();
-        return;
-      }
-      let currentTranslation = translationData.getTranslations.find(
-        (translation) =>
-          translation.abbreviation === chapter.translation.abbreviation
+    const textBibleId = filesets.find((fileset: any) => {
+      return (
+        fileset.size === "C" ||
+        (fileset.type === "text_plain" && fileset.size === testament)
       );
-      setTranslation(currentTranslation!);
+    }).id;
+
+    getListOfVersesFromBookChapter({
+      variables: {
+        options: {
+          bibleId: textBibleId,
+          bookId: chosenBook?.bookId!,
+          chapterNumber: chosenChapterNumber!,
+        },
+      },
+    });
+  }, [chosenChapterNumber, chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (loading || !versesData) return;
+
+    setChapterVerses(versesData.getListOfVerseFromBookChapter.data);
+  }, [versesData]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // checks for change in the global state for bible changes and pushes the route with param
+  useEffect(() => {
+    if (!chosenBook || !chosenChapterNumber) return;
+
+    /*--- Setting Url --- */
+    // Get the current URL
+    const currentUrl = history.location.pathname;
+
+    // Split the current URL into parts
+    const parts = currentUrl.split("/");
+
+    // Check if the position exists
+    if (!parts[5]) {
+      history.push(
+        `${currentUrl}/${chosenBook?.bookId}/${chosenChapterNumber}`
+      );
+      return;
     }
-  }, [chapterData]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // checks for change in the global state for [chosenChapter] and pushes the route with param
-  useEffect(() => {
-    if (!chosenChapter) return;
+    // Replace the value at the third position with the new Bible ID
+    parts[4] = chosenBook?.bookId!;
+    parts[5] = chosenChapterNumber?.toString()!;
 
-    // push route to include chapter id
-    history.push(`/read/${chosenChapter.bibleId}`);
-  }, [chosenChapter]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // useEffect to set a new book to the context state
-  useEffect(() => {
-    if (!bookData?.getBookById) return;
-    setBook(bookData.getBookById);
-  }, [bookData]); // eslint-disable-line react-hooks/exhaustive-deps
+    // Join the parts back together to form the new URL
+    const newUrl = parts.join("/");
+    history.push(newUrl);
+  }, [chosenChapterNumber, chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const chapterViewerWrapper = document.getElementById("chapter-viewer");
@@ -139,44 +128,10 @@ const BibleChapterViewer: React.FC = () => {
       if (!openSelectedVersesModal) {
         chapterViewerWrapper.style.gap = "0px";
       } else {
-        chapterViewerWrapper.style.gap = "106px";
+        chapterViewerWrapper.style.gap = "120px";
       }
     }
   }, [openSelectedVersesModal]);
-
-  /**
-   *  function will check navAction to do something
-   *  "previous chapter" will cause the function to set the final chapter in a book. This is useful when a user wants to navigate back one chapter from the begging of another
-   * @returns nothing
-   */
-  const handleNavAction = () => {
-    if (!navAction) return;
-    switch (navAction) {
-      case "previous chapter":
-        let bookChapterCount = chosenBook?.chapters.length;
-        const currentBibleId = chosenChapter?.bibleId!;
-
-        // get bible id number as string
-        const currentBookAndChapterNumber = currentBibleId.substring(
-          currentBibleId.length - 5
-        );
-        // reset the chapter to the first
-        const resetChapterNumber =
-          currentBookAndChapterNumber.slice(0, 2) +
-          zeroPad(bookChapterCount, 3);
-
-        const newBookAndChapterNumber = parseInt(resetChapterNumber, 10) - 1000;
-        let newChapter =
-          currentBibleId.slice(0, -newBookAndChapterNumber.toString().length) +
-          newBookAndChapterNumber.toString();
-
-        setNavAction(undefined); // reset nav action
-        setChapterId(newChapter);
-
-        // exit function
-        return;
-    }
-  };
 
   /**
    * Function will be used to reset anything that is chapter specific
@@ -191,107 +146,60 @@ const BibleChapterViewer: React.FC = () => {
   // useEffect to call the handleNavAction function whenever a book changes
   useEffect(() => {
     if (!chosenBook) return;
-    handleNavAction();
     handleReset();
   }, [chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /**
    * Function to handle navigating to the next chapter in the bible
    */
-  const nextChapter = (currentBibleId: string) => {
-    const bookChapters = chosenBook?.chapters;
+  const nextChapter = () => {
+    if (!chosenChapterNumber) return;
+    const bookChapters = chosenBook?.chapters!;
 
-    // get current chapter number as a number
-    const currentChapterNumber = parseInt(
-      currentBibleId.substring(currentBibleId.length - 3),
-      10
-    );
+    // check if the book is at the end of the chapter
+    if (bookChapters?.length <= chosenChapterNumber) {
+      // get index of current book in the bible
+      const indexOfBookInBible = chosenBibleBooks?.indexOf(chosenBook!);
 
-    // check to see if this is the last chapter in the book
-    if (currentChapterNumber === bookChapters?.length) {
-      // get bible id number as string
-      const currentBookAndChapterNumber = currentBibleId.substring(
-        currentBibleId.length - 5
-      );
-      // reset the chapter to the first
-      const resetChapterNumber =
-        currentBookAndChapterNumber.slice(0, 2) + "001";
-      const newBookAndChapterNumber = parseInt(resetChapterNumber, 10) + 1000;
-
-      let newChapter =
-        currentBibleId.slice(0, -newBookAndChapterNumber.toString().length) +
-        newBookAndChapterNumber.toString();
-
-      setChapterId(newChapter);
+      // set the next book
+      setBook(chosenBibleBooks![indexOfBookInBible! + 1]);
+      // and reset the chapter to 1
+      setChapterNumber(1);
       handleReset();
-
-      // exit function
-      return;
+      return; // exit function
     }
 
-    // incriment by one.
-    let nextChapterNumber = currentChapterNumber + 1;
-
-    let newChapter =
-      currentBibleId.slice(0, -nextChapterNumber.toString().length) +
-      nextChapterNumber.toString();
-
-    setChapterId(newChapter);
+    setChapterNumber(chosenChapterNumber + 1);
     handleReset();
-
     return;
   };
 
   /**
    * Function to handle navigating to the previous chapter in the bible
    */
-  const backChapter = (currentBibleId: string) => {
-    // get current chapter number as a number
-    const currentChapterNumber = parseInt(
-      currentBibleId.substring(currentBibleId.length - 3),
-      10
-    );
+  const backChapter = () => {
+    if (!chosenChapterNumber) return;
 
-    // check to see if this is the first chapter in the book
-    // ? user needs to go back a chapter if possible
-    if (currentChapterNumber === 1) {
-      // get bible id number as string
-      const currentBookAndChapterNumber = currentBibleId.substring(
-        currentBibleId.length - 5
+    // check if the book is at the beginng
+    if (chosenChapterNumber === 1) {
+      // get index of current book in the bible
+      const indexOfBookInBible = chosenBibleBooks?.indexOf(chosenBook!);
+
+      // check if the book is the first book (it cannot go back)
+      if (indexOfBookInBible === 0) return;
+
+      // set the next book
+      setBook(chosenBibleBooks![indexOfBookInBible! - 1]);
+      // and reset the chapter to 1
+      setChapterNumber(
+        chosenBibleBooks![indexOfBookInBible! - 1].chapters?.length!
       );
-      // get book id
-      const parsedBookId = currentBookAndChapterNumber.slice(0, 2); //! this has to be set to the last chapter in the book
-
-      // go back one chapter
-      const newBookAndChapterNumber = parseInt(parsedBookId, 10) - 1;
-
-      // parse new bookId
-      let newBookId =
-        currentBibleId.slice(
-          0,
-          currentBookAndChapterNumber[0] !== "0"
-            ? -currentBookAndChapterNumber.length
-            : -currentBookAndChapterNumber.length + 1
-        ) + newBookAndChapterNumber.toString();
-
-      setNavAction("previous chapter");
-      setBookId(newBookId);
       handleReset();
-
-      // exit function
-      return;
+      return; // exit function
     }
 
-    // decriment by one.
-    let nextChapterNumber = zeroPad(currentChapterNumber - 1, 3);
-
-    let newChapter =
-      currentBibleId.slice(0, -nextChapterNumber.toString().length) +
-      nextChapterNumber.toString();
-
-    setChapterId(newChapter);
+    setChapterNumber(chosenChapterNumber - 1);
     handleReset();
-
     return;
   };
 
@@ -304,7 +212,7 @@ const BibleChapterViewer: React.FC = () => {
     // if no text exit function
     if (!text) return;
 
-    const verseObj = chosenChapter?.verses[Number(text) - 1];
+    const verseObj = chosenChapterVerses![Number(text) - 1];
 
     if (!verseObj) return;
     setInitialModalBreakpoint(0.25);
@@ -357,23 +265,35 @@ const BibleChapterViewer: React.FC = () => {
   return (
     <div id="chapter-viewer">
       <div className="text-viewer">
-        {chosenChapter ? (
+        {chosenChapterVerses ? (
           <>
-            <strong className="chapter-number">
-              {chosenChapter?.chapterNumber}
-            </strong>
-            {chosenChapter.verses.map((verse) => (
+            <strong className="chapter-number">{chosenChapterNumber}</strong>
+            {chosenChapterVerses.map((verse) => (
               <span
-                onClick={() => handleMouseDown(verse.bibleId)}
-                id={verse.bibleId}
-                key={verse.bibleId}
+                onClick={() =>
+                  handleMouseDown(
+                    chosenBible?.abbr! +
+                      chosenBook?.bookId! +
+                      chosenChapterNumber +
+                      verse.verseStart?.toString()
+                  )
+                }
+                id={
+                  chosenBible?.abbr! +
+                  chosenBook?.bookId! +
+                  chosenChapterNumber +
+                  verse.verseStart?.toString()
+                }
+                key={verse.verseStart?.toString()}
                 className={
-                  selectedVerseList.some((sv) => sv.bibleId === verse.bibleId)
+                  selectedVerseList.some(
+                    (sv) => sv.verseStart === verse.verseStart
+                  )
                     ? "verse-selected"
                     : ""
                 }
               >
-                <b>{verse.verse}:</b> {verse.text}
+                <b>{verse.verseStart}:</b> {verse.verseText}
               </span>
             ))}
           </>
@@ -384,7 +304,7 @@ const BibleChapterViewer: React.FC = () => {
               alt="Pattern image"
               className="helper-image"
             />
-            <IonText>Please pick a translation to begin</IonText>
+            <IonText>Please pick a bible to begin</IonText>
             <IonButton
               shape="round"
               fill="clear"
@@ -393,19 +313,16 @@ const BibleChapterViewer: React.FC = () => {
               onClick={handleOpenTranslationModal}
               className="translation-button"
             >
-              {chosenTranslation?.abbreviation ?? "Pick translation"}
+              {chosenBible?.abbr ?? "Pick bible"}
             </IonButton>
           </div>
         )}
       </div>
-      {chosenChapter ? (
+      {chosenChapterVerses ? (
         <IonFab>
           {/* Back button */}
           <IonFabButton color="light" size="small" className="right">
-            <IonIcon
-              icon={chevronBack}
-              onClick={() => backChapter(chosenChapter.bibleId)}
-            />
+            <IonIcon icon={chevronBack} onClick={() => backChapter()} />
           </IonFabButton>
 
           {/* Button to open the bible assistant modal */}
@@ -423,10 +340,7 @@ const BibleChapterViewer: React.FC = () => {
 
           {/* Forward button */}
           <IonFabButton color="light" size="small" className="right">
-            <IonIcon
-              icon={chevronForward}
-              onClick={() => nextChapter(chosenChapter.bibleId)}
-            />
+            <IonIcon icon={chevronForward} onClick={nextChapter} />
           </IonFabButton>
         </IonFab>
       ) : null}

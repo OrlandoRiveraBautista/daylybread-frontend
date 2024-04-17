@@ -13,9 +13,6 @@ import {
 import { IonTextareaCustomEvent, TextareaInputEventDetail } from "@ionic/core";
 import { useHistory } from "react-router";
 
-/* Support */
-import { getCitationVerbage } from "../../../utils/support";
-
 /* Context */
 import { useAppContext } from "../../../context/context";
 
@@ -36,7 +33,7 @@ const BookmarkModal: React.FC<IBookmarkModal> = ({
 }: IBookmarkModal) => {
   const history = useHistory();
   // global state
-  const { selectedVerseList, chosenBook, chosenChapter, userInfo } =
+  const { selectedVerseList, selectedVersesCitation, userInfo, chosenBible } =
     useAppContext();
 
   // graphql hooks
@@ -56,11 +53,14 @@ const BookmarkModal: React.FC<IBookmarkModal> = ({
   };
 
   const handleSubmit = () => {
+    const jsonifiedVerses = selectedVerseList.map((obj) => JSON.stringify(obj));
+
     setBookmarks({
       variables: {
         options: {
+          bibleId: chosenBible?.abbr,
+          verses: jsonifiedVerses,
           note: note,
-          verses: selectedVerseList.map((v) => v.bibleId),
         },
       },
     });
@@ -95,13 +95,7 @@ const BookmarkModal: React.FC<IBookmarkModal> = ({
                 </IonRow>
                 <IonRow>
                   <IonCol>
-                    <IonText>
-                      {getCitationVerbage(
-                        selectedVerseList,
-                        chosenBook!,
-                        chosenChapter!
-                      )}
-                    </IonText>
+                    <IonText>{selectedVersesCitation}</IonText>
                   </IonCol>
                 </IonRow>
               </div>

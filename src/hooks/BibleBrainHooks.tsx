@@ -36,6 +36,32 @@ const getListOfLanguagesQuery = gql(`
     }
 `);
 
+const searchListOfLanguagesQuery = gql(`
+  query SearchLangueages($options: SearchLanguageArgs!) {
+    searchListOfLanguages(options: $options) {
+      data {
+        id
+        glottoId
+        iso
+        name
+        autonym
+        bibles
+        rolvCode
+      }
+      meta {
+        pagination {
+          total
+          count
+          perPage
+          currentPage
+          totalPages
+          links
+        }
+      }
+    }
+  }
+`);
+
 const getListOfBiblesQuery = gql(`
     query GetListOfBibles($options: BibleArgs!) {
         getListOFBibles(options: $options){
@@ -115,6 +141,19 @@ export const useLazyGetListOfLanguages = () => {
 
   return {
     getListOfLanguages,
+    loading,
+    error,
+    data,
+  };
+};
+
+export const useLazySearchListOfLanguages = () => {
+  const [searchListOfLanguages, { loading, error, data }] = useLazyQuery(
+    searchListOfLanguagesQuery
+  );
+
+  return {
+    searchListOfLanguages,
     loading,
     error,
     data,

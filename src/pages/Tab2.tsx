@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   IonButton,
   IonButtons,
@@ -13,7 +13,6 @@ import {
 import { useAppContext } from "../context/context";
 
 /** Hooks */
-import { useGetBooksById, useLazyGetChapterById } from "../hooks/BibleHooks";
 
 /* Components */
 import BibleNavModal from "../components/BibleNavModal/BibleNavModal";
@@ -28,56 +27,13 @@ import { caretDownOutline } from "ionicons/icons";
 
 const Tab2: React.FC = () => {
   // Context
-  const { chosenTranslation, chosenBook, setBook, setChapter } =
-    useAppContext();
+  const { chosenBible, chosenBook } = useAppContext();
 
   /* States */
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [openBibleNavModal, setOpenBibleNavModal] = useState<boolean>(false);
-  const [bookId, setBookId] = useState<string>();
 
   /* API Hooks */
-  // getting chapters
-  // const { data: chapterData } = useGetChapterById(chosenBook?.bibleId + "001");
-  const { getChapterById, data: chapterData } = useLazyGetChapterById();
-  // getting a book
-  const { data: bookData } = useGetBooksById(bookId!);
-
-  /**
-   * Use Effect for handling changes in translation
-   */
-  useEffect(() => {
-    if (!chosenTranslation) return;
-
-    if (
-      !chosenBook ||
-      chosenTranslation.abbreviation !== chosenBook.translation.abbreviation
-    ) {
-      // check if there is already a chosen chapter
-      setBookId(chosenTranslation.books[0].bibleId!);
-    }
-  }, [chosenTranslation]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  /**
-   * This side effect runs when the translation changes
-   */
-  useEffect(() => {
-    if (!chosenTranslation || !bookData) return;
-
-    const bookObj = bookData.getBookById;
-
-    getChapterById({
-      variables: { bibleId: bookObj.chapters[0].bibleId },
-    });
-
-    setBook(bookObj);
-  }, [bookData]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    if (!chapterData) return;
-
-    setChapter(chapterData.getChapter);
-  }, [chapterData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <IonPage>
@@ -93,12 +49,11 @@ const Tab2: React.FC = () => {
             className="header-button"
             onClick={() => setOpenBibleNavModal(!openBibleNavModal)}
             id="open-bible-nav-modal"
-            disabled={chosenTranslation ? false : true}
+            disabled={chosenBible ? false : true}
           >
             {chosenBook ? (
               <>
-                {chosenBook.bookName}{" "}
-                <IonIcon icon={caretDownOutline}></IonIcon>
+                {chosenBook.name} <IonIcon icon={caretDownOutline}></IonIcon>
               </>
             ) : null}
           </IonButton>
@@ -114,9 +69,7 @@ const Tab2: React.FC = () => {
               id="open-modal"
               className="translation-button"
             >
-              {chosenTranslation
-                ? chosenTranslation.abbreviation
-                : "Pick translation"}
+              {chosenBible ? chosenBible.abbr : "Pick bible"}
             </IonButton>
           </IonButtons>
         </IonToolbar>
