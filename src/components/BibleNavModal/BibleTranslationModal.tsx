@@ -61,6 +61,7 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
   /* Local state */
   const [urlParams, setUrlParams] = useState<BibleReadParams>();
   const [isNewBible, setIsNewBible] = useState<boolean>(false); // flag to determine if the bible should be set to the begining
+  const [firstRender, setFirstRender] = useState<boolean>(true);
 
   /* Queries */
   // lazy api call to search languages
@@ -173,16 +174,20 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
     if (!booksData) return;
     if (booksData?.getListOfBooksForBible.data[0] !== chosenBook)
       setBibleBooks(booksData.getListOfBooksForBible.data);
+
+    // this if statemet should only run if the user did not select a new bible and it is the first render
     if (!isNewBible) {
+      if (!firstRender) return;
       if (!urlParams?.currentBookId && !urlParams?.currentChapterNumber) return;
 
+      // This logic is meant to set the proper bible values when a user opens the app with a link
       const urlBook = booksData.getListOfBooksForBible.data.find(
         (book) => book.bookId === urlParams.currentBookId
       );
 
       setBook(urlBook!);
       setChapterNumber(Number(urlParams.currentChapterNumber));
-
+      setFirstRender(false); // set the first render flag to false
       return;
     }
 
@@ -197,7 +202,7 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
   const handleSettingBible = (bible: BbBible) => {
     // set the bible to the global state
     setBible(bible);
-    setIsNewBible(true);
+    setIsNewBible(true); // set the new bible flag to true
 
     // find the books associated with the bible
     getListOfBooksFromBible({
