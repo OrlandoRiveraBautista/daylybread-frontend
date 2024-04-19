@@ -19,7 +19,8 @@ import { useAppContext } from "../../context/context";
 /* Styles */
 import "./BibleNavModal.scss";
 
-type bibleNavOptions = "book" | "chapter" | "verse";
+type bibleNavOptions = "book" | "chapter";
+// | "verse";
 
 interface IBibleNavModal {
   isOpen?: boolean;
@@ -38,7 +39,7 @@ const BibleNavModal: React.FC<IBibleNavModal> = ({ isOpen, onDismiss }) => {
     const stages = {
       book: chosenBook?.name?.slice(0, 3),
       chapter: chosenChapterNumber,
-      verse: "All",
+      // verse: "All",
     };
 
     const render = Object.keys(stages).map((stage) => (
