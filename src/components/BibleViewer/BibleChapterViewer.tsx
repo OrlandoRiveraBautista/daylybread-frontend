@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   IonButton,
+  IonCol,
   IonFab,
   IonFabButton,
   IonIcon,
@@ -10,9 +11,13 @@ import {
 import { chevronBack, chevronForward } from "ionicons/icons";
 import { useHistory } from "react-router";
 
+/* Components */
+import Skeleton from "../Loading/Skeleton";
+import BreadCrumbsModal from "../BreadCrumbsModal/BreadCrumbsModal";
+import BibleTranslationModal from "../BibleNavModal/BibleTranslationModal";
+
 /* Context */
 import { useAppContext } from "../../context/context";
-import BreadCrumbsModal from "../BreadCrumbsModal/BreadCrumbsModal";
 
 /* Styles */
 import "./BibleChapterViewer.scss";
@@ -24,8 +29,25 @@ import BreadCrumbsIcon from "../../assets/icons/BreadCrumbs-icon.svg";
 /* Query Hooks */
 import { useLazyGetListOfVersesFromBookChapter } from "../../hooks/BibleBrainHooks";
 
-/* Utils */
-import BibleTranslationModal from "../BibleNavModal/BibleTranslationModal";
+/**
+ * Function to render loading skeleton animation
+ * @augments -
+ * @returns JSX.Element[]
+ */
+const renderSkeleton = () => {
+  const items = [];
+  for (let i = 0; i < 24; i++) {
+    items.push(
+      <React.Fragment key={i}>
+        <IonCol size="12" key={i}>
+          <Skeleton height="20px" width="100%" shape="square" />
+        </IonCol>
+      </React.Fragment>
+    );
+  }
+
+  return items;
+};
 
 const BibleChapterViewer: React.FC = () => {
   /* Context */
@@ -268,34 +290,36 @@ const BibleChapterViewer: React.FC = () => {
         {chosenChapterVerses ? (
           <>
             <strong className="chapter-number">{chosenChapterNumber}</strong>
-            {chosenChapterVerses.map((verse) => (
-              <span
-                onClick={() =>
-                  handleMouseDown(
-                    chosenBible?.abbr! +
+            {loading
+              ? renderSkeleton()
+              : chosenChapterVerses.map((verse) => (
+                  <span
+                    onClick={() =>
+                      handleMouseDown(
+                        chosenBible?.abbr! +
+                          chosenBook?.bookId! +
+                          chosenChapterNumber +
+                          verse.verseStart?.toString()
+                      )
+                    }
+                    id={
+                      chosenBible?.abbr! +
                       chosenBook?.bookId! +
                       chosenChapterNumber +
                       verse.verseStart?.toString()
-                  )
-                }
-                id={
-                  chosenBible?.abbr! +
-                  chosenBook?.bookId! +
-                  chosenChapterNumber +
-                  verse.verseStart?.toString()
-                }
-                key={verse.verseStart?.toString()}
-                className={
-                  selectedVerseList.some(
-                    (sv) => sv.verseStart === verse.verseStart
-                  )
-                    ? "verse-selected"
-                    : ""
-                }
-              >
-                <b>{verse.verseStart}:</b> {verse.verseText}
-              </span>
-            ))}
+                    }
+                    key={verse.verseStart?.toString()}
+                    className={
+                      selectedVerseList.some(
+                        (sv) => sv.verseStart === verse.verseStart
+                      )
+                        ? "verse-selected"
+                        : ""
+                    }
+                  >
+                    <b>{verse.verseStart}:</b> {verse.verseText}
+                  </span>
+                ))}
           </>
         ) : (
           <div className="helper-container">
