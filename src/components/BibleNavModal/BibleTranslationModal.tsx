@@ -126,7 +126,10 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
   // use effect watching over the language data that we get once we have set a bible from url params
   useEffect(() => {
     if (!languageData) return;
-    setBibleLanguage(languageData?.searchListOfLanguages.data[0]);
+    const filteredLanguage = languageData?.searchListOfLanguages.data.find(
+      (language) => language.id === Number(urlParams?.currentLanguage)
+    );
+    setBibleLanguage(filteredLanguage!);
   }, [languageData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // use effect watching the params of current bible id to change
