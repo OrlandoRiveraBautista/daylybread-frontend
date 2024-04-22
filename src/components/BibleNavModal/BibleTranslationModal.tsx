@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   IonButton,
   IonContent,
@@ -73,6 +73,9 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
 
   /* Url params */
   const params = useParams<BibleReadParams>();
+
+  /* Refs */
+  const modal = useRef<HTMLIonModalElement>(null);
 
   // watches for url params and sets them to local state
   useEffect(() => {
@@ -235,6 +238,9 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
     // Join the parts back together to form the new URL
     const newUrl = parts.join("/");
     history.push(newUrl);
+
+    // dismiss the modal
+    modal.current?.dismiss();
   };
 
   // function to render modal options
@@ -261,6 +267,7 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
       breakpoints={[0, 0.75, 1]}
       isOpen={isOpen}
       onDidDismiss={onDismiss}
+      ref={modal}
     >
       <IonHeader className="ion-padding">
         <IonTitle className="ion-text-center">
