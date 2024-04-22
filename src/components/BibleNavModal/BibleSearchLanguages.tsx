@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   IonContent,
   IonHeader,
   IonItem,
   IonLabel,
+  IonModal,
   IonSearchbar,
   IonTitle,
 } from "@ionic/react";
@@ -29,7 +30,10 @@ import "./BibleSearchLanguages.scss";
 import { BbLanguage } from "../../__generated__/graphql";
 
 const BibleSearchLanguages: React.FC = () => {
+  /* State */
+  // global
   const { setBibleLanguage } = useAppContext();
+  // local
 
   const history = useHistory();
 
@@ -37,12 +41,19 @@ const BibleSearchLanguages: React.FC = () => {
   const { searchListOfLanguages, data, loading } =
     useLazySearchListOfLanguages();
 
+  const modal = useRef<HTMLIonModalElement>(null);
+
   /**
    * Function to handle setting the language for the bible and pushing the url.
    */
   const handleSettingLanguage = (language: BbLanguage) => {
+    // set bible language to global state
     setBibleLanguage(language);
+
+    // push the router history to that language id
     history.push("/read/" + language.id);
+
+    modal.current?.dismiss();
   };
 
   const handleSearch = (
@@ -80,7 +91,12 @@ const BibleSearchLanguages: React.FC = () => {
   };
 
   return (
-    <>
+    <IonModal
+      initialBreakpoint={0.75}
+      breakpoints={[0, 0.75, 1]}
+      trigger="select-language"
+      ref={modal}
+    >
       <IonHeader className="ion-padding">
         <div className="header-container">
           <IonTitle className="ion-text-center">Languages</IonTitle>
@@ -111,7 +127,7 @@ const BibleSearchLanguages: React.FC = () => {
           })
         )}
       </IonContent>
-    </>
+    </IonModal>
   );
 };
 
