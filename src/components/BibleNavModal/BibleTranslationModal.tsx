@@ -280,13 +280,7 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
       <IonContent className="ion-padding">{renderModalOptions()}</IonContent>
 
       {/* Languages Modal */}
-      <IonModal
-        initialBreakpoint={0.75}
-        breakpoints={[0, 0.75, 1]}
-        trigger="select-language"
-      >
-        <BibleSearchLanguages />
-      </IonModal>
+      <BibleSearchLanguages />
     </IonModal>
   );
 };
