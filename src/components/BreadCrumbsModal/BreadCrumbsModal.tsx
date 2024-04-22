@@ -154,7 +154,6 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
       onDidDismiss={() => (isOpen ? onDismiss() : null)}
       id="bread-crumbs-modal"
       onIonBreakpointDidChange={(e) => handleBreakpointChange(e)}
-      backdropDismiss={false}
       backdropBreakpoint={0.5}
     >
       <IonContent className="ion-padding ">
