@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   IonButton,
   IonContent,
@@ -74,6 +74,9 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
   /* Url params */
   const params = useParams<BibleReadParams>();
 
+  /* Refs */
+  const modal = useRef<HTMLIonModalElement>(null);
+
   // watches for url params and sets them to local state
   useEffect(() => {
     if (Object.keys(params).length > 0) {
@@ -126,7 +129,10 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
   // use effect watching over the language data that we get once we have set a bible from url params
   useEffect(() => {
     if (!languageData) return;
-    setBibleLanguage(languageData?.searchListOfLanguages.data[0]);
+    const filteredLanguage = languageData?.searchListOfLanguages.data.find(
+      (language) => language.id === Number(urlParams?.currentLanguage)
+    );
+    setBibleLanguage(filteredLanguage!);
   }, [languageData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // use effect watching the params of current bible id to change
@@ -232,6 +238,9 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
     // Join the parts back together to form the new URL
     const newUrl = parts.join("/");
     history.push(newUrl);
+
+    // dismiss the modal
+    modal.current?.dismiss();
   };
 
   // function to render modal options
@@ -258,6 +267,7 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
       breakpoints={[0, 0.75, 1]}
       isOpen={isOpen}
       onDidDismiss={onDismiss}
+      ref={modal}
     >
       <IonHeader className="ion-padding">
         <IonTitle className="ion-text-center">
@@ -277,13 +287,7 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
       <IonContent className="ion-padding">{renderModalOptions()}</IonContent>
 
       {/* Languages Modal */}
-      <IonModal
-        initialBreakpoint={0.75}
-        breakpoints={[0, 0.75, 1]}
-        trigger="select-language"
-      >
-        <BibleSearchLanguages />
-      </IonModal>
+      <BibleSearchLanguages />
     </IonModal>
   );
 };
