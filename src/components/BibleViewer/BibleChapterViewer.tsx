@@ -86,6 +86,8 @@ const BibleChapterViewer: React.FC = () => {
   const history = useHistory();
 
   /* Side Effects */
+
+  // useEffect to get verses when book or chapther changes
   useEffect(() => {
     const testament = chosenBook?.testament;
     const filesets = chosenBible?.filesets["dbp-prod"];
@@ -109,6 +111,7 @@ const BibleChapterViewer: React.FC = () => {
     });
   }, [chosenChapterNumber, chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // useEffect to set verses when verses are present
   useEffect(() => {
     if (loading || !versesData) return;
 
