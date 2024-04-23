@@ -134,6 +134,64 @@ const getListOfVersesFromBookChapterQuery = gql(`
     }
 `);
 
+const getCopyrightForBibleQuery = gql(`
+  query GetCopyRightByBibleId($options: CopyrightArgs!) {
+    getCopyRightByBibleId(options: $options) {
+      data {
+        id
+        asset_id
+        type
+        size
+        copyright {
+          copyright_date
+          copyright
+          copyright_description
+          created_at
+          updated_at
+          open_access
+          organizations {
+            id
+            slug
+            abbreviation
+            primaryColor
+            secondaryColor
+            inactive
+            url_facebook
+            url_website
+            url_donate
+            url_twitter
+            address
+            address2
+            city
+            state
+            country
+            zip
+            phone
+            email
+            email_director
+            latitude
+            longitude
+            laravel_through_key
+            logos {
+              language_id
+              language_iso
+              url
+              icon
+            }
+            translations {
+              language_id
+              vernacular
+              alt
+              name
+              description_short
+            }
+          }
+        }
+      }
+    }
+  }
+`);
+
 export const useLazyGetListOfLanguages = () => {
   const [getListOfLanguages, { loading, error, data }] = useLazyQuery(
     getListOfLanguagesQuery
@@ -191,6 +249,19 @@ export const useLazyGetListOfVersesFromBookChapter = () => {
 
   return {
     getListOfVersesFromBookChapter,
+    loading,
+    error,
+    data,
+  };
+};
+
+export const useLazyGetCopyrightForBible = () => {
+  const [getCopyrightForBible, { loading, error, data }] = useLazyQuery(
+    getCopyrightForBibleQuery
+  );
+
+  return {
+    getCopyrightForBible,
     loading,
     error,
     data,
