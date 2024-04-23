@@ -56,6 +56,7 @@ const BibleChapterViewer: React.FC = () => {
     chosenChapterVerses,
     chosenBook,
     chosenBible,
+    chosenBibleCopyright,
     chosenBibleBooks,
     setChapterVerses,
     setChapterNumber,
@@ -86,6 +87,8 @@ const BibleChapterViewer: React.FC = () => {
   const history = useHistory();
 
   /* Side Effects */
+
+  // useEffect to get verses when book or chapther changes
   useEffect(() => {
     const testament = chosenBook?.testament;
     const filesets = chosenBible?.filesets["dbp-prod"];
@@ -109,6 +112,7 @@ const BibleChapterViewer: React.FC = () => {
     });
   }, [chosenChapterNumber, chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // useEffect to set verses when verses are present
   useEffect(() => {
     if (loading || !versesData) return;
 
@@ -290,9 +294,11 @@ const BibleChapterViewer: React.FC = () => {
         {chosenChapterVerses ? (
           <>
             <strong className="chapter-number">{chosenChapterNumber}</strong>
-            {loading
-              ? renderSkeleton()
-              : chosenChapterVerses.map((verse) => (
+            {loading ? (
+              renderSkeleton()
+            ) : (
+              <>
+                {chosenChapterVerses.map((verse) => (
                   <span
                     onClick={() =>
                       handleMouseDown(
@@ -320,6 +326,22 @@ const BibleChapterViewer: React.FC = () => {
                     <b>{verse.verseStart}:</b> {verse.verseText}
                   </span>
                 ))}
+                <div className="copyright">
+                  {chosenBibleCopyright?.copyright?.copyright}
+                  {chosenBibleCopyright?.copyright?.organizations![0].logos
+                    ?.length ? (
+                    <IonImg
+                      src={
+                        chosenBibleCopyright?.copyright?.organizations![0]
+                          .logos![0].url!
+                      }
+                      alt={chosenBible?.abbr + "copyright"}
+                      className="copyright-image"
+                    />
+                  ) : null}
+                </div>
+              </>
+            )}
           </>
         ) : (
           <div className="helper-container">

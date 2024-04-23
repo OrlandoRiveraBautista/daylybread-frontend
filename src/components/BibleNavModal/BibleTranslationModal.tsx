@@ -166,6 +166,7 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
     )
       return;
 
+    // get list of books for this bible
     getListOfBooksFromBible({
       variables: {
         options: {

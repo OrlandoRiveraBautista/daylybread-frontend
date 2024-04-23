@@ -18,8 +18,10 @@ import {
   BbBible,
   BbBook,
   BbVerse,
+  BbCopyright,
 } from "../__generated__/graphql";
 import { getCitationVerbage } from "../utils/support";
+import { useLazyGetCopyrightForBible } from "../hooks/BibleBrainHooks";
 
 const context = constate(() => {
   /** API/GraphQL Decunstruction */
@@ -30,11 +32,19 @@ const context = constate(() => {
     loading: bookmarksLoading,
     error: bookmarksError,
   } = useLazyGetBookmarks();
+  const {
+    getCopyrightForBible,
+    data: copyrightData,
+    error: copyrightError,
+    loading: copyrightLoading,
+  } = useLazyGetCopyrightForBible();
 
   /** State declaration */
   // Bible State
   const [chosenLanguage, setChosenLanguage] = useState<BbLanguage>();
   const [chosenBible, setChosenBible] = useState<BbBible>();
+  const [chosenBibleCopyright, setChosenBibleCopyright] =
+    useState<BbCopyright>();
   const [chosenBibleBooks, setChosenBibleBooks] = useState<BbBook[]>();
   const [chosenBook, setChosenBook] = useState<BbBook>();
   const [chosenTranslation, setChosenTranslation] = useState<ITranslation>();
@@ -61,10 +71,29 @@ const context = constate(() => {
 
   /**
    * Sets the bible translation to global state
+   * and gets copyright information
    */
   const setBible = (dto: BbBible) => {
     setChosenBible(dto);
+
+    // get copyright information for the bible
+    getCopyrightForBible({
+      variables: {
+        options: {
+          bibleId: dto.abbr!,
+        },
+      },
+    });
   };
+
+  useEffect(() => {
+    if (!copyrightData?.getCopyRightByBibleId.data) return;
+    const filteredCopyright = copyrightData.getCopyRightByBibleId.data.filter(
+      (entry) => entry.type?.includes("text")
+    )[0];
+
+    setChosenBibleCopyright(filteredCopyright);
+  }, [copyrightData]);
 
   /**
    * Sets the bible book to global state
@@ -130,6 +159,7 @@ const context = constate(() => {
     setSelectedVerseList([]);
   };
 
+  // useEffect to set selected verse citations verbage
   useEffect(() => {
     // exit function if there are no selected verses
     if (
@@ -216,6 +246,7 @@ const context = constate(() => {
   return {
     chosenLanguage,
     chosenBible,
+    chosenBibleCopyright,
     chosenBibleBooks,
     chosenTranslation,
     chosenBook,
