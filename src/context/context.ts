@@ -32,12 +32,8 @@ const context = constate(() => {
     loading: bookmarksLoading,
     error: bookmarksError,
   } = useLazyGetBookmarks();
-  const {
-    getCopyrightForBible,
-    data: copyrightData,
-    error: copyrightError,
-    loading: copyrightLoading,
-  } = useLazyGetCopyrightForBible();
+  const { getCopyrightForBible, data: copyrightData } =
+    useLazyGetCopyrightForBible();
 
   /** State declaration */
   // Bible State
