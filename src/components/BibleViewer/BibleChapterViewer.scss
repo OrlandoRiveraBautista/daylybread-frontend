@@ -17,6 +17,22 @@
     text-decoration-thickness: 2px;
     text-decoration-color: $color-primary;
   }
+
+  .copyright {
+    display: flex;
+    flex-direction: column;
+    min-height: 150px;
+    margin-top: 24px;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+    font-size: 11px;
+    font-weight: 500;
+    gap: 12px;
+    .copyright-image {
+      height: 32px;
+    }
+  }
 }
 .chapter-number {
   font-size: 24px;

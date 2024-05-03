@@ -42,36 +42,40 @@ const Tab2: React.FC = () => {
         {/* Toolbar */}
         <IonToolbar>
           {/* Header Title Button */}
-          <IonButton
-            expand="full"
-            fill="clear"
-            color="dark"
-            className="header-button"
-            onClick={() => setOpenBibleNavModal(!openBibleNavModal)}
-            id="open-bible-nav-modal"
-            disabled={chosenBible ? false : true}
-          >
-            {chosenBook ? (
-              <>
-                {chosenBook.name} <IonIcon icon={caretDownOutline}></IonIcon>
-              </>
-            ) : null}
-          </IonButton>
-
-          {/* Header secondary buttons */}
-          <IonButtons slot="end">
-            <IonButton
-              shape="round"
-              fill="clear"
-              color="dark"
-              size="large"
-              onClick={() => setOpenModal(!openModal)}
-              id="open-modal"
-              className="translation-button"
-            >
-              {chosenBible ? chosenBible.abbr : "Pick bible"}
-            </IonButton>
-          </IonButtons>
+          {chosenBible ? (
+            <>
+              <IonButton
+                expand="full"
+                fill="clear"
+                color="dark"
+                className="header-button"
+                onClick={() => setOpenBibleNavModal(!openBibleNavModal)}
+                id="open-bible-nav-modal"
+                disabled={chosenBible ? false : true}
+              >
+                {chosenBook ? (
+                  <>
+                    {chosenBook.name}{" "}
+                    <IonIcon icon={caretDownOutline}></IonIcon>
+                  </>
+                ) : null}
+              </IonButton>
+              {/* Header secondary buttons */}
+              <IonButtons slot="end">
+                <IonButton
+                  shape="round"
+                  fill="clear"
+                  color="dark"
+                  size="large"
+                  onClick={() => setOpenModal(!openModal)}
+                  id="open-modal"
+                  className="translation-button"
+                >
+                  {chosenBible ? chosenBible.abbr : "Pick bible"}
+                </IonButton>
+              </IonButtons>
+            </>
+          ) : null}
         </IonToolbar>
       </IonHeader>
 
