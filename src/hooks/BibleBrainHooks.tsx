@@ -192,6 +192,25 @@ const getCopyrightForBibleQuery = gql(`
   }
 `);
 
+const getMediaForBibleQuery = gql(`
+  query GetAudioMedia($options: AudioMediaArgs!) {
+    getAudioMedia(options: $options) {
+      data {
+        book_id
+        book_name
+        chapter_start
+        chapter_end
+        verse_start
+        verse_end
+        thumbnail
+        timestamp
+        path
+        duration
+      }
+    }
+  }
+`);
+
 export const useLazyGetListOfLanguages = () => {
   const [getListOfLanguages, { loading, error, data }] = useLazyQuery(
     getListOfLanguagesQuery
@@ -262,6 +281,19 @@ export const useLazyGetCopyrightForBible = () => {
 
   return {
     getCopyrightForBible,
+    loading,
+    error,
+    data,
+  };
+};
+
+export const useLazyGetMediaForBible = () => {
+  const [getMediaForBible, { loading, error, data }] = useLazyQuery(
+    getMediaForBibleQuery
+  );
+
+  return {
+    getMediaForBible,
     loading,
     error,
     data,
