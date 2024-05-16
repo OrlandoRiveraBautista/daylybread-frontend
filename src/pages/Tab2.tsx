@@ -18,6 +18,7 @@ import { useAppContext } from "../context/context";
 import BibleNavModal from "../components/BibleNavModal/BibleNavModal";
 import BibleTranslationModal from "../components/BibleNavModal/BibleTranslationModal";
 import BibleChapterViewer from "../components/BibleViewer/BibleChapterViewer";
+import Player from "../components/Player/Player";
 
 /* Styles */
 import "./Tab2.scss";
@@ -73,6 +74,7 @@ const Tab2: React.FC = () => {
                 >
                   {chosenBible ? chosenBible.abbr : "Pick bible"}
                 </IonButton>
+                <Player type="button" />
               </IonButtons>
             </>
           ) : null}
