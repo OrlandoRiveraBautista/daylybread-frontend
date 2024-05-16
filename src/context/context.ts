@@ -19,6 +19,7 @@ import {
   BbBook,
   BbVerse,
   BbCopyright,
+  BbAudioFile,
 } from "../__generated__/graphql";
 import { getCitationVerbage } from "../utils/support";
 import { useLazyGetCopyrightForBible } from "../hooks/BibleBrainHooks";
@@ -46,6 +47,8 @@ const context = constate(() => {
   const [chosenTranslation, setChosenTranslation] = useState<ITranslation>();
   const [chosenChapterNumber, setChosenChapterNumber] = useState<number>();
   const [chosenChapterVerses, setChosenChapterVerses] = useState<BbVerse[]>();
+  const [chosenChapterAudioMedia, setChosenChapterAudioMedia] =
+    useState<BbAudioFile>();
   const [selectedVerseList, setSelectedVerseList] = useState<BbVerse[]>([]);
   const [selectedVersesCitation, setSelectedVersesCitation] = useState<
     string | undefined
@@ -82,6 +85,9 @@ const context = constate(() => {
     });
   };
 
+  /**
+   * UseEffect used to set the copyrights of a chosen bible
+   */
   useEffect(() => {
     if (!copyrightData?.getCopyRightByBibleId.data) return;
     const filteredCopyright = copyrightData.getCopyRightByBibleId.data.filter(
@@ -124,6 +130,13 @@ const context = constate(() => {
    */
   const setChapterVerses = (dto: BbVerse[]) => {
     setChosenChapterVerses(dto);
+  };
+
+  /**
+   * Sets the bible chapter's audio media
+   */
+  const setChapterAudioMedia = (dto: BbAudioFile) => {
+    setChosenChapterAudioMedia(dto);
   };
 
   /**
@@ -248,6 +261,7 @@ const context = constate(() => {
     chosenBook,
     chosenChapterNumber,
     chosenChapterVerses,
+    chosenChapterAudioMedia,
     userInfo,
     deviceInfo,
     selectedVerseList,
@@ -263,6 +277,7 @@ const context = constate(() => {
     setBook,
     setChapterNumber,
     setChapterVerses,
+    setChapterAudioMedia,
     setUser,
     setDevice,
     addVerseToList,
