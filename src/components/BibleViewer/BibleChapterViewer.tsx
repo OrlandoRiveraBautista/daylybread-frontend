@@ -101,6 +101,8 @@ const BibleChapterViewer: React.FC = () => {
       );
     }).id;
 
+    console.log(filesets);
+
     getListOfVersesFromBookChapter({
       variables: {
         options: {
@@ -365,30 +367,32 @@ const BibleChapterViewer: React.FC = () => {
         )}
       </div>
       {chosenChapterVerses ? (
-        <IonFab>
-          {/* Back button */}
-          <IonFabButton color="light" size="small" className="right">
-            <IonIcon icon={chevronBack} onClick={() => backChapter()} />
-          </IonFabButton>
+        <div className="chapter-viewer-control-container">
+          <IonFab>
+            {/* Back button */}
+            <IonFabButton color="light" size="small" className="right">
+              <IonIcon icon={chevronBack} onClick={() => backChapter()} />
+            </IonFabButton>
 
-          {/* Button to open the bible assistant modal */}
-          <IonFabButton
-            color="light"
-            size="small"
-            onClick={handleOpenVerseModal}
-          >
-            <IonIcon
-              class="bread-crumbs-icon"
+            {/* Button to open the bible assistant modal */}
+            <IonFabButton
               color="light"
-              icon={BreadCrumbsIcon}
-            />
-          </IonFabButton>
+              size="small"
+              onClick={handleOpenVerseModal}
+            >
+              <IonIcon
+                class="bread-crumbs-icon"
+                color="light"
+                icon={BreadCrumbsIcon}
+              />
+            </IonFabButton>
 
-          {/* Forward button */}
-          <IonFabButton color="light" size="small" className="right">
-            <IonIcon icon={chevronForward} onClick={nextChapter} />
-          </IonFabButton>
-        </IonFab>
+            {/* Forward button */}
+            <IonFabButton color="light" size="small" className="right">
+              <IonIcon icon={chevronForward} onClick={nextChapter} />
+            </IonFabButton>
+          </IonFab>
+        </div>
       ) : null}
 
       {/* bible assistant modal */}
