@@ -26,6 +26,7 @@ const documents = {
     "\n  query GetBookById($bibleId: String!) {\n  getBookById(bibleId: $bibleId) {\n    _id\n    bookName\n    bibleId\n    chapters {\n      chapterName\n      bibleId\n    }\n    translation {\n      abbreviation\n      name\n    }\n  }\n}\n": types.GetBookByIdDocument,
     "\n  query GetChapter($bibleId: String!) {\n    getChapter(bibleId: $bibleId) {\n      _id\n      chapterNumber\n      bibleId\n      bookName\n      verses {\n        verse\n        bibleId\n        text\n      }\n      translation {\n        abbreviation\n        name\n      }\n    }\n  }\n": types.GetChapterDocument,
     "\n  query GetVerseById($bibleId: String!) {\n    getVerseByBibleId(bibleId: $bibleId) {\n      _id\n      translation {\n        name\n        abbreviation\n      }\n      bookName\n      chapterNumber\n      verse\n      text\n      bibleId\n    }\n  }\n": types.GetVerseByIdDocument,
+    "\n  mutation SetUserHistory($options: HistoryOptions!) {\n    setUserHistory(options: $options) {\n      errors {\n        field\n        message\n      }\n      results\n    }\n  }\n": types.SetUserHistoryDocument,
     "\n    query OpenAi($options: GptArgs!) {\n        getOpen(options: $options)\n    }\n": types.OpenAiDocument,
     "\n  subscription Subscription {\n    aiChatReponseUpdated\n  }\n": types.SubscriptionDocument,
     "\n    query Me {\n        me {\n            user {\n              _id\n              createdAt\n              updatedAt\n              email\n              firstName\n              lastName\n              churchName\n              bioText\n              dob\n              count\n            }\n        }\n    }\n": types.MeDocument,
@@ -88,6 +89,10 @@ export function gql(source: "\n  query GetChapter($bibleId: String!) {\n    getC
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  query GetVerseById($bibleId: String!) {\n    getVerseByBibleId(bibleId: $bibleId) {\n      _id\n      translation {\n        name\n        abbreviation\n      }\n      bookName\n      chapterNumber\n      verse\n      text\n      bibleId\n    }\n  }\n"): (typeof documents)["\n  query GetVerseById($bibleId: String!) {\n    getVerseByBibleId(bibleId: $bibleId) {\n      _id\n      translation {\n        name\n        abbreviation\n      }\n      bookName\n      chapterNumber\n      verse\n      text\n      bibleId\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation SetUserHistory($options: HistoryOptions!) {\n    setUserHistory(options: $options) {\n      errors {\n        field\n        message\n      }\n      results\n    }\n  }\n"): (typeof documents)["\n  mutation SetUserHistory($options: HistoryOptions!) {\n    setUserHistory(options: $options) {\n      errors {\n        field\n        message\n      }\n      results\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
