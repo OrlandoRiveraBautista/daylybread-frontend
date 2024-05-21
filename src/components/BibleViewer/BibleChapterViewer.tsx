@@ -107,6 +107,7 @@ const BibleChapterViewer: React.FC = () => {
           bibleId: textBibleId,
           bookId: chosenBook?.bookId!,
           chapterNumber: chosenChapterNumber!,
+          language: chosenBible.languageId!,
         },
       },
     });
