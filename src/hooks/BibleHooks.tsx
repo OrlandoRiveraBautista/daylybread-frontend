@@ -1,5 +1,5 @@
 import { gql } from "../__generated__/gql";
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 
 /* Queries */
 const getTranslations = gql(`
@@ -111,7 +111,7 @@ export const useLazyGetTranslation = () => {
 };
 
 export const useLazySetUserHistory = () => {
-  const [setUserHistory, { loading, error, data }] = useLazyQuery(
+  const [setUserHistory, { loading, error, data }] = useMutation(
     setUserHistoryMutation
   );
 
