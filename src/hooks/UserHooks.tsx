@@ -21,6 +21,28 @@ const Me = gql(`
     }
 `);
 
+const UserBibleHistoryQuery = gql(`
+    query UserBibleHistoryQuery {
+        me {
+          user{
+            bibleHistory {
+              _id
+              history {
+                language
+                bibleAbbr
+                bookId
+                chapterNumber
+                viewedAt
+              }
+              current
+              createdAt
+              updatedAt
+            }
+          }
+        }
+    }
+`);
+
 const getBookmarks = gql(`
   query getBookmarks {
     getMyBookmarks {
@@ -182,6 +204,10 @@ export const useMe = () => {
     error,
     data,
   };
+};
+
+export const useUserBibleHistory = () => {
+  return useQuery(UserBibleHistoryQuery);
 };
 
 export const useUserUpdate = () => {
