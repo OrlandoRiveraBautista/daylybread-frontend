@@ -28,7 +28,7 @@ const useSetBibleHistory = () => {
     history.push(
       `${currentUrl}/${latestHistory?.language}/${latestHistory?.bibleAbbr}/${latestHistory?.bookId}/${latestHistory?.chapterNumber}`
     );
-  }, [userBibleHistoryData]);
+  }, [userBibleHistoryData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return { userBibleHistoryData };
 };
