@@ -28,6 +28,8 @@ import BreadCrumbsIcon from "../../assets/icons/BreadCrumbs-icon.svg";
 
 /* Query Hooks */
 import { useLazyGetListOfVersesFromBookChapter } from "../../hooks/BibleBrainHooks";
+import { useLazySetUserHistory } from "../../hooks/BibleHooks";
+import useSetBibleHistory from "../utility/hooks/useSetBibleHistory";
 
 /**
  * Function to render loading skeleton animation
@@ -82,6 +84,8 @@ const BibleChapterViewer: React.FC = () => {
     data: versesData,
     loading,
   } = useLazyGetListOfVersesFromBookChapter();
+  const { setUserHistory } = useLazySetUserHistory();
+  useSetBibleHistory();
 
   /* Router */
   const history = useHistory();
@@ -90,10 +94,13 @@ const BibleChapterViewer: React.FC = () => {
 
   // useEffect to get verses when book or chapther changes
   useEffect(() => {
+    // get the testament
     const testament = chosenBook?.testament;
+    // get the filesets
     const filesets = chosenBible?.filesets["dbp-prod"];
     if (!filesets) return;
 
+    // get the bible id for the text
     const textBibleId = filesets.find((fileset: any) => {
       return (
         fileset.size === "C" ||
@@ -101,12 +108,25 @@ const BibleChapterViewer: React.FC = () => {
       );
     }).id;
 
+    // get the chapter content
     getListOfVersesFromBookChapter({
       variables: {
         options: {
           bibleId: textBibleId,
           bookId: chosenBook?.bookId!,
           chapterNumber: chosenChapterNumber!,
+        },
+      },
+    });
+
+    // set the user history
+    setUserHistory({
+      variables: {
+        options: {
+          bibleAbbr: chosenBible.abbr!,
+          bookId: chosenBook?.bookId!,
+          chapterNumber: chosenChapterNumber!,
+          language: chosenBible.languageId!,
         },
       },
     });
