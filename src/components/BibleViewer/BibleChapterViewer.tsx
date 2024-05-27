@@ -29,6 +29,7 @@ import BreadCrumbsIcon from "../../assets/icons/BreadCrumbs-icon.svg";
 /* Query Hooks */
 import { useLazyGetListOfVersesFromBookChapter } from "../../hooks/BibleBrainHooks";
 import { useLazySetUserHistory } from "../../hooks/BibleHooks";
+import useSetBibleHistory from "../utility/hooks/useSetBibleHistory";
 
 /**
  * Function to render loading skeleton animation
@@ -83,12 +84,8 @@ const BibleChapterViewer: React.FC = () => {
     data: versesData,
     loading,
   } = useLazyGetListOfVersesFromBookChapter();
-  const {
-    setUserHistory,
-    loading: setUserHistoryLoading,
-    data: setUserHistoryData,
-    error: setUserHistoryError,
-  } = useLazySetUserHistory();
+  const { setUserHistory } = useLazySetUserHistory();
+  useSetBibleHistory();
 
   /* Router */
   const history = useHistory();
@@ -126,7 +123,7 @@ const BibleChapterViewer: React.FC = () => {
     setUserHistory({
       variables: {
         options: {
-          bibleId: textBibleId,
+          bibleAbbr: chosenBible.abbr!,
           bookId: chosenBook?.bookId!,
           chapterNumber: chosenChapterNumber!,
           language: chosenBible.languageId!,
