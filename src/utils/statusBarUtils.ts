@@ -23,16 +23,16 @@ const setStatusBarStyleLight = async () => {
 export const useSetStatusBarColor = async () => {
   if (!Capacitor.isNativePlatform()) return;
   const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
-  const { style: currentStyle } = await StatusBar.getInfo();
+  //   const { style: currentStyle } = await StatusBar.getInfo();
 
   if (prefersDark.matches) {
     // The user prefers dark mode
-    if (currentStyle === "DARK") return;
+    // if (currentStyle === "DARK") return;
 
     await setStatusBarStyleDark();
   } else {
     // The user prefers light mode
-    if (currentStyle === "LIGHT") return;
+    // if (currentStyle === "LIGHT") return;
     await setStatusBarStyleLight();
   }
 };
