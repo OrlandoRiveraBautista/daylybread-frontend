@@ -1,5 +1,5 @@
 import { gql } from "../__generated__/gql";
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 
 /* Queries */
 const getTranslations = gql(`
@@ -82,6 +82,18 @@ const getVerseByIdQuery = gql(`
   }
 `);
 
+const setUserHistoryMutation = gql(`
+  mutation SetUserHistory($options: HistoryOptions!) {
+    setUserHistory(options: $options) {
+      errors {
+        field
+        message
+      }
+      results
+    }
+  }
+`);
+
 export const useGetTranslation = () => {
   return useQuery(getTranslations);
 };
@@ -92,6 +104,19 @@ export const useLazyGetTranslation = () => {
 
   return {
     getAllTranslations,
+    loading,
+    error,
+    data,
+  };
+};
+
+export const useLazySetUserHistory = () => {
+  const [setUserHistory, { loading, error, data }] = useMutation(
+    setUserHistoryMutation
+  );
+
+  return {
+    setUserHistory,
     loading,
     error,
     data,
