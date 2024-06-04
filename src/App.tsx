@@ -48,6 +48,9 @@ import { useAppContext } from "./context/context";
 /** Graphql API Hooks */
 import { useMe } from "./hooks/UserHooks";
 
+/* Utils */
+import { useSetStatusBarColor } from "./utils/statusBarUtils";
+
 setupIonicReact({ mode: "md" });
 
 const App: React.FC = () => {
@@ -58,6 +61,7 @@ const App: React.FC = () => {
 
   /** Hooks declaration */
   const { getMe, data: userData } = useMe();
+  useSetStatusBarColor(); // hook to set the status bar color
 
   /**
    * Function to get and set the user if signed in
