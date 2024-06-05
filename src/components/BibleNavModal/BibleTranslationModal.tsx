@@ -112,7 +112,8 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
     // check if there is no chosen bible or if the bibles returned are the same language as the chosen language
     if (
       !chosenLanguage ||
-      biblesData?.getListOFBibles.data[0].language === chosenLanguage.name
+      (biblesData?.getListOFBibles.data.length &&
+        biblesData?.getListOFBibles.data[0].languageId === chosenLanguage.id)
     )
       return;
 
@@ -229,9 +230,12 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
 
     // Check if the position exists
     if (!parts[3]) {
-      history.push(`${currentUrl}/${bible.abbr}`);
+      history.push(`${currentUrl}/${chosenLanguage?.id}/${bible.abbr}`);
       return;
     }
+
+    // add the language id to the url
+    parts[2] = chosenLanguage?.id.toString()!;
 
     // Replace the value at the third position with the new Bible ID
     parts[3] = bible.abbr!;
