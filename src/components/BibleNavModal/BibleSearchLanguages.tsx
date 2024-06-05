@@ -12,7 +12,6 @@ import {
   IonSearchbarCustomEvent,
   SearchbarInputEventDetail,
 } from "@ionic/core";
-import { useHistory } from "react-router";
 
 /* Components */
 import Skeleton from "../Loading/Skeleton";
@@ -35,8 +34,6 @@ const BibleSearchLanguages: React.FC = () => {
   const { setBibleLanguage } = useAppContext();
   // local
 
-  const history = useHistory();
-
   // lazy api call to search languages
   const { searchListOfLanguages, data, loading } =
     useLazySearchListOfLanguages();
@@ -49,9 +46,6 @@ const BibleSearchLanguages: React.FC = () => {
   const handleSettingLanguage = (language: BbLanguage) => {
     // set bible language to global state
     setBibleLanguage(language);
-
-    // push the router history to that language id
-    history.push("/read/" + language.id);
 
     modal.current?.dismiss();
   };
