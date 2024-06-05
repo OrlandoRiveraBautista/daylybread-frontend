@@ -15,12 +15,15 @@ const useSetBibleHistory = () => {
 
     // get the current user bible history
     const currentUserBibleHistory =
-      userBibleHistoryData?.me?.user?.bibleHistory?.find(
+      userBibleHistoryData.me?.user?.bibleHistory?.find(
         (history) => history.current
       );
 
+    // check that the there is a bible history
+    if (!currentUserBibleHistory) return;
+
     // get it's latest history
-    const latestHistory = currentUserBibleHistory?.history[0];
+    const latestHistory = currentUserBibleHistory.history[0];
 
     // Get the current URL
     const currentUrl = history.location.pathname;
