@@ -27,9 +27,16 @@ import PatternImage from "../../assets/images/Patterns - 4x4.png";
 import BreadCrumbsIcon from "../../assets/icons/BreadCrumbs-icon.svg";
 
 /* Query Hooks */
-import { useLazyGetListOfVersesFromBookChapter } from "../../hooks/BibleBrainHooks";
+import {
+  useLazyGetAudioMedia,
+  useLazyGetListOfVersesFromBookChapter,
+  useLazyGetMediaTimestamps,
+} from "../../hooks/BibleBrainHooks";
 import { useLazySetUserHistory } from "../../hooks/BibleHooks";
 import useSetBibleHistory from "../utility/hooks/useSetBibleHistory";
+
+/* Utils */
+import { getHighestBitrateAudio } from "../../utils/support";
 
 /**
  * Function to render loading skeleton animation
@@ -63,6 +70,7 @@ const BibleChapterViewer: React.FC = () => {
     setChapterVerses,
     setChapterNumber,
     setBook,
+    setChapterMedia,
     selectedVerseList,
     addVerseToList,
     removeVerseFromList,
@@ -86,6 +94,9 @@ const BibleChapterViewer: React.FC = () => {
   } = useLazyGetListOfVersesFromBookChapter();
   const { setUserHistory } = useLazySetUserHistory();
   useSetBibleHistory();
+  const { getAudioMedia, data: audioMediaData } = useLazyGetAudioMedia();
+  const { getMediaTimestamps, data: mediaTimestamps } =
+    useLazyGetMediaTimestamps();
 
   /* Router */
   const history = useHistory();
@@ -165,6 +176,33 @@ const BibleChapterViewer: React.FC = () => {
     // Join the parts back together to form the new URL
     const newUrl = parts.join("/");
     history.push(newUrl);
+
+    // Get the file set
+    const audioFileSet = getHighestBitrateAudio(
+      chosenBible?.filesets["dbp-prod"].filter(
+        (fileset: any) => fileset.size === chosenBook.testament
+      )
+    );
+
+    const mediaOptions = {
+      filesetId: audioFileSet.id,
+      bookId: chosenBook.bookId!,
+      chapterNumber: chosenChapterNumber,
+    };
+
+    // Getting new media
+    getAudioMedia({
+      variables: {
+        options: mediaOptions,
+      },
+    });
+
+    // Getting new media timestamps
+    getMediaTimestamps({
+      variables: {
+        options: mediaOptions,
+      },
+    });
   }, [chosenChapterNumber, chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -178,6 +216,11 @@ const BibleChapterViewer: React.FC = () => {
       }
     }
   }, [openSelectedVersesModal]);
+
+  useEffect(() => {
+    if (!audioMediaData) return;
+    setChapterMedia(audioMediaData.getAudioMedia.data);
+  }, [audioMediaData]);
 
   /**
    * Function will be used to reset anything that is chapter specific
@@ -253,12 +296,12 @@ const BibleChapterViewer: React.FC = () => {
     // get the desired html element
     const span = document.getElementById(event);
     // get the verse numbers
-    const text = span?.innerText.split(":")[0];
+    const verseNumber = span?.innerText.split(":")[0];
 
     // if no text exit function
-    if (!text) return;
+    if (!verseNumber) return;
 
-    const verseObj = chosenChapterVerses![Number(text) - 1];
+    const verseObj = chosenChapterVerses![Number(verseNumber) - 1];
 
     if (!verseObj) return;
     setInitialModalBreakpoint(0.25);
@@ -266,15 +309,15 @@ const BibleChapterViewer: React.FC = () => {
     // check if the state is empty
     if (selectedElement.length === 0) {
       addVerseToList(verseObj);
-      setSelectedElement([text]);
+      setSelectedElement([verseNumber]);
       setOpenSelectedVersesModal(true);
       return;
     }
 
     var tempValue = [...selectedElement];
     // check if the value selected is in the list
-    if (selectedElement.includes(text)) {
-      const valueIndex = selectedElement.indexOf(text);
+    if (selectedElement.includes(verseNumber)) {
+      const valueIndex = selectedElement.indexOf(verseNumber);
       if (valueIndex > -1) {
         tempValue.splice(valueIndex, 1);
         removeVerseFromList(verseObj);
@@ -287,7 +330,7 @@ const BibleChapterViewer: React.FC = () => {
       return;
     }
 
-    tempValue.push(text);
+    tempValue.push(verseNumber);
 
     setSelectedElement(tempValue);
     setOpenSelectedVersesModal(true);
@@ -297,9 +340,7 @@ const BibleChapterViewer: React.FC = () => {
   };
 
   const handleOpenVerseModal = () => {
-    if (!openSelectedVersesModal === false) {
-      resetVersesInList();
-    }
+    if (!openSelectedVersesModal) resetVersesInList();
 
     setOpenSelectedVersesModal(!openSelectedVersesModal);
     setInitialModalBreakpoint(0.75);
