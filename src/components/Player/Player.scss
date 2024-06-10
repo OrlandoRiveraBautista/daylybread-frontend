@@ -1,0 +1,68 @@
+@import "../../theme/variables.scss";
+
+#player {
+  ion-card {
+    margin: 0;
+    background-color: var(--ion-background-variant);
+    .playing-text {
+      color: var(--ion-text-color);
+    }
+    .progress-bar-container {
+      width: 100%;
+      height: 3px;
+      position: absolute;
+      background-color: var(--ion-color-primary-fixed-dim);
+      .progress-bar {
+        width: 50%;
+        height: 3px;
+        background-color: var(--ion-color-primary-fixed-variant);
+      }
+    }
+    ion-card-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 8px !important;
+      padding-bottom: 8px !important;
+
+      .playing-container {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        .now-playing-text {
+          height: 13px;
+          position: relative;
+          display: flex;
+          sub {
+            line-height: auto;
+            bottom: -0.65em;
+          }
+        }
+      }
+
+      .controls-contianer {
+        ion-button {
+          height: 34px;
+          --padding-start: 8px !important;
+          --padding-end: 8px !important;
+          ion-icon {
+            margin: 0;
+          }
+        }
+      }
+    }
+  }
+
+  .play-button-player-standalone {
+    width: 40px;
+    border-radius: 100%;
+    --border-radius: 100%;
+    background-color: var(--ion-background-variant);
+    height: 34px;
+    --padding-start: 10px !important;
+    --padding-end: 10px !important;
+    ion-icon {
+      margin: 0;
+    }
+  }
+}
