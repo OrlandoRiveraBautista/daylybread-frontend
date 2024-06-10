@@ -19,6 +19,7 @@ import {
   BbBook,
   BbVerse,
   BbCopyright,
+  BbAudioFile,
 } from "../__generated__/graphql";
 import { getCitationVerbage } from "../utils/support";
 import { useLazyGetCopyrightForBible } from "../hooks/BibleBrainHooks";
@@ -46,6 +47,8 @@ const context = constate(() => {
   const [chosenTranslation, setChosenTranslation] = useState<ITranslation>();
   const [chosenChapterNumber, setChosenChapterNumber] = useState<number>();
   const [chosenChapterVerses, setChosenChapterVerses] = useState<BbVerse[]>();
+  const [chosenChapterMedia, setChosenChapterMedia] = useState<BbAudioFile[]>();
+  const [currentMediaTimeStamp, setCurrentMediaTimestamp] = useState<number>();
   const [selectedVerseList, setSelectedVerseList] = useState<BbVerse[]>([]);
   const [selectedVersesCitation, setSelectedVersesCitation] = useState<
     string | undefined
@@ -124,6 +127,14 @@ const context = constate(() => {
    */
   const setChapterVerses = (dto: BbVerse[]) => {
     setChosenChapterVerses(dto);
+  };
+
+  /**
+   * Sets the chapter's available media
+   * and gets the times stamps
+   */
+  const setChapterMedia = (dto: BbAudioFile[]) => {
+    setChosenChapterMedia(dto);
   };
 
   /**
@@ -248,6 +259,8 @@ const context = constate(() => {
     chosenBook,
     chosenChapterNumber,
     chosenChapterVerses,
+    chosenChapterMedia,
+    currentMediaTimeStamp,
     userInfo,
     deviceInfo,
     selectedVerseList,
@@ -263,6 +276,8 @@ const context = constate(() => {
     setBook,
     setChapterNumber,
     setChapterVerses,
+    setChapterMedia,
+    setCurrentMediaTimestamp,
     setUser,
     setDevice,
     addVerseToList,
