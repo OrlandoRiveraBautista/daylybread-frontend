@@ -3,6 +3,7 @@ import {
   IonButton,
   IonContent,
   IonHeader,
+  IonIcon,
   IonItem,
   IonLabel,
   IonList,
@@ -13,6 +14,9 @@ import { useParams, useHistory } from "react-router";
 
 /* Components */
 import BibleSearchLanguages from "./BibleSearchLanguages";
+
+/* Icons */
+import { text, play } from "ionicons/icons";
 
 /* Context */
 import { useAppContext } from "../../context/context";
@@ -101,7 +105,6 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
       variables: {
         options: {
           languageCode: urlParams.currentLanguage,
-          mediaInclude: "text_plain",
         },
       },
     });
@@ -121,7 +124,6 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
       variables: {
         options: {
           languageCode: chosenLanguage.id.toString(),
-          mediaInclude: "text_plain",
         },
       },
     });
@@ -252,14 +254,33 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
   const renderModalOptions = () => {
     return biblesData ? (
       <IonList>
-        {biblesData.getListOFBibles.data.map((bible, index) => (
-          <IonItem button key={index} onClick={() => handleSettingBible(bible)}>
-            <IonLabel>
-              <h2>{bible.vname ? bible.vname : bible.name}</h2>
-              <p>Date: {bible.date}</p>
-            </IonLabel>
-          </IonItem>
-        ))}
+        {biblesData.getListOFBibles.data
+          .filter(
+            (bible) =>
+              bible.filesets["dbp-prod"] &&
+              bible.filesets["dbp-prod"].some((fileset: any) =>
+                fileset.type.startsWith("text_")
+              )
+          )
+          .map((bible, index) => (
+            <IonItem
+              button
+              key={index}
+              onClick={() => handleSettingBible(bible)}
+            >
+              <IonLabel>
+                <h2>{bible.vname ? bible.vname : bible.name}</h2>
+                <p>
+                  <IonIcon icon={text} />
+                  {bible.filesets["dbp-prod"].some((fileset: any) =>
+                    fileset.type.startsWith("audio")
+                  ) ? (
+                    <IonIcon icon={play} />
+                  ) : null}
+                </p>
+              </IonLabel>
+            </IonItem>
+          ))}
       </IonList>
     ) : (
       <div className="ion-text-center">Please select a language</div>
