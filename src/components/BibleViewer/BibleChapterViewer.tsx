@@ -388,10 +388,6 @@ const BibleChapterViewer: React.FC = () => {
           ? verseStart + 1
           : lastIndex;
 
-      console.log(startTimestampIndex);
-
-      console.log(timestamps[startTimestampIndex]);
-
       const startTimestamp = Number(timestamps[startTimestampIndex].timestamp);
       const endTimestamp =
         (firstTimestamp > 0 && verseStart <= lastIndex) ||
