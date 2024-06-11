@@ -48,7 +48,7 @@ const context = constate(() => {
   const [chosenChapterNumber, setChosenChapterNumber] = useState<number>();
   const [chosenChapterVerses, setChosenChapterVerses] = useState<BbVerse[]>();
   const [chosenChapterMedia, setChosenChapterMedia] = useState<BbAudioFile[]>();
-  const [currentMediaTimeStamp, setCurrentMediaTimestamp] = useState<number>();
+  const [currentMediaTimeStamp, setCurrentMediaTimestamp] = useState<number>(0);
   const [selectedVerseList, setSelectedVerseList] = useState<BbVerse[]>([]);
   const [selectedVersesCitation, setSelectedVersesCitation] = useState<
     string | undefined
