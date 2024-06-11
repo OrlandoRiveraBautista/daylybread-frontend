@@ -108,14 +108,8 @@ const BibleChapterViewer: React.FC = () => {
 
   /* Side Effects */
 
-  useEffect(() => {
-    // console.log(mediaTimestamps);
-    console.log("Media timestamps", mediaTimestamps);
-  }, [mediaTimestamps]);
-
   // useEffect to get verses when book or chapther changes
   useEffect(() => {
-    console.log("Hi");
     // get the testament
     const testament = chosenBook?.testament;
     // get the filesets
@@ -249,16 +243,6 @@ const BibleChapterViewer: React.FC = () => {
     handleReset();
   }, [chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
-    console.log(currentMediaTimeStamp);
-    // console.log(mediaTimestamps?.getMediaTimestamps.data);
-    // if (!mediaTimestamps?.getMediaTimestamps.data.length) return;
-    // console.log(currentMediaTimeStamp);
-    // console.log(
-    //   Number(mediaTimestamps?.getMediaTimestamps.data[2 + 1].timestamp)
-    // );
-  }, [currentMediaTimeStamp]);
-
   /**
    * Function to handle navigating to the next chapter in the bible
    */
@@ -383,10 +367,10 @@ const BibleChapterViewer: React.FC = () => {
       const startTimestampIndex =
         firstTimestamp > 0 ? verseStart - 1 : verseStart;
       const endTimestampIndex =
-        firstTimestamp === 0
-          ? verseStart + 1
-          : verseStart < lastIndex
+        firstTimestamp > 0
           ? verseStart
+          : verseStart < lastIndex
+          ? verseStart + 1
           : lastIndex;
 
       const startTimestamp = Number(timestamps[startTimestampIndex].timestamp);
