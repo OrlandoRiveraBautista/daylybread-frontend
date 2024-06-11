@@ -241,6 +241,10 @@ const BibleChapterViewer: React.FC = () => {
     // reset the selected elements
     setSelectedElement([]);
     resetVersesInList();
+
+    // reset the media and timestamp context
+    setCurrentMediaTimestamp(0);
+    setChapterMedia([]);
   };
 
   // useEffect to call the handleNavAction function whenever a book changes
@@ -374,13 +378,19 @@ const BibleChapterViewer: React.FC = () => {
       const lastIndex = timestamps.length - 1;
 
       const startTimestampIndex =
-        firstTimestamp > 0 ? verseStart - 1 : verseStart;
+        firstTimestamp > 0 || verseStart === timestamps.length
+          ? verseStart - 1
+          : verseStart;
       const endTimestampIndex =
         firstTimestamp > 0
           ? verseStart
           : verseStart < lastIndex
           ? verseStart + 1
           : lastIndex;
+
+      console.log(startTimestampIndex);
+
+      console.log(timestamps[startTimestampIndex]);
 
       const startTimestamp = Number(timestamps[startTimestampIndex].timestamp);
       const endTimestamp =
