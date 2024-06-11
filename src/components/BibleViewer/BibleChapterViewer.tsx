@@ -97,16 +97,25 @@ const BibleChapterViewer: React.FC = () => {
   const { setUserHistory } = useLazySetUserHistory();
   useSetBibleHistory();
   const { getAudioMedia, data: audioMediaData } = useLazyGetAudioMedia();
-  const { getMediaTimestamps, data: mediaTimestamps } =
-    useLazyGetMediaTimestamps();
+  const {
+    getMediaTimestamps,
+    data: mediaTimestamps,
+    loading: loadingMediaTimeStamps,
+  } = useLazyGetMediaTimestamps();
 
   /* Router */
   const history = useHistory();
 
   /* Side Effects */
 
+  useEffect(() => {
+    // console.log(mediaTimestamps);
+    console.log("Media timestamps", mediaTimestamps);
+  }, [mediaTimestamps]);
+
   // useEffect to get verses when book or chapther changes
   useEffect(() => {
+    console.log("Hi");
     // get the testament
     const testament = chosenBook?.testament;
     // get the filesets
@@ -141,6 +150,33 @@ const BibleChapterViewer: React.FC = () => {
           chapterNumber: chosenChapterNumber!,
           language: chosenBible.languageId!,
         },
+      },
+    });
+
+    // Get the file set
+    const audioFileSet = getHighestBitrateAudio(
+      chosenBible?.filesets["dbp-prod"].filter(
+        (fileset: any) => fileset.size === testament
+      )
+    );
+
+    const mediaOptions = {
+      filesetId: audioFileSet.id,
+      bookId: chosenBook?.bookId!,
+      chapterNumber: chosenChapterNumber!,
+    };
+
+    // Getting new media
+    getAudioMedia({
+      variables: {
+        options: mediaOptions,
+      },
+    });
+
+    // Getting new media timestamps
+    getMediaTimestamps({
+      variables: {
+        options: mediaOptions,
       },
     });
   }, [chosenChapterNumber, chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -178,33 +214,6 @@ const BibleChapterViewer: React.FC = () => {
     // Join the parts back together to form the new URL
     const newUrl = parts.join("/");
     history.push(newUrl);
-
-    // Get the file set
-    const audioFileSet = getHighestBitrateAudio(
-      chosenBible?.filesets["dbp-prod"].filter(
-        (fileset: any) => fileset.size === chosenBook.testament
-      )
-    );
-
-    const mediaOptions = {
-      filesetId: audioFileSet.id,
-      bookId: chosenBook.bookId!,
-      chapterNumber: chosenChapterNumber,
-    };
-
-    // Getting new media
-    getAudioMedia({
-      variables: {
-        options: mediaOptions,
-      },
-    });
-
-    // Getting new media timestamps
-    getMediaTimestamps({
-      variables: {
-        options: mediaOptions,
-      },
-    });
   }, [chosenChapterNumber, chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -241,22 +250,13 @@ const BibleChapterViewer: React.FC = () => {
   }, [chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    console.log(mediaTimestamps?.getMediaTimestamps.data);
-    if (!mediaTimestamps?.getMediaTimestamps.data.length) return;
     console.log(currentMediaTimeStamp);
-    console.log(
-      Number(mediaTimestamps?.getMediaTimestamps.data[2 + 1].timestamp)
-    );
-    console.log(
-      currentMediaTimeStamp &&
-        mediaTimestamps?.getMediaTimestamps.data[2] &&
-        currentMediaTimeStamp >=
-          Number(mediaTimestamps?.getMediaTimestamps.data[2].timestamp) &&
-        currentMediaTimeStamp <
-          Number(mediaTimestamps?.getMediaTimestamps.data[2 + 1].timestamp)
-        ? "currently-playing-verse"
-        : "asdasd"
-    );
+    // console.log(mediaTimestamps?.getMediaTimestamps.data);
+    // if (!mediaTimestamps?.getMediaTimestamps.data.length) return;
+    // console.log(currentMediaTimeStamp);
+    // console.log(
+    //   Number(mediaTimestamps?.getMediaTimestamps.data[2 + 1].timestamp)
+    // );
   }, [currentMediaTimeStamp]);
 
   /**
@@ -383,18 +383,21 @@ const BibleChapterViewer: React.FC = () => {
       const startTimestampIndex =
         firstTimestamp > 0 ? verseStart - 1 : verseStart;
       const endTimestampIndex =
-        firstTimestamp > 0
-          ? verseStart
-          : verseStart < lastIndex
+        firstTimestamp === 0
           ? verseStart + 1
+          : verseStart < lastIndex
+          ? verseStart
           : lastIndex;
 
       const startTimestamp = Number(timestamps[startTimestampIndex].timestamp);
-      const endTimestamp = Number(timestamps[endTimestampIndex].timestamp);
+      const endTimestamp =
+        verseStart <= lastIndex
+          ? Number(timestamps[endTimestampIndex].timestamp)
+          : Infinity; // Use Infinity to handle the last verse properly
 
       const isCurrentlyPlayingVerse =
         currentMediaTimeStamp >= startTimestamp &&
-        currentMediaTimeStamp <= endTimestamp;
+        currentMediaTimeStamp < endTimestamp;
 
       return isCurrentlyPlayingVerse ? "currently-playing-verse" : "";
     }
