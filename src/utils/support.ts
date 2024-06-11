@@ -188,9 +188,6 @@ const getVerseVerbageByNewVerses = (verses: BbVerse[], bibleId: string) => {
  * Function to get the object with the highest bitrate.
  * Prioritizes 'audio_drama' type files first.
  * If no 'audio_drama' is available, falls back to 'audio' type files.
- *
- * @param {Array} filesets - Array of file objects containing different types of audio files.
- * @returns {Object} - The file object with the highest bitrate, prioritizing 'audio_drama' first, then 'audio'.
  */
 const getHighestBitrateAudio = (filesets: Array<any>) => {
   // Filter filesets to get only 'audio_drama' type files.
