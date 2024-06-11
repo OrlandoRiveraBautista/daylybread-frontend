@@ -69,11 +69,12 @@ const BibleChapterViewer: React.FC = () => {
     chosenBibleCopyright,
     chosenBibleBooks,
     currentMediaTimeStamp,
+    selectedVerseList,
     setChapterVerses,
     setChapterNumber,
     setBook,
     setChapterMedia,
-    selectedVerseList,
+    setCurrentMediaTimestamp,
     addVerseToList,
     removeVerseFromList,
     resetVersesInList,
@@ -97,11 +98,8 @@ const BibleChapterViewer: React.FC = () => {
   const { setUserHistory } = useLazySetUserHistory();
   useSetBibleHistory();
   const { getAudioMedia, data: audioMediaData } = useLazyGetAudioMedia();
-  const {
-    getMediaTimestamps,
-    data: mediaTimestamps,
-    loading: loadingMediaTimeStamps,
-  } = useLazyGetMediaTimestamps();
+  const { getMediaTimestamps, data: mediaTimestamps } =
+    useLazyGetMediaTimestamps();
 
   /* Router */
   const history = useHistory();
@@ -150,9 +148,17 @@ const BibleChapterViewer: React.FC = () => {
     // Get the file set
     const audioFileSet = getHighestBitrateAudio(
       chosenBible?.filesets["dbp-prod"].filter(
-        (fileset: any) => fileset.size === testament
+        (fileset: any) => fileset.size === "C" || fileset.size === testament
       )
     );
+
+    // check if any audio media filesets are not found
+    if (!audioFileSet) {
+      // reset the media and timestamp context
+      setCurrentMediaTimestamp(0);
+      setChapterMedia([]);
+      return;
+    }
 
     const mediaOptions = {
       filesetId: audioFileSet.id,
@@ -354,6 +360,9 @@ const BibleChapterViewer: React.FC = () => {
   const handleOpenTranslationModal = () =>
     setOpenSelectedTranslationModal(!openSelectedTranslationModal);
 
+  /**
+   * Determines the class name for a verse based on the current media timestamp.
+   */
   const getVerseClass = (verse: BbVerse) => {
     if (
       currentMediaTimeStamp &&
@@ -375,7 +384,8 @@ const BibleChapterViewer: React.FC = () => {
 
       const startTimestamp = Number(timestamps[startTimestampIndex].timestamp);
       const endTimestamp =
-        verseStart <= lastIndex
+        (firstTimestamp > 0 && verseStart <= lastIndex) ||
+        (firstTimestamp === 0 && verseStart < lastIndex)
           ? Number(timestamps[endTimestampIndex].timestamp)
           : Infinity; // Use Infinity to handle the last verse properly
 
