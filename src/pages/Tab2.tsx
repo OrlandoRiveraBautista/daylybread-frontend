@@ -18,6 +18,7 @@ import { useAppContext } from "../context/context";
 import BibleNavModal from "../components/BibleNavModal/BibleNavModal";
 import BibleTranslationModal from "../components/BibleNavModal/BibleTranslationModal";
 import BibleChapterViewer from "../components/BibleViewer/BibleChapterViewer";
+import Player from "../components/Player/Player";
 
 /* Styles */
 import "./Tab2.scss";
@@ -27,7 +28,7 @@ import { caretDownOutline } from "ionicons/icons";
 
 const Tab2: React.FC = () => {
   // Context
-  const { chosenBible, chosenBook } = useAppContext();
+  const { chosenBible, chosenBook, chosenChapterMedia } = useAppContext();
 
   /* States */
   const [openModal, setOpenModal] = useState<boolean>(false);
@@ -36,7 +37,7 @@ const Tab2: React.FC = () => {
   /* API Hooks */
 
   return (
-    <IonPage>
+    <IonPage style={{ overflow: "clip" }}>
       {/* Header */}
       <IonHeader className="ion-no-border padding-left-right">
         {/* Toolbar */}
@@ -73,6 +74,10 @@ const Tab2: React.FC = () => {
                 >
                   {chosenBible ? chosenBible.abbr : "Pick bible"}
                 </IonButton>
+
+                {chosenChapterMedia?.length ? (
+                  <Player type="button" src={chosenChapterMedia![0].path!} />
+                ) : null}
               </IonButtons>
             </>
           ) : null}

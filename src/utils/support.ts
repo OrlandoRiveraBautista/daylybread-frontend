@@ -184,6 +184,30 @@ const getVerseVerbageByNewVerses = (verses: BbVerse[], bibleId: string) => {
   return text;
 };
 
+/**
+ * Function to get the object with the highest bitrate.
+ * Prioritizes 'audio_drama' type files first.
+ * If no 'audio_drama' is available, falls back to 'audio' type files.
+ */
+const getHighestBitrateAudio = (filesets: Array<any>) => {
+  // Filter filesets to get only 'audio_drama' type files.
+  const audioDrama = filesets
+    .filter((fileset) => fileset.type === "audio_drama")
+    // Sort the filtered 'audio_drama' files in descending order based on the bitrate.
+    .sort((a, b) => parseInt(b.bitrate) - parseInt(a.bitrate))[0]; // Get the first item which has the highest bitrate.
+
+  // If there is an 'audio_drama' file available, return it.
+  if (audioDrama) return audioDrama;
+
+  // If no 'audio_drama' file is found, filter filesets to get only 'audio' type files.
+  return (
+    filesets
+      .filter((fileset) => fileset.type === "audio")
+      // Sort the filtered 'audio' files in descending order based on the bitrate.
+      .sort((a, b) => parseInt(b.bitrate) - parseInt(a.bitrate))[0]
+  ); // Get the first item which has the highest bitrate.
+};
+
 export {
   zeroPad,
   clusterNumbers,
@@ -191,4 +215,5 @@ export {
   getSelectedText,
   getVerseVerbageByVerses,
   getVerseVerbageByNewVerses,
+  getHighestBitrateAudio,
 };
