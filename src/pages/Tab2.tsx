@@ -37,7 +37,7 @@ const Tab2: React.FC = () => {
   /* API Hooks */
 
   return (
-    <IonPage>
+    <IonPage style={{ overflow: "clip" }}>
       {/* Header */}
       <IonHeader className="ion-no-border padding-left-right">
         {/* Toolbar */}

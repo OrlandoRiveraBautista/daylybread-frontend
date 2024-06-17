@@ -406,7 +406,6 @@ const BibleChapterViewer: React.FC = () => {
       element[0]?.scrollIntoView({
         behavior: "smooth",
         block: "center",
-        inline: "start",
       });
 
       return isCurrentlyPlayingVerse ? "currently-playing-verse" : "";
