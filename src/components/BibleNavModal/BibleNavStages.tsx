@@ -41,7 +41,7 @@ export const BooksPicker: React.FC = () => {
     const element = document.getElementById(chosenBook.bookId);
 
     element?.scrollIntoView({ behavior: "smooth", block: "center" });
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   /**
    * Function to render loading skeleton animation

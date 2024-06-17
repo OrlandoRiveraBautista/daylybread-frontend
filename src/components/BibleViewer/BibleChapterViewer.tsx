@@ -231,7 +231,7 @@ const BibleChapterViewer: React.FC = () => {
   useEffect(() => {
     if (!audioMediaData) return;
     setChapterMedia(audioMediaData.getAudioMedia.data);
-  }, [audioMediaData]);
+  }, [audioMediaData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /**
    * Function will be used to reset anything that is chapter specific

@@ -5,7 +5,6 @@ import {
   IonCardContent,
   IonIcon,
   IonRow,
-  IonSpinner,
   IonText,
 } from "@ionic/react";
 
@@ -29,8 +28,6 @@ interface IPlayer {
  */
 const Player: React.FC<IPlayer> = ({ src, type }: IPlayer) => {
   const [playAudio, setPlayAudio] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
-  //   const [progress, setProgress] = useState();
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const { setCurrentMediaTimestamp } = useAppContext();
@@ -48,7 +45,8 @@ const Player: React.FC<IPlayer> = ({ src, type }: IPlayer) => {
     return () => {
       audio?.removeEventListener("timeupdate", handleTimeUpdate);
     };
-  }, []); // Empty dependency array ensures the effect runs only once
+    // Empty dependency array ensures the effect runs only once
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // use effect to call download audio handler
   useEffect(() => {
@@ -57,24 +55,7 @@ const Player: React.FC<IPlayer> = ({ src, type }: IPlayer) => {
     }
 
     if (!src) return;
-  }, [src]);
-
-  /**
-   * Function handles downloading an audio file based on the src provided.
-   * Src prop must be a link from AWS S3
-   */
-  // const handleDownloadAudio = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const blob = await new aws().downloadFileFromS3(src!);
-  //     const url = URL.createObjectURL(blob!);
-  //     setAudio(url);
-  //     setLoading(false);
-  //   } catch (error) {
-  //     console.error("Error downloading audio file:", error);
-  //     setLoading(false);
-  //   }
-  // };
+  }, [src]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const toggleAudio = () => {
     if (playAudio) {
@@ -140,11 +121,7 @@ const Player: React.FC<IPlayer> = ({ src, type }: IPlayer) => {
           color="dark"
           onClick={toggleAudio}
         >
-          {!loading ? (
-            <IonIcon src={playAudio ? pause : play} />
-          ) : (
-            <IonSpinner color="dark" />
-          )}
+          <IonIcon src={playAudio ? pause : play} />
         </IonButton>
       )}
       <audio ref={audioRef} src={src} />
