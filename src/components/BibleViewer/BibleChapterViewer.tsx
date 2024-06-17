@@ -399,6 +399,16 @@ const BibleChapterViewer: React.FC = () => {
         currentMediaTimeStamp >= startTimestamp &&
         currentMediaTimeStamp < endTimestamp;
 
+      const element = document.getElementsByClassName(
+        "currently-playing-verse"
+      );
+
+      element[0]?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "start",
+      });
+
       return isCurrentlyPlayingVerse ? "currently-playing-verse" : "";
     }
     return "";
