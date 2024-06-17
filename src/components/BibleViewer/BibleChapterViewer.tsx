@@ -27,9 +27,17 @@ import PatternImage from "../../assets/images/Patterns - 4x4.png";
 import BreadCrumbsIcon from "../../assets/icons/BreadCrumbs-icon.svg";
 
 /* Query Hooks */
-import { useLazyGetListOfVersesFromBookChapter } from "../../hooks/BibleBrainHooks";
+import {
+  useLazyGetAudioMedia,
+  useLazyGetListOfVersesFromBookChapter,
+  useLazyGetMediaTimestamps,
+} from "../../hooks/BibleBrainHooks";
 import { useLazySetUserHistory } from "../../hooks/BibleHooks";
 import useSetBibleHistory from "../utility/hooks/useSetBibleHistory";
+
+/* Utils */
+import { getHighestBitrateAudio } from "../../utils/support";
+import { BbVerse } from "../../__generated__/graphql";
 
 /**
  * Function to render loading skeleton animation
@@ -60,10 +68,13 @@ const BibleChapterViewer: React.FC = () => {
     chosenBible,
     chosenBibleCopyright,
     chosenBibleBooks,
+    currentMediaTimeStamp,
+    selectedVerseList,
     setChapterVerses,
     setChapterNumber,
     setBook,
-    selectedVerseList,
+    setChapterMedia,
+    setCurrentMediaTimestamp,
     addVerseToList,
     removeVerseFromList,
     resetVersesInList,
@@ -86,6 +97,9 @@ const BibleChapterViewer: React.FC = () => {
   } = useLazyGetListOfVersesFromBookChapter();
   const { setUserHistory } = useLazySetUserHistory();
   useSetBibleHistory();
+  const { getAudioMedia, data: audioMediaData } = useLazyGetAudioMedia();
+  const { getMediaTimestamps, data: mediaTimestamps } =
+    useLazyGetMediaTimestamps();
 
   /* Router */
   const history = useHistory();
@@ -128,6 +142,41 @@ const BibleChapterViewer: React.FC = () => {
           chapterNumber: chosenChapterNumber!,
           language: chosenBible.languageId!,
         },
+      },
+    });
+
+    // Get the file set
+    const audioFileSet = getHighestBitrateAudio(
+      chosenBible?.filesets["dbp-prod"].filter(
+        (fileset: any) => fileset.size === "C" || fileset.size === testament
+      )
+    );
+
+    // check if any audio media filesets are not found
+    if (!audioFileSet) {
+      // reset the media and timestamp context
+      setCurrentMediaTimestamp(0);
+      setChapterMedia([]);
+      return;
+    }
+
+    const mediaOptions = {
+      filesetId: audioFileSet.id,
+      bookId: chosenBook?.bookId!,
+      chapterNumber: chosenChapterNumber!,
+    };
+
+    // Getting new media
+    getAudioMedia({
+      variables: {
+        options: mediaOptions,
+      },
+    });
+
+    // Getting new media timestamps
+    getMediaTimestamps({
+      variables: {
+        options: mediaOptions,
       },
     });
   }, [chosenChapterNumber, chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -179,6 +228,11 @@ const BibleChapterViewer: React.FC = () => {
     }
   }, [openSelectedVersesModal]);
 
+  useEffect(() => {
+    if (!audioMediaData) return;
+    setChapterMedia(audioMediaData.getAudioMedia.data);
+  }, [audioMediaData]); // eslint-disable-line react-hooks/exhaustive-deps
+
   /**
    * Function will be used to reset anything that is chapter specific
    * @returns N/A
@@ -187,6 +241,10 @@ const BibleChapterViewer: React.FC = () => {
     // reset the selected elements
     setSelectedElement([]);
     resetVersesInList();
+
+    // reset the media and timestamp context
+    setCurrentMediaTimestamp(0);
+    setChapterMedia([]);
   };
 
   // useEffect to call the handleNavAction function whenever a book changes
@@ -253,12 +311,12 @@ const BibleChapterViewer: React.FC = () => {
     // get the desired html element
     const span = document.getElementById(event);
     // get the verse numbers
-    const text = span?.innerText.split(":")[0];
+    const verseNumber = span?.innerText.split(":")[0];
 
     // if no text exit function
-    if (!text) return;
+    if (!verseNumber) return;
 
-    const verseObj = chosenChapterVerses![Number(text) - 1];
+    const verseObj = chosenChapterVerses![Number(verseNumber) - 1];
 
     if (!verseObj) return;
     setInitialModalBreakpoint(0.25);
@@ -266,15 +324,15 @@ const BibleChapterViewer: React.FC = () => {
     // check if the state is empty
     if (selectedElement.length === 0) {
       addVerseToList(verseObj);
-      setSelectedElement([text]);
+      setSelectedElement([verseNumber]);
       setOpenSelectedVersesModal(true);
       return;
     }
 
     var tempValue = [...selectedElement];
     // check if the value selected is in the list
-    if (selectedElement.includes(text)) {
-      const valueIndex = selectedElement.indexOf(text);
+    if (selectedElement.includes(verseNumber)) {
+      const valueIndex = selectedElement.indexOf(verseNumber);
       if (valueIndex > -1) {
         tempValue.splice(valueIndex, 1);
         removeVerseFromList(verseObj);
@@ -287,7 +345,7 @@ const BibleChapterViewer: React.FC = () => {
       return;
     }
 
-    tempValue.push(text);
+    tempValue.push(verseNumber);
 
     setSelectedElement(tempValue);
     setOpenSelectedVersesModal(true);
@@ -297,9 +355,7 @@ const BibleChapterViewer: React.FC = () => {
   };
 
   const handleOpenVerseModal = () => {
-    if (!openSelectedVersesModal === false) {
-      resetVersesInList();
-    }
+    if (!openSelectedVersesModal) resetVersesInList();
 
     setOpenSelectedVersesModal(!openSelectedVersesModal);
     setInitialModalBreakpoint(0.75);
@@ -307,6 +363,55 @@ const BibleChapterViewer: React.FC = () => {
 
   const handleOpenTranslationModal = () =>
     setOpenSelectedTranslationModal(!openSelectedTranslationModal);
+
+  /**
+   * Determines the class name for a verse based on the current media timestamp.
+   */
+  const getVerseClass = (verse: BbVerse) => {
+    if (
+      currentMediaTimeStamp &&
+      mediaTimestamps?.getMediaTimestamps?.data.length
+    ) {
+      const timestamps = mediaTimestamps.getMediaTimestamps.data;
+      const firstTimestamp = Number(timestamps[0].timestamp);
+      const verseStart = verse.verseStart!;
+      const lastIndex = timestamps.length - 1;
+
+      const startTimestampIndex =
+        firstTimestamp > 0 || verseStart === timestamps.length
+          ? verseStart - 1
+          : verseStart;
+      const endTimestampIndex =
+        firstTimestamp > 0
+          ? verseStart
+          : verseStart < lastIndex
+          ? verseStart + 1
+          : lastIndex;
+
+      const startTimestamp = Number(timestamps[startTimestampIndex].timestamp);
+      const endTimestamp =
+        (firstTimestamp > 0 && verseStart <= lastIndex) ||
+        (firstTimestamp === 0 && verseStart < lastIndex)
+          ? Number(timestamps[endTimestampIndex].timestamp)
+          : Infinity; // Use Infinity to handle the last verse properly
+
+      const isCurrentlyPlayingVerse =
+        currentMediaTimeStamp >= startTimestamp &&
+        currentMediaTimeStamp < endTimestamp;
+
+      const element = document.getElementsByClassName(
+        "currently-playing-verse"
+      );
+
+      element[0]?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+
+      return isCurrentlyPlayingVerse ? "currently-playing-verse" : "";
+    }
+    return "";
+  };
 
   return (
     <div id="chapter-viewer">
@@ -335,13 +440,15 @@ const BibleChapterViewer: React.FC = () => {
                       verse.verseStart?.toString()
                     }
                     key={verse.verseStart?.toString()}
-                    className={
+                    className={`${
                       selectedVerseList.some(
                         (sv) => sv.verseStart === verse.verseStart
                       )
                         ? "verse-selected"
                         : ""
-                    }
+                    } 
+                    ${getVerseClass(verse)}
+                    `}
                   >
                     <b>{verse.verseStart}:</b> {verse.verseText}
                   </span>

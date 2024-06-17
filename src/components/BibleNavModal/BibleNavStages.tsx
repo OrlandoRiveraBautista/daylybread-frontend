@@ -27,13 +27,21 @@ export const BooksPicker: React.FC = () => {
   // checks chosenBooks from context and scrolls the view to the selected book
   useEffect(() => {
     if (!chosenBook?.bookId || chosenBook.bookId === bookId) return;
-    const element = document.getElementById(chosenBook.bookId);
-
-    element?.scrollIntoView({ behavior: "smooth", block: "center" });
 
     setChapterNumber(1); // set the chapter to 1
     setBookId(chosenBook.bookId);
+
+    const element = document.getElementById(chosenBook.bookId);
+
+    element?.scrollIntoView({ behavior: "smooth", block: "center" });
   }, [chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!chosenBook?.bookId) return;
+    const element = document.getElementById(chosenBook.bookId);
+
+    element?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   /**
    * Function to render loading skeleton animation

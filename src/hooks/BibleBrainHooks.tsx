@@ -192,6 +192,38 @@ const getCopyrightForBibleQuery = gql(`
   }
 `);
 
+const getAudioMediaQuery = gql(`
+  query GetAudioMedia($options: AudioMediaArgs!) {
+    getAudioMedia(options: $options) {
+      data {
+        book_id
+        book_name
+        chapter_start
+        chapter_end
+        verse_start
+        verse_end
+        thumbnail
+        timestamp
+        path
+        duration
+      }
+    }
+  }
+`);
+
+const getMediaTimestampsQuery = gql(`
+  query GetMediaTimestamps($options: AudioMediaArgs!) {
+    getMediaTimestamps(options: $options) {
+      data {
+        book
+        chapter
+        verse_start
+        timestamp
+      }
+    }
+  }
+`);
+
 export const useLazyGetListOfLanguages = () => {
   const [getListOfLanguages, { loading, error, data }] = useLazyQuery(
     getListOfLanguagesQuery
@@ -262,6 +294,31 @@ export const useLazyGetCopyrightForBible = () => {
 
   return {
     getCopyrightForBible,
+    loading,
+    error,
+    data,
+  };
+};
+
+export const useLazyGetAudioMedia = () => {
+  const [getAudioMedia, { loading, error, data }] =
+    useLazyQuery(getAudioMediaQuery);
+
+  return {
+    getAudioMedia,
+    loading,
+    error,
+    data,
+  };
+};
+
+export const useLazyGetMediaTimestamps = () => {
+  const [getMediaTimestamps, { loading, error, data }] = useLazyQuery(
+    getMediaTimestampsQuery
+  );
+
+  return {
+    getMediaTimestamps,
     loading,
     error,
     data,
