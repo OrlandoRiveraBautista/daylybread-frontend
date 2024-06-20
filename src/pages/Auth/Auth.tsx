@@ -12,6 +12,7 @@ import "./Auth.scss";
 
 /* Images */
 import SmallWordLogo from "../../assets/images/small-word-logo.svg";
+import SmallWordLogoDark from "../../assets/images/small-word-logo-dark.svg";
 
 const Auth: React.FC = () => {
   const location = useLocation();
@@ -19,7 +20,14 @@ const Auth: React.FC = () => {
   return (
     <div className="container" id="auth">
       <div className="auth-welcome-container">
-        <IonImg src={SmallWordLogo} alt="Daylybread Small Logo" />
+        <IonImg
+          src={
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? SmallWordLogoDark
+              : SmallWordLogo
+          }
+          alt="Daylybread Small Logo"
+        />
         <div className="auth-welcome-text">
           <IonTitle className="welcoming-title">
             {location.pathname === "/login" ? "Welcome back" : "Welcome"}
