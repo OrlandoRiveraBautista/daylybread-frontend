@@ -51,8 +51,10 @@
     "workbox-streams": "^5.1.4"
   },
   "scripts": {
-    "start": "ionic serve --external",
-    "build": "ionic build --prod",
+    "start": "ionic serve --prod",
+    "build": "ionic build --prod && npm run delete-maps",
+    "dev": "ionic serve",
+    "delete-maps": "rm ./build/static/js/*.map && rm ./build/static/css/*.map",
     "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!(@ionic/react|@ionic/react-router|@ionic/core|@stencil/core|ionicons)/)'",
     "eject": "react-scripts eject",
     "compile": "graphql-codegen",
