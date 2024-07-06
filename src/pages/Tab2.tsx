@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   IonButton,
   IonButtons,
@@ -26,6 +26,9 @@ import "./Tab2.scss";
 /* Graphics */
 import { caretDownOutline } from "ionicons/icons";
 
+/* Utils */
+import { displayBibleAbbr } from "../utils/support";
+
 const Tab2: React.FC = () => {
   // Context
   const { chosenBible, chosenBook, chosenChapterMedia } = useAppContext();
@@ -35,6 +38,9 @@ const Tab2: React.FC = () => {
   const [openBibleNavModal, setOpenBibleNavModal] = useState<boolean>(false);
 
   /* API Hooks */
+  useEffect(() => {
+    console.log(chosenBible);
+  }, []);
 
   return (
     <IonPage style={{ overflow: "clip" }}>
@@ -72,7 +78,9 @@ const Tab2: React.FC = () => {
                   id="open-modal"
                   className="translation-button"
                 >
-                  {chosenBible ? chosenBible.abbr : "Pick bible"}
+                  {chosenBible
+                    ? displayBibleAbbr(chosenBible.abbr!)
+                    : "Pick bible"}
                 </IonButton>
 
                 {chosenChapterMedia?.length ? (
