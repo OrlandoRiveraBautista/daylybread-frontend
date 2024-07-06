@@ -37,11 +37,6 @@ const Tab2: React.FC = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [openBibleNavModal, setOpenBibleNavModal] = useState<boolean>(false);
 
-  /* API Hooks */
-  useEffect(() => {
-    console.log(chosenBible);
-  }, []);
-
   return (
     <IonPage style={{ overflow: "clip" }}>
       {/* Header */}
