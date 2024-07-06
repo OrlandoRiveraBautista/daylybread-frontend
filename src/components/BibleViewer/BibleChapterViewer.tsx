@@ -36,7 +36,7 @@ import { useLazySetUserHistory } from "../../hooks/BibleHooks";
 import useSetBibleHistory from "../utility/hooks/useSetBibleHistory";
 
 /* Utils */
-import { getHighestBitrateAudio } from "../../utils/support";
+import { displayBibleAbbr, getHighestBitrateAudio } from "../../utils/support";
 import { BbVerse } from "../../__generated__/graphql";
 
 /**
@@ -486,7 +486,7 @@ const BibleChapterViewer: React.FC = () => {
               onClick={handleOpenTranslationModal}
               className="translation-button"
             >
-              {chosenBible?.abbr ?? "Pick bible"}
+              {displayBibleAbbr(chosenBible?.abbr!) ?? "Pick bible"}
             </IonButton>
           </div>
         )}

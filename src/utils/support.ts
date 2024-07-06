@@ -73,10 +73,9 @@ const getCitationVerbage = (
   // put all the chosen data together in a string
   const text = `${
     chosenBook.name
-  } ${chosenChapterNumber}:${clusterVersesVerb} ${chosenBible.abbr?.replace(
-    /\s/g,
-    ""
-  )}`;
+  } ${chosenChapterNumber}:${clusterVersesVerb} ${displayBibleAbbr(
+    chosenBible.abbr!
+  )?.replace(/\s/g, "")}`;
 
   return text;
 };
@@ -208,6 +207,11 @@ const getHighestBitrateAudio = (filesets: Array<any>) => {
   ); // Get the first item which has the highest bitrate.
 };
 
+/**
+ * Function will haddle turning the BibleBrain bible abbr to not include the language
+ */
+const displayBibleAbbr = (bibleBrainAbbr: string) => bibleBrainAbbr.slice(3);
+
 export {
   zeroPad,
   clusterNumbers,
@@ -216,4 +220,5 @@ export {
   getVerseVerbageByVerses,
   getVerseVerbageByNewVerses,
   getHighestBitrateAudio,
+  displayBibleAbbr,
 };
