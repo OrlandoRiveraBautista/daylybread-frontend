@@ -51,6 +51,11 @@
 
     .chat-message {
       white-space: pre-wrap;
+      /* This section here allows the user to select the text in the chat */
+      -webkit-user-select: text;
+      -moz-user-select: text;
+      -ms-user-select: text;
+      user-select: text;
     }
   }
 
