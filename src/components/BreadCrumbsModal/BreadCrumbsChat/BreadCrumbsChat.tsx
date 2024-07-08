@@ -13,6 +13,7 @@ import {
   IonIcon,
 } from "@ionic/react";
 import { useState, useRef, useEffect } from "react";
+import Markdown from "react-markdown";
 /* Icons */
 import { send } from "ionicons/icons";
 
@@ -88,7 +89,7 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChat> = ({
                 >
                   <IonCardContent>
                     <IonCardTitle>{sender}</IonCardTitle>
-                    <span className="chat-message">{message}</span>
+                    <Markdown className="chat-message">{message}</Markdown>
                   </IonCardContent>
                 </IonCard>
               </IonRow>
