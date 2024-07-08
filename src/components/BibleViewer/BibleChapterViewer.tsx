@@ -486,7 +486,9 @@ const BibleChapterViewer: React.FC = () => {
               onClick={handleOpenTranslationModal}
               className="translation-button"
             >
-              {displayBibleAbbr(chosenBible?.abbr!) ?? "Pick bible"}
+              {chosenBible?.abbr
+                ? displayBibleAbbr(chosenBible?.abbr)
+                : "Pick bible"}
             </IonButton>
           </div>
         )}
