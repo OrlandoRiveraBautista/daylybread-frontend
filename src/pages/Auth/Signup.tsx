@@ -9,6 +9,7 @@ import {
   IonSpinner,
 } from "@ionic/react";
 import { useHistory } from "react-router";
+import { GoogleLogin } from "@react-oauth/google";
 
 /* Interfaces */
 import { IUsernamePasswordInput } from "../../interfaces/AuthInterfaces";
@@ -265,6 +266,15 @@ const Signup: React.FC = () => {
             </b>
           </IonText>
         </IonButton>
+        <GoogleLogin
+          onSuccess={(credentialResponse) => {
+            console.log(credentialResponse);
+          }}
+          onError={() => {
+            console.log("Login Failed");
+          }}
+          useOneTap
+        />
       </div>
     </>
   );
