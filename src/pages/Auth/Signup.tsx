@@ -18,7 +18,7 @@ import { IUsernamePasswordInput } from "../../interfaces/AuthInterfaces";
 import "./Auth.scss";
 
 /* Graphql Hooks */
-import { useSignup } from "../../hooks/AuthHooks";
+import { useSignup, useLoginWithGoogle } from "../../hooks/AuthHooks";
 
 /* Utils */
 import { validateEmail, validatePassword } from "./utils";
@@ -65,6 +65,7 @@ const Signup: React.FC = () => {
 
   /** Hooks declaration */
   const { getSignup, loading, data } = useSignup();
+  const { loginWithGoogle, data: loginWithGoogleData } = useLoginWithGoogle();
 
   /**
    * Function will validate the inputed email or password
@@ -155,6 +156,15 @@ const Signup: React.FC = () => {
     setUser(data.register.user);
     history.push("/signupupdateuser");
   }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  /**
+   * Watches for the loging in with a google account
+   */
+  useEffect(() => {
+    if (!loginWithGoogleData?.loginWithGoogle.user?._id) return;
+    setUser(loginWithGoogleData.loginWithGoogle.user);
+    history.push("/signupupdateuser");
+  }, [loginWithGoogleData]);
 
   return (
     <>
@@ -268,10 +278,16 @@ const Signup: React.FC = () => {
         </IonButton>
         <GoogleLogin
           onSuccess={(credentialResponse) => {
-            console.log(credentialResponse);
+            loginWithGoogle({
+              variables: {
+                options: {
+                  credentials: credentialResponse.credential!,
+                },
+              },
+            });
           }}
           onError={() => {
-            console.log("Login Failed");
+            alert("Login Failed");
           }}
           useOneTap
         />
