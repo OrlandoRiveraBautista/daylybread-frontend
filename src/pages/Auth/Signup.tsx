@@ -28,6 +28,7 @@ import { eyeOutline, eyeOffOutline } from "ionicons/icons";
 
 /* Context */
 import { useAppContext } from "../../context/context";
+import GoogleAuth from "./GoogleAuth";
 
 /* Validation Interfaces */
 interface IIsValid {
@@ -157,15 +158,6 @@ const Signup: React.FC = () => {
     history.push("/signupupdateuser");
   }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  /**
-   * Watches for the loging in with a google account
-   */
-  useEffect(() => {
-    if (!loginWithGoogleData?.loginWithGoogle.user?._id) return;
-    setUser(loginWithGoogleData.loginWithGoogle.user);
-    history.push("/signupupdateuser");
-  }, [loginWithGoogleData]);
-
   return (
     <>
       <div className="auth-form-input">
@@ -276,21 +268,7 @@ const Signup: React.FC = () => {
             </b>
           </IonText>
         </IonButton>
-        <GoogleLogin
-          onSuccess={(credentialResponse) => {
-            loginWithGoogle({
-              variables: {
-                options: {
-                  credentials: credentialResponse.credential!,
-                },
-              },
-            });
-          }}
-          onError={() => {
-            alert("Login Failed");
-          }}
-          useOneTap
-        />
+        <GoogleAuth />
       </div>
     </>
   );
