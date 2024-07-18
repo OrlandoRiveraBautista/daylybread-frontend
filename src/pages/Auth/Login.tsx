@@ -122,15 +122,6 @@ const Login: React.FC = () => {
   };
 
   /**
-   * Function to handle loging in with google
-   */
-  const setUserFromGoogleLogin = (data: LoginWithGoogleMutationMutation) => {
-    if (!data?.loginWithGoogle.user?._id) return;
-    setUser(data.loginWithGoogle.user);
-    history.push("/me");
-  };
-
-  /**
    * Calls after login has been successfull to get the user
    */
   useEffect(() => {
@@ -239,7 +230,7 @@ const Login: React.FC = () => {
             </b>
           </IonText>
         </IonButton>
-        <GoogleAuth onSuccess={setUserFromGoogleLogin} />
+        <GoogleAuth />
       </div>
     </>
   );
