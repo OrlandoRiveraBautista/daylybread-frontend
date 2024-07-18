@@ -10,8 +10,12 @@ import {
 } from "@ionic/react";
 import { useHistory } from "react-router";
 
+/* Components */
+import GoogleAuth from "./GoogleAuth";
+
 /* Interfaces */
 import { IUsernamePasswordInput } from "../../interfaces/AuthInterfaces";
+import { LoginWithGoogleMutationMutation } from "../../__generated__/graphql";
 
 /* Styles */
 import "./Auth.scss";
@@ -115,6 +119,15 @@ const Login: React.FC = () => {
         options: { email, password },
       },
     });
+  };
+
+  /**
+   * Function to handle loging in with google
+   */
+  const setUserFromGoogleLogin = (data: LoginWithGoogleMutationMutation) => {
+    if (!data?.loginWithGoogle.user?._id) return;
+    setUser(data.loginWithGoogle.user);
+    history.push("/me");
   };
 
   /**
@@ -226,6 +239,7 @@ const Login: React.FC = () => {
             </b>
           </IonText>
         </IonButton>
+        <GoogleAuth onSuccess={setUserFromGoogleLogin} />
       </div>
     </>
   );
