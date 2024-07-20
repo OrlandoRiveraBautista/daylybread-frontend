@@ -17,7 +17,7 @@ import { IUsernamePasswordInput } from "../../interfaces/AuthInterfaces";
 import "./Auth.scss";
 
 /* Graphql Hooks */
-import { useSignup, useLoginWithGoogle } from "../../hooks/AuthHooks";
+import { useSignup } from "../../hooks/AuthHooks";
 
 /* Utils */
 import { validateEmail, validatePassword } from "./utils";
