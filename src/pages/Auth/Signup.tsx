@@ -9,7 +9,6 @@ import {
   IonSpinner,
 } from "@ionic/react";
 import { useHistory } from "react-router";
-import { GoogleLogin } from "@react-oauth/google";
 
 /* Interfaces */
 import { IUsernamePasswordInput } from "../../interfaces/AuthInterfaces";
@@ -66,7 +65,6 @@ const Signup: React.FC = () => {
 
   /** Hooks declaration */
   const { getSignup, loading, data } = useSignup();
-  const { loginWithGoogle, data: loginWithGoogleData } = useLoginWithGoogle();
 
   /**
    * Function will validate the inputed email or password

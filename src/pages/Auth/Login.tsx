@@ -15,7 +15,6 @@ import GoogleAuth from "./GoogleAuth";
 
 /* Interfaces */
 import { IUsernamePasswordInput } from "../../interfaces/AuthInterfaces";
-import { LoginWithGoogleMutationMutation } from "../../__generated__/graphql";
 
 /* Styles */
 import "./Auth.scss";
