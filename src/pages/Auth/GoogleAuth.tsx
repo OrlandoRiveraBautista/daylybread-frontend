@@ -60,6 +60,7 @@ const GoogleAuth: React.FC<IGoogleAuth> = ({ onSuccess }: IGoogleAuth) => {
           alert("Login Failed");
         }}
         useOneTap
+        shape="pill"
       />
     </>
   );
