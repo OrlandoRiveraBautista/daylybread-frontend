@@ -61,6 +61,11 @@ const GoogleAuth: React.FC<IGoogleAuth> = ({ onSuccess }: IGoogleAuth) => {
         }}
         useOneTap
         shape="pill"
+        theme={
+          window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "filled_black"
+            : "outline"
+        }
       />
     </>
   );
