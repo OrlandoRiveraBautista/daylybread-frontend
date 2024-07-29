@@ -10,6 +10,9 @@ import {
 } from "@ionic/react";
 import { useHistory } from "react-router";
 
+/* Components */
+import GoogleAuth from "./GoogleAuth";
+
 /* Interfaces */
 import { IUsernamePasswordInput } from "../../interfaces/AuthInterfaces";
 
@@ -226,6 +229,7 @@ const Login: React.FC = () => {
             </b>
           </IonText>
         </IonButton>
+        <GoogleAuth />
       </div>
     </>
   );

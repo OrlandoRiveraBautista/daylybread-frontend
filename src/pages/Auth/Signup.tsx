@@ -27,6 +27,7 @@ import { eyeOutline, eyeOffOutline } from "ionicons/icons";
 
 /* Context */
 import { useAppContext } from "../../context/context";
+import GoogleAuth from "./GoogleAuth";
 
 /* Validation Interfaces */
 interface IIsValid {
@@ -265,6 +266,7 @@ const Signup: React.FC = () => {
             </b>
           </IonText>
         </IonButton>
+        <GoogleAuth />
       </div>
     </>
   );
