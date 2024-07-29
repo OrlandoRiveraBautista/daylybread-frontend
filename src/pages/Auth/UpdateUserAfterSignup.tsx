@@ -30,10 +30,10 @@ interface IUpdateInput {
 
 const UpdateUserAfterSignup: React.FC = () => {
   const history = useHistory();
-  const { setUser } = useAppContext();
+  const { setUser, userInfo } = useAppContext();
   const [updateOptions, setUpdateOptions] = useState<IUpdateInput>({
-    firstName: "",
-    lastName: "",
+    firstName: userInfo?.firstName!,
+    lastName: userInfo?.lastName!,
     churchName: undefined,
     dob: undefined,
   });
@@ -127,6 +127,7 @@ const UpdateUserAfterSignup: React.FC = () => {
           errorText="Please enter your first name"
           onIonInput={(event) => validateAndSet(event)}
           onIonBlur={(event) => markTouched(event)}
+          value={updateOptions.firstName}
         />
         <IonInput
           label="Last Name"
@@ -140,6 +141,7 @@ const UpdateUserAfterSignup: React.FC = () => {
           errorText="Please enter your last name"
           onIonInput={(event) => validateAndSet(event)}
           onIonBlur={(event) => markTouched(event)}
+          value={updateOptions.lastName}
         />
         <IonInput
           label="Church Name (optional)"

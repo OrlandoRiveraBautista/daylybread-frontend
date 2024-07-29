@@ -4,6 +4,7 @@ import App from "./App";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
 import { ContextProvider } from "./context/context";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 /* GraphQL Imports */
 import {
@@ -50,9 +51,13 @@ const root = createRoot(container!);
 root.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-      <ContextProvider>
-        <App />
-      </ContextProvider>
+      <GoogleOAuthProvider
+        clientId={process.env.REACT_APP_GOOGLE_OAUTH_CLIENT_ID!}
+      >
+        <ContextProvider>
+          <App />
+        </ContextProvider>
+      </GoogleOAuthProvider>
     </ApolloProvider>
   </React.StrictMode>
 );

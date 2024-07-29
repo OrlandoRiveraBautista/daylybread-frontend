@@ -48,6 +48,29 @@ const Register = gql(`
     }
 `);
 
+const LoginWithGoogleMutation = gql(`
+    mutation LoginWithGoogleMutation($options: LogInWithGoogleArgs!) {
+      loginWithGoogle(options: $options) {
+        user {
+          _id
+          createdAt
+          updatedAt
+          email
+          firstName
+          lastName
+          churchName
+          dob
+          count
+          bioText
+        }
+        errors {
+          field
+          message
+        }
+      }
+    }
+`);
+
 /* When using lazy  */
 export const useLogin = () => {
   const [getLogin, { loading, error, data }] = useLazyQuery(Login);
@@ -66,6 +89,19 @@ export const useSignup = () => {
 
   return {
     getSignup,
+    loading,
+    error,
+    data,
+  };
+};
+
+export const useLoginWithGoogle = () => {
+  const [loginWithGoogle, { loading, error, data }] = useMutation(
+    LoginWithGoogleMutation
+  );
+
+  return {
+    loginWithGoogle,
     loading,
     error,
     data,
