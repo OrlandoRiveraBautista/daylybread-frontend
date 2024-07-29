@@ -15,10 +15,13 @@ interface IGoogleAuth {
 }
 
 const GoogleAuth: React.FC<IGoogleAuth> = ({ onSuccess }: IGoogleAuth) => {
+  // router history
   const history = useHistory();
 
+  // global state
   const { setUser } = useAppContext();
 
+  // GraphQL api
   const { loginWithGoogle, data } = useLoginWithGoogle();
 
   useEffect(() => {
