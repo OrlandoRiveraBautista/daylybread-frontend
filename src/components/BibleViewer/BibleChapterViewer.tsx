@@ -8,6 +8,8 @@ import {
   IonImg,
   IonText,
 } from "@ionic/react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { EffectCards } from "swiper/modules";
 import { chevronBack, chevronForward } from "ionicons/icons";
 import { useHistory } from "react-router";
 
@@ -21,6 +23,8 @@ import { useAppContext } from "../../context/context";
 
 /* Styles */
 import "./BibleChapterViewer.scss";
+import "swiper/css";
+import "swiper/css/effect-cards";
 
 /* Images */
 import PatternImage from "../../assets/images/Patterns - 4x4.png";
@@ -414,111 +418,126 @@ const BibleChapterViewer: React.FC = () => {
   };
 
   return (
-    <div id="chapter-viewer">
-      <div className="text-viewer">
-        {chosenChapterVerses ? (
-          <>
-            <strong className="chapter-number">{chosenChapterNumber}</strong>
-            {loading ? (
-              renderSkeleton()
-            ) : (
-              <>
-                {chosenChapterVerses.map((verse) => (
-                  <span
-                    onClick={() =>
-                      handleMouseDown(
-                        chosenBible?.abbr! +
-                          chosenBook?.bookId! +
-                          chosenChapterNumber +
-                          verse.verseStart?.toString()
-                      )
-                    }
-                    id={
-                      chosenBible?.abbr! +
-                      chosenBook?.bookId! +
-                      chosenChapterNumber +
-                      verse.verseStart?.toString()
-                    }
-                    key={verse.verseStart?.toString()}
-                    className={`${
-                      selectedVerseList.some(
-                        (sv) => sv.verseStart === verse.verseStart
-                      )
-                        ? "verse-selected"
-                        : ""
-                    } 
+    <div id="chapter-viewer-container">
+      <Swiper
+        effect={"cards"}
+        grabCursor={true}
+        modules={[EffectCards]}
+        className="bibleSwiper ion-padding"
+      >
+        <SwiperSlide>
+          <div id="chapter-viewer">
+            <div className="text-viewer">
+              {chosenChapterVerses ? (
+                <>
+                  <strong className="chapter-number">
+                    {chosenChapterNumber}
+                  </strong>
+                  {loading ? (
+                    renderSkeleton()
+                  ) : (
+                    <>
+                      {chosenChapterVerses.map((verse) => (
+                        <span
+                          onClick={() =>
+                            handleMouseDown(
+                              chosenBible?.abbr! +
+                                chosenBook?.bookId! +
+                                chosenChapterNumber +
+                                verse.verseStart?.toString()
+                            )
+                          }
+                          id={
+                            chosenBible?.abbr! +
+                            chosenBook?.bookId! +
+                            chosenChapterNumber +
+                            verse.verseStart?.toString()
+                          }
+                          key={verse.verseStart?.toString()}
+                          className={`${
+                            selectedVerseList.some(
+                              (sv) => sv.verseStart === verse.verseStart
+                            )
+                              ? "verse-selected"
+                              : ""
+                          } 
                     ${getVerseClass(verse)}
                     `}
+                        >
+                          <b>{verse.verseStart}:</b> {verse.verseText}
+                        </span>
+                      ))}
+                    </>
+                  )}
+                </>
+              ) : (
+                <div className="helper-container">
+                  <IonImg
+                    src={PatternImage}
+                    alt="Pattern image"
+                    className="helper-image"
+                  />
+                  <IonText>Please pick a bible to begin</IonText>
+                  <IonButton
+                    shape="round"
+                    fill="clear"
+                    color="dark"
+                    size="large"
+                    onClick={handleOpenTranslationModal}
+                    className="translation-button"
                   >
-                    <b>{verse.verseStart}:</b> {verse.verseText}
-                  </span>
-                ))}
-                <div className="copyright">
-                  {chosenBibleCopyright?.copyright?.copyright}
-                  {chosenBibleCopyright?.copyright?.organizations![0].logos
-                    ?.length ? (
-                    <IonImg
-                      src={
-                        chosenBibleCopyright?.copyright?.organizations![0]
-                          .logos![0].url!
-                      }
-                      alt={chosenBible?.abbr + "copyright"}
-                      className="copyright-image"
-                    />
-                  ) : null}
+                    {chosenBible?.abbr
+                      ? displayBibleAbbr(chosenBible?.abbr)
+                      : "Pick bible"}
+                  </IonButton>
                 </div>
-              </>
-            )}
-          </>
-        ) : (
-          <div className="helper-container">
-            <IonImg
-              src={PatternImage}
-              alt="Pattern image"
-              className="helper-image"
-            />
-            <IonText>Please pick a bible to begin</IonText>
-            <IonButton
-              shape="round"
-              fill="clear"
-              color="dark"
-              size="large"
-              onClick={handleOpenTranslationModal}
-              className="translation-button"
-            >
-              {chosenBible?.abbr
-                ? displayBibleAbbr(chosenBible?.abbr)
-                : "Pick bible"}
-            </IonButton>
+              )}
+            </div>
+            {chosenChapterVerses ? (
+              <IonFab>
+                {/* Back button */}
+                <IonFabButton color="light" size="small" className="right">
+                  <IonIcon icon={chevronBack} onClick={() => backChapter()} />
+                </IonFabButton>
+
+                {/* Button to open the bible assistant modal */}
+                <IonFabButton
+                  color="light"
+                  size="small"
+                  onClick={handleOpenVerseModal}
+                >
+                  <IonIcon
+                    class="bread-crumbs-icon"
+                    color="light"
+                    icon={BreadCrumbsIcon}
+                  />
+                </IonFabButton>
+
+                {/* Forward button */}
+                <IonFabButton color="light" size="small" className="right">
+                  <IonIcon icon={chevronForward} onClick={nextChapter} />
+                </IonFabButton>
+              </IonFab>
+            ) : null}
           </div>
-        )}
+        </SwiperSlide>
+        <SwiperSlide>Slide 5</SwiperSlide>
+        <SwiperSlide>Slide 3</SwiperSlide>
+        <SwiperSlide>Slide 4</SwiperSlide>
+      </Swiper>
+
+      <div className="copyright">
+        {chosenBibleCopyright?.copyright?.copyright}
+        {chosenBibleCopyright?.copyright?.organizations![0].logos?.length ? (
+          <IonImg
+            src={
+              chosenBibleCopyright?.copyright?.organizations![0].logos![0].url!
+            }
+            alt={chosenBible?.abbr + "copyright"}
+            className="copyright-image"
+          />
+        ) : null}
       </div>
-      {chosenChapterVerses ? (
-        <IonFab>
-          {/* Back button */}
-          <IonFabButton color="light" size="small" className="right">
-            <IonIcon icon={chevronBack} onClick={() => backChapter()} />
-          </IonFabButton>
-
-          {/* Button to open the bible assistant modal */}
-          <IonFabButton
-            color="light"
-            size="small"
-            onClick={handleOpenVerseModal}
-          >
-            <IonIcon
-              class="bread-crumbs-icon"
-              color="light"
-              icon={BreadCrumbsIcon}
-            />
-          </IonFabButton>
-
-          {/* Forward button */}
-          <IonFabButton color="light" size="small" className="right">
-            <IonIcon icon={chevronForward} onClick={nextChapter} />
-          </IonFabButton>
-        </IonFab>
-      ) : null}
 
       {/* bible assistant modal */}
       <BreadCrumbsModal
