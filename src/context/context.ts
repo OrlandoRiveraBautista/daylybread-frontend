@@ -5,7 +5,10 @@ import { useEffect, useState } from "react";
 import { useLazyGetBookmarks } from "../hooks/UserHooks";
 
 /* Interfaces */
-import { ITranslation } from "../interfaces/BibleInterfaces";
+import {
+  IChosenChapterVerses,
+  ITranslation,
+} from "../interfaces/BibleInterfaces";
 import { IDeviceInfo } from "../interfaces/AuthInterfaces";
 /**
  * !Potentially we should start using the graphql types that are being generated from the backend
@@ -46,7 +49,8 @@ const context = constate(() => {
   const [chosenBook, setChosenBook] = useState<BbBook>();
   const [chosenTranslation, setChosenTranslation] = useState<ITranslation>();
   const [chosenChapterNumber, setChosenChapterNumber] = useState<number>();
-  const [chosenChapterVerses, setChosenChapterVerses] = useState<BbVerse[]>();
+  const [chosenChapterVerses, setChosenChapterVerses] =
+    useState<IChosenChapterVerses>();
   const [chosenChapterMedia, setChosenChapterMedia] = useState<BbAudioFile[]>();
   const [currentMediaTimeStamp, setCurrentMediaTimestamp] = useState<number>(0);
   const [selectedVerseList, setSelectedVerseList] = useState<BbVerse[]>([]);
@@ -125,7 +129,7 @@ const context = constate(() => {
   /**
    * Sets the bible chapter to global state
    */
-  const setChapterVerses = (dto: BbVerse[]) => {
+  const setChapterVerses = (dto: IChosenChapterVerses) => {
     setChosenChapterVerses(dto);
   };
 
