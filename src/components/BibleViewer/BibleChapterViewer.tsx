@@ -41,7 +41,10 @@ import useSetBibleHistory from "../utility/hooks/useSetBibleHistory";
 
 /* Utils */
 import { displayBibleAbbr, getHighestBitrateAudio } from "../../utils/support";
-import { BbVerse } from "../../__generated__/graphql";
+
+/* Types */
+import { BbVerse, VerseArgs } from "../../__generated__/graphql";
+import { IChosenChapterVerses } from "../../interfaces/BibleInterfaces";
 
 /**
  * Function to render loading skeleton animation
@@ -94,11 +97,24 @@ const BibleChapterViewer: React.FC = () => {
     useState<number>(0.25);
 
   /* API/GraphQL */
+  // to get chapter verses
+  // Instance to get the current chapter
   const {
     getListOfVersesFromBookChapter,
     data: versesData,
     loading,
   } = useLazyGetListOfVersesFromBookChapter();
+  // Instance to get the previous chapter
+  const {
+    getListOfVersesFromBookChapter: getPreviousChapter,
+    data: previousVersesData,
+  } = useLazyGetListOfVersesFromBookChapter();
+  // Instance to get the next chapter
+  const {
+    getListOfVersesFromBookChapter: getNextChapter,
+    data: nextVersesData,
+  } = useLazyGetListOfVersesFromBookChapter();
+
   const { setUserHistory } = useLazySetUserHistory();
   useSetBibleHistory();
   const { getAudioMedia, data: audioMediaData } = useLazyGetAudioMedia();
@@ -133,6 +149,24 @@ const BibleChapterViewer: React.FC = () => {
           bibleId: textBibleId,
           bookId: chosenBook?.bookId!,
           chapterNumber: chosenChapterNumber!,
+        },
+      },
+    });
+    getPreviousChapter({
+      variables: {
+        options: {
+          bibleId: textBibleId,
+          bookId: chosenBook?.bookId!,
+          chapterNumber: chosenChapterNumber! - 1,
+        },
+      },
+    });
+    getNextChapter({
+      variables: {
+        options: {
+          bibleId: textBibleId,
+          bookId: chosenBook?.bookId!,
+          chapterNumber: chosenChapterNumber! + 1,
         },
       },
     });
@@ -188,8 +222,17 @@ const BibleChapterViewer: React.FC = () => {
   // useEffect to set verses when verses are present
   useEffect(() => {
     if (loading || !versesData) return;
+    console.log("current", versesData);
+    console.log("before", previousVersesData);
+    console.log("next", nextVersesData);
 
-    setChapterVerses(versesData.getListOfVerseFromBookChapter.data);
+    const dto: IChosenChapterVerses = {
+      current: versesData.getListOfVerseFromBookChapter.data,
+      previous: [],
+      next: [],
+    };
+
+    setChapterVerses(dto);
   }, [versesData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // checks for change in the global state for bible changes and pushes the route with param
@@ -320,7 +363,7 @@ const BibleChapterViewer: React.FC = () => {
     // if no text exit function
     if (!verseNumber) return;
 
-    const verseObj = chosenChapterVerses![Number(verseNumber) - 1];
+    const verseObj = chosenChapterVerses?.current![Number(verseNumber) - 1];
 
     if (!verseObj) return;
     setInitialModalBreakpoint(0.25);
@@ -428,7 +471,7 @@ const BibleChapterViewer: React.FC = () => {
         <SwiperSlide>
           <div id="chapter-viewer">
             <div className="text-viewer">
-              {chosenChapterVerses ? (
+              {chosenChapterVerses?.current ? (
                 <>
                   <strong className="chapter-number">
                     {chosenChapterNumber}
@@ -437,7 +480,7 @@ const BibleChapterViewer: React.FC = () => {
                     renderSkeleton()
                   ) : (
                     <>
-                      {chosenChapterVerses.map((verse) => (
+                      {chosenChapterVerses.current.map((verse) => (
                         <span
                           onClick={() =>
                             handleMouseDown(
