@@ -43,7 +43,7 @@ import useSetBibleHistory from "../utility/hooks/useSetBibleHistory";
 import { displayBibleAbbr, getHighestBitrateAudio } from "../../utils/support";
 
 /* Types */
-import { BbVerse, VerseArgs } from "../../__generated__/graphql";
+import { BbVerse } from "../../__generated__/graphql";
 import { IChosenChapterVerses } from "../../interfaces/BibleInterfaces";
 
 /**
@@ -284,6 +284,7 @@ const BibleChapterViewer: React.FC = () => {
     }
   }, [openSelectedVersesModal]);
 
+  // Watches for the audio media data and sets it
   useEffect(() => {
     if (!audioMediaData) return;
     setChapterMedia(audioMediaData.getAudioMedia.data);
@@ -477,6 +478,58 @@ const BibleChapterViewer: React.FC = () => {
         modules={[EffectCards]}
         className="bibleSwiper ion-padding"
       >
+        {Object.entries(chosenChapterVerses!).map(
+          ([key, value]: [string, BbVerse[] | undefined]) =>
+            value ? (
+              <SwiperSlide>
+                <div id="chapter-viewer">
+                  <div className="text-viewer">
+                    <>
+                      <strong className="chapter-number">
+                        {value[0].chapter}
+                      </strong>
+                      {loading ? (
+                        renderSkeleton()
+                      ) : (
+                        <>
+                          {value.map((verse) => (
+                            <span
+                              onClick={() =>
+                                handleMouseDown(
+                                  chosenBible?.abbr! +
+                                    chosenBook?.bookId! +
+                                    chosenChapterNumber +
+                                    verse.verseStart?.toString()
+                                )
+                              }
+                              id={
+                                chosenBible?.abbr! +
+                                chosenBook?.bookId! +
+                                chosenChapterNumber +
+                                verse.verseStart?.toString()
+                              }
+                              key={verse.verseStart?.toString()}
+                              className={`${
+                                selectedVerseList.some(
+                                  (sv) => sv.verseStart === verse.verseStart
+                                )
+                                  ? "verse-selected"
+                                  : ""
+                              } 
+                    ${getVerseClass(verse)}
+                    `}
+                            >
+                              <b>{verse.verseStart}:</b> {verse.verseText}
+                            </span>
+                          ))}
+                        </>
+                      )}
+                    </>
+                  </div>
+                </div>
+              </SwiperSlide>
+            ) : null
+        )}
         <SwiperSlide>
           <div id="chapter-viewer">
             <div className="text-viewer">
@@ -573,9 +626,6 @@ const BibleChapterViewer: React.FC = () => {
             ) : null}
           </div>
         </SwiperSlide>
-        <SwiperSlide>Slide 5</SwiperSlide>
-        <SwiperSlide>Slide 3</SwiperSlide>
-        <SwiperSlide>Slide 4</SwiperSlide>
       </Swiper>
 
       <div className="copyright">
