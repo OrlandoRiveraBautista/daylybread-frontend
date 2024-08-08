@@ -108,11 +108,13 @@ const BibleChapterViewer: React.FC = () => {
   const {
     getListOfVersesFromBookChapter: getPreviousChapter,
     data: previousVersesData,
+    loading: previousChapterLoading,
   } = useLazyGetListOfVersesFromBookChapter();
   // Instance to get the next chapter
   const {
     getListOfVersesFromBookChapter: getNextChapter,
     data: nextVersesData,
+    loading: nextChapterLoading,
   } = useLazyGetListOfVersesFromBookChapter();
 
   const { setUserHistory } = useLazySetUserHistory();
@@ -142,7 +144,11 @@ const BibleChapterViewer: React.FC = () => {
       );
     }).id;
 
-    // get the chapter content
+    /**
+     * Getting the chapter verse
+     * ?Note that graphql caches responses so if we call the same verse it will never touch the api,
+     * ?it will return the cached response.
+     */
     getListOfVersesFromBookChapter({
       variables: {
         options: {
@@ -152,6 +158,7 @@ const BibleChapterViewer: React.FC = () => {
         },
       },
     });
+    // get the previous chapter's data
     getPreviousChapter({
       variables: {
         options: {
@@ -161,6 +168,7 @@ const BibleChapterViewer: React.FC = () => {
         },
       },
     });
+    // get the next chapter's data
     getNextChapter({
       variables: {
         options: {
