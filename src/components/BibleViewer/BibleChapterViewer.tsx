@@ -229,19 +229,20 @@ const BibleChapterViewer: React.FC = () => {
 
   // useEffect to set verses when verses are present
   useEffect(() => {
-    if (loading || !versesData) return;
-    console.log("current", versesData);
-    console.log("before", previousVersesData);
-    console.log("next", nextVersesData);
+    // function should fail early if any of the data is loading or if the current verse data is empty
+    if (loading || !versesData || previousChapterLoading || nextChapterLoading)
+      return;
 
+    // create obj for the state
     const dto: IChosenChapterVerses = {
       current: versesData.getListOfVerseFromBookChapter.data,
-      previous: [],
-      next: [],
+      previous: previousVersesData?.getListOfVerseFromBookChapter.data,
+      next: nextVersesData?.getListOfVerseFromBookChapter.data,
     };
 
+    // set data to state
     setChapterVerses(dto);
-  }, [versesData]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [versesData, previousVersesData, nextVersesData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // checks for change in the global state for bible changes and pushes the route with param
   useEffect(() => {
