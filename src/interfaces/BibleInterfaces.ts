@@ -53,7 +53,7 @@ export interface IChapterInterface {
 }
 
 export interface IChosenChapterVerses {
-  previous: BbVerse[];
+  previous: BbVerse[] | undefined;
   current: BbVerse[];
-  next: BbVerse[];
+  next: BbVerse[] | undefined;
 }
