@@ -45,21 +45,6 @@
         border-radius: 12px;
         padding: 8px;
       }
-
-      .helper-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;
-        margin-top: 120px;
-      }
-      .helper-container ion-img {
-        width: 81px;
-      }
-      .helper-container ion-text {
-        font-weight: 600;
-      }
     }
 
     ion-fab {
@@ -95,5 +80,20 @@
     .copyright-image {
       height: 32px;
     }
+  }
+
+  .helper-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 120px;
+  }
+  .helper-container ion-img {
+    width: 81px;
+  }
+  .helper-container ion-text {
+    font-weight: 600;
   }
 }
