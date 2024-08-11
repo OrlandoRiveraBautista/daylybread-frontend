@@ -472,174 +472,144 @@ const BibleChapterViewer: React.FC = () => {
 
   return (
     <div id="chapter-viewer-container">
-      <Swiper
-        effect={"cards"}
-        grabCursor={true}
-        modules={[EffectCards]}
-        className="bibleSwiper ion-padding"
-      >
-        {Object.entries(chosenChapterVerses!).map(
-          ([key, value]: [string, BbVerse[] | undefined]) =>
-            value ? (
-              <SwiperSlide>
-                <div id="chapter-viewer">
-                  <div className="text-viewer">
-                    <>
-                      <strong className="chapter-number">
-                        {value[0].chapter}
-                      </strong>
-                      {loading ? (
-                        renderSkeleton()
-                      ) : (
+      {chosenChapterVerses?.current ? (
+        <>
+          <Swiper
+            effect={"cards"}
+            grabCursor={true}
+            modules={[EffectCards]}
+            className="bibleSwiper ion-padding"
+          >
+            {Object.entries(chosenChapterVerses!).map(
+              ([key, value]: [string, BbVerse[] | undefined]) =>
+                value ? (
+                  <SwiperSlide>
+                    <div id="chapter-viewer">
+                      <div className="text-viewer">
                         <>
-                          {value.map((verse) => (
-                            <span
-                              onClick={() =>
-                                handleMouseDown(
-                                  chosenBible?.abbr! +
+                          <strong className="chapter-number">
+                            {value[0].chapter}
+                          </strong>
+                          {loading ? (
+                            renderSkeleton()
+                          ) : (
+                            <>
+                              {value.map((verse) => (
+                                <span
+                                  onClick={() =>
+                                    handleMouseDown(
+                                      chosenBible?.abbr! +
+                                        chosenBook?.bookId! +
+                                        chosenChapterNumber +
+                                        verse.verseStart?.toString()
+                                    )
+                                  }
+                                  id={
+                                    chosenBible?.abbr! +
                                     chosenBook?.bookId! +
                                     chosenChapterNumber +
                                     verse.verseStart?.toString()
-                                )
-                              }
-                              id={
-                                chosenBible?.abbr! +
-                                chosenBook?.bookId! +
-                                chosenChapterNumber +
-                                verse.verseStart?.toString()
-                              }
-                              key={verse.verseStart?.toString()}
-                              className={`${
-                                selectedVerseList.some(
-                                  (sv) => sv.verseStart === verse.verseStart
-                                )
-                                  ? "verse-selected"
-                                  : ""
-                              } 
+                                  }
+                                  key={verse.verseStart?.toString()}
+                                  className={`${
+                                    selectedVerseList.some(
+                                      (sv) => sv.verseStart === verse.verseStart
+                                    )
+                                      ? "verse-selected"
+                                      : ""
+                                  } 
                     ${getVerseClass(verse)}
                     `}
-                            >
-                              <b>{verse.verseStart}:</b> {verse.verseText}
-                            </span>
-                          ))}
+                                >
+                                  <b>{verse.verseStart}:</b> {verse.verseText}
+                                </span>
+                              ))}
+                            </>
+                          )}
                         </>
-                      )}
-                    </>
-                  </div>
-                </div>
-              </SwiperSlide>
-            ) : null
-        )}
-        <SwiperSlide>
-          <div id="chapter-viewer">
-            <div className="text-viewer">
-              {chosenChapterVerses?.current ? (
-                <>
-                  <strong className="chapter-number">
-                    {chosenChapterNumber}
-                  </strong>
-                  {loading ? (
-                    renderSkeleton()
-                  ) : (
-                    <>
-                      {chosenChapterVerses.current.map((verse) => (
-                        <span
-                          onClick={() =>
-                            handleMouseDown(
-                              chosenBible?.abbr! +
-                                chosenBook?.bookId! +
-                                chosenChapterNumber +
-                                verse.verseStart?.toString()
-                            )
-                          }
-                          id={
-                            chosenBible?.abbr! +
-                            chosenBook?.bookId! +
-                            chosenChapterNumber +
-                            verse.verseStart?.toString()
-                          }
-                          key={verse.verseStart?.toString()}
-                          className={`${
-                            selectedVerseList.some(
-                              (sv) => sv.verseStart === verse.verseStart
-                            )
-                              ? "verse-selected"
-                              : ""
-                          } 
-                    ${getVerseClass(verse)}
-                    `}
+                      </div>
+
+                      <IonFab>
+                        {/* Back button */}
+                        <IonFabButton
+                          color="light"
+                          size="small"
+                          className="right"
                         >
-                          <b>{verse.verseStart}:</b> {verse.verseText}
-                        </span>
-                      ))}
-                    </>
-                  )}
-                </>
-              ) : (
-                <div className="helper-container">
-                  <IonImg
-                    src={PatternImage}
-                    alt="Pattern image"
-                    className="helper-image"
-                  />
-                  <IonText>Please pick a bible to begin</IonText>
-                  <IonButton
-                    shape="round"
-                    fill="clear"
-                    color="dark"
-                    size="large"
-                    onClick={handleOpenTranslationModal}
-                    className="translation-button"
-                  >
-                    {chosenBible?.abbr
-                      ? displayBibleAbbr(chosenBible?.abbr)
-                      : "Pick bible"}
-                  </IonButton>
-                </div>
-              )}
-            </div>
-            {chosenChapterVerses ? (
-              <IonFab>
-                {/* Back button */}
-                <IonFabButton color="light" size="small" className="right">
-                  <IonIcon icon={chevronBack} onClick={() => backChapter()} />
-                </IonFabButton>
+                          <IonIcon
+                            icon={chevronBack}
+                            onClick={() => backChapter()}
+                          />
+                        </IonFabButton>
 
-                {/* Button to open the bible assistant modal */}
-                <IonFabButton
-                  color="light"
-                  size="small"
-                  onClick={handleOpenVerseModal}
-                >
-                  <IonIcon
-                    class="bread-crumbs-icon"
-                    color="light"
-                    icon={BreadCrumbsIcon}
-                  />
-                </IonFabButton>
+                        {/* Button to open the bible assistant modal */}
+                        <IonFabButton
+                          color="light"
+                          size="small"
+                          onClick={handleOpenVerseModal}
+                        >
+                          <IonIcon
+                            class="bread-crumbs-icon"
+                            color="light"
+                            icon={BreadCrumbsIcon}
+                          />
+                        </IonFabButton>
 
-                {/* Forward button */}
-                <IonFabButton color="light" size="small" className="right">
-                  <IonIcon icon={chevronForward} onClick={nextChapter} />
-                </IonFabButton>
-              </IonFab>
+                        {/* Forward button */}
+                        <IonFabButton
+                          color="light"
+                          size="small"
+                          className="right"
+                        >
+                          <IonIcon
+                            icon={chevronForward}
+                            onClick={nextChapter}
+                          />
+                        </IonFabButton>
+                      </IonFab>
+                    </div>
+                  </SwiperSlide>
+                ) : null
+            )}
+          </Swiper>
+
+          <div className="copyright">
+            {chosenBibleCopyright?.copyright?.copyright}
+            {chosenBibleCopyright?.copyright?.organizations![0].logos
+              ?.length ? (
+              <IonImg
+                src={
+                  chosenBibleCopyright?.copyright?.organizations![0].logos![0]
+                    .url!
+                }
+                alt={chosenBible?.abbr + "copyright"}
+                className="copyright-image"
+              />
             ) : null}
           </div>
-        </SwiperSlide>
-      </Swiper>
-
-      <div className="copyright">
-        {chosenBibleCopyright?.copyright?.copyright}
-        {chosenBibleCopyright?.copyright?.organizations![0].logos?.length ? (
+        </>
+      ) : (
+        <div className="helper-container">
           <IonImg
-            src={
-              chosenBibleCopyright?.copyright?.organizations![0].logos![0].url!
-            }
-            alt={chosenBible?.abbr + "copyright"}
-            className="copyright-image"
+            src={PatternImage}
+            alt="Pattern image"
+            className="helper-image"
           />
-        ) : null}
-      </div>
+          <IonText>Please pick a bible to begin</IonText>
+          <IonButton
+            shape="round"
+            fill="clear"
+            color="dark"
+            size="large"
+            onClick={handleOpenTranslationModal}
+            className="translation-button"
+          >
+            {chosenBible?.abbr
+              ? displayBibleAbbr(chosenBible?.abbr)
+              : "Pick bible"}
+          </IonButton>
+        </div>
+      )}
 
       {/* bible assistant modal */}
       <BreadCrumbsModal
