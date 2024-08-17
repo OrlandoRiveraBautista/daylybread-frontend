@@ -45,6 +45,7 @@ import { displayBibleAbbr, getHighestBitrateAudio } from "../../utils/support";
 /* Types */
 import { BbVerse } from "../../__generated__/graphql";
 import { IChosenChapterVerses } from "../../interfaces/BibleInterfaces";
+import { Swiper as SwiperType } from "swiper/types";
 
 /**
  * Function to render loading skeleton animation
@@ -95,6 +96,9 @@ const BibleChapterViewer: React.FC = () => {
     useState<boolean>(false);
   const [initialModalBreakpoint, setInitialModalBreakpoint] =
     useState<number>(0.25);
+  const [currentPageIndex, setCurrentPageIndex] = useState(1); // Start with page 1
+  // const [swiper, setSwiper] = useState<SwiperEvent>();
+  const [localChapters, setLocalChapters] = useState<BbVerse[][] | undefined>();
 
   /* API/GraphQL */
   // to get chapter verses
@@ -235,13 +239,38 @@ const BibleChapterViewer: React.FC = () => {
 
     // create obj for the state
     const dto: IChosenChapterVerses = {
-      current: versesData.getListOfVerseFromBookChapter.data,
       previous: previousVersesData?.getListOfVerseFromBookChapter.data,
+      current: versesData.getListOfVerseFromBookChapter.data,
       next: nextVersesData?.getListOfVerseFromBookChapter.data,
     };
 
     // set data to state
     setChapterVerses(dto);
+
+    // set the rendered chapter
+    setLocalChapters((prevVal) => {
+      if (!prevVal) return Object.values(dto);
+
+      // Add previous to the beginning if it doesn't exist
+      if (
+        dto.previous &&
+        !prevVal.some((chapter) => chapter === dto.previous)
+      ) {
+        prevVal = [dto.previous, ...prevVal];
+      }
+
+      // Add current chapter if it doesn't exist (normally should already exist as middle, so this is more of a safeguard)
+      if (dto.current && !prevVal.some((chapter) => chapter === dto.current)) {
+        prevVal = [...prevVal, dto.current];
+      }
+
+      // Add next to the end if it doesn't exist
+      if (dto.next && !prevVal.some((chapter) => chapter === dto.next)) {
+        prevVal = [...prevVal, dto.next];
+      }
+
+      return prevVal;
+    });
   }, [versesData, previousVersesData, nextVersesData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // checks for change in the global state for bible changes and pushes the route with param
@@ -472,18 +501,36 @@ const BibleChapterViewer: React.FC = () => {
 
   return (
     <div id="chapter-viewer-container">
-      {chosenChapterVerses?.current ? (
+      {chosenChapterVerses && chosenChapterVerses.current ? (
         <>
           <Swiper
-            effect={"cards"}
+            initialSlide={currentPageIndex}
+            // onSwiper={(s: SwiperType) => {
+            //   s.params.initialSlide = 1;
+            // }}
+            // effect={"cards"}
             grabCursor={true}
             modules={[EffectCards]}
             className="bibleSwiper ion-padding"
+            autoHeight={true}
+            longSwipes={true}
+            onSlideChangeTransitionStart={(swiper: SwiperType) => {
+              // swiper.slideTo(1);
+              console.log(swiper.realIndex);
+            }}
+            onSlideNextTransitionStart={(swiper: SwiperType) => {
+              console.log("hi");
+              // swiper.slideTo(1);
+              nextChapter();
+            }}
+            onSlidePrevTransitionStart={backChapter}
+            slidesPerView={1}
+            spaceBetween={30}
           >
             {Object.entries(chosenChapterVerses!).map(
               ([key, value]: [string, BbVerse[] | undefined]) =>
                 value ? (
-                  <SwiperSlide>
+                  <SwiperSlide key={key}>
                     <div id="chapter-viewer">
                       <div className="text-viewer">
                         <>
