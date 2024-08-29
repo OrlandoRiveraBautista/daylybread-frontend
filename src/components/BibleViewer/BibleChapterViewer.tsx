@@ -368,6 +368,8 @@ const BibleChapterViewer: React.FC = () => {
 
     if (chapterViewerWrapper?.style) {
       if (!openSelectedVersesModal) {
+        setSelectedElement([]);
+        resetVersesInList();
         chapterViewerWrapper.style.gap = "0px";
       } else {
         chapterViewerWrapper.style.gap = "120px";
@@ -393,9 +395,6 @@ const BibleChapterViewer: React.FC = () => {
     // reset the media and timestamp context
     setCurrentMediaTimestamp(0);
     setChapterMedia([]);
-
-    // setLocalChapters(undefined);
-    console.log("hello");
   };
 
   // useEffect to call the handleNavAction function whenever a book changes
