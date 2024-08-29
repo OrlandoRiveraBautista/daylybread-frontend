@@ -572,7 +572,6 @@ const BibleChapterViewer: React.FC = () => {
             onInit={(s: SwiperType) => {
               setSwiper(s);
             }}
-            // initialSlide={currentPageIndex}
             onSwiper={(s: SwiperType) => {
               setIsProgrammaticSlide({ value: false });
               if (!chosenChapterVerses?.previous) return;
@@ -584,7 +583,7 @@ const BibleChapterViewer: React.FC = () => {
             className="bibleSwiper ion-padding"
             autoHeight={true}
             longSwipes={true}
-            onSlideNextTransitionStart={(swiper: SwiperType) => {
+            onSlideNextTransitionStart={() => {
               if (isProgrammaticSlide.value) return;
               nextChapter();
             }}
