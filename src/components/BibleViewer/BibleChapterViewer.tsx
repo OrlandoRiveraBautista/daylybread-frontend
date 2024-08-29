@@ -47,6 +47,11 @@ import { BbVerse } from "../../__generated__/graphql";
 import { IChosenChapterVerses } from "../../interfaces/BibleInterfaces";
 import { Swiper as SwiperType } from "swiper/types";
 
+interface IIsProgrammaticSlide {
+  value: boolean;
+  callback?: () => void;
+}
+
 /**
  * Function to render loading skeleton animation
  * @augments -
@@ -97,8 +102,12 @@ const BibleChapterViewer: React.FC = () => {
   const [initialModalBreakpoint, setInitialModalBreakpoint] =
     useState<number>(0.25);
   const [currentPageIndex, setCurrentPageIndex] = useState(1); // Start with page 1
-  // const [swiper, setSwiper] = useState<SwiperEvent>();
+  const [swiper, setSwiper] = useState<SwiperType>();
   const [localChapters, setLocalChapters] = useState<BbVerse[][] | undefined>();
+  const [isProgrammaticSlide, setIsProgrammaticSlide] =
+    useState<IIsProgrammaticSlide>({
+      value: true,
+    }); // flag to track programmatic slide changes
 
   /* API/GraphQL */
   // to get chapter verses
@@ -131,6 +140,15 @@ const BibleChapterViewer: React.FC = () => {
   const history = useHistory();
 
   /* Side Effects */
+  useEffect(() => {
+    if (
+      !isProgrammaticSlide.value ||
+      isProgrammaticSlide.callback === undefined
+    )
+      return;
+    isProgrammaticSlide.callback();
+    setIsProgrammaticSlide({ value: false });
+  }, [isProgrammaticSlide]);
 
   // useEffect to get verses when book or chapther changes
   useEffect(() => {
@@ -257,6 +275,10 @@ const BibleChapterViewer: React.FC = () => {
         !prevVal.some((chapter) => chapter === dto.previous)
       ) {
         prevVal = [dto.previous, ...prevVal];
+        setIsProgrammaticSlide({
+          value: true,
+          callback: () => swiper?.slideTo(1, 0),
+        });
       }
 
       // Add current chapter if it doesn't exist (normally should already exist as middle, so this is more of a safeguard)
@@ -501,122 +523,122 @@ const BibleChapterViewer: React.FC = () => {
 
   return (
     <div id="chapter-viewer-container">
-      {chosenChapterVerses && chosenChapterVerses.current ? (
+      {localChapters && localChapters.length ? (
         <>
           <Swiper
-            initialSlide={currentPageIndex}
-            // onSwiper={(s: SwiperType) => {
-            //   s.params.initialSlide = 1;
-            // }}
-            // effect={"cards"}
+            init={true}
+            onInit={(s: SwiperType) => {
+              setSwiper(s);
+            }}
+            // initialSlide={currentPageIndex}
+            onSwiper={(s: SwiperType) => {
+              // set the flag that the slides will change programmaticly
+              s.slideTo(1, 0); // set the slide index
+              setIsProgrammaticSlide({ value: false });
+            }}
             grabCursor={true}
             modules={[EffectCards]}
             className="bibleSwiper ion-padding"
             autoHeight={true}
             longSwipes={true}
-            onSlideChangeTransitionStart={(swiper: SwiperType) => {
-              // swiper.slideTo(1);
-              console.log(swiper.realIndex);
-            }}
             onSlideNextTransitionStart={(swiper: SwiperType) => {
-              console.log("hi");
-              // swiper.slideTo(1);
+              if (isProgrammaticSlide.value) return;
               nextChapter();
             }}
-            onSlidePrevTransitionStart={backChapter}
+            onSlidePrevTransitionStart={() => {
+              if (isProgrammaticSlide.value) return;
+
+              backChapter();
+            }}
             slidesPerView={1}
             spaceBetween={30}
           >
-            {Object.entries(chosenChapterVerses!).map(
-              ([key, value]: [string, BbVerse[] | undefined]) =>
-                value ? (
-                  <SwiperSlide key={key}>
-                    <div id="chapter-viewer">
-                      <div className="text-viewer">
-                        <>
-                          <strong className="chapter-number">
-                            {value[0].chapter}
-                          </strong>
-                          {loading ? (
-                            renderSkeleton()
-                          ) : (
-                            <>
-                              {value.map((verse) => (
-                                <span
-                                  onClick={() =>
-                                    handleMouseDown(
-                                      chosenBible?.abbr! +
-                                        chosenBook?.bookId! +
-                                        chosenChapterNumber +
-                                        verse.verseStart?.toString()
-                                    )
-                                  }
-                                  id={
+            {localChapters.map((value, key) =>
+              value ? (
+                <SwiperSlide key={key}>
+                  <div id="chapter-viewer">
+                    <div className="text-viewer">
+                      <>
+                        <strong className="chapter-number">
+                          {value[0].chapter}
+                        </strong>
+                        {loading ? (
+                          renderSkeleton()
+                        ) : (
+                          <>
+                            {value.map((verse) => (
+                              <span
+                                onClick={() =>
+                                  handleMouseDown(
                                     chosenBible?.abbr! +
-                                    chosenBook?.bookId! +
-                                    chosenChapterNumber +
-                                    verse.verseStart?.toString()
-                                  }
-                                  key={verse.verseStart?.toString()}
-                                  className={`${
-                                    selectedVerseList.some(
-                                      (sv) => sv.verseStart === verse.verseStart
-                                    )
-                                      ? "verse-selected"
-                                      : ""
-                                  } 
+                                      chosenBook?.bookId! +
+                                      chosenChapterNumber +
+                                      verse.verseStart?.toString()
+                                  )
+                                }
+                                id={
+                                  chosenBible?.abbr! +
+                                  chosenBook?.bookId! +
+                                  chosenChapterNumber +
+                                  verse.verseStart?.toString()
+                                }
+                                key={verse.verseStart?.toString()}
+                                className={`${
+                                  selectedVerseList.some(
+                                    (sv) => sv.verseStart === verse.verseStart
+                                  )
+                                    ? "verse-selected"
+                                    : ""
+                                } 
                     ${getVerseClass(verse)}
                     `}
-                                >
-                                  <b>{verse.verseStart}:</b> {verse.verseText}
-                                </span>
-                              ))}
-                            </>
-                          )}
-                        </>
-                      </div>
-
-                      <IonFab>
-                        {/* Back button */}
-                        <IonFabButton
-                          color="light"
-                          size="small"
-                          className="right"
-                        >
-                          <IonIcon
-                            icon={chevronBack}
-                            onClick={() => backChapter()}
-                          />
-                        </IonFabButton>
-
-                        {/* Button to open the bible assistant modal */}
-                        <IonFabButton
-                          color="light"
-                          size="small"
-                          onClick={handleOpenVerseModal}
-                        >
-                          <IonIcon
-                            class="bread-crumbs-icon"
-                            color="light"
-                            icon={BreadCrumbsIcon}
-                          />
-                        </IonFabButton>
-
-                        {/* Forward button */}
-                        <IonFabButton
-                          color="light"
-                          size="small"
-                          className="right"
-                        >
-                          <IonIcon
-                            icon={chevronForward}
-                            onClick={nextChapter}
-                          />
-                        </IonFabButton>
-                      </IonFab>
+                              >
+                                <b>{verse.verseStart}:</b> {verse.verseText}
+                              </span>
+                            ))}
+                          </>
+                        )}
+                      </>
                     </div>
-                  </SwiperSlide>
-                ) : null
+
+                    <IonFab>
+                      {/* Back button */}
+                      <IonFabButton
+                        color="light"
+                        size="small"
+                        className="right"
+                      >
+                        <IonIcon
+                          icon={chevronBack}
+                          onClick={() => backChapter()}
+                        />
+                      </IonFabButton>
+
+                      {/* Button to open the bible assistant modal */}
+                      <IonFabButton
+                        color="light"
+                        size="small"
+                        onClick={handleOpenVerseModal}
+                      >
+                        <IonIcon
+                          class="bread-crumbs-icon"
+                          color="light"
+                          icon={BreadCrumbsIcon}
+                        />
+                      </IonFabButton>
+
+                      {/* Forward button */}
+                      <IonFabButton
+                        color="light"
+                        size="small"
+                        className="right"
+                      >
+                        <IonIcon icon={chevronForward} onClick={nextChapter} />
+                      </IonFabButton>
+                    </IonFab>
+                  </div>
+                </SwiperSlide>
+              ) : null
             )}
           </Swiper>
 
