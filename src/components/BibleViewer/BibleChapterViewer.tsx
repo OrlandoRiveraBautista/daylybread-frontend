@@ -436,7 +436,6 @@ const BibleChapterViewer: React.FC = () => {
 
     // check if the book is at the beginng
     if (chosenChapterNumber === 1) {
-      console.log("I am going back one book");
       // get index of current book in the bible
       const indexOfBookInBible = chosenBibleBooks?.indexOf(chosenBook!);
 
@@ -575,11 +574,10 @@ const BibleChapterViewer: React.FC = () => {
             }}
             // initialSlide={currentPageIndex}
             onSwiper={(s: SwiperType) => {
-              console.log("hi");
-              console.log(chosenChapterVerses);
+              setIsProgrammaticSlide({ value: false });
+              if (!chosenChapterVerses?.previous) return;
               // set the flag that the slides will change programmaticly
               s.slideTo(1, 0); // set the slide index
-              setIsProgrammaticSlide({ value: false });
             }}
             grabCursor={true}
             modules={[EffectCards]}
