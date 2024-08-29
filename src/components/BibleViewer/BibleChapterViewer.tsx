@@ -166,6 +166,9 @@ const BibleChapterViewer: React.FC = () => {
       );
     }).id;
 
+    // get index of current book in the bible
+    const indexOfBookInBible = chosenBibleBooks?.indexOf(chosenBook!);
+
     /**
      * Getting the chapter verse
      * ?Note that graphql caches responses so if we call the same verse it will never touch the api,
@@ -180,22 +183,37 @@ const BibleChapterViewer: React.FC = () => {
         },
       },
     });
-    // get the next chapter's data
-    getNextChapter({
-      variables: {
-        options: {
-          bibleId: textBibleId,
-          bookId: chosenBook?.bookId!,
-          chapterNumber: chosenChapterNumber! + 1,
+
+    // check if the book is at the end
+    if (chosenChapterNumber === chosenBook?.chapters?.length) {
+      // check if the book is not the final book of the bible
+      if (indexOfBookInBible !== chosenBibleBooks?.length) {
+        // get the next chapter's data
+        getNextChapter({
+          variables: {
+            options: {
+              bibleId: textBibleId,
+              bookId: chosenBibleBooks![indexOfBookInBible! + 1]?.bookId!,
+              chapterNumber: 1,
+            },
+          },
+        });
+      }
+    } else {
+      // get the next chapter's data
+      getNextChapter({
+        variables: {
+          options: {
+            bibleId: textBibleId,
+            bookId: chosenBook?.bookId!,
+            chapterNumber: chosenChapterNumber! + 1,
+          },
         },
-      },
-    });
+      });
+    }
 
     // check if the book is at the beginng
     if (chosenChapterNumber === 1) {
-      // get index of current book in the bible
-      const indexOfBookInBible = chosenBibleBooks?.indexOf(chosenBook!);
-
       // check if the book is the first book (it cannot go back)
       if (indexOfBookInBible !== 0) {
         // get the previous chapter's data
