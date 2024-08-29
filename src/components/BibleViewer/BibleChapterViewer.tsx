@@ -180,16 +180,6 @@ const BibleChapterViewer: React.FC = () => {
         },
       },
     });
-    // get the previous chapter's data
-    getPreviousChapter({
-      variables: {
-        options: {
-          bibleId: textBibleId,
-          bookId: chosenBook?.bookId!,
-          chapterNumber: chosenChapterNumber! - 1,
-        },
-      },
-    });
     // get the next chapter's data
     getNextChapter({
       variables: {
@@ -200,6 +190,38 @@ const BibleChapterViewer: React.FC = () => {
         },
       },
     });
+
+    // check if the book is at the beginng
+    if (chosenChapterNumber === 1) {
+      // get index of current book in the bible
+      const indexOfBookInBible = chosenBibleBooks?.indexOf(chosenBook!);
+
+      // check if the book is the first book (it cannot go back)
+      if (indexOfBookInBible !== 0) {
+        // get the previous chapter's data
+        getPreviousChapter({
+          variables: {
+            options: {
+              bibleId: textBibleId,
+              bookId: chosenBibleBooks![indexOfBookInBible! - 1]?.bookId!,
+              chapterNumber:
+                chosenBibleBooks![indexOfBookInBible! - 1].chapters?.length!,
+            },
+          },
+        });
+      }
+    } else {
+      // get the previous chapter's data
+      getPreviousChapter({
+        variables: {
+          options: {
+            bibleId: textBibleId,
+            bookId: chosenBook?.bookId!,
+            chapterNumber: chosenChapterNumber! - 1,
+          },
+        },
+      });
+    }
 
     // set the user history
     setUserHistory({
@@ -353,6 +375,9 @@ const BibleChapterViewer: React.FC = () => {
     // reset the media and timestamp context
     setCurrentMediaTimestamp(0);
     setChapterMedia([]);
+
+    // setLocalChapters(undefined);
+    console.log("hello");
   };
 
   // useEffect to call the handleNavAction function whenever a book changes
@@ -394,6 +419,7 @@ const BibleChapterViewer: React.FC = () => {
 
     // check if the book is at the beginng
     if (chosenChapterNumber === 1) {
+      console.log("I am going back one book");
       // get index of current book in the bible
       const indexOfBookInBible = chosenBibleBooks?.indexOf(chosenBook!);
 
@@ -532,6 +558,8 @@ const BibleChapterViewer: React.FC = () => {
             }}
             // initialSlide={currentPageIndex}
             onSwiper={(s: SwiperType) => {
+              console.log("hi");
+              console.log(chosenChapterVerses);
               // set the flag that the slides will change programmaticly
               s.slideTo(1, 0); // set the slide index
               setIsProgrammaticSlide({ value: false });
