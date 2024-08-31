@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  IonButton,
-  IonCol,
-  IonFab,
-  IonFabButton,
-  IonIcon,
-  IonImg,
-  IonText,
-} from "@ionic/react";
+import { IonCol, IonFab, IonFabButton, IonIcon, IonImg } from "@ionic/react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { EffectCards } from "swiper/modules";
 import { chevronBack, chevronForward } from "ionicons/icons";
@@ -28,7 +20,6 @@ import "swiper/css";
 import "swiper/css/effect-cards";
 
 /* Images */
-import PatternImage from "../../assets/images/Patterns - 4x4.png";
 import BreadCrumbsIcon from "../../assets/icons/BreadCrumbs-icon.svg";
 
 /* Query Hooks */
@@ -41,7 +32,7 @@ import { useLazySetUserHistory } from "../../hooks/BibleHooks";
 import useSetBibleHistory from "../utility/hooks/useSetBibleHistory";
 
 /* Utils */
-import { displayBibleAbbr, getHighestBitrateAudio } from "../../utils/support";
+import { getHighestBitrateAudio } from "../../utils/support";
 
 /* Types */
 import { BbVerse } from "../../__generated__/graphql";
