@@ -10,6 +10,7 @@ import Skeleton from "../Loading/Skeleton";
 import BreadCrumbsModal from "../BreadCrumbsModal/BreadCrumbsModal";
 import BibleTranslationModal from "../BibleNavModal/BibleTranslationModal";
 import InitialBiblePicker from "../InitialBiblePicker/InitialBiblePicker";
+import Copyright from "./Copyright/Copyright";
 
 /* Context */
 import { useAppContext } from "../../context/context";
@@ -71,7 +72,6 @@ const BibleChapterViewer: React.FC = () => {
     chosenChapterVerses,
     chosenBook,
     chosenBible,
-    chosenBibleCopyright,
     chosenBibleBooks,
     currentMediaTimeStamp,
     selectedVerseList,
@@ -393,7 +393,7 @@ const BibleChapterViewer: React.FC = () => {
   useEffect(() => {
     if (!chosenBook) return;
     handleReset();
-    setLocalChapters([]);
+    // setLocalChapters([]);
     console.log("We should delete the: ", localChapters);
   }, [chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -678,20 +678,7 @@ const BibleChapterViewer: React.FC = () => {
             )}
           </Swiper>
 
-          <div className="copyright">
-            {chosenBibleCopyright?.copyright?.copyright}
-            {chosenBibleCopyright?.copyright?.organizations![0].logos
-              ?.length ? (
-              <IonImg
-                src={
-                  chosenBibleCopyright?.copyright?.organizations![0].logos![0]
-                    .url!
-                }
-                alt={chosenBible?.abbr + "copyright"}
-                className="copyright-image"
-              />
-            ) : null}
-          </div>
+          <Copyright />
         </>
       ) : (
         <InitialBiblePicker />
