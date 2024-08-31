@@ -17,6 +17,7 @@ import { useHistory } from "react-router";
 import Skeleton from "../Loading/Skeleton";
 import BreadCrumbsModal from "../BreadCrumbsModal/BreadCrumbsModal";
 import BibleTranslationModal from "../BibleNavModal/BibleTranslationModal";
+import InitialBiblePicker from "../InitialBiblePicker/InitialBiblePicker";
 
 /* Context */
 import { useAppContext } from "../../context/context";
@@ -401,6 +402,8 @@ const BibleChapterViewer: React.FC = () => {
   useEffect(() => {
     if (!chosenBook) return;
     handleReset();
+    setLocalChapters([]);
+    console.log("We should delete the: ", localChapters);
   }, [chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /**
@@ -700,26 +703,7 @@ const BibleChapterViewer: React.FC = () => {
           </div>
         </>
       ) : (
-        <div className="helper-container">
-          <IonImg
-            src={PatternImage}
-            alt="Pattern image"
-            className="helper-image"
-          />
-          <IonText>Please pick a bible to begin</IonText>
-          <IonButton
-            shape="round"
-            fill="clear"
-            color="dark"
-            size="large"
-            onClick={handleOpenTranslationModal}
-            className="translation-button"
-          >
-            {chosenBible?.abbr
-              ? displayBibleAbbr(chosenBible?.abbr)
-              : "Pick bible"}
-          </IonButton>
-        </div>
+        <InitialBiblePicker />
       )}
 
       {/* bible assistant modal */}
