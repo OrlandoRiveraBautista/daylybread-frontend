@@ -12,8 +12,13 @@ import {
 import { getHighestBitrateAudio } from "../../../utils/support";
 
 const useBibleMedia = () => {
-  const { chosenChapterNumber, chosenBook, chosenBible, setChapterMedia } =
-    useAppContext();
+  const {
+    chosenChapterNumber,
+    chosenBook,
+    chosenBible,
+    setChapterMedia,
+    setCurrentMediaTimestamp,
+  } = useAppContext();
 
   const { getAudioMedia, data: audioMediaData } = useLazyGetAudioMedia();
   const { getMediaTimestamps, data: mediaTimestamps } =
@@ -29,6 +34,14 @@ const useBibleMedia = () => {
         (fileset: any) => fileset.size === "C" || fileset.size === testament
       )
     );
+
+    // check if any audio media filesets are not found
+    if (!audioFileSet) {
+      // reset the media and timestamp context
+      setCurrentMediaTimestamp(0);
+      setChapterMedia([]);
+      return;
+    }
 
     const mediaOptions = {
       filesetId: audioFileSet.id,
