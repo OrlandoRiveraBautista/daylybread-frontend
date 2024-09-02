@@ -39,31 +39,12 @@ import { getHighestBitrateAudio } from "../../utils/support";
 import { BbVerse } from "../../__generated__/graphql";
 import { IChosenChapterVerses } from "../../interfaces/BibleInterfaces";
 import { Swiper as SwiperType } from "swiper/types";
+import TextViewer from "./TextViewer/TextViewer";
 
 interface IIsProgrammaticSlide {
   value: boolean;
   callback?: () => void;
 }
-
-/**
- * Function to render loading skeleton animation
- * @augments -
- * @returns JSX.Element[]
- */
-const renderSkeleton = () => {
-  const items = [];
-  for (let i = 0; i < 24; i++) {
-    items.push(
-      <React.Fragment key={i}>
-        <IonCol size="12" key={i}>
-          <Skeleton height="20px" width="100%" shape="square" />
-        </IonCol>
-      </React.Fragment>
-    );
-  }
-
-  return items;
-};
 
 const BibleChapterViewer: React.FC = () => {
   /* Context */
@@ -86,13 +67,8 @@ const BibleChapterViewer: React.FC = () => {
   } = useAppContext();
 
   /* State */
-  const [selectedElement, setSelectedElement] = useState<Array<string>>([]);
-  const [openSelectedVersesModal, setOpenSelectedVersesModal] =
-    useState<boolean>(false);
   const [openSelectedTranslationModal, setOpenSelectedTranslationModal] =
     useState<boolean>(false);
-  const [initialModalBreakpoint, setInitialModalBreakpoint] =
-    useState<number>(0.25);
   const [currentPageIndex, setCurrentPageIndex] = useState(1); // Start with page 1
   const [swiper, setSwiper] = useState<SwiperType>();
   const [localChapters, setLocalChapters] = useState<BbVerse[][] | undefined>();
@@ -355,20 +331,6 @@ const BibleChapterViewer: React.FC = () => {
     history.push(newUrl);
   }, [chosenChapterNumber, chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
-    const chapterViewerWrapper = document.getElementById("chapter-viewer");
-
-    if (chapterViewerWrapper?.style) {
-      if (!openSelectedVersesModal) {
-        setSelectedElement([]);
-        resetVersesInList();
-        chapterViewerWrapper.style.gap = "0px";
-      } else {
-        chapterViewerWrapper.style.gap = "120px";
-      }
-    }
-  }, [openSelectedVersesModal]);
-
   // Watches for the audio media data and sets it
   useEffect(() => {
     if (!audioMediaData) return;
@@ -381,7 +343,7 @@ const BibleChapterViewer: React.FC = () => {
    */
   const handleReset = () => {
     // reset the selected elements
-    setSelectedElement([]);
+    // setSelectedElement([]);
     resetVersesInList();
 
     // reset the media and timestamp context
@@ -449,60 +411,6 @@ const BibleChapterViewer: React.FC = () => {
     setChapterNumber(chosenChapterNumber - 1);
     handleReset();
     return;
-  };
-
-  const handleMouseDown = (event: string) => {
-    // get the desired html element
-    const span = document.getElementById(event);
-    // get the verse numbers
-    const verseNumber = span?.innerText.split(":")[0];
-
-    // if no text exit function
-    if (!verseNumber) return;
-
-    const verseObj = chosenChapterVerses?.current![Number(verseNumber) - 1];
-
-    if (!verseObj) return;
-    setInitialModalBreakpoint(0.25);
-
-    // check if the state is empty
-    if (selectedElement.length === 0) {
-      addVerseToList(verseObj);
-      setSelectedElement([verseNumber]);
-      setOpenSelectedVersesModal(true);
-      return;
-    }
-
-    var tempValue = [...selectedElement];
-    // check if the value selected is in the list
-    if (selectedElement.includes(verseNumber)) {
-      const valueIndex = selectedElement.indexOf(verseNumber);
-      if (valueIndex > -1) {
-        tempValue.splice(valueIndex, 1);
-        removeVerseFromList(verseObj);
-        setSelectedElement(tempValue);
-      }
-      if (tempValue.length === 0) {
-        setOpenSelectedVersesModal(false);
-      }
-
-      return;
-    }
-
-    tempValue.push(verseNumber);
-
-    setSelectedElement(tempValue);
-    setOpenSelectedVersesModal(true);
-
-    addVerseToList(verseObj!);
-    return;
-  };
-
-  const handleOpenVerseModal = () => {
-    if (!openSelectedVersesModal) resetVersesInList();
-
-    setOpenSelectedVersesModal(!openSelectedVersesModal);
-    setInitialModalBreakpoint(0.75);
   };
 
   const handleOpenTranslationModal = () =>
@@ -593,7 +501,8 @@ const BibleChapterViewer: React.FC = () => {
               value ? (
                 <SwiperSlide key={key}>
                   <div id="chapter-viewer">
-                    <div className="text-viewer">
+                    <TextViewer verses={value} isLoading={loading} />
+                    {/* <div className="text-viewer">
                       <>
                         <strong className="chapter-number">
                           {value[0].chapter}
@@ -635,7 +544,7 @@ const BibleChapterViewer: React.FC = () => {
                           </>
                         )}
                       </>
-                    </div>
+                    </div> */}
 
                     <IonFab>
                       {/* Back button */}
@@ -654,7 +563,7 @@ const BibleChapterViewer: React.FC = () => {
                       <IonFabButton
                         color="light"
                         size="small"
-                        onClick={handleOpenVerseModal}
+                        // onClick={handleOpenVerseModal}
                       >
                         <IonIcon
                           class="bread-crumbs-icon"
@@ -685,12 +594,12 @@ const BibleChapterViewer: React.FC = () => {
       )}
 
       {/* bible assistant modal */}
-      <BreadCrumbsModal
+      {/* <BreadCrumbsModal
         isOpen={openSelectedVersesModal}
         onDismiss={handleOpenVerseModal}
         selectedText={selectedElement}
         initialBreakpoint={initialModalBreakpoint}
-      />
+      /> */}
       <BibleTranslationModal
         isOpen={openSelectedTranslationModal}
         onDismiss={handleOpenTranslationModal}
