@@ -100,9 +100,6 @@ const BibleChapterViewer: React.FC = () => {
 
   const { setUserHistory } = useLazySetUserHistory();
   useSetBibleHistory();
-  const { getAudioMedia, data: audioMediaData } = useLazyGetAudioMedia();
-  const { getMediaTimestamps, data: mediaTimestamps } =
-    useLazyGetMediaTimestamps();
 
   /* Router */
   const history = useHistory();
@@ -235,26 +232,6 @@ const BibleChapterViewer: React.FC = () => {
       setChapterMedia([]);
       return;
     }
-
-    const mediaOptions = {
-      filesetId: audioFileSet.id,
-      bookId: chosenBook?.bookId!,
-      chapterNumber: chosenChapterNumber!,
-    };
-
-    // Getting new media
-    getAudioMedia({
-      variables: {
-        options: mediaOptions,
-      },
-    });
-
-    // Getting new media timestamps
-    getMediaTimestamps({
-      variables: {
-        options: mediaOptions,
-      },
-    });
   }, [chosenChapterNumber, chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // useEffect to set verses when verses are present
@@ -330,12 +307,6 @@ const BibleChapterViewer: React.FC = () => {
     const newUrl = parts.join("/");
     history.push(newUrl);
   }, [chosenChapterNumber, chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Watches for the audio media data and sets it
-  useEffect(() => {
-    if (!audioMediaData) return;
-    setChapterMedia(audioMediaData.getAudioMedia.data);
-  }, [audioMediaData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /**
    * Function will be used to reset anything that is chapter specific
