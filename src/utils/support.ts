@@ -237,7 +237,6 @@ const getVerseClass = (
     const verseStart = verse.verseStart!;
     const lastIndex = timestamps.length - 1;
 
-    console.log("verse start", verseStart);
     const startTimestampIndex =
       firstTimestamp > 0 || verseStart === timestamps.length
         ? verseStart - 1
