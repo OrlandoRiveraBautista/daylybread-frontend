@@ -217,21 +217,6 @@ const BibleChapterViewer: React.FC = () => {
         },
       },
     });
-
-    // Get the file set
-    const audioFileSet = getHighestBitrateAudio(
-      chosenBible?.filesets["dbp-prod"].filter(
-        (fileset: any) => fileset.size === "C" || fileset.size === testament
-      )
-    );
-
-    // check if any audio media filesets are not found
-    if (!audioFileSet) {
-      // reset the media and timestamp context
-      setCurrentMediaTimestamp(0);
-      setChapterMedia([]);
-      return;
-    }
   }, [chosenChapterNumber, chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // useEffect to set verses when verses are present
