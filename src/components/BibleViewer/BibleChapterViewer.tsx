@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { IonCol, IonFab, IonFabButton, IonIcon, IonImg } from "@ionic/react";
+import { IonFab, IonFabButton, IonIcon } from "@ionic/react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { EffectCards } from "swiper/modules";
 import { chevronBack, chevronForward } from "ionicons/icons";
 import { useHistory } from "react-router";
 
 /* Components */
-import Skeleton from "../Loading/Skeleton";
 import BreadCrumbsModal from "../BreadCrumbsModal/BreadCrumbsModal";
 import BibleTranslationModal from "../BibleNavModal/BibleTranslationModal";
 import InitialBiblePicker from "../InitialBiblePicker/InitialBiblePicker";
@@ -24,16 +23,9 @@ import "swiper/css/effect-cards";
 import BreadCrumbsIcon from "../../assets/icons/BreadCrumbs-icon.svg";
 
 /* Query Hooks */
-import {
-  useLazyGetAudioMedia,
-  useLazyGetListOfVersesFromBookChapter,
-  useLazyGetMediaTimestamps,
-} from "../../hooks/BibleBrainHooks";
+import { useLazyGetListOfVersesFromBookChapter } from "../../hooks/BibleBrainHooks";
 import { useLazySetUserHistory } from "../../hooks/BibleHooks";
 import useSetBibleHistory from "../utility/hooks/useSetBibleHistory";
-
-/* Utils */
-import { getHighestBitrateAudio } from "../../utils/support";
 
 /* Types */
 import { BbVerse } from "../../__generated__/graphql";
@@ -54,15 +46,11 @@ const BibleChapterViewer: React.FC = () => {
     chosenBook,
     chosenBible,
     chosenBibleBooks,
-    currentMediaTimeStamp,
-    selectedVerseList,
     setChapterVerses,
     setChapterNumber,
     setBook,
     setChapterMedia,
     setCurrentMediaTimestamp,
-    addVerseToList,
-    removeVerseFromList,
     resetVersesInList,
   } = useAppContext();
 
