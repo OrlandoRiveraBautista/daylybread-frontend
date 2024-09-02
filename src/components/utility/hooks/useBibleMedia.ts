@@ -12,7 +12,8 @@ import {
 import { getHighestBitrateAudio } from "../../../utils/support";
 
 const useBibleMedia = () => {
-  const { chosenChapterNumber, chosenBook, chosenBible } = useAppContext();
+  const { chosenChapterNumber, chosenBook, chosenBible, setChapterMedia } =
+    useAppContext();
 
   const { getAudioMedia, data: audioMediaData } = useLazyGetAudioMedia();
   const { getMediaTimestamps, data: mediaTimestamps } =
@@ -49,6 +50,12 @@ const useBibleMedia = () => {
       },
     });
   }, [chosenChapterNumber, chosenBook, chosenBible]);
+
+  // Watches for the audio media data and sets it
+  useEffect(() => {
+    if (!audioMediaData) return;
+    setChapterMedia(audioMediaData.getAudioMedia.data);
+  }, [audioMediaData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return { audioMediaData, mediaTimestamps };
 };
