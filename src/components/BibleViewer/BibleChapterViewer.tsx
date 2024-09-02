@@ -416,55 +416,6 @@ const BibleChapterViewer: React.FC = () => {
   const handleOpenTranslationModal = () =>
     setOpenSelectedTranslationModal(!openSelectedTranslationModal);
 
-  /**
-   * Determines the class name for a verse based on the current media timestamp.
-   */
-  const getVerseClass = (verse: BbVerse) => {
-    if (
-      currentMediaTimeStamp &&
-      mediaTimestamps?.getMediaTimestamps?.data.length
-    ) {
-      const timestamps = mediaTimestamps.getMediaTimestamps.data;
-      const firstTimestamp = Number(timestamps[0].timestamp);
-      const verseStart = verse.verseStart!;
-      const lastIndex = timestamps.length - 1;
-
-      const startTimestampIndex =
-        firstTimestamp > 0 || verseStart === timestamps.length
-          ? verseStart - 1
-          : verseStart;
-      const endTimestampIndex =
-        firstTimestamp > 0
-          ? verseStart
-          : verseStart < lastIndex
-          ? verseStart + 1
-          : lastIndex;
-
-      const startTimestamp = Number(timestamps[startTimestampIndex].timestamp);
-      const endTimestamp =
-        (firstTimestamp > 0 && verseStart <= lastIndex) ||
-        (firstTimestamp === 0 && verseStart < lastIndex)
-          ? Number(timestamps[endTimestampIndex].timestamp)
-          : Infinity; // Use Infinity to handle the last verse properly
-
-      const isCurrentlyPlayingVerse =
-        currentMediaTimeStamp >= startTimestamp &&
-        currentMediaTimeStamp < endTimestamp;
-
-      const element = document.getElementsByClassName(
-        "currently-playing-verse"
-      );
-
-      element[0]?.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
-
-      return isCurrentlyPlayingVerse ? "currently-playing-verse" : "";
-    }
-    return "";
-  };
-
   return (
     <div id="chapter-viewer-container">
       {localChapters && localChapters.length ? (
