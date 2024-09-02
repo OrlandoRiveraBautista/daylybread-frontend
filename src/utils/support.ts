@@ -1,4 +1,10 @@
-import { BbBible, BbBook, BbVerse, Verse } from "../__generated__/graphql";
+import {
+  BbBible,
+  BbBook,
+  BbVerse,
+  GetMediaTimestampsQuery,
+  Verse,
+} from "../__generated__/graphql";
 
 const zeroPad = (value: any, padding: number) => {
   var zeroes = new Array(padding + 1).join("0");
@@ -212,6 +218,60 @@ const getHighestBitrateAudio = (filesets: Array<any>) => {
  */
 const displayBibleAbbr = (bibleBrainAbbr: string) => bibleBrainAbbr.slice(3);
 
+/**
+ * Determines the class name for a verse based on the current media timestamp.
+ */
+const getVerseClass = (
+  verse: BbVerse,
+  currentMediaTimeStamp: number,
+  mediaTimestamps: GetMediaTimestampsQuery
+) => {
+  // Ensure the current media timestamp and media timestamps data are available
+  if (
+    verse &&
+    currentMediaTimeStamp &&
+    mediaTimestamps.getMediaTimestamps?.data.length
+  ) {
+    const timestamps = mediaTimestamps.getMediaTimestamps.data;
+    const firstTimestamp = Number(timestamps[0].timestamp);
+    const verseStart = verse.verseStart!;
+    const lastIndex = timestamps.length - 1;
+
+    console.log("verse start", verseStart);
+    const startTimestampIndex =
+      firstTimestamp > 0 || verseStart === timestamps.length
+        ? verseStart - 1
+        : verseStart;
+    const endTimestampIndex =
+      firstTimestamp > 0
+        ? verseStart
+        : verseStart < lastIndex
+        ? verseStart + 1
+        : lastIndex;
+
+    const startTimestamp = Number(timestamps[startTimestampIndex].timestamp);
+    const endTimestamp =
+      (firstTimestamp > 0 && verseStart <= lastIndex) ||
+      (firstTimestamp === 0 && verseStart < lastIndex)
+        ? Number(timestamps[endTimestampIndex].timestamp)
+        : Infinity; // Use Infinity to handle the last verse properly
+
+    const isCurrentlyPlayingVerse =
+      currentMediaTimeStamp >= startTimestamp &&
+      currentMediaTimeStamp < endTimestamp;
+
+    const element = document.getElementsByClassName("currently-playing-verse");
+
+    element[0]?.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
+
+    return isCurrentlyPlayingVerse ? "currently-playing-verse" : "";
+  }
+  return "";
+};
+
 export {
   zeroPad,
   clusterNumbers,
@@ -221,4 +281,5 @@ export {
   getVerseVerbageByNewVerses,
   getHighestBitrateAudio,
   displayBibleAbbr,
+  getVerseClass,
 };
