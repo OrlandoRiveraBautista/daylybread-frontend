@@ -502,49 +502,6 @@ const BibleChapterViewer: React.FC = () => {
                 <SwiperSlide key={key}>
                   <div id="chapter-viewer">
                     <TextViewer verses={value} isLoading={loading} />
-                    {/* <div className="text-viewer">
-                      <>
-                        <strong className="chapter-number">
-                          {value[0].chapter}
-                        </strong>
-                        {loading ? (
-                          renderSkeleton()
-                        ) : (
-                          <>
-                            {value.map((verse) => (
-                              <span
-                                onClick={() =>
-                                  handleMouseDown(
-                                    chosenBible?.abbr! +
-                                      chosenBook?.bookId! +
-                                      chosenChapterNumber +
-                                      verse.verseStart?.toString()
-                                  )
-                                }
-                                id={
-                                  chosenBible?.abbr! +
-                                  chosenBook?.bookId! +
-                                  chosenChapterNumber +
-                                  verse.verseStart?.toString()
-                                }
-                                key={verse.verseStart?.toString()}
-                                className={`${
-                                  selectedVerseList.some(
-                                    (sv) => sv.verseStart === verse.verseStart
-                                  )
-                                    ? "verse-selected"
-                                    : ""
-                                } 
-                    ${getVerseClass(verse)}
-                    `}
-                              >
-                                <b>{verse.verseStart}:</b> {verse.verseText}
-                              </span>
-                            ))}
-                          </>
-                        )}
-                      </>
-                    </div> */}
 
                     <IonFab>
                       {/* Back button */}
