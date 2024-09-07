@@ -254,6 +254,20 @@ const context = constate(() => {
     getLazyBookmarks();
   };
 
+  /**
+   * Function will be used to reset anything that is chapter specific
+   * @returns N/A
+   */
+  const handleResetChapterData = () => {
+    // reset the selected elements
+    // setSelectedElement([]);
+    resetVersesInList();
+
+    // reset the media and timestamp context
+    setCurrentMediaTimestamp(0);
+    setChapterMedia([]);
+  };
+
   return {
     chosenLanguage,
     chosenBible,
@@ -292,6 +306,7 @@ const context = constate(() => {
     resetUserAssetList,
     isUserAssetInList,
     handleGetBookmarks,
+    handleResetChapterData,
   };
 });
 
