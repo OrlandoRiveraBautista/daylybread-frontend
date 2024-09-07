@@ -6,6 +6,7 @@ import { chevronBack, chevronForward } from "ionicons/icons";
 import { useHistory } from "react-router";
 
 /* Components */
+import NavigationButtons from "./NavigationButtons/NavigationButtons";
 import BreadCrumbsModal from "../BreadCrumbsModal/BreadCrumbsModal";
 import BibleTranslationModal from "../BibleNavModal/BibleTranslationModal";
 import InitialBiblePicker from "../InitialBiblePicker/InitialBiblePicker";
@@ -398,41 +399,7 @@ const BibleChapterViewer: React.FC = () => {
                   <div id="chapter-viewer">
                     <TextViewer verses={value} isLoading={loading} />
 
-                    <IonFab>
-                      {/* Back button */}
-                      <IonFabButton
-                        color="light"
-                        size="small"
-                        className="right"
-                      >
-                        <IonIcon
-                          icon={chevronBack}
-                          onClick={() => backChapter()}
-                        />
-                      </IonFabButton>
-
-                      {/* Button to open the bible assistant modal */}
-                      <IonFabButton
-                        color="light"
-                        size="small"
-                        // onClick={handleOpenVerseModal}
-                      >
-                        <IonIcon
-                          class="bread-crumbs-icon"
-                          color="light"
-                          icon={BreadCrumbsIcon}
-                        />
-                      </IonFabButton>
-
-                      {/* Forward button */}
-                      <IonFabButton
-                        color="light"
-                        size="small"
-                        className="right"
-                      >
-                        <IonIcon icon={chevronForward} onClick={nextChapter} />
-                      </IonFabButton>
-                    </IonFab>
+                    <NavigationButtons />
                   </div>
                 </SwiperSlide>
               ) : null
