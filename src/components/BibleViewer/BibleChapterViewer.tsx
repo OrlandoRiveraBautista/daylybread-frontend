@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { IonFab, IonFabButton, IonIcon } from "@ionic/react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { EffectCards } from "swiper/modules";
-import { chevronBack, chevronForward } from "ionicons/icons";
 import { useHistory } from "react-router";
 
 /* Components */
@@ -19,9 +17,6 @@ import { useAppContext } from "../../context/context";
 import "./BibleChapterViewer.scss";
 import "swiper/css";
 import "swiper/css/effect-cards";
-
-/* Images */
-import BreadCrumbsIcon from "../../assets/icons/BreadCrumbs-icon.svg";
 
 /* Query Hooks */
 import { useLazyGetListOfVersesFromBookChapter } from "../../hooks/BibleBrainHooks";
