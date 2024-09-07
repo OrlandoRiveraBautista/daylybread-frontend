@@ -21,7 +21,10 @@ import "swiper/css/effect-cards";
 /* Query Hooks */
 import { useLazyGetListOfVersesFromBookChapter } from "../../hooks/BibleBrainHooks";
 import { useLazySetUserHistory } from "../../hooks/BibleHooks";
+
+/* React Hooks */
 import useSetBibleHistory from "../utility/hooks/useSetBibleHistory";
+import useBibleNavigator from "../utility/hooks/useBibleNavigator";
 
 /* Types */
 import { BbVerse } from "../../__generated__/graphql";
@@ -43,11 +46,7 @@ const BibleChapterViewer: React.FC = () => {
     chosenBible,
     chosenBibleBooks,
     setChapterVerses,
-    setChapterNumber,
-    setBook,
-    setChapterMedia,
-    setCurrentMediaTimestamp,
-    resetVersesInList,
+    handleResetChapterData,
   } = useAppContext();
 
   /* State */
@@ -83,7 +82,10 @@ const BibleChapterViewer: React.FC = () => {
   } = useLazyGetListOfVersesFromBookChapter();
 
   const { setUserHistory } = useLazySetUserHistory();
+
+  // Hooks
   useSetBibleHistory();
+  const { nextChapter, backChapter } = useBibleNavigator();
 
   /* Router */
   const history = useHistory();
@@ -277,81 +279,13 @@ const BibleChapterViewer: React.FC = () => {
     history.push(newUrl);
   }, [chosenChapterNumber, chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  /**
-   * Function will be used to reset anything that is chapter specific
-   * @returns N/A
-   */
-  const handleReset = () => {
-    // reset the selected elements
-    // setSelectedElement([]);
-    resetVersesInList();
-
-    // reset the media and timestamp context
-    setCurrentMediaTimestamp(0);
-    setChapterMedia([]);
-  };
-
   // useEffect to call the handleNavAction function whenever a book changes
   useEffect(() => {
     if (!chosenBook) return;
-    handleReset();
+    handleResetChapterData();
     // setLocalChapters([]);
     console.log("We should delete the: ", localChapters);
   }, [chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  /**
-   * Function to handle navigating to the next chapter in the bible
-   */
-  const nextChapter = () => {
-    if (!chosenChapterNumber) return;
-    const bookChapters = chosenBook?.chapters!;
-
-    // check if the book is at the end of the chapter
-    if (bookChapters?.length <= chosenChapterNumber) {
-      // get index of current book in the bible
-      const indexOfBookInBible = chosenBibleBooks?.indexOf(chosenBook!);
-
-      // set the next book
-      setBook(chosenBibleBooks![indexOfBookInBible! + 1]);
-      // and reset the chapter to 1
-      setChapterNumber(1);
-      handleReset();
-      return; // exit function
-    }
-
-    setChapterNumber(chosenChapterNumber + 1);
-    handleReset();
-    return;
-  };
-
-  /**
-   * Function to handle navigating to the previous chapter in the bible
-   */
-  const backChapter = () => {
-    if (!chosenChapterNumber) return;
-
-    // check if the book is at the beginng
-    if (chosenChapterNumber === 1) {
-      // get index of current book in the bible
-      const indexOfBookInBible = chosenBibleBooks?.indexOf(chosenBook!);
-
-      // check if the book is the first book (it cannot go back)
-      if (indexOfBookInBible === 0) return;
-
-      // set the next book
-      setBook(chosenBibleBooks![indexOfBookInBible! - 1]);
-      // and reset the chapter to 1
-      setChapterNumber(
-        chosenBibleBooks![indexOfBookInBible! - 1].chapters?.length!
-      );
-      handleReset();
-      return; // exit function
-    }
-
-    setChapterNumber(chosenChapterNumber - 1);
-    handleReset();
-    return;
-  };
 
   const handleOpenTranslationModal = () =>
     setOpenSelectedTranslationModal(!openSelectedTranslationModal);
