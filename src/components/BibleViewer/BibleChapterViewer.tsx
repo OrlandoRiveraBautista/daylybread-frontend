@@ -5,8 +5,6 @@ import { useHistory } from "react-router";
 
 /* Components */
 import NavigationButtons from "./NavigationButtons/NavigationButtons";
-import BreadCrumbsModal from "../BreadCrumbsModal/BreadCrumbsModal";
-import BibleTranslationModal from "../BibleNavModal/BibleTranslationModal";
 import InitialBiblePicker from "../InitialBiblePicker/InitialBiblePicker";
 import Copyright from "./Copyright/Copyright";
 
@@ -334,14 +332,6 @@ const BibleChapterViewer: React.FC = () => {
       ) : (
         <InitialBiblePicker />
       )}
-
-      {/* bible assistant modal */}
-      {/* <BreadCrumbsModal
-        isOpen={openSelectedVersesModal}
-        onDismiss={handleOpenVerseModal}
-        selectedText={selectedElement}
-        initialBreakpoint={initialModalBreakpoint}
-      /> */}
     </div>
   );
 };
