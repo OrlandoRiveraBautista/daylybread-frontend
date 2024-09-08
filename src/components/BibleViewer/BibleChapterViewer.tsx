@@ -50,9 +50,6 @@ const BibleChapterViewer: React.FC = () => {
   } = useAppContext();
 
   /* State */
-  const [openSelectedTranslationModal, setOpenSelectedTranslationModal] =
-    useState<boolean>(false);
-  const [currentPageIndex, setCurrentPageIndex] = useState(1); // Start with page 1
   const [swiper, setSwiper] = useState<SwiperType>();
   const [localChapters, setLocalChapters] = useState<BbVerse[][] | undefined>();
   const [isProgrammaticSlide, setIsProgrammaticSlide] =
@@ -287,9 +284,6 @@ const BibleChapterViewer: React.FC = () => {
     console.log("We should delete the: ", localChapters);
   }, [chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleOpenTranslationModal = () =>
-    setOpenSelectedTranslationModal(!openSelectedTranslationModal);
-
   return (
     <div id="chapter-viewer-container">
       {localChapters && localChapters.length ? (
@@ -348,10 +342,6 @@ const BibleChapterViewer: React.FC = () => {
         selectedText={selectedElement}
         initialBreakpoint={initialModalBreakpoint}
       /> */}
-      <BibleTranslationModal
-        isOpen={openSelectedTranslationModal}
-        onDismiss={handleOpenTranslationModal}
-      />
     </div>
   );
 };
