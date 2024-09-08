@@ -3,7 +3,7 @@ import { useHistory, useParams } from "react-router";
 import { useUserBibleHistory } from "../../../hooks/UserHooks";
 import { BibleReadParams } from "../../../assets/ts/types";
 
-const useSetBibleHistory = () => {
+const useBibleHistory = () => {
   const urlParams = useParams<BibleReadParams>();
   const history = useHistory();
   const { data: userBibleHistoryData } = useUserBibleHistory();
@@ -36,4 +36,4 @@ const useSetBibleHistory = () => {
   return { userBibleHistoryData };
 };
 
-export default useSetBibleHistory;
+export default useBibleHistory;
