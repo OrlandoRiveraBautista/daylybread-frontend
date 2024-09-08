@@ -17,7 +17,7 @@ import "swiper/css";
 import "swiper/css/effect-cards";
 
 /* React Hooks */
-import useSetBibleHistory from "../utility/hooks/useSetBibleHistory";
+import useBibleHistory from "../utility/hooks/useBibleHistory";
 import useBibleNavigator from "../utility/hooks/useBibleNavigator";
 
 /* Types */
@@ -51,7 +51,7 @@ const BibleChapterViewer: React.FC = () => {
     }); // flag to track programmatic slide changes
 
   // Hooks
-  useSetBibleHistory();
+  useBibleHistory();
   const { nextChapter, backChapter } = useBibleNavigator();
   const {
     currentVersesData,
