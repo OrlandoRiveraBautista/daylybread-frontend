@@ -16,10 +16,6 @@ import "./BibleChapterViewer.scss";
 import "swiper/css";
 import "swiper/css/effect-cards";
 
-/* Query Hooks */
-import { useLazyGetListOfVersesFromBookChapter } from "../../hooks/BibleBrainHooks";
-import { useLazySetUserHistory } from "../../hooks/BibleHooks";
-
 /* React Hooks */
 import useSetBibleHistory from "../utility/hooks/useSetBibleHistory";
 import useBibleNavigator from "../utility/hooks/useBibleNavigator";
@@ -29,6 +25,7 @@ import { BbVerse } from "../../__generated__/graphql";
 import { IChosenChapterVerses } from "../../interfaces/BibleInterfaces";
 import { Swiper as SwiperType } from "swiper/types";
 import TextViewer from "./TextViewer/TextViewer";
+import useBible from "../utility/hooks/useBible";
 
 interface IIsProgrammaticSlide {
   value: boolean;
@@ -41,8 +38,6 @@ const BibleChapterViewer: React.FC = () => {
     chosenChapterNumber,
     chosenChapterVerses,
     chosenBook,
-    chosenBible,
-    chosenBibleBooks,
     setChapterVerses,
     handleResetChapterData,
   } = useAppContext();
@@ -55,32 +50,17 @@ const BibleChapterViewer: React.FC = () => {
       value: true,
     }); // flag to track programmatic slide changes
 
-  /* API/GraphQL */
-  // to get chapter verses
-  // Instance to get the current chapter
-  const {
-    getListOfVersesFromBookChapter,
-    data: versesData,
-    loading,
-  } = useLazyGetListOfVersesFromBookChapter();
-  // Instance to get the previous chapter
-  const {
-    getListOfVersesFromBookChapter: getPreviousChapter,
-    data: previousVersesData,
-    loading: previousChapterLoading,
-  } = useLazyGetListOfVersesFromBookChapter();
-  // Instance to get the next chapter
-  const {
-    getListOfVersesFromBookChapter: getNextChapter,
-    data: nextVersesData,
-    loading: nextChapterLoading,
-  } = useLazyGetListOfVersesFromBookChapter();
-
-  const { setUserHistory } = useLazySetUserHistory();
-
   // Hooks
   useSetBibleHistory();
   const { nextChapter, backChapter } = useBibleNavigator();
+  const {
+    currentVersesData,
+    currentVersesLoading,
+    previousVersesData,
+    previousVersesLoading,
+    nextVersesData,
+    nextVersesLoading,
+  } = useBible();
 
   /* Router */
   const history = useHistory();
@@ -96,120 +76,21 @@ const BibleChapterViewer: React.FC = () => {
     setIsProgrammaticSlide({ value: false });
   }, [isProgrammaticSlide]);
 
-  // useEffect to get verses when book or chapther changes
-  useEffect(() => {
-    // get the testament
-    const testament = chosenBook?.testament;
-    // get the filesets
-    const filesets = chosenBible?.filesets["dbp-prod"];
-    if (!filesets) return;
-
-    // get the bible id for the text
-    const textBibleId = filesets.find((fileset: any) => {
-      return (
-        fileset.size === "C" ||
-        (fileset.type === "text_plain" && fileset.size === testament)
-      );
-    }).id;
-
-    // get index of current book in the bible
-    const indexOfBookInBible = chosenBibleBooks?.indexOf(chosenBook!);
-
-    /**
-     * Getting the chapter verse
-     * ?Note that graphql caches responses so if we call the same verse it will never touch the api,
-     * ?it will return the cached response.
-     */
-    getListOfVersesFromBookChapter({
-      variables: {
-        options: {
-          bibleId: textBibleId,
-          bookId: chosenBook?.bookId!,
-          chapterNumber: chosenChapterNumber!,
-        },
-      },
-    });
-
-    // check if the book is at the end
-    if (chosenChapterNumber === chosenBook?.chapters?.length) {
-      // check if the book is not the final book of the bible
-      if (indexOfBookInBible !== chosenBibleBooks?.length) {
-        // get the next chapter's data
-        getNextChapter({
-          variables: {
-            options: {
-              bibleId: textBibleId,
-              bookId: chosenBibleBooks![indexOfBookInBible! + 1]?.bookId!,
-              chapterNumber: 1,
-            },
-          },
-        });
-      }
-    } else {
-      // get the next chapter's data
-      getNextChapter({
-        variables: {
-          options: {
-            bibleId: textBibleId,
-            bookId: chosenBook?.bookId!,
-            chapterNumber: chosenChapterNumber! + 1,
-          },
-        },
-      });
-    }
-
-    // check if the book is at the beginng
-    if (chosenChapterNumber === 1) {
-      // check if the book is the first book (it cannot go back)
-      if (indexOfBookInBible !== 0) {
-        // get the previous chapter's data
-        getPreviousChapter({
-          variables: {
-            options: {
-              bibleId: textBibleId,
-              bookId: chosenBibleBooks![indexOfBookInBible! - 1]?.bookId!,
-              chapterNumber:
-                chosenBibleBooks![indexOfBookInBible! - 1].chapters?.length!,
-            },
-          },
-        });
-      }
-    } else {
-      // get the previous chapter's data
-      getPreviousChapter({
-        variables: {
-          options: {
-            bibleId: textBibleId,
-            bookId: chosenBook?.bookId!,
-            chapterNumber: chosenChapterNumber! - 1,
-          },
-        },
-      });
-    }
-
-    // set the user history
-    setUserHistory({
-      variables: {
-        options: {
-          bibleAbbr: chosenBible.abbr!,
-          bookId: chosenBook?.bookId!,
-          chapterNumber: chosenChapterNumber!,
-          language: chosenBible.languageId!,
-        },
-      },
-    });
-  }, [chosenChapterNumber, chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps
-
   // useEffect to set verses when verses are present
   useEffect(() => {
     // function should fail early if any of the data is loading or if the current verse data is empty
-    if (loading || !versesData || previousChapterLoading || nextChapterLoading)
+    if (
+      currentVersesLoading ||
+      !currentVersesData ||
+      previousVersesLoading ||
+      nextVersesLoading
+    )
       return;
 
     // create obj for the state
     const dto: IChosenChapterVerses = {
       previous: previousVersesData?.getListOfVerseFromBookChapter.data,
-      current: versesData.getListOfVerseFromBookChapter.data,
+      current: currentVersesData.getListOfVerseFromBookChapter.data,
       next: nextVersesData?.getListOfVerseFromBookChapter.data,
     };
 
@@ -244,7 +125,7 @@ const BibleChapterViewer: React.FC = () => {
 
       return prevVal;
     });
-  }, [versesData, previousVersesData, nextVersesData]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [currentVersesData, previousVersesData, nextVersesData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // checks for change in the global state for bible changes and pushes the route with param
   useEffect(() => {
@@ -318,7 +199,10 @@ const BibleChapterViewer: React.FC = () => {
               value ? (
                 <SwiperSlide key={key}>
                   <div id="chapter-viewer">
-                    <TextViewer verses={value} isLoading={loading} />
+                    <TextViewer
+                      verses={value}
+                      isLoading={currentVersesLoading}
+                    />
 
                     <NavigationButtons />
                   </div>
