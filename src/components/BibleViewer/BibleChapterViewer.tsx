@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { EffectCards } from "swiper/modules";
-import { useHistory } from "react-router";
 
 /* Components */
 import NavigationButtons from "./NavigationButtons/NavigationButtons";
@@ -35,7 +34,6 @@ interface IIsProgrammaticSlide {
 const BibleChapterViewer: React.FC = () => {
   /* Context */
   const {
-    chosenChapterNumber,
     chosenChapterVerses,
     chosenBook,
     setChapterVerses,
@@ -61,9 +59,6 @@ const BibleChapterViewer: React.FC = () => {
     nextVersesData,
     nextVersesLoading,
   } = useBible();
-
-  /* Router */
-  const history = useHistory();
 
   /* Side Effects */
   useEffect(() => {
