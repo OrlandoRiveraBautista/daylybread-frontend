@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 /* Context */
 import { useAppContext } from "../../../context/context";
@@ -7,10 +7,22 @@ import { useAppContext } from "../../../context/context";
 import { useLazyGetListOfVersesFromBookChapter } from "../../../hooks/BibleBrainHooks";
 import { useLazySetUserHistory } from "../../../hooks/BibleHooks";
 
+/* Types */
+import { BbVerse } from "../../../__generated__/graphql";
+import { IChosenChapterVerses } from "../../../interfaces/BibleInterfaces";
+
 const useBible = () => {
   // context
-  const { chosenBible, chosenBibleBooks, chosenBook, chosenChapterNumber } =
-    useAppContext();
+  const {
+    chosenBible,
+    chosenBibleBooks,
+    chosenBook,
+    chosenChapterNumber,
+    setChapterVerses,
+  } = useAppContext();
+
+  /* State */
+  const [localChapters, setLocalChapters] = useState<BbVerse[][] | undefined>();
 
   /* API/GraphQL */
   // to get chapter verses
@@ -139,6 +151,53 @@ const useBible = () => {
     });
   }, [chosenChapterNumber, chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // useEffect to set verses when verses are present
+  useEffect(() => {
+    // function should fail early if any of the data is loading or if the current verse data is empty
+    if (
+      currentVersesLoading ||
+      !currentVersesData ||
+      previousVersesLoading ||
+      nextVersesLoading
+    )
+      return;
+
+    // create obj for the state
+    const dto: IChosenChapterVerses = {
+      previous: previousVersesData?.getListOfVerseFromBookChapter.data,
+      current: currentVersesData.getListOfVerseFromBookChapter.data,
+      next: nextVersesData?.getListOfVerseFromBookChapter.data,
+    };
+
+    // set data to state
+    setChapterVerses(dto);
+
+    // set the rendered chapter
+    setLocalChapters((prevVal) => {
+      if (!prevVal) return Object.values(dto);
+
+      // Add previous to the beginning if it doesn't exist
+      if (
+        dto.previous &&
+        !prevVal.some((chapter) => chapter === dto.previous)
+      ) {
+        prevVal = [dto.previous, ...prevVal];
+      }
+
+      // Add current chapter if it doesn't exist (normally should already exist as middle, so this is more of a safeguard)
+      if (dto.current && !prevVal.some((chapter) => chapter === dto.current)) {
+        prevVal = [...prevVal, dto.current];
+      }
+
+      // Add next to the end if it doesn't exist
+      if (dto.next && !prevVal.some((chapter) => chapter === dto.next)) {
+        prevVal = [...prevVal, dto.next];
+      }
+
+      return prevVal;
+    });
+  }, [currentVersesData, previousVersesData, nextVersesData]); // eslint-disable-line react-hooks/exhaustive-deps
+
   return {
     currentVersesData,
     currentVersesLoading,
@@ -146,6 +205,7 @@ const useBible = () => {
     previousVersesLoading,
     nextVersesData,
     nextVersesLoading,
+    localChapters,
   };
 };
 
