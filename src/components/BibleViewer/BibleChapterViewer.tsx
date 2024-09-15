@@ -20,8 +20,6 @@ import useBibleHistory from "../utility/hooks/useBibleHistory";
 import useBibleNavigator from "../utility/hooks/useBibleNavigator";
 
 /* Types */
-import { BbVerse } from "../../__generated__/graphql";
-import { IChosenChapterVerses } from "../../interfaces/BibleInterfaces";
 import { Swiper as SwiperType } from "swiper/types";
 import TextViewer from "./TextViewer/TextViewer";
 import useBible from "../utility/hooks/useBible";
@@ -33,16 +31,11 @@ interface IIsProgrammaticSlide {
 
 const BibleChapterViewer: React.FC = () => {
   /* Context */
-  const {
-    chosenChapterVerses,
-    chosenBook,
-    setChapterVerses,
-    handleResetChapterData,
-  } = useAppContext();
+  const { chosenChapterVerses, chosenBook, handleResetChapterData } =
+    useAppContext();
 
   /* State */
   const [swiper, setSwiper] = useState<SwiperType>();
-  const [localChapters, setLocalChapters] = useState<BbVerse[][] | undefined>();
   const [isProgrammaticSlide, setIsProgrammaticSlide] =
     useState<IIsProgrammaticSlide>({
       value: true,
@@ -51,14 +44,7 @@ const BibleChapterViewer: React.FC = () => {
   // Hooks
   useBibleHistory();
   const { nextChapter, backChapter } = useBibleNavigator();
-  const {
-    currentVersesData,
-    currentVersesLoading,
-    previousVersesData,
-    previousVersesLoading,
-    nextVersesData,
-    nextVersesLoading,
-  } = useBible();
+  const { currentVersesLoading, localChapters } = useBible();
 
   /* Side Effects */
   useEffect(() => {
@@ -71,64 +57,23 @@ const BibleChapterViewer: React.FC = () => {
     setIsProgrammaticSlide({ value: false });
   }, [isProgrammaticSlide]);
 
-  // useEffect to set verses when verses are present
-  useEffect(() => {
-    // function should fail early if any of the data is loading or if the current verse data is empty
-    if (
-      currentVersesLoading ||
-      !currentVersesData ||
-      previousVersesLoading ||
-      nextVersesLoading
-    )
-      return;
-
-    // create obj for the state
-    const dto: IChosenChapterVerses = {
-      previous: previousVersesData?.getListOfVerseFromBookChapter.data,
-      current: currentVersesData.getListOfVerseFromBookChapter.data,
-      next: nextVersesData?.getListOfVerseFromBookChapter.data,
-    };
-
-    // set data to state
-    setChapterVerses(dto);
-
-    // set the rendered chapter
-    setLocalChapters((prevVal) => {
-      if (!prevVal) return Object.values(dto);
-
-      // Add previous to the beginning if it doesn't exist
-      if (
-        dto.previous &&
-        !prevVal.some((chapter) => chapter === dto.previous)
-      ) {
-        prevVal = [dto.previous, ...prevVal];
-        setIsProgrammaticSlide({
-          value: true,
-          callback: () => swiper?.slideTo(1, 0),
-        });
-      }
-
-      // Add current chapter if it doesn't exist (normally should already exist as middle, so this is more of a safeguard)
-      if (dto.current && !prevVal.some((chapter) => chapter === dto.current)) {
-        prevVal = [...prevVal, dto.current];
-      }
-
-      // Add next to the end if it doesn't exist
-      if (dto.next && !prevVal.some((chapter) => chapter === dto.next)) {
-        prevVal = [...prevVal, dto.next];
-      }
-
-      return prevVal;
-    });
-  }, [currentVersesData, previousVersesData, nextVersesData]); // eslint-disable-line react-hooks/exhaustive-deps
-
   // useEffect to call the handleNavAction function whenever a book changes
   useEffect(() => {
     if (!chosenBook) return;
     handleResetChapterData();
-    // setLocalChapters([]);
-    console.log("We should delete the: ", localChapters);
   }, [chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    console.log(localChapters);
+    if (!localChapters) return;
+    if (localChapters[1][0].chapter !== chosenChapterVerses?.current[0].chapter)
+      return;
+
+    setIsProgrammaticSlide({
+      value: true,
+      callback: () => swiper?.slideTo(1, 0),
+    });
+  }, [localChapters]);
 
   return (
     <div id="chapter-viewer-container">
