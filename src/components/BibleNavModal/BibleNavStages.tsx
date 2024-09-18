@@ -15,10 +15,18 @@ import Skeleton from "../Loading/Skeleton";
 /* Context */
 import { useAppContext } from "../../context/context";
 
+/* Types */
+import { BbBook } from "../../__generated__/graphql";
+
 export const BooksPicker: React.FC = () => {
   /* Context and state */
-  const { setBook, chosenBook, setChapterNumber, chosenBibleBooks } =
-    useAppContext();
+  const {
+    setBook,
+    chosenBook,
+    setChapterNumber,
+    chosenBibleBooks,
+    setLocalChapters,
+  } = useAppContext();
   const [bookId, setBookId] = useState<string>(
     chosenBook ? chosenBook.bookId! : ""
   );
@@ -63,6 +71,11 @@ export const BooksPicker: React.FC = () => {
     return items;
   };
 
+  const handleSettingBook = (book: BbBook) => {
+    setLocalChapters([]);
+    setBook(book);
+  };
+
   return (
     <div className="nav-selection">
       <IonRow>
@@ -83,7 +96,7 @@ export const BooksPicker: React.FC = () => {
                   className={`outlined-card ${
                     book.bookId === chosenBook?.bookId ? "selected" : ""
                   }`}
-                  onClick={() => setBook(book)}
+                  onClick={() => handleSettingBook(book)}
                 >
                   <IonCardContent>
                     <div className="book-number">{index + 1}</div>
