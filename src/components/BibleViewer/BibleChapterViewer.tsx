@@ -31,8 +31,12 @@ interface IIsProgrammaticSlide {
 
 const BibleChapterViewer: React.FC = () => {
   /* Context */
-  const { chosenChapterVerses, chosenBook, handleResetChapterData } =
-    useAppContext();
+  const {
+    chosenChapterVerses,
+    chosenBook,
+    handleResetChapterData,
+    localChapters,
+  } = useAppContext();
 
   /* State */
   const [swiper, setSwiper] = useState<SwiperType>();
@@ -44,7 +48,7 @@ const BibleChapterViewer: React.FC = () => {
   // Hooks
   useBibleHistory();
   const { nextChapter, backChapter } = useBibleNavigator();
-  const { currentVersesLoading, localChapters } = useBible();
+  const { currentVersesLoading } = useBible();
 
   /* Side Effects */
   useEffect(() => {
@@ -64,8 +68,7 @@ const BibleChapterViewer: React.FC = () => {
   }, [chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    console.log(localChapters);
-    if (!localChapters) return;
+    if (!localChapters || !localChapters.length) return;
     if (localChapters[1][0].chapter !== chosenChapterVerses?.current[0].chapter)
       return;
 
