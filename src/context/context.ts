@@ -57,6 +57,7 @@ const context = constate(() => {
   const [selectedVersesCitation, setSelectedVersesCitation] = useState<
     string | undefined
   >();
+  const [localChapters, setLocalChapters] = useState<BbVerse[][] | undefined>();
 
   // User State
   const [userInfo, setUserInfo] = useState<User>();
@@ -287,6 +288,7 @@ const context = constate(() => {
     bookmarksResponse,
     bookmarksLoading,
     bookmarksError,
+    localChapters,
     setBibleLanguage,
     setBible,
     setBibleBooks,
@@ -307,6 +309,7 @@ const context = constate(() => {
     isUserAssetInList,
     handleGetBookmarks,
     handleResetChapterData,
+    setLocalChapters,
   };
 });
 
