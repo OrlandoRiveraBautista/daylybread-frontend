@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 /* Context */
 import { useAppContext } from "../../../context/context";
@@ -8,7 +8,6 @@ import { useLazyGetListOfVersesFromBookChapter } from "../../../hooks/BibleBrain
 import { useLazySetUserHistory } from "../../../hooks/BibleHooks";
 
 /* Types */
-import { BbVerse } from "../../../__generated__/graphql";
 import { IChosenChapterVerses } from "../../../interfaces/BibleInterfaces";
 
 const useBible = () => {
@@ -19,10 +18,10 @@ const useBible = () => {
     chosenBook,
     chosenChapterNumber,
     setChapterVerses,
+    setLocalChapters,
   } = useAppContext();
 
   /* State */
-  const [localChapters, setLocalChapters] = useState<BbVerse[][] | undefined>();
 
   /* API/GraphQL */
   // to get chapter verses
@@ -205,7 +204,6 @@ const useBible = () => {
     previousVersesLoading,
     nextVersesData,
     nextVersesLoading,
-    localChapters,
   };
 };
 
