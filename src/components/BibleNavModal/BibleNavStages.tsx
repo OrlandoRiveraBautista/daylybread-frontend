@@ -36,7 +36,6 @@ export const BooksPicker: React.FC = () => {
   useEffect(() => {
     if (!chosenBook?.bookId || chosenBook.bookId === bookId) return;
 
-    setChapterNumber(1); // set the chapter to 1
     setBookId(chosenBook.bookId);
 
     const element = document.getElementById(chosenBook.bookId);
@@ -74,6 +73,7 @@ export const BooksPicker: React.FC = () => {
   const handleSettingBook = (book: BbBook) => {
     setLocalChapters([]);
     setBook(book);
+    setChapterNumber(1); // set the chapter to 1
   };
 
   return (
