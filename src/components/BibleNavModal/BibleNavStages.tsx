@@ -28,21 +28,18 @@ export const BooksPicker: React.FC = () => {
     setLocalChapters,
   } = useAppContext();
 
-  /* Side Effects */
-  // checks chosenBooks from context and scrolls the view to the selected book
-  useEffect(() => {
-    if (!chosenBook?.bookId) return;
-
-    const element = document.getElementById(chosenBook.bookId);
-
-    element?.scrollIntoView({ behavior: "smooth", block: "center" });
-  }, [chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    if (!chosenBook?.bookId) return;
-    const element = document.getElementById(chosenBook.bookId);
+  /**
+   *  Function to scroll chosen selection into view
+   */
+  const scrollBookSelectionIntoView = (book: BbBook) => {
+    const element = document.getElementById(book.bookId!);
 
     element?.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+
+  useEffect(() => {
+    if (!chosenBook?.bookId) return;
+    scrollBookSelectionIntoView(chosenBook);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   /**
@@ -69,6 +66,7 @@ export const BooksPicker: React.FC = () => {
     setLocalChapters([]);
     setBook(book);
     setChapterNumber(1); // set the chapter to 1
+    scrollBookSelectionIntoView(book);
   };
 
   return (
