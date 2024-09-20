@@ -27,16 +27,11 @@ export const BooksPicker: React.FC = () => {
     chosenBibleBooks,
     setLocalChapters,
   } = useAppContext();
-  const [bookId, setBookId] = useState<string>(
-    chosenBook ? chosenBook.bookId! : ""
-  );
 
   /* Side Effects */
   // checks chosenBooks from context and scrolls the view to the selected book
   useEffect(() => {
-    if (!chosenBook?.bookId || chosenBook.bookId === bookId) return;
-
-    setBookId(chosenBook.bookId);
+    if (!chosenBook?.bookId) return;
 
     const element = document.getElementById(chosenBook.bookId);
 
