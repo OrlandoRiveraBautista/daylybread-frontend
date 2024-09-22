@@ -6,6 +6,7 @@ import { EffectCards } from "swiper/modules";
 import NavigationButtons from "./NavigationButtons/NavigationButtons";
 import InitialBiblePicker from "../InitialBiblePicker/InitialBiblePicker";
 import Copyright from "./Copyright/Copyright";
+import TextViewer from "./TextViewer/TextViewer";
 
 /* Context */
 import { useAppContext } from "../../context/context";
@@ -18,11 +19,10 @@ import "swiper/css/effect-cards";
 /* React Hooks */
 import useBibleHistory from "../utility/hooks/useBibleHistory";
 import useBibleNavigator from "../utility/hooks/useBibleNavigator";
+import useBible from "../utility/hooks/useBible";
 
 /* Types */
 import { Swiper as SwiperType } from "swiper/types";
-import TextViewer from "./TextViewer/TextViewer";
-import useBible from "../utility/hooks/useBible";
 
 interface IIsProgrammaticSlide {
   value: boolean;
