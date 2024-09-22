@@ -109,15 +109,21 @@ export const BooksPicker: React.FC = () => {
 };
 
 export const ChapterPicker: React.FC = () => {
-  const { chosenBook, setChapterNumber, chosenChapterNumber } = useAppContext();
+  const {
+    chosenBook,
+    setChapterNumber,
+    chosenChapterNumber,
+    setLocalChapters,
+  } = useAppContext();
 
-  /* Use Effects */
-  useEffect(() => {
-    if (!chosenChapterNumber) return;
-    const element = document.getElementById(chosenChapterNumber.toString());
+  /**
+   *  Function to scroll chosen selection into view
+   */
+  const scrollBookSelectionIntoView = (chapter: number) => {
+    const element = document.getElementById(chapter.toString());
 
     element?.scrollIntoView({ behavior: "smooth", block: "center" });
-  }, [chosenChapterNumber]);
+  };
 
   /**
    * Function to render loading skeleton animation
@@ -139,6 +145,12 @@ export const ChapterPicker: React.FC = () => {
     return items;
   };
 
+  const handleSettingChapter = (chapter: number) => {
+    setLocalChapters([]);
+    setChapterNumber(chapter); // set the chapter to 1
+    scrollBookSelectionIntoView(chapter);
+  };
+
   return (
     <div className="nav-selection">
       <IonRow>
@@ -155,7 +167,7 @@ export const ChapterPicker: React.FC = () => {
                     className={`outlined-card ${
                       chosenChapterNumber === chapter ? "selected" : ""
                     }`}
-                    onClick={() => setChapterNumber(chapter)}
+                    onClick={() => handleSettingChapter(chapter)}
                   >
                     <IonCardContent>
                       <div className="book-number">{chapter}</div>
