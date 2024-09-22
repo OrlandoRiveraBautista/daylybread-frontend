@@ -26,6 +26,7 @@ export const BooksPicker: React.FC = () => {
     setChapterNumber,
     chosenBibleBooks,
     setLocalChapters,
+    setIsProgrammaticSlide,
   } = useAppContext();
 
   /**
@@ -67,6 +68,7 @@ export const BooksPicker: React.FC = () => {
     setBook(book);
     setChapterNumber(1); // set the chapter to 1
     scrollBookSelectionIntoView(book);
+    setIsProgrammaticSlide({ value: true }); // set the flag for programmically changing the slides
   };
 
   return (
@@ -114,6 +116,7 @@ export const ChapterPicker: React.FC = () => {
     setChapterNumber,
     chosenChapterNumber,
     setLocalChapters,
+    setIsProgrammaticSlide,
   } = useAppContext();
 
   /**
@@ -149,6 +152,7 @@ export const ChapterPicker: React.FC = () => {
     setLocalChapters([]);
     setChapterNumber(chapter); // set the chapter to 1
     scrollBookSelectionIntoView(chapter);
+    setIsProgrammaticSlide({ value: true }); // set the flag for programmically changing the slides
   };
 
   return (
