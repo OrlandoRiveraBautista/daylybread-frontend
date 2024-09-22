@@ -24,11 +24,6 @@ import useBible from "../utility/hooks/useBible";
 /* Types */
 import { Swiper as SwiperType } from "swiper/types";
 
-interface IIsProgrammaticSlide {
-  value: boolean;
-  callback?: () => void;
-}
-
 const BibleChapterViewer: React.FC = () => {
   /* Context */
   const {
@@ -36,14 +31,12 @@ const BibleChapterViewer: React.FC = () => {
     chosenBook,
     handleResetChapterData,
     localChapters,
+    isProgrammaticSlide,
+    setIsProgrammaticSlide,
   } = useAppContext();
 
   /* State */
   const [swiper, setSwiper] = useState<SwiperType>();
-  const [isProgrammaticSlide, setIsProgrammaticSlide] =
-    useState<IIsProgrammaticSlide>({
-      value: true,
-    }); // flag to track programmatic slide changes
 
   // Hooks
   useBibleHistory();
