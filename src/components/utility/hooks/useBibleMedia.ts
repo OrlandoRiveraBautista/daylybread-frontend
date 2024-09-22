@@ -62,7 +62,7 @@ const useBibleMedia = () => {
         options: mediaOptions,
       },
     });
-  }, [chosenChapterNumber, chosenBook, chosenBible]);
+  }, [chosenChapterNumber, chosenBook, chosenBible]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Watches for the audio media data and sets it
   useEffect(() => {
