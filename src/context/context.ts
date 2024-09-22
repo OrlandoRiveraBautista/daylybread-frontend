@@ -27,6 +27,11 @@ import {
 import { getCitationVerbage } from "../utils/support";
 import { useLazyGetCopyrightForBible } from "../hooks/BibleBrainHooks";
 
+interface IIsProgrammaticSlide {
+  value: boolean;
+  callback?: () => void;
+}
+
 const context = constate(() => {
   /** API/GraphQL Decunstruction */
   // Bookmarks API
@@ -58,6 +63,10 @@ const context = constate(() => {
     string | undefined
   >();
   const [localChapters, setLocalChapters] = useState<BbVerse[][] | undefined>();
+  const [isProgrammaticSlide, setIsProgrammaticSlide] =
+    useState<IIsProgrammaticSlide>({
+      value: true,
+    }); // flag to track programmatic slide changes
 
   // User State
   const [userInfo, setUserInfo] = useState<User>();
@@ -289,6 +298,7 @@ const context = constate(() => {
     bookmarksLoading,
     bookmarksError,
     localChapters,
+    isProgrammaticSlide,
     setBibleLanguage,
     setBible,
     setBibleBooks,
@@ -310,6 +320,7 @@ const context = constate(() => {
     handleGetBookmarks,
     handleResetChapterData,
     setLocalChapters,
+    setIsProgrammaticSlide,
   };
 });
 
