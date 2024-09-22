@@ -76,7 +76,7 @@ const TextViewer: React.FC<ITextViewer> = ({
         chapterViewerWrapper.style.gap = "120px";
       }
     }
-  }, [openSelectedVersesModal]);
+  }, [openSelectedVersesModal]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleMouseDown = (event: string) => {
     // get the desired html element
