@@ -52,7 +52,7 @@ const BibleChapterViewer: React.FC = () => {
       return;
     isProgrammaticSlide.callback();
     setIsProgrammaticSlide({ value: false });
-  }, [isProgrammaticSlide]);
+  }, [isProgrammaticSlide]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // useEffect to call the handleNavAction function whenever a book changes
   useEffect(() => {
@@ -69,7 +69,7 @@ const BibleChapterViewer: React.FC = () => {
       value: true,
       callback: () => swiper?.slideTo(1, 0),
     });
-  }, [localChapters]);
+  }, [localChapters]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div id="chapter-viewer-container">
