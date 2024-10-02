@@ -88,7 +88,7 @@ const Tab2: React.FC = () => {
       </IonHeader>
 
       {/* Body */}
-      <IonContent fullscreen>
+      <IonContent>
         <BibleChapterViewer />
 
         {/* Modals */}
