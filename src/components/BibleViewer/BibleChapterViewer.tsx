@@ -83,8 +83,12 @@ const BibleChapterViewer: React.FC = () => {
             onSwiper={(s: SwiperType) => {
               setIsProgrammaticSlide({ value: false });
               if (!chosenChapterVerses?.previous) return;
+              const index = localChapters.findIndex(
+                (chap) =>
+                  chap[0].chapter === chosenChapterVerses?.current[0].chapter
+              );
               // set the flag that the slides will change programmaticly
-              s.slideTo(1, 0); // set the slide index
+              s.slideTo(index, 0); // set the slide index
             }}
             grabCursor={true}
             modules={[EffectCards]}
