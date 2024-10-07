@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { EffectCards } from "swiper/modules";
 
@@ -6,7 +6,7 @@ import { EffectCards } from "swiper/modules";
 import NavigationButtons from "./NavigationButtons/NavigationButtons";
 import InitialBiblePicker from "../InitialBiblePicker/InitialBiblePicker";
 import Copyright from "./Copyright/Copyright";
-import TextViewer from "./TextViewer/TextViewer";
+import TextViewer, { TextViewerRefType } from "./TextViewer/TextViewer";
 
 /* Context */
 import { useAppContext } from "../../context/context";
@@ -37,6 +37,9 @@ const BibleChapterViewer: React.FC = () => {
 
   /* State */
   const [swiper, setSwiper] = useState<SwiperType>();
+
+  /* Refs */
+  const TextViewerRef = useRef<TextViewerRefType>(null);
 
   // Hooks
   useBibleHistory();
@@ -114,9 +117,15 @@ const BibleChapterViewer: React.FC = () => {
                     <TextViewer
                       verses={value}
                       isLoading={currentVersesLoading}
+                      ref={TextViewerRef}
                     />
 
-                    <NavigationButtons swiper={swiper!} />
+                    <NavigationButtons
+                      swiper={swiper!}
+                      handleOpenBreadCrumbsModal={
+                        TextViewerRef.current?.handleOpenVerseModal!
+                      }
+                    />
                   </div>
                 </SwiperSlide>
               ) : null
