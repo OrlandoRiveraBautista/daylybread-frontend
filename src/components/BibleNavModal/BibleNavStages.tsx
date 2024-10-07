@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   IonRow,
   IonCol,
@@ -15,32 +15,32 @@ import Skeleton from "../Loading/Skeleton";
 /* Context */
 import { useAppContext } from "../../context/context";
 
+/* Types */
+import { BbBook } from "../../__generated__/graphql";
+
 export const BooksPicker: React.FC = () => {
   /* Context and state */
-  const { setBook, chosenBook, setChapterNumber, chosenBibleBooks } =
-    useAppContext();
-  const [bookId, setBookId] = useState<string>(
-    chosenBook ? chosenBook.bookId! : ""
-  );
+  const {
+    setBook,
+    chosenBook,
+    setChapterNumber,
+    chosenBibleBooks,
+    setLocalChapters,
+    setIsProgrammaticSlide,
+  } = useAppContext();
 
-  /* Side Effects */
-  // checks chosenBooks from context and scrolls the view to the selected book
-  useEffect(() => {
-    if (!chosenBook?.bookId || chosenBook.bookId === bookId) return;
-
-    setChapterNumber(1); // set the chapter to 1
-    setBookId(chosenBook.bookId);
-
-    const element = document.getElementById(chosenBook.bookId);
+  /**
+   *  Function to scroll chosen selection into view
+   */
+  const scrollBookSelectionIntoView = (book: BbBook) => {
+    const element = document.getElementById(book.bookId!);
 
     element?.scrollIntoView({ behavior: "smooth", block: "center" });
-  }, [chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps
+  };
 
   useEffect(() => {
     if (!chosenBook?.bookId) return;
-    const element = document.getElementById(chosenBook.bookId);
-
-    element?.scrollIntoView({ behavior: "smooth", block: "center" });
+    scrollBookSelectionIntoView(chosenBook);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   /**
@@ -63,6 +63,14 @@ export const BooksPicker: React.FC = () => {
     return items;
   };
 
+  const handleSettingBook = (book: BbBook) => {
+    setLocalChapters([]);
+    setBook(book);
+    setChapterNumber(1); // set the chapter to 1
+    scrollBookSelectionIntoView(book);
+    setIsProgrammaticSlide({ value: true }); // set the flag for programmically changing the slides
+  };
+
   return (
     <div className="nav-selection">
       <IonRow>
@@ -83,7 +91,7 @@ export const BooksPicker: React.FC = () => {
                   className={`outlined-card ${
                     book.bookId === chosenBook?.bookId ? "selected" : ""
                   }`}
-                  onClick={() => setBook(book)}
+                  onClick={() => handleSettingBook(book)}
                 >
                   <IonCardContent>
                     <div className="book-number">{index + 1}</div>
@@ -103,15 +111,22 @@ export const BooksPicker: React.FC = () => {
 };
 
 export const ChapterPicker: React.FC = () => {
-  const { chosenBook, setChapterNumber, chosenChapterNumber } = useAppContext();
+  const {
+    chosenBook,
+    setChapterNumber,
+    chosenChapterNumber,
+    setLocalChapters,
+    setIsProgrammaticSlide,
+  } = useAppContext();
 
-  /* Use Effects */
-  useEffect(() => {
-    if (!chosenChapterNumber) return;
-    const element = document.getElementById(chosenChapterNumber.toString());
+  /**
+   *  Function to scroll chosen selection into view
+   */
+  const scrollBookSelectionIntoView = (chapter: number) => {
+    const element = document.getElementById(chapter.toString());
 
     element?.scrollIntoView({ behavior: "smooth", block: "center" });
-  }, [chosenChapterNumber]);
+  };
 
   /**
    * Function to render loading skeleton animation
@@ -133,6 +148,13 @@ export const ChapterPicker: React.FC = () => {
     return items;
   };
 
+  const handleSettingChapter = (chapter: number) => {
+    setLocalChapters([]);
+    setChapterNumber(chapter); // set the chapter to 1
+    scrollBookSelectionIntoView(chapter);
+    setIsProgrammaticSlide({ value: true }); // set the flag for programmically changing the slides
+  };
+
   return (
     <div className="nav-selection">
       <IonRow>
@@ -149,7 +171,7 @@ export const ChapterPicker: React.FC = () => {
                     className={`outlined-card ${
                       chosenChapterNumber === chapter ? "selected" : ""
                     }`}
-                    onClick={() => setChapterNumber(chapter)}
+                    onClick={() => handleSettingChapter(chapter)}
                   >
                     <IonCardContent>
                       <div className="book-number">{chapter}</div>

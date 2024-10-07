@@ -5,7 +5,10 @@ import { useEffect, useState } from "react";
 import { useLazyGetBookmarks } from "../hooks/UserHooks";
 
 /* Interfaces */
-import { ITranslation } from "../interfaces/BibleInterfaces";
+import {
+  IChosenChapterVerses,
+  ITranslation,
+} from "../interfaces/BibleInterfaces";
 import { IDeviceInfo } from "../interfaces/AuthInterfaces";
 /**
  * !Potentially we should start using the graphql types that are being generated from the backend
@@ -23,6 +26,11 @@ import {
 } from "../__generated__/graphql";
 import { getCitationVerbage } from "../utils/support";
 import { useLazyGetCopyrightForBible } from "../hooks/BibleBrainHooks";
+
+interface IIsProgrammaticSlide {
+  value: boolean;
+  callback?: () => void;
+}
 
 const context = constate(() => {
   /** API/GraphQL Decunstruction */
@@ -46,13 +54,19 @@ const context = constate(() => {
   const [chosenBook, setChosenBook] = useState<BbBook>();
   const [chosenTranslation, setChosenTranslation] = useState<ITranslation>();
   const [chosenChapterNumber, setChosenChapterNumber] = useState<number>();
-  const [chosenChapterVerses, setChosenChapterVerses] = useState<BbVerse[]>();
+  const [chosenChapterVerses, setChosenChapterVerses] =
+    useState<IChosenChapterVerses>();
   const [chosenChapterMedia, setChosenChapterMedia] = useState<BbAudioFile[]>();
   const [currentMediaTimeStamp, setCurrentMediaTimestamp] = useState<number>(0);
   const [selectedVerseList, setSelectedVerseList] = useState<BbVerse[]>([]);
   const [selectedVersesCitation, setSelectedVersesCitation] = useState<
     string | undefined
   >();
+  const [localChapters, setLocalChapters] = useState<BbVerse[][] | undefined>();
+  const [isProgrammaticSlide, setIsProgrammaticSlide] =
+    useState<IIsProgrammaticSlide>({
+      value: true,
+    }); // flag to track programmatic slide changes
 
   // User State
   const [userInfo, setUserInfo] = useState<User>();
@@ -125,7 +139,7 @@ const context = constate(() => {
   /**
    * Sets the bible chapter to global state
    */
-  const setChapterVerses = (dto: BbVerse[]) => {
+  const setChapterVerses = (dto: IChosenChapterVerses) => {
     setChosenChapterVerses(dto);
   };
 
@@ -250,6 +264,20 @@ const context = constate(() => {
     getLazyBookmarks();
   };
 
+  /**
+   * Function will be used to reset anything that is chapter specific
+   * @returns N/A
+   */
+  const handleResetChapterData = () => {
+    // reset the selected elements
+    // setSelectedElement([]);
+    resetVersesInList();
+
+    // reset the media and timestamp context
+    setCurrentMediaTimestamp(0);
+    setChapterMedia([]);
+  };
+
   return {
     chosenLanguage,
     chosenBible,
@@ -269,6 +297,8 @@ const context = constate(() => {
     bookmarksResponse,
     bookmarksLoading,
     bookmarksError,
+    localChapters,
+    isProgrammaticSlide,
     setBibleLanguage,
     setBible,
     setBibleBooks,
@@ -288,6 +318,9 @@ const context = constate(() => {
     resetUserAssetList,
     isUserAssetInList,
     handleGetBookmarks,
+    handleResetChapterData,
+    setLocalChapters,
+    setIsProgrammaticSlide,
   };
 });
 

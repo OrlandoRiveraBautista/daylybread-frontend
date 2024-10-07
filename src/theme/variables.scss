@@ -78,6 +78,7 @@ $outline-variant-color: #c3c6cf;
 
 $surface: #faf9fd;
 $surface-variant: #dfe2eb;
+$surface-container: #eeedf1;
 
 /** Spacing and padding */
 $padding: 16px;
@@ -90,7 +91,7 @@ http://ionicframework.com/docs/theming/ */
   // background color
   --ion-background-color: #faf9fd;
 
-  --ion-color-primary: #2989e3;
+  --ion-color-primary: #0060a8;
   --ion-color-primary-rgb: 41, 137, 227;
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-contrast-rgb: 255, 255, 255;
@@ -160,6 +161,8 @@ http://ionicframework.com/docs/theming/ */
 
   --ion-background-color: #faf9fd;
   --ion-background-variant: #dfe2eb;
+
+  --ion-surface-container: #eeedf1;
 
   --ion-outline-color: #73777f;
   --ion-outline-variant-color: #c3c6cf;
@@ -243,6 +246,8 @@ http://ionicframework.com/docs/theming/ */
 
     --ion-background-color: #121316;
     --ion-background-variant: #43474e;
+
+    --ion-surface-container: #1e2022;
   }
 
   /*
