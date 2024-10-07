@@ -116,7 +116,7 @@ const BibleChapterViewer: React.FC = () => {
                       isLoading={currentVersesLoading}
                     />
 
-                    <NavigationButtons />
+                    <NavigationButtons swiper={swiper!} />
                   </div>
                 </SwiperSlide>
               ) : null
