@@ -63,7 +63,6 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
   const history = useHistory();
 
   /* Local state */
-  const [urlParams, setUrlParams] = useState<BibleReadParams>();
   const [isNewBible, setIsNewBible] = useState<boolean>(false); // flag to determine if the bible should be set to the begining
   const [firstRender, setFirstRender] = useState<boolean>(true);
 
@@ -76,22 +75,14 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
     useLazyGetListOfBooksFromBible();
 
   /* Url params */
-  const params = useParams<BibleReadParams>();
+  const urlParams = useParams<BibleReadParams>();
 
   /* Refs */
   const modal = useRef<HTMLIonModalElement>(null);
 
-  // watches for url params and sets them to local state
-  useEffect(() => {
-    if (Object.keys(params).length > 0) {
-      setUrlParams(params);
-    }
-  }, [params]);
-
-  /*
-   * Functions bellow deal with the changing of languages
+  /**
+   *  Functions bellow deal with the changing of languages upon the url params for the current language changes
    */
-  // use effect watching the params of current language to change
   useEffect(() => {
     if (!urlParams?.currentLanguage) return;
     if (

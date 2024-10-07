@@ -3,7 +3,13 @@ import { useHistory, useParams } from "react-router";
 import { useUserBibleHistory } from "../../../hooks/UserHooks";
 import { BibleReadParams } from "../../../assets/ts/types";
 
-const useSetBibleHistory = () => {
+/* Context */
+import { useAppContext } from "../../../context/context";
+
+const useBibleHistory = () => {
+  // context
+  const { chosenBook, chosenChapterNumber } = useAppContext();
+
   const urlParams = useParams<BibleReadParams>();
   const history = useHistory();
   const { data: userBibleHistoryData } = useUserBibleHistory();
@@ -33,7 +39,35 @@ const useSetBibleHistory = () => {
     );
   }, [userBibleHistoryData]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // checks for change in the global state for bible changes and pushes the route with param
+  useEffect(() => {
+    if (!chosenBook || !chosenChapterNumber) return;
+
+    /*--- Setting Url --- */
+    // Get the current URL
+    const currentUrl = history.location.pathname;
+
+    // Split the current URL into parts
+    const parts = currentUrl.split("/");
+
+    // Check if the position exists
+    if (!parts[5]) {
+      history.push(
+        `${currentUrl}/${chosenBook?.bookId}/${chosenChapterNumber}`
+      );
+      return;
+    }
+
+    // Replace the value at the third position with the new Bible ID
+    parts[4] = chosenBook?.bookId!;
+    parts[5] = chosenChapterNumber?.toString()!;
+
+    // Join the parts back together to form the new URL
+    const newUrl = parts.join("/");
+    history.push(newUrl);
+  }, [chosenChapterNumber, chosenBook]); // eslint-disable-line react-hooks/exhaustive-deps
+
   return { userBibleHistoryData };
 };
 
-export default useSetBibleHistory;
+export default useBibleHistory;

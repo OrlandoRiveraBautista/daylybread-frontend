@@ -1,3 +1,5 @@
+import { BbVerse } from "../__generated__/graphql";
+
 export interface ITranslation {
   __typename?: "Translation" | undefined;
   _id: string;
@@ -48,4 +50,10 @@ export interface IChapterInterface {
     abbreviation: string;
     name: string;
   };
+}
+
+export interface IChosenChapterVerses {
+  previous: BbVerse[] | undefined;
+  current: BbVerse[];
+  next: BbVerse[] | undefined;
 }
