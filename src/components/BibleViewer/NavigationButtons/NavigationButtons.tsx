@@ -17,9 +17,17 @@ import useBibleNavigator from "../../utility/hooks/useBibleNavigator";
 /* Images */
 import BreadCrumbsIcon from "../../../assets/icons/BreadCrumbs-icon.svg";
 
-const NavigationButtons: React.FC = () => {
+/* Types */
+import { Swiper as SwiperType } from "swiper/types";
+interface INavigationButtons {
+  swiper: SwiperType;
+}
+
+const NavigationButtons: React.FC<INavigationButtons> = ({
+  swiper,
+}: INavigationButtons) => {
   /* Context */
-  const { resetVersesInList } = useAppContext();
+  const { resetVersesInList, setIsProgrammaticSlide } = useAppContext();
 
   const { nextChapter, backChapter } = useBibleNavigator();
 
@@ -41,7 +49,16 @@ const NavigationButtons: React.FC = () => {
       <IonFab id="navigation-buttons">
         {/* Back button */}
         <IonFabButton color="light" size="small" className="left">
-          <IonIcon icon={chevronBack} onClick={() => backChapter()} />
+          <IonIcon
+            icon={chevronBack}
+            onClick={() => {
+              setIsProgrammaticSlide({
+                callback: () => swiper.slidePrev(),
+                value: true,
+              });
+              backChapter();
+            }}
+          />
         </IonFabButton>
 
         {/* Button to open the bible assistant modal */}
@@ -49,7 +66,8 @@ const NavigationButtons: React.FC = () => {
           color="light"
           size="small"
           className="bread-crumbs-button"
-          onClick={handleOpenVerseModal}
+          // onClick={handleOpenVerseModal}
+          id="bread-crumbs-modal"
         >
           <IonIcon
             class="bread-crumbs-icon"
@@ -60,7 +78,16 @@ const NavigationButtons: React.FC = () => {
 
         {/* Forward button */}
         <IonFabButton color="primary" size="small" className="right">
-          <IonIcon icon={chevronForward} onClick={nextChapter} />
+          <IonIcon
+            icon={chevronForward}
+            onClick={() => {
+              setIsProgrammaticSlide({
+                callback: () => swiper.slideNext(),
+                value: true,
+              });
+              nextChapter();
+            }}
+          />
         </IonFabButton>
       </IonFab>
       {/* bible assistant modal */}
