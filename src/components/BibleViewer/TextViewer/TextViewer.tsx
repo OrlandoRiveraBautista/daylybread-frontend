@@ -23,7 +23,7 @@ interface ITextViewer {
   verses: BbVerse[];
   isLoading: boolean;
 }
-type TextViewerRefType = {
+export type TextViewerRefType = {
   handleOpenVerseModal: () => void;
 };
 
