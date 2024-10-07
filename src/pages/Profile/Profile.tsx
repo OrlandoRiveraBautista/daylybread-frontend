@@ -8,6 +8,7 @@ import {
   IonText,
   IonToolbar,
 } from "@ionic/react";
+import Avatar from "boring-avatars";
 
 /* Components */
 import UserBio from "../../components/UserBio/UserBio";
@@ -64,9 +65,11 @@ const Profile: React.FC = () => {
                 color="dark"
                 className="header-profile-button"
               >
-                <img
+                <Avatar
                   alt="Silhouette of a person's head"
-                  src={`https://source.boringavatars.com/beam/120/${userInfo.firstName}-${userInfo.lastName}`} // randomized images for now
+                  name={`${userInfo.firstName} ${userInfo.lastName}`}
+                  size={120}
+                  variant="beam"
                 />
               </IonButton>
 

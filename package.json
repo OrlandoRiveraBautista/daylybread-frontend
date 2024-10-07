@@ -24,6 +24,7 @@
     "@types/react-dom": "^18.0.6",
     "@types/react-router": "^5.1.11",
     "@types/react-router-dom": "^5.1.7",
+    "boring-avatars": "^1.11.2",
     "constate": "^3.3.2",
     "graphql": "^16.6.0",
     "graphql-ws": "^5.14.2",
