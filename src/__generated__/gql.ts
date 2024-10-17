@@ -31,7 +31,7 @@ const documents = {
     "\n  query GetVerseById($bibleId: String!) {\n    getVerseByBibleId(bibleId: $bibleId) {\n      _id\n      translation {\n        name\n        abbreviation\n      }\n      bookName\n      chapterNumber\n      verse\n      text\n      bibleId\n    }\n  }\n": types.GetVerseByIdDocument,
     "\n  mutation SetUserHistory($options: HistoryOptions!) {\n    setUserHistory(options: $options) {\n      errors {\n        field\n        message\n      }\n      results\n    }\n  }\n": types.SetUserHistoryDocument,
     "\n    query OpenAi($options: GptArgs!) {\n        getOpen(options: $options)\n    }\n": types.OpenAiDocument,
-    "\n  subscription Subscription {\n    aiChatReponseUpdated\n  }\n": types.SubscriptionDocument,
+    "\n  subscription Subscription($deviceId: String!) {\n    aiChatReponseUpdated(deviceId: $deviceId)\n  }\n": types.SubscriptionDocument,
     "\n    query Me {\n        me {\n            user {\n              _id\n              createdAt\n              updatedAt\n              email\n              firstName\n              lastName\n              churchName\n              bioText\n              dob\n              count\n            }\n        }\n    }\n": types.MeDocument,
     "\n    query UserBibleHistoryQuery {\n        me {\n          user{\n            bibleHistory {\n              _id\n              history {\n                language\n                bibleAbbr\n                bookId\n                chapterNumber\n                viewedAt\n              }\n              current\n              createdAt\n              updatedAt\n            }\n          }\n        }\n    }\n": types.UserBibleHistoryQueryDocument,
     "\n  query getBookmarks {\n    getMyBookmarks {\n      results {\n        _id\n        createdAt\n        updatedAt\n        author {\n          _id\n        }\n        bibleId\n        newVerses {\n          bookId\n          bookName\n          bookNameAlt\n          chapter\n          chapterAlt\n          verseStart\n          verseStartAlt\n          verseEnd\n          verseEndAlt\n          verseText\n        }\n        verses {\n          _id\n          translation {\n            name\n            abbreviation\n          }\n          bookName\n          chapterNumber\n          verse\n          text\n          bibleId\n        }\n        note\n      }\n    }\n  }\n": types.GetBookmarksDocument,
@@ -116,7 +116,7 @@ export function gql(source: "\n    query OpenAi($options: GptArgs!) {\n        g
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  subscription Subscription {\n    aiChatReponseUpdated\n  }\n"): (typeof documents)["\n  subscription Subscription {\n    aiChatReponseUpdated\n  }\n"];
+export function gql(source: "\n  subscription Subscription($deviceId: String!) {\n    aiChatReponseUpdated(deviceId: $deviceId)\n  }\n"): (typeof documents)["\n  subscription Subscription($deviceId: String!) {\n    aiChatReponseUpdated(deviceId: $deviceId)\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
