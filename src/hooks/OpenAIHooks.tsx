@@ -10,8 +10,8 @@ const GET_CHAT_GPT = gql(`
 `);
 
 const OPEN_AI_STREAM_RESPONSE = gql(`
-  subscription Subscription {
-    aiChatReponseUpdated
+  subscription Subscription($deviceId: String!) {
+    aiChatReponseUpdated(deviceId: $deviceId)
   }
 `);
 
@@ -26,8 +26,10 @@ export const useLazyOpenAI = () => {
   };
 };
 
-export const useOpenAIResponseStream = () => {
-  const { data, loading, error } = useSubscription(OPEN_AI_STREAM_RESPONSE);
+export const useOpenAIResponseStream = (deviceId: string) => {
+  const { data, loading, error } = useSubscription(OPEN_AI_STREAM_RESPONSE, {
+    variables: { deviceId }, // Pass the actual deviceId
+  });
 
   return { data, loading, error };
 };

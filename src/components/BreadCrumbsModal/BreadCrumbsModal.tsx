@@ -44,7 +44,7 @@ import {
 const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
   isOpen,
   onDismiss,
-  selectedText,
+  // selectedText,
   initialBreakpoint,
 }: IBreadCrumbsModal) => {
   // state
@@ -58,7 +58,7 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
   // context values
   const { selectedVersesCitation, deviceInfo } = useAppContext();
   const { getChatGpt, data } = useLazyOpenAI();
-  const { data: openAIReponseStream } = useOpenAIResponseStream();
+  const { data: openAIReponseStream } = useOpenAIResponseStream(deviceInfo!.id);
 
   useEffect(() => {
     if (!data) return;
