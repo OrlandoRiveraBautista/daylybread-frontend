@@ -155,8 +155,11 @@ export const ChapterPicker: React.FC = () => {
   };
 
   const handleSettingChapter = (chapter: number) => {
-    setLocalChapters([]);
-    setChapterNumber(chapter); // set the chapter to 1
+    // Check if the chapter number to be set does not equal to the chosen chapter
+    if (chapter !== chosenChapterNumber) {
+      setLocalChapters([]);
+      setChapterNumber(chapter); // set the chapter to 1
+    }
     scrollBookSelectionIntoView(chapter);
     setIsProgrammaticSlide({ value: true }); // set the flag for programmically changing the slides
   };
