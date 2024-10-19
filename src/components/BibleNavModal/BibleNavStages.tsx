@@ -24,6 +24,7 @@ export const BooksPicker: React.FC = () => {
     setBook,
     chosenBook,
     setChapterNumber,
+    chosenChapterNumber,
     chosenBibleBooks,
     setLocalChapters,
     setIsProgrammaticSlide,
@@ -64,9 +65,14 @@ export const BooksPicker: React.FC = () => {
   };
 
   const handleSettingBook = (book: BbBook) => {
-    setLocalChapters([]);
-    setBook(book);
-    setChapterNumber(1); // set the chapter to 1
+    // Check if the book to be set is not the same as the chosen book
+    if (book.bookId !== chosenBook?.bookId) setBook(book);
+    // Check if the chapter number hasn't been set to 1 already
+    // And check if the book is being changed
+    if (chosenChapterNumber !== 1 || book.bookId !== chosenBook?.bookId) {
+      setLocalChapters([]);
+      setChapterNumber(1); // set the chapter to 1
+    }
     scrollBookSelectionIntoView(book);
     setIsProgrammaticSlide({ value: true }); // set the flag for programmically changing the slides
   };
@@ -149,8 +155,11 @@ export const ChapterPicker: React.FC = () => {
   };
 
   const handleSettingChapter = (chapter: number) => {
-    setLocalChapters([]);
-    setChapterNumber(chapter); // set the chapter to 1
+    // Check if the chapter number to be set does not equal to the chosen chapter
+    if (chapter !== chosenChapterNumber) {
+      setLocalChapters([]);
+      setChapterNumber(chapter); // set the chapter to 1
+    }
     scrollBookSelectionIntoView(chapter);
     setIsProgrammaticSlide({ value: true }); // set the flag for programmically changing the slides
   };
