@@ -12,7 +12,7 @@ import {
 } from "@ionic/react";
 import { Database } from "@ionic/storage";
 import { IonReactRouter } from "@ionic/react-router";
-import { book, happy } from "ionicons/icons";
+import { ellipse, book, happy } from "ionicons/icons";
 
 /* Pages */
 import Tab2 from "./pages/Tab2";
@@ -51,6 +51,7 @@ import { useMe } from "./hooks/UserHooks";
 
 /* Utils */
 import { useSetStatusBarColor } from "./utils/statusBarUtils";
+import useAddToHomescreenPrompt from "./utils/addToHomeScreen";
 
 setupIonicReact({ mode: "md" });
 
@@ -64,6 +65,7 @@ const App: React.FC = () => {
   /** Hooks declaration */
   const { getMe, data: userData } = useMe();
   useSetStatusBarColor(); // hook to set the status bar color
+  const [prompt, promptToInstall] = useAddToHomescreenPrompt();
 
   /**
    * Function to get and set the user if signed in
@@ -182,18 +184,21 @@ const App: React.FC = () => {
                 {/* <Route exact path="/home">
                     <Tab1 />
                   </Route> */}
-                <Route exact path="/read">
-                  <Tab2 />
-                </Route>
-                <Route
-                  exact
-                  path="/read/:currentLanguage?/:currentBibleId?/:currentBookId?/:currentChapterNumber?"
-                >
-                  <Tab2 />
-                </Route>
-                <Route path="/me">
-                  <Tab3 />
-                </Route>
+                  <Route exact path="/read">
+                    <Tab2 />
+                  </Route>
+                  <Route
+                    exact
+                    path="/read/:currentLanguage?/:currentBibleId?/:currentBookId?/:currentChapterNumber?"
+                  >
+                    <button onClick={promptToInstall as any}>
+                      Add to Home Screen
+                    </button>
+                    <Tab2 />
+                  </Route>
+                  <Route path="/me">
+                    <Tab3 />
+                  </Route>
 
                 {/* Auth routes */}
                 <Route path="/login">
@@ -208,22 +213,25 @@ const App: React.FC = () => {
               </Switch>
             </IonRouterOutlet>
 
-            {/* Tab Bar UI */}
-            <IonTabBar slot="bottom">
-              {/* <IonTabButton tab="tab1" href="/home">
-                <IonIcon icon={ellipse} />
-                <IonLabel>Home</IonLabel>
-              </IonTabButton> */}
-              <IonTabButton tab="tab2" href="/read">
-                <IonIcon icon={book} />
-                <IonLabel>Read</IonLabel>
-              </IonTabButton>
-              <IonTabButton tab="tab3" href="/me">
-                <IonIcon icon={happy} />
-                <IonLabel>Me</IonLabel>
-              </IonTabButton>
-            </IonTabBar>
-          </IonTabs>
+              {/* Tab Bar UI */}
+              <IonTabBar slot="bottom">
+                <IonTabButton tab="tab1" onClick={promptToInstall as any}>
+                  <IonIcon icon={ellipse} />
+                  <IonLabel>Home</IonLabel>
+                </IonTabButton>
+                <IonTabButton tab="tab2" href="/read">
+                  <IonIcon icon={triangle} />
+                  <IonLabel>Read</IonLabel>
+                </IonTabButton>
+                <IonTabButton tab="tab3" href="/me">
+                  <IonIcon icon={square} />
+                  <IonLabel>Me</IonLabel>
+                </IonTabButton>
+              </IonTabBar>
+            </IonTabs>
+          ) : (
+            <WelcomeSlides onFinish={removeWelcome} />
+          )
         ) : (
           <SplashScreen />
         )}
