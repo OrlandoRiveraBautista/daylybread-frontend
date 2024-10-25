@@ -71,3 +71,14 @@ serviceWorkerRegistration.register();
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+
+if (process.env.NODE_ENV === "production") {
+  const script = document.createElement("script");
+  script.innerHTML = `
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag("js", new Date());
+gtag("config", "G-D3HRVV9QR0"); 
+ `;
+  document.head.appendChild(script);
+}
