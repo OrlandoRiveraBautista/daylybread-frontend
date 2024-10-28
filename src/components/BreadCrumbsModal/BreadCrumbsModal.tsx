@@ -12,6 +12,7 @@ import {
   IonModalCustomEvent,
   ModalBreakpointChangeEventDetail,
 } from "@ionic/core";
+import { Keyboard } from "@capacitor/keyboard";
 
 /** Components */
 import BreadCrumbsChat from "./BreadCrumbsChat/BreadCrumbsChat";
@@ -54,6 +55,7 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
 
   // reference
   const breadCrumbsModalGrid = useRef<HTMLIonGridElement>(null);
+  const breadCrumbsModalContent = useRef<HTMLIonContentElement>(null);
 
   // context values
   const { selectedVersesCitation, deviceInfo } = useAppContext();
@@ -96,6 +98,27 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
     setMessages(temp);
     return;
   }, [openAIReponseStream]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    // get modal
+    const target = breadCrumbsModalContent.current!;
+    console.log(target);
+    // if (!target) return; // if no modal end function
+
+    Keyboard.addListener("keyboardWillShow", (event) => {
+      // Adjust the input field position here based on event.keyboardHeight
+      target.style["--keyboard-offset" as any] = `${event.keyboardHeight}px`;
+    });
+
+    Keyboard.addListener("keyboardWillHide", () => {
+      // Reset the input field position
+      target.style["--keyboard-offset" as any] = `0px`;
+    });
+
+    return () => {
+      Keyboard.removeAllListeners();
+    };
+  }, [breadCrumbsModalContent]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSubmit = (value: string) => {
     let inputValue = value;
@@ -156,7 +179,7 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
       onIonBreakpointDidChange={(e) => handleBreakpointChange(e)}
       backdropBreakpoint={0.5}
     >
-      <IonContent className="ion-padding ">
+      <IonContent className="ion-padding" ref={breadCrumbsModalContent}>
         <IonGrid ref={breadCrumbsModalGrid}>
           {selectedVersesCitation ? (
             <IonRow>
