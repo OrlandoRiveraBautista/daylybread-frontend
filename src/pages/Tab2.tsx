@@ -5,7 +5,10 @@ import {
   IonContent,
   IonHeader,
   IonIcon,
+  IonLabel,
   IonPage,
+  IonSegment,
+  IonSegmentButton,
   IonToolbar,
 } from "@ionic/react";
 import { Helmet } from "react-helmet";
@@ -38,6 +41,7 @@ const Tab2: React.FC = () => {
   /* States */
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [openBibleNavModal, setOpenBibleNavModal] = useState<boolean>(false);
+  const [segmentState, setSegmentState] = useState<string>("bookmarks");
 
   const canonicalUrl = window.location.href;
 
@@ -104,7 +108,37 @@ const Tab2: React.FC = () => {
 
       {/* Body */}
       <IonContent>
-        <BibleChapterViewer />
+        <div>
+          <IonSegment
+            value={segmentState}
+            // onIonChange={(e) => onSegmentChange(e)}
+          >
+            {/* <IonSegmentButton value="posts">
+          <IonLabel>Posts</IonLabel>
+        </IonSegmentButton> */}
+            <IonSegmentButton value="text">
+              <IonLabel>Text</IonLabel>
+            </IonSegmentButton>
+            <IonSegmentButton value="storybook">
+              <IonLabel>Storybook</IonLabel>
+            </IonSegmentButton>
+          </IonSegment>
+          {segmentState}
+          <BibleChapterViewer />
+
+          {/* <Swiper
+          // initialSlide={0}
+          // tabIndex={1}
+          // speed={slideOpts.speed}
+          // onSlideChange={(e: SwiperEvent) => onSlideChange(e)}
+          // onSwiper={(s: SwiperEvent) => setSwiper(s)}
+          >
+            <SwiperSlide>Slide 1</SwiperSlide> */}
+          {/* <SwiperSlide>
+              <BibleChapterViewer />
+            </SwiperSlide>
+          </Swiper> */}
+        </div>
 
         {/* Modals */}
         {/* translation selection */}
