@@ -1,6 +1,7 @@
 // BreadCrumbs Modal
 #bread-crumbs-modal {
   --height: 98%;
+
   .selected-indicator {
     display: flex;
     gap: 4px;
@@ -19,11 +20,8 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-    height: 75%;
+    height: 100%;
     justify-content: flex-end;
-    &.full-height {
-      height: 100%;
-    }
   }
 
   .chat-container {
