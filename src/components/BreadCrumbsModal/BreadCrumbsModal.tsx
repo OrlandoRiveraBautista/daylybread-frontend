@@ -178,6 +178,7 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
                 <IonRow>
                   <IonCol>
                     <IonCheckbox
+                      labelPlacement="end"
                       className="selected-text-checkbox"
                       checked={useChosenTextVerbage}
                       onIonChange={() =>
