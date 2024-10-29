@@ -52,10 +52,6 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
   const [useChosenTextVerbage, setUseChosenTextVerbage] =
     useState<boolean>(false);
 
-  // reference
-  const breadCrumbsModalGrid = useRef<HTMLIonGridElement>(null);
-  const breadCrumbsModalContent = useRef<HTMLIonContentElement>(null);
-
   // context values
   const { selectedVersesCitation, deviceInfo } = useAppContext();
   const { getChatGpt, data } = useLazyOpenAI();
@@ -165,8 +161,8 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
       backdropBreakpoint={0.5}
       onDidPresent={(e) => handleBreakpointChange(e)}
     >
-      <IonContent className="ion-padding" ref={breadCrumbsModalContent}>
-        <IonGrid ref={breadCrumbsModalGrid}>
+      <IonContent className="ion-padding">
+        <IonGrid>
           {selectedVersesCitation ? (
             <IonRow>
               <IonCol className="selected-indicator">
