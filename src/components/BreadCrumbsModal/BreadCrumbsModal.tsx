@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   IonContent,
   IonModal,
@@ -51,9 +51,6 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
   const [messages, setMessages] = useState<IMessagesObject[]>([]);
   const [useChosenTextVerbage, setUseChosenTextVerbage] =
     useState<boolean>(false);
-
-  // reference
-  const breadCrumbsModalGrid = useRef<HTMLIonGridElement>(null);
 
   // context values
   const { selectedVersesCitation, deviceInfo } = useAppContext();
@@ -126,11 +123,18 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
    * @returns void
    */
   const handleBreakpointChange = (
-    e: IonModalCustomEvent<ModalBreakpointChangeEventDetail>
+    e: IonModalCustomEvent<ModalBreakpointChangeEventDetail | void>
   ) => {
     // get modal
-    const target = breadCrumbsModalGrid.current;
+    const target = document.getElementById("ion-react-wrapper");
+
     if (!target) return; // if no modal end function
+
+    // when the modal opens up
+    if (!e.detail) {
+      target.style.height = `75%`;
+      return;
+    }
 
     // check for breakpoint being less than or equal to .75 and if full-height is set
     if (e.detail.breakpoint >= 0.7) {
@@ -155,9 +159,10 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
       id="bread-crumbs-modal"
       onIonBreakpointDidChange={(e) => handleBreakpointChange(e)}
       backdropBreakpoint={0.5}
+      onDidPresent={(e) => handleBreakpointChange(e)}
     >
-      <IonContent className="ion-padding ">
-        <IonGrid ref={breadCrumbsModalGrid}>
+      <IonContent className="ion-padding">
+        <IonGrid>
           {selectedVersesCitation ? (
             <IonRow>
               <IonCol className="selected-indicator">
