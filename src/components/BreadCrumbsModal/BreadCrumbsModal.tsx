@@ -12,7 +12,6 @@ import {
   IonModalCustomEvent,
   ModalBreakpointChangeEventDetail,
 } from "@ionic/core";
-import { Keyboard } from "@capacitor/keyboard";
 
 /** Components */
 import BreadCrumbsChat from "./BreadCrumbsChat/BreadCrumbsChat";
@@ -99,27 +98,6 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
     return;
   }, [openAIReponseStream]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
-    // get modal
-    const target = breadCrumbsModalContent.current!;
-    console.log(target);
-    // if (!target) return; // if no modal end function
-
-    Keyboard.addListener("keyboardWillShow", (event) => {
-      // Adjust the input field position here based on event.keyboardHeight
-      target.style["--keyboard-offset" as any] = `${event.keyboardHeight}px`;
-    });
-
-    Keyboard.addListener("keyboardWillHide", () => {
-      // Reset the input field position
-      target.style["--keyboard-offset" as any] = `0px`;
-    });
-
-    return () => {
-      Keyboard.removeAllListeners();
-    };
-  }, [breadCrumbsModalContent]); // eslint-disable-line react-hooks/exhaustive-deps
-
   const handleSubmit = (value: string) => {
     let inputValue = value;
     if (useChosenTextVerbage) {
@@ -149,11 +127,18 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
    * @returns void
    */
   const handleBreakpointChange = (
-    e: IonModalCustomEvent<ModalBreakpointChangeEventDetail>
+    e: IonModalCustomEvent<ModalBreakpointChangeEventDetail | void>
   ) => {
     // get modal
-    const target = breadCrumbsModalGrid.current;
+    const target = document.getElementById("ion-react-wrapper");
+
     if (!target) return; // if no modal end function
+
+    // when the modal opens up
+    if (!e.detail) {
+      target.style.height = `75%`;
+      return;
+    }
 
     // check for breakpoint being less than or equal to .75 and if full-height is set
     if (e.detail.breakpoint >= 0.7) {
@@ -178,6 +163,7 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
       id="bread-crumbs-modal"
       onIonBreakpointDidChange={(e) => handleBreakpointChange(e)}
       backdropBreakpoint={0.5}
+      onDidPresent={(e) => handleBreakpointChange(e)}
     >
       <IonContent className="ion-padding" ref={breadCrumbsModalContent}>
         <IonGrid ref={breadCrumbsModalGrid}>
