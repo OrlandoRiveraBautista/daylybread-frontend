@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { IonChip } from "@ionic/react";
 import { Share } from "@capacitor/share";
+import { useLocation } from "react-router-dom";
 
 /* Context */
 import { useAppContext } from "../../../context/context";
@@ -19,6 +20,8 @@ const SendTextQuickActions: React.FC = () => {
   // local state
   const [bookMarkModalIsOpen, setBookMarkModalIsOpen] =
     useState<boolean>(false);
+
+  const location = useLocation();
 
   /**
    * Quick actions object for selected text
@@ -41,6 +44,8 @@ const SendTextQuickActions: React.FC = () => {
     },
     // share quick action
     share: async () => {
+      const currentUrl = window.location.origin + location.pathname;
+
       const text = getSelectedText(
         selectedVerseList,
         chosenBible!,
@@ -55,7 +60,7 @@ const SendTextQuickActions: React.FC = () => {
       await Share.share({
         title: "Share a text with someone",
         text: text,
-        // url: "http://ionicframework.com/", // add this back in a later itteration
+        url: currentUrl,
         dialogTitle: "Share with everyone!",
       });
     },
