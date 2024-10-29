@@ -76,35 +76,35 @@ const Signup: React.FC = () => {
     const label = (ev.target as any).label;
 
     if (label === "Re-Password") {
-      setSignupOptions({ ...signupOptions, rePassword: value }); // set the values to the options object
+      setSignupOptions((prev) => ({ ...prev, rePassword: value })); // set the values to the options object
     } else {
-      setSignupOptions({ ...signupOptions, [label.toLowerCase()]: value }); // set the values to the options object
+      setSignupOptions((prev) => ({ ...prev, [label.toLowerCase()]: value })); // set the values to the options object
     }
 
     if (value === "") return; // check to validate an empty value
 
     // email validation
     if (label === "Email") {
-      setIsValid({ ...isValid, email: undefined });
+      setIsValid((prev) => ({ ...prev, email: undefined }));
       validateEmail(value) !== null
-        ? setIsValid({ ...isValid, email: true })
-        : setIsValid({ ...isValid, email: false });
+        ? setIsValid((prev) => ({ ...prev, email: true }))
+        : setIsValid((prev) => ({ ...prev, email: false }));
     }
 
     // password validation
     if (label === "Password") {
-      setIsValid({ ...isValid, password: undefined });
+      setIsValid((prev) => ({ ...prev, password: undefined }));
       validatePassword(value)
-        ? setIsValid({ ...isValid, password: true })
-        : setIsValid({ ...isValid, password: false });
+        ? setIsValid((prev) => ({ ...prev, password: true }))
+        : setIsValid((prev) => ({ ...prev, password: false }));
     }
 
     // password validation
     if (label === "Re-Password") {
-      setIsValid({ ...isValid, rePassword: undefined });
+      setIsValid((prev) => ({ ...prev, rePassword: undefined }));
       validatePassword(value) && value === signupOptions.password
-        ? setIsValid({ ...isValid, rePassword: true })
-        : setIsValid({ ...isValid, rePassword: false });
+        ? setIsValid((prev) => ({ ...prev, rePassword: true }))
+        : setIsValid((prev) => ({ ...prev, rePassword: false }));
     }
   };
 
