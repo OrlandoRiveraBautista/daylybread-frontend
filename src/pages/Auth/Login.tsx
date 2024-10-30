@@ -66,24 +66,24 @@ const Login: React.FC = () => {
     const name = (ev.target as HTMLInputElement).name;
     const value = (ev.target as HTMLInputElement).value;
 
-    setLoginOptions({ ...loginOptions, [name]: value }); // set the values to the options object
+    setLoginOptions((prevOptions) => ({ ...prevOptions, [name]: value })); // set the values to the options object
 
     if (value === "") return; // check to validate an empty value
 
     // email validation
     if (name === "email") {
-      setIsValid({ ...isValid, email: undefined });
+      setIsValid((prev) => ({ ...prev, email: undefined }));
       validateEmail(value) !== null
-        ? setIsValid({ ...isValid, email: true })
-        : setIsValid({ ...isValid, email: false });
+        ? setIsValid((prev) => ({ ...prev, email: true }))
+        : setIsValid((prev) => ({ ...prev, email: false }));
     }
 
     // password validation
     if (name === "password") {
-      setIsValid({ ...isValid, password: undefined });
+      setIsValid((prev) => ({ ...prev, password: undefined }));
       validatePassword(value)
-        ? setIsValid({ ...isValid, password: true })
-        : setIsValid({ ...isValid, password: false });
+        ? setIsValid((prev) => ({ ...prev, password: true }))
+        : setIsValid((prev) => ({ ...prev, password: false }));
     }
   };
 

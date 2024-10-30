@@ -62,15 +62,14 @@ const UpdateUserAfterSignup: React.FC = () => {
     const value = (ev.target as HTMLInputElement).value;
     const type = (ev.target as any).is;
 
-    setUpdateOptions({ ...updateOptions, [type]: value }); // set the values to the options object
+    setUpdateOptions((prev) => ({ ...prev, [type]: value })); // set the values to the options object
 
     // email validation
+    setIsValid((prev) => ({ ...prev, [type]: undefined }));
     if (!value || value === "") {
-      setIsValid({ ...isValid, [type]: undefined });
-      setIsValid({ ...isValid, [type]: false });
+      setIsValid((prev) => ({ ...prev, [type]: false }));
     } else {
-      setIsValid({ ...isValid, [type]: undefined });
-      setIsValid({ ...isValid, [type]: true });
+      setIsValid((prev) => ({ ...prev, [type]: true }));
     }
   };
 
