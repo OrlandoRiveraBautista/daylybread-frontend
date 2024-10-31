@@ -86,7 +86,8 @@ const BibleChapterViewer: React.FC = () => {
               if (!chosenChapterVerses?.previous) return;
               const index = localChapters.findIndex(
                 (chap) =>
-                  chap[0].chapter === chosenChapterVerses?.current[0].chapter
+                  chap[0].chapter === chosenChapterVerses?.current[0].chapter &&
+                  chap[0].bookId === chosenChapterVerses.current[0].bookId
               );
               // set the flag that the slides will change programmaticly
               s.slideTo(index, 0); // set the slide index
