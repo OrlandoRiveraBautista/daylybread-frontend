@@ -23,6 +23,7 @@ import BibleNavModal from "../components/BibleNavModal/BibleNavModal";
 import BibleTranslationModal from "../components/BibleNavModal/BibleTranslationModal";
 import BibleChapterViewer from "../components/BibleViewer/BibleChapterViewer";
 import Player from "../components/Player/Player";
+import { Swiper, SwiperSlide } from "swiper/react";
 
 /* Styles */
 import "./Tab2.scss";
@@ -32,8 +33,9 @@ import { caretDownOutline } from "ionicons/icons";
 
 /* Utils */
 import { displayBibleAbbr } from "../utils/support";
-// import { Swiper } from "swiper/types";
-import { Swiper, SwiperSlide } from "swiper/react";
+
+/* Types */
+import { Swiper as SwiperEvent } from "swiper/types";
 
 const Tab2: React.FC = () => {
   // Context
@@ -44,6 +46,7 @@ const Tab2: React.FC = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [openBibleNavModal, setOpenBibleNavModal] = useState<boolean>(false);
   const [segmentState, setSegmentState] = useState<string>("text");
+  const [swiper, setSwiper] = useState<SwiperEvent | null>(null);
 
   const canonicalUrl = window.location.href;
 
@@ -116,6 +119,7 @@ const Tab2: React.FC = () => {
             onIonChange={(e) => {
               if (!e.detail.value) return;
               setSegmentState(e.detail.value);
+              swiper?.slideTo(["text", "storybook"].indexOf(e.detail.value));
             }}
           >
             <IonSegmentButton value="text">
@@ -125,16 +129,12 @@ const Tab2: React.FC = () => {
               <IonLabel>Storybook</IonLabel>
             </IonSegmentButton>
           </IonSegment>
-          {segmentState}
 
           <Swiper
             allowTouchMove={false} // Disable manual swipe
             className="reading-type-swiper-wrapper"
-            // initialSlide={0}
-            // tabIndex={1}
-            // speed={slideOpts.speed}
-            // onSlideChange={(e: SwiperEvent) => onSlideChange(e)}
-            // onSwiper={(s: SwiperEvent) => setSwiper(s)}
+            onSwiper={setSwiper}
+            speed={300}
           >
             <SwiperSlide>
               <BibleChapterViewer />
