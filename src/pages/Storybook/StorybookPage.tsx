@@ -50,6 +50,7 @@ const StorybookPage: React.FC = () => {
     const arrayOfBatch = batchArray(currentChapter);
     setBatchedVerses(arrayOfBatch);
     if (chosenChapterVerses.previous?.length) {
+      if (!swiper) return;
       swiper?.slideTo(1);
     }
   }, [chosenChapterVerses]);
@@ -155,7 +156,12 @@ const StorybookPage: React.FC = () => {
           autoHeight={true}
           slidesPerView={1}
           spaceBetween={30}
-          onSwiper={setSwiper}
+          onSwiper={(e: SwiperType) => {
+            if (chosenChapterVerses.previous?.length) {
+              e?.slideTo(1);
+            }
+            setSwiper(e);
+          }}
           onSlideNextTransitionStart={(e: SwiperType) => {
             if (!e.isEnd) return;
             nextChapter();
