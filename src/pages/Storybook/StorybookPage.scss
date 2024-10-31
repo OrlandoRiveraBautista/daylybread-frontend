@@ -1,0 +1,29 @@
+#storybook-container {
+  width: 100%;
+  height: calc(100vh - 48px - 56px - 57px);
+  position: relative;
+  overflow: auto;
+
+  .bibleSwiper {
+    height: 100% !important;
+
+    .swiper-slide {
+      padding: 0;
+      text-align: left;
+    }
+
+    ion-card {
+      height: 100%;
+      width: 100%;
+      //   display: flex;
+      //   align-items: center;
+      //   justify-content: center;
+      //   border-radius: 12px;
+      //   text-align: inherit !important;
+      background-color: var(--ion-surface-container);
+      box-shadow: 2px 2px 2px 1px rgb(0 0 0 / 20%);
+      //   padding: 16px;
+      margin: 0;
+    }
+  }
+}
