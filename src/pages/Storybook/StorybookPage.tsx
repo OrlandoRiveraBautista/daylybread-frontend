@@ -2,60 +2,52 @@ import React from "react";
 import { EffectCards } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
+import "./StorybookPage.scss";
+import {
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardSubtitle,
+  IonCardTitle,
+} from "@ionic/react";
+
 const StorybookPage: React.FC = () => {
   return (
-    <div>
-      <>
-        <Swiper
-          // onInit={(s: SwiperType) => {
-          //   setSwiper(s);
-          // }}
-          // onSwiper={(s: SwiperType) => {
-          //   setIsProgrammaticSlide({ value: false });
-          //   if (!chosenChapterVerses?.previous) return;
-          //   const index = localChapters.findIndex(
-          //     (chap) =>
-          //       chap[0].chapter === chosenChapterVerses?.current[0].chapter
-          //   );
-          //   // set the flag that the slides will change programmaticly
-          //   s.slideTo(index, 0); // set the slide index
-          // }}
-          // grabCursor={true}
-          modules={[EffectCards]}
-          className="bibleSwiper ion-padding"
-          autoHeight={true}
+    <div id="storybook-container">
+      <Swiper
+        modules={[EffectCards]}
+        className="bibleSwiper ion-padding"
+        direction="vertical"
+        effect="slide"
+        autoHeight={true}
+        slidesPerView={1}
+        spaceBetween={30}
+      >
+        <SwiperSlide>
+          <IonCard>
+            <img
+              alt="Silhouette of mountains"
+              src="https://ionicframework.com/docs/img/demos/card-media.png"
+            />
 
-          // autoHeight={true}
-          // longSwipes={true}
-          // onSlideNextTransitionStart={() => {
-          //   if (isProgrammaticSlide.value) return;
-          //   nextChapter();
-          // }}
-          // onSlidePrevTransitionStart={() => {
-          //   if (isProgrammaticSlide.value) return;
-
-          //   backChapter();
-          // }}
-          // slidesPerView={1}
-          // spaceBetween={30}
-        >
-          {/* {localChapters.map((value, key) =>
-              value ? (
-                <SwiperSlide key={key}>
-                  <div id="chapter-viewer">
-                    
-                  </div>
-                </SwiperSlide>
-              ) : null
-            )} */}
-          <SwiperSlide>
-            <div> We are here</div>
-          </SwiperSlide>
-          <SwiperSlide>
-            <div> We are here 2</div>
-          </SwiperSlide>
-        </Swiper>
-      </>
+            <IonCardHeader>
+              <IonCardTitle>Verse: 1-3</IonCardTitle>
+              <IonCardSubtitle>Chapter: 1</IonCardSubtitle>
+            </IonCardHeader>
+            <IonCardContent>kjfaskldjflaksdj</IonCardContent>
+          </IonCard>
+        </SwiperSlide>
+        <SwiperSlide>
+          <IonCard>
+            <IonCardHeader>Hello</IonCardHeader>
+          </IonCard>
+        </SwiperSlide>
+        <SwiperSlide>
+          <IonCard>
+            <IonCardHeader>Hello</IonCardHeader>
+          </IonCard>
+        </SwiperSlide>
+      </Swiper>
     </div>
   );
 };
