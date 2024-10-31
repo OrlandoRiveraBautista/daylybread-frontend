@@ -17,6 +17,7 @@ import useBibleNavigator from "../../components/utility/hooks/useBibleNavigator"
 /* Types */
 import { Swiper as SwiperType } from "swiper/types";
 import Skeleton from "../../components/Loading/Skeleton";
+import TextViewer from "../../components/BibleViewer/TextViewer/TextViewer";
 
 const StorybookPage: React.FC = () => {
   /* Context */
@@ -84,7 +85,13 @@ const StorybookPage: React.FC = () => {
                 Chapter: {previousChaptersVerses[0].chapter}
               </IonCardSubtitle>
             </IonCardHeader>
-            <IonCardContent></IonCardContent>
+            <IonCardContent>
+              <TextViewer
+                verses={previousChaptersVerses}
+                isLoading={false}
+                // ref={TextViewerRef}
+              />
+            </IonCardContent>
           </IonCard>
         </SwiperSlide>
       );
@@ -109,7 +116,13 @@ const StorybookPage: React.FC = () => {
                 Chapter: {versesInBatch[0].chapter}
               </IonCardSubtitle>
             </IonCardHeader>
-            <IonCardContent></IonCardContent>
+            <IonCardContent>
+              <TextViewer
+                verses={versesInBatch}
+                isLoading={false}
+                // ref={TextViewerRef}
+              />
+            </IonCardContent>
           </IonCard>
         </SwiperSlide>
       );
@@ -136,7 +149,13 @@ const StorybookPage: React.FC = () => {
                 Chapter: {nextChaptersVerses[0].chapter}
               </IonCardSubtitle>
             </IonCardHeader>
-            <IonCardContent></IonCardContent>
+            <IonCardContent>
+              <TextViewer
+                verses={nextChaptersVerses}
+                isLoading={false}
+                // ref={TextViewerRef}
+              />
+            </IonCardContent>
           </IonCard>
         </SwiperSlide>
       );
