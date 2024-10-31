@@ -41,7 +41,7 @@ const Tab2: React.FC = () => {
   /* States */
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [openBibleNavModal, setOpenBibleNavModal] = useState<boolean>(false);
-  const [segmentState, setSegmentState] = useState<string>("bookmarks");
+  const [segmentState, setSegmentState] = useState<string>("text");
 
   const canonicalUrl = window.location.href;
 
@@ -111,11 +111,11 @@ const Tab2: React.FC = () => {
         <div>
           <IonSegment
             value={segmentState}
-            // onIonChange={(e) => onSegmentChange(e)}
+            onIonChange={(e) => {
+              if (!e.detail.value) return;
+              setSegmentState(e.detail.value);
+            }}
           >
-            {/* <IonSegmentButton value="posts">
-          <IonLabel>Posts</IonLabel>
-        </IonSegmentButton> */}
             <IonSegmentButton value="text">
               <IonLabel>Text</IonLabel>
             </IonSegmentButton>
