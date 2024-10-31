@@ -3,13 +3,7 @@ import { EffectCards } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import "./StorybookPage.scss";
-import {
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardSubtitle,
-  IonCardTitle,
-} from "@ionic/react";
+import { IonCard, IonCardContent } from "@ionic/react";
 import { useAppContext } from "../../context/context";
 import { BbVerse } from "../../__generated__/graphql";
 import useBibleNavigator from "../../components/utility/hooks/useBibleNavigator";
@@ -18,6 +12,7 @@ import useBibleNavigator from "../../components/utility/hooks/useBibleNavigator"
 import { Swiper as SwiperType } from "swiper/types";
 import Skeleton from "../../components/Loading/Skeleton";
 import TextViewer from "../../components/BibleViewer/TextViewer/TextViewer";
+import { useLazyGenerateImage } from "../../hooks/AI/MediaAIHooks";
 
 const StorybookPage: React.FC = () => {
   /* Context */
@@ -25,6 +20,7 @@ const StorybookPage: React.FC = () => {
 
   /* Hooks */
   const { nextChapter, backChapter } = useBibleNavigator();
+  const { getGenerateImage, data, loading } = useLazyGenerateImage();
 
   /* State */
   const [swiper, setSwiper] = useState<SwiperType>();
@@ -40,10 +36,15 @@ const StorybookPage: React.FC = () => {
 
   useEffect(() => {
     if (!localChapters?.length) return;
-    if (!chosenChapterVerses?.current) return;
+    if (!chosenChapterVerses?.current.length) return;
+
+    console.log(chosenChapterVerses.current);
 
     const currentChapter = localChapters.find(
-      (chap) => chap[0].chapter === chosenChapterVerses.current[0].chapter
+      (chap) =>
+        chap?.length &&
+        chap[0].chapter === chosenChapterVerses.current[0].chapter &&
+        chap[0].bookId === chosenChapterVerses.current[0].bookId
     );
 
     if (!currentChapter?.length) return;
@@ -53,6 +54,12 @@ const StorybookPage: React.FC = () => {
     if (chosenChapterVerses.previous?.length) {
       if (!swiper) return;
       swiper?.slideTo(1);
+
+      getGenerateImage({
+        variables: {
+          prompt: chosenChapterVerses?.current?.slice(0, 3).toLocaleString(),
+        },
+      });
     }
   }, [chosenChapterVerses]);
 
@@ -60,10 +67,12 @@ const StorybookPage: React.FC = () => {
     let renderedSlides = [];
     if (!batchedVerses?.length) return;
 
-    const previousChaptersVerses = chosenChapterVerses?.previous?.slice(-3);
-    const nextChaptersVerses = chosenChapterVerses?.next?.slice(0, 3);
-
-    console.log(nextChaptersVerses);
+    const previousChaptersVerses = chosenChapterVerses?.previous?.length
+      ? chosenChapterVerses?.previous?.slice(-3)
+      : [];
+    const nextChaptersVerses = chosenChapterVerses?.next?.length
+      ? chosenChapterVerses?.next?.slice(0, 3)
+      : [];
 
     if (previousChaptersVerses?.length) {
       renderedSlides.push(
@@ -91,7 +100,7 @@ const StorybookPage: React.FC = () => {
           <IonCard>
             <img
               alt="Silhouette of mountains"
-              src="https://ionicframework.com/docs/img/demos/card-media.png"
+              src={data?.generateImage.generatedImage?.at(0)}
             />
             <IonCardContent>
               <TextViewer
@@ -142,17 +151,38 @@ const StorybookPage: React.FC = () => {
           onSwiper={(e: SwiperType) => {
             if (chosenChapterVerses.previous?.length) {
               e?.slideTo(1);
+
+              getGenerateImage({
+                variables: {
+                  prompt: chosenChapterVerses?.current
+                    ?.slice(0, 3)
+                    .toLocaleString(),
+                },
+              });
             }
             setSwiper(e);
           }}
           onSlideNextTransitionStart={(e: SwiperType) => {
+            if (!e.slides.length) return;
             if (!e.isEnd) return;
+
             nextChapter();
           }}
           onSlidePrevTransitionStart={(e: SwiperType) => {
+            if (!e.slides.length) return;
+
             if (!e.isBeginning) return;
 
             backChapter();
+          }}
+          onSlideChange={(e: SwiperType) => {
+            if (!e.slides.length) return;
+            const { innerText } = e.slides.at(e.realIndex)!;
+            getGenerateImage({
+              variables: {
+                prompt: innerText,
+              },
+            });
           }}
         >
           {batchedVerses?.length ? renderSlides() : null}
