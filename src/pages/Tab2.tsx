@@ -32,6 +32,8 @@ import { caretDownOutline } from "ionicons/icons";
 
 /* Utils */
 import { displayBibleAbbr } from "../utils/support";
+// import { Swiper } from "swiper/types";
+import { Swiper, SwiperSlide } from "swiper/react";
 
 const Tab2: React.FC = () => {
   // Context
@@ -124,20 +126,21 @@ const Tab2: React.FC = () => {
             </IonSegmentButton>
           </IonSegment>
           {segmentState}
-          <BibleChapterViewer />
 
-          {/* <Swiper
-          // initialSlide={0}
-          // tabIndex={1}
-          // speed={slideOpts.speed}
-          // onSlideChange={(e: SwiperEvent) => onSlideChange(e)}
-          // onSwiper={(s: SwiperEvent) => setSwiper(s)}
+          <Swiper
+            allowTouchMove={false} // Disable manual swipe
+            className="reading-type-swiper-wrapper"
+            // initialSlide={0}
+            // tabIndex={1}
+            // speed={slideOpts.speed}
+            // onSlideChange={(e: SwiperEvent) => onSlideChange(e)}
+            // onSwiper={(s: SwiperEvent) => setSwiper(s)}
           >
-            <SwiperSlide>Slide 1</SwiperSlide> */}
-          {/* <SwiperSlide>
+            <SwiperSlide>
               <BibleChapterViewer />
             </SwiperSlide>
-          </Swiper> */}
+            <SwiperSlide>Hello</SwiperSlide>
+          </Swiper>
         </div>
 
         {/* Modals */}
