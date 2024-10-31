@@ -1,6 +1,8 @@
 @import "../../theme/variables.scss";
 
 #chapter-viewer-container {
+  width: 100%;
+
   .bibleSwiper {
     height: max-content !important;
 
@@ -29,6 +31,8 @@
       display: flex;
       flex-direction: column;
       gap: 4px;
+      align-items: start;
+      text-align: left;
 
       .chapter-number {
         font-size: 24px;
