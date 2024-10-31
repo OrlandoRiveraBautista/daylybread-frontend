@@ -16,7 +16,8 @@ ion-toolbar ion-title .toolbar-title {
 }
 
 .reading-type-swiper-wrapper {
-  .swiper-slide {
+  > .swiper-wrapper > .swiper-slide {
     padding: 0;
+    height: max-content !important;
   }
 }
