@@ -63,6 +63,8 @@ const StorybookPage: React.FC = () => {
     const previousChaptersVerses = chosenChapterVerses?.previous?.slice(-3);
     const nextChaptersVerses = chosenChapterVerses?.next?.slice(0, 3);
 
+    console.log(nextChaptersVerses);
+
     if (previousChaptersVerses?.length) {
       renderedSlides.push(
         <SwiperSlide key={-1}>
@@ -71,20 +73,6 @@ const StorybookPage: React.FC = () => {
               alt="Silhouette of mountains"
               src="https://ionicframework.com/docs/img/demos/card-media.png"
             />
-
-            <IonCardHeader>
-              <IonCardTitle>
-                Verse:
-                {`${previousChaptersVerses[0].verseStart} -
-                ${
-                  previousChaptersVerses[previousChaptersVerses?.length - 1]
-                    .verseStart
-                }`}
-              </IonCardTitle>
-              <IonCardSubtitle>
-                Chapter: {previousChaptersVerses[0].chapter}
-              </IonCardSubtitle>
-            </IonCardHeader>
             <IonCardContent>
               <TextViewer
                 verses={previousChaptersVerses}
@@ -105,17 +93,6 @@ const StorybookPage: React.FC = () => {
               alt="Silhouette of mountains"
               src="https://ionicframework.com/docs/img/demos/card-media.png"
             />
-
-            <IonCardHeader>
-              <IonCardTitle>
-                Verse:
-                {`${versesInBatch[0].verseStart} -
-                ${versesInBatch[versesInBatch?.length - 1].verseStart}`}
-              </IonCardTitle>
-              <IonCardSubtitle>
-                Chapter: {versesInBatch[0].chapter}
-              </IonCardSubtitle>
-            </IonCardHeader>
             <IonCardContent>
               <TextViewer
                 verses={versesInBatch}
@@ -136,19 +113,6 @@ const StorybookPage: React.FC = () => {
               alt="Silhouette of mountains"
               src="https://ionicframework.com/docs/img/demos/card-media.png"
             />
-
-            <IonCardHeader>
-              <IonCardTitle>
-                Verse:
-                {`${nextChaptersVerses[0].verseStart} -
-                ${
-                  nextChaptersVerses[nextChaptersVerses?.length - 1].verseStart
-                }`}
-              </IonCardTitle>
-              <IonCardSubtitle>
-                Chapter: {nextChaptersVerses[0].chapter}
-              </IonCardSubtitle>
-            </IonCardHeader>
             <IonCardContent>
               <TextViewer
                 verses={nextChaptersVerses}
