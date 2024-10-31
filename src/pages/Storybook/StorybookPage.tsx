@@ -96,10 +96,14 @@ const StorybookPage: React.FC = () => {
       renderedSlides.push(
         <SwiperSlide key={index}>
           <IonCard>
-            <img
-              alt="Silhouette of mountains"
-              src={data?.generateImage.generatedImage?.at(0)}
-            />
+            {loading ? (
+              <Skeleton height="380px" width="100%" shape="square" />
+            ) : (
+              <img
+                alt="Silhouette of mountains"
+                src={data?.generateImage.generatedImage?.at(0)}
+              />
+            )}
             <IonCardContent>
               <TextViewer
                 verses={versesInBatch}
