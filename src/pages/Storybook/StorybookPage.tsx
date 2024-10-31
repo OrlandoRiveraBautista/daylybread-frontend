@@ -16,6 +16,7 @@ import useBibleNavigator from "../../components/utility/hooks/useBibleNavigator"
 
 /* Types */
 import { Swiper as SwiperType } from "swiper/types";
+import Skeleton from "../../components/Loading/Skeleton";
 
 const StorybookPage: React.FC = () => {
   /* Context */
@@ -167,7 +168,11 @@ const StorybookPage: React.FC = () => {
         >
           {batchedVerses?.length ? renderSlides() : null}
         </Swiper>
-      ) : null}
+      ) : (
+        <div className="ion-padding">
+          <Skeleton height="100%" width="100%" shape="square" />
+        </div>
+      )}
     </div>
   );
 };
