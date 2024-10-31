@@ -14,20 +14,18 @@ import { useAppContext } from "../../context/context";
 import { BbVerse } from "../../__generated__/graphql";
 import useBibleNavigator from "../../components/utility/hooks/useBibleNavigator";
 
+/* Types */
+import { Swiper as SwiperType } from "swiper/types";
+
 const StorybookPage: React.FC = () => {
   /* Context */
-  const {
-    chosenChapterVerses,
-    chosenBook,
-    handleResetChapterData,
-    localChapters,
-    isProgrammaticSlide,
-    setIsProgrammaticSlide,
-  } = useAppContext();
+  const { chosenChapterVerses, localChapters } = useAppContext();
 
   /* Hooks */
   const { nextChapter, backChapter } = useBibleNavigator();
 
+  /* State */
+  const [swiper, setSwiper] = useState<SwiperType>();
   const [batchedVerses, setBatchedVerses] = useState<BbVerse[][]>();
 
   function batchArray(arr: BbVerse[], size = 3) {
@@ -50,6 +48,9 @@ const StorybookPage: React.FC = () => {
 
     const arrayOfBatch = batchArray(currentChapter);
     setBatchedVerses(arrayOfBatch);
+    if (chosenChapterVerses.previous?.length) {
+      swiper?.slideTo(1);
+    }
   }, [chosenChapterVerses]);
 
   const renderSlides = () => {
@@ -87,8 +88,6 @@ const StorybookPage: React.FC = () => {
       );
     }
 
-    console.log(nextChaptersVerses);
-
     batchedVerses.map((versesInBatch, index) => {
       renderedSlides.push(
         <SwiperSlide key={index}>
@@ -116,7 +115,7 @@ const StorybookPage: React.FC = () => {
 
     if (nextChaptersVerses?.length) {
       renderedSlides.push(
-        <SwiperSlide key={-1}>
+        <SwiperSlide key={renderedSlides.length + 1}>
           <IonCard>
             <img
               alt="Silhouette of mountains"
@@ -146,29 +145,29 @@ const StorybookPage: React.FC = () => {
 
   return (
     <div id="storybook-container">
-      <Swiper
-        modules={[EffectCards]}
-        className="bibleSwiper ion-padding"
-        direction="vertical"
-        effect="slide"
-        autoHeight={true}
-        slidesPerView={1}
-        spaceBetween={30}
-        // onSwiper={(s: ) => {
-        //   console.log(s);
-        // }}
-        // onSlideNextTransitionStart={() => {
-        //   if (isProgrammaticSlide.value) return;
-        //   nextChapter();
-        // }}
-        // onSlidePrevTransitionStart={() => {
-        //   if (isProgrammaticSlide.value) return;
+      {chosenChapterVerses?.current.length ? (
+        <Swiper
+          modules={[EffectCards]}
+          className="bibleSwiper ion-padding"
+          direction="vertical"
+          effect="slide"
+          autoHeight={true}
+          slidesPerView={1}
+          spaceBetween={30}
+          onSwiper={setSwiper}
+          onSlideNextTransitionStart={(e: SwiperType) => {
+            if (!e.isEnd) return;
+            nextChapter();
+          }}
+          onSlidePrevTransitionStart={(e: SwiperType) => {
+            if (!e.isBeginning) return;
 
-        //   backChapter();
-        // }}
-      >
-        {batchedVerses?.length ? renderSlides() : null}
-      </Swiper>
+            backChapter();
+          }}
+        >
+          {batchedVerses?.length ? renderSlides() : null}
+        </Swiper>
+      ) : null}
     </div>
   );
 };
