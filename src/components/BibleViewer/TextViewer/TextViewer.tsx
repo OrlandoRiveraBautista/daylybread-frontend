@@ -10,6 +10,9 @@ import { IonCol } from "@ionic/react";
 import BreadCrumbsModal from "../../BreadCrumbsModal/BreadCrumbsModal";
 import Skeleton from "../../Loading/Skeleton";
 
+/* Styles */
+import "./TextViewer.scss";
+
 /* Utils */
 import { getVerseClass } from "../../../utils/support";
 
