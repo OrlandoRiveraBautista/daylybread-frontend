@@ -92,7 +92,7 @@ const StorybookPage: React.FC = () => {
       );
     }
 
-    batchedVerses.map((versesInBatch, index) => {
+    batchedVerses.forEach((versesInBatch, index) => {
       renderedSlides.push(
         <SwiperSlide key={index}>
           <IonCard>
