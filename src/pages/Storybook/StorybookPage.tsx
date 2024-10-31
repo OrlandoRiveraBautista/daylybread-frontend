@@ -59,7 +59,7 @@ const StorybookPage: React.FC = () => {
         },
       });
     }
-  }, [chosenChapterVerses]);
+  }, [chosenChapterVerses]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const renderSlides = () => {
     let renderedSlides = [];
