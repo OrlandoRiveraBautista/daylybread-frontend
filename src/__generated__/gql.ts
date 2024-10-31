@@ -13,6 +13,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel-plugin for production.
  */
 const documents = {
+    "\n    query GenerateImage($prompt: String!) {\n        generateImage(prompt: $prompt) {\n            generatedImage\n        }\n    }\n": types.GenerateImageDocument,
     "\n    query Login($options: UsernamePasswordInput!) {\n        login(options: $options) {\n            user {\n               _id\n                createdAt\n                updatedAt\n                email\n                firstName\n                lastName\n                churchName\n                dob\n                count\n                bioText\n            }\n            errors {\n              field\n              message\n            }\n        }\n    }\n": types.LoginDocument,
     "\n    mutation Register($options: UsernamePasswordInput!) {\n      register(options: $options) {\n        user {\n          _id\n          createdAt\n          updatedAt\n          email\n          firstName\n          lastName\n          churchName\n          dob\n          count\n          bioText\n        }\n        errors {\n          field\n          message\n        }\n      }\n    }\n": types.RegisterDocument,
     "\n    mutation LoginWithGoogleMutation($options: LogInWithGoogleArgs!) {\n      loginWithGoogle(options: $options) {\n        user {\n          _id\n          createdAt\n          updatedAt\n          email\n          firstName\n          lastName\n          churchName\n          dob\n          count\n          bioText\n        }\n        errors {\n          field\n          message\n        }\n      }\n    }\n": types.LoginWithGoogleMutationDocument,
@@ -41,6 +42,10 @@ const documents = {
     "\n  mutation DeleteBookmarks($ids: [String!]!) {\n    deleteBookmarks(ids: $ids)\n  }\n": types.DeleteBookmarksDocument,
 };
 
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n    query GenerateImage($prompt: String!) {\n        generateImage(prompt: $prompt) {\n            generatedImage\n        }\n    }\n"): (typeof documents)["\n    query GenerateImage($prompt: String!) {\n        generateImage(prompt: $prompt) {\n            generatedImage\n        }\n    }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
