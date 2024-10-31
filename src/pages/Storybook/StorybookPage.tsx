@@ -38,8 +38,6 @@ const StorybookPage: React.FC = () => {
     if (!localChapters?.length) return;
     if (!chosenChapterVerses?.current.length) return;
 
-    console.log(chosenChapterVerses.current);
-
     const currentChapter = localChapters.find(
       (chap) =>
         chap?.length &&
@@ -57,7 +55,7 @@ const StorybookPage: React.FC = () => {
 
       getGenerateImage({
         variables: {
-          prompt: chosenChapterVerses?.current?.slice(0, 3).toLocaleString(),
+          prompt: currentChapter.slice(0, 3).toLocaleString(),
         },
       });
     }
