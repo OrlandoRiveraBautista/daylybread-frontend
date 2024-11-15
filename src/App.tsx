@@ -11,7 +11,7 @@ import {
   setupIonicReact,
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import { square, triangle } from "ionicons/icons";
+import { book, happy } from "ionicons/icons";
 
 /* Pages */
 import Tab2 from "./pages/Tab2";
@@ -207,11 +207,11 @@ const App: React.FC = () => {
                 <IonLabel>Home</IonLabel>
               </IonTabButton> */}
                 <IonTabButton tab="tab2" href="/read">
-                  <IonIcon icon={triangle} />
+                  <IonIcon icon={book} />
                   <IonLabel>Read</IonLabel>
                 </IonTabButton>
                 <IonTabButton tab="tab3" href="/me">
-                  <IonIcon icon={square} />
+                  <IonIcon icon={happy} />
                   <IonLabel>Me</IonLabel>
                 </IonTabButton>
               </IonTabBar>
