@@ -1,6 +1,7 @@
 import React from "react";
 import { IonImg, IonText, IonTitle } from "@ionic/react";
 import { useLocation } from "react-router-dom";
+import { Helmet } from "react-helmet";
 
 /* Components */
 import Login from "./Login";
@@ -16,9 +17,24 @@ import SmallWordLogoDark from "../../assets/images/small-word-logo-dark.svg";
 
 const Auth: React.FC = () => {
   const location = useLocation();
+  const canonicalUrl = window.location.href;
+
+  const pathToString: any = {
+    login: "Welcome back to Daylybread | Login",
+    signup: "Welcome to Daylybread | Signup",
+    signupupdateuser: "Just a few more things | Welcome to Daylybread | Signup",
+  };
 
   return (
     <div className="container" id="auth">
+      <Helmet>
+        <title>{pathToString[location.pathname.substring(1)]}</title>
+        <meta
+          name="description"
+          content={pathToString[location.pathname.substring(1)]}
+        />
+        <link rel="canonical" href={canonicalUrl} />
+      </Helmet>
       <div className="auth-welcome-container">
         <IonImg
           src={
