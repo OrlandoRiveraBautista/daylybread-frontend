@@ -1,25 +1,32 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   IonButton,
   IonButtons,
   IonContent,
   IonHeader,
   IonIcon,
+  IonLabel,
   IonPage,
+  IonSegment,
+  IonSegmentButton,
   IonToolbar,
 } from "@ionic/react";
 import { Helmet } from "react-helmet";
+import { Swiper, SwiperSlide } from "swiper/react";
 
 /* Context */
 import { useAppContext } from "../context/context";
 
 /** Hooks */
+import useBibleHistory from "../components/utility/hooks/useBibleHistory";
 
 /* Components */
 import BibleNavModal from "../components/BibleNavModal/BibleNavModal";
 import BibleTranslationModal from "../components/BibleNavModal/BibleTranslationModal";
 import BibleChapterViewer from "../components/BibleViewer/BibleChapterViewer";
 import Player from "../components/Player/Player";
+import StorybookPage from "./Storybook/StorybookPage";
+import InitialBiblePicker from "../components/InitialBiblePicker/InitialBiblePicker";
 
 /* Styles */
 import "./Tab2.scss";
@@ -30,16 +37,40 @@ import { caretDownOutline } from "ionicons/icons";
 /* Utils */
 import { displayBibleAbbr } from "../utils/support";
 
+/* Types */
+import { Swiper as SwiperEvent } from "swiper/types";
+
 const Tab2: React.FC = () => {
   // Context
-  const { chosenBible, chosenBook, chosenChapterMedia, chosenChapterNumber } =
-    useAppContext();
+  const {
+    chosenBible,
+    chosenBook,
+    chosenChapterMedia,
+    chosenChapterNumber,
+    localChapters,
+  } = useAppContext();
 
   /* States */
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [openBibleNavModal, setOpenBibleNavModal] = useState<boolean>(false);
+  const [segmentState, setSegmentState] = useState<string>("text");
+  const [swiper, setSwiper] = useState<SwiperEvent | null>(null);
 
   const canonicalUrl = window.location.href;
+  const [resetHeight, setResetHeight] = useState(true);
+
+  /* Hooks */
+  useBibleHistory();
+
+  // UseEffect hack to make sure slides are correct height
+  // It will reset the height once chapter data has loaded
+  useEffect(() => {
+    if (!localChapters || !localChapters.length) return;
+    if (!resetHeight) return;
+
+    swiper?.slideTo(0);
+    setResetHeight(false);
+  }, [localChapters]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <IonPage style={{ overflow: "clip" }}>
@@ -104,7 +135,46 @@ const Tab2: React.FC = () => {
 
       {/* Body */}
       <IonContent>
-        <BibleChapterViewer />
+        <div>
+          {chosenBook ? (
+            <>
+              <IonSegment
+                value={segmentState}
+                onIonChange={(e) => {
+                  if (!e.detail.value) return;
+                  setSegmentState(e.detail.value);
+                  swiper?.slideTo(
+                    ["text", "storybook"].indexOf(e.detail.value)
+                  );
+                }}
+              >
+                <IonSegmentButton value="text">
+                  <IonLabel>Text</IonLabel>
+                </IonSegmentButton>
+                <IonSegmentButton value="storybook">
+                  <IonLabel>Storybook</IonLabel>
+                </IonSegmentButton>
+              </IonSegment>
+
+              <Swiper
+                allowTouchMove={false} // Disable manual swipe
+                className="reading-type-swiper-wrapper"
+                onSwiper={setSwiper}
+                speed={300}
+                autoHeight={true}
+              >
+                <SwiperSlide>
+                  <BibleChapterViewer />
+                </SwiperSlide>
+                <SwiperSlide>
+                  <StorybookPage />
+                </SwiperSlide>
+              </Swiper>
+            </>
+          ) : (
+            <InitialBiblePicker />
+          )}
+        </div>
 
         {/* Modals */}
         {/* translation selection */}

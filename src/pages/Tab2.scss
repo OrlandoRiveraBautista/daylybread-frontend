@@ -14,3 +14,10 @@ ion-toolbar ion-title .toolbar-title {
   --padding-start: 16px !important;
   --padding-end: 16px !important;
 }
+
+.reading-type-swiper-wrapper {
+  > .swiper-wrapper > .swiper-slide {
+    padding: 0;
+    height: max-content !important;
+  }
+}

@@ -4,9 +4,9 @@ import { EffectCards } from "swiper/modules";
 
 /* Components */
 import NavigationButtons from "./NavigationButtons/NavigationButtons";
-import InitialBiblePicker from "../InitialBiblePicker/InitialBiblePicker";
 import Copyright from "./Copyright/Copyright";
 import TextViewer, { TextViewerRefType } from "./TextViewer/TextViewer";
+import Skeleton from "../Loading/Skeleton";
 
 /* Context */
 import { useAppContext } from "../../context/context";
@@ -17,7 +17,6 @@ import "swiper/css";
 import "swiper/css/effect-cards";
 
 /* React Hooks */
-import useBibleHistory from "../utility/hooks/useBibleHistory";
 import useBibleNavigator from "../utility/hooks/useBibleNavigator";
 import useBible from "../utility/hooks/useBible";
 
@@ -42,7 +41,6 @@ const BibleChapterViewer: React.FC = () => {
   const TextViewerRef = useRef<TextViewerRefType>(null);
 
   // Hooks
-  useBibleHistory();
   const { nextChapter, backChapter } = useBibleNavigator();
   const { currentVersesLoading } = useBible();
 
@@ -88,7 +86,8 @@ const BibleChapterViewer: React.FC = () => {
               if (!chosenChapterVerses?.previous) return;
               const index = localChapters.findIndex(
                 (chap) =>
-                  chap[0].chapter === chosenChapterVerses?.current[0].chapter
+                  chap[0].chapter === chosenChapterVerses?.current[0].chapter &&
+                  chap[0].bookId === chosenChapterVerses.current[0].bookId
               );
               // set the flag that the slides will change programmaticly
               s.slideTo(index, 0); // set the slide index
@@ -135,7 +134,9 @@ const BibleChapterViewer: React.FC = () => {
           <Copyright />
         </>
       ) : (
-        <InitialBiblePicker />
+        <div className="ion-padding">
+          <Skeleton height="400px" width="100%" shape="square" />
+        </div>
       )}
     </div>
   );
