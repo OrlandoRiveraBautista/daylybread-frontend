@@ -9,6 +9,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import Avatar from "boring-avatars";
+import { Helmet } from "react-helmet";
 
 /* Components */
 import UserBio from "../../components/UserBio/UserBio";
@@ -35,6 +36,8 @@ const Profile: React.FC = () => {
   // api/graphql
   const { deleteBookmarks, loading, data } = useDeleteBookmarks();
 
+  const canonicalUrl = window.location.href;
+
   useEffect(() => {
     if (!data || !data.deleteBookmarks) return;
     resetUserAssetList();
@@ -53,6 +56,16 @@ const Profile: React.FC = () => {
 
   return !userInfo ? null : (
     <div id="profile">
+      <Helmet>
+        <title>
+          `${userInfo.firstName} ${userInfo.lastName} | Profile`
+        </title>
+        <meta
+          name="description"
+          content={`Welcome to ${userInfo.firstName} ${userInfo.lastName}'s profile!`}
+        />
+        <link rel="canonical" href={canonicalUrl} />
+      </Helmet>
       {/* Header */}
       <IonHeader className="ion-no-border padding-left-right">
         {/* Toolbar */}
