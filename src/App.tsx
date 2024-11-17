@@ -10,6 +10,7 @@ import {
   IonTabs,
   setupIonicReact,
 } from "@ionic/react";
+import { Database } from "@ionic/storage";
 import { IonReactRouter } from "@ionic/react-router";
 import { book, happy } from "ionicons/icons";
 
@@ -42,7 +43,7 @@ import "./theme/variables.scss";
 import "./theme/components/index.scss";
 
 /* Context */
-import { useLocalStorage as Storage } from "./context/localStorage";
+import StorageService from "./context/localStorage";
 import { useAppContext } from "./context/context";
 
 /** Graphql API Hooks */
@@ -54,10 +55,10 @@ import { useSetStatusBarColor } from "./utils/statusBarUtils";
 setupIonicReact({ mode: "md" });
 
 const App: React.FC = () => {
-  const { localStorage, init } = Storage();
   const { setUser, setDevice } = useAppContext();
   const [hasSession, setHasSession] = useState<boolean>(true);
   const [firstTimeFlag, setFirstTimeFlag] = useState<boolean>(false);
+  const [localStorage, setLocalStorage] = useState<Database>();
 
   /** Hooks declaration */
   const { getMe, data: userData } = useMe();
@@ -85,7 +86,11 @@ const App: React.FC = () => {
    * once upon start up
    */
   useEffect(() => {
-    init();
+    const getLocalStorage = async () => {
+      setLocalStorage(await StorageService.getInstance());
+    };
+
+    getLocalStorage();
     getSignInUser();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -128,6 +133,7 @@ const App: React.FC = () => {
   const getSession = async () => {
     // look for a session
     const val = await localStorage.get("session");
+
     // check if there is a session
     if (!val) {
       setHasSession(false);
