@@ -8,6 +8,7 @@ import {
   IonPage,
   IonToolbar,
 } from "@ionic/react";
+import { Helmet } from "react-helmet";
 
 /* Context */
 import { useAppContext } from "../context/context";
@@ -31,14 +32,28 @@ import { displayBibleAbbr } from "../utils/support";
 
 const Tab2: React.FC = () => {
   // Context
-  const { chosenBible, chosenBook, chosenChapterMedia } = useAppContext();
+  const { chosenBible, chosenBook, chosenChapterMedia, chosenChapterNumber } =
+    useAppContext();
 
   /* States */
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [openBibleNavModal, setOpenBibleNavModal] = useState<boolean>(false);
 
+  const canonicalUrl = window.location.href;
+
   return (
     <IonPage style={{ overflow: "clip" }}>
+      <Helmet>
+        <title>
+          {`Read ${chosenBook?.name} ${chosenChapterNumber} | ${chosenBible?.name} |
+          - Daylybread`}
+        </title>
+        <meta
+          name="description"
+          content={`Read ${chosenBook?.name} ${chosenChapterNumber} of the ${chosenBible?.name} Bible.`}
+        />
+        <link rel="canonical" href={canonicalUrl} />
+      </Helmet>
       {/* Header */}
       <IonHeader className="ion-no-border padding-left-right">
         {/* Toolbar */}
