@@ -45,6 +45,7 @@ import "./theme/components/index.scss";
 /* Context */
 import StorageService from "./context/localStorage";
 import { useAppContext } from "./context/context";
+import { useTour } from "./context/TourContext";
 
 /** Graphql API Hooks */
 import { useMe } from "./hooks/UserHooks";
@@ -59,6 +60,7 @@ const App: React.FC = () => {
   const [hasSession, setHasSession] = useState<boolean>(true);
   const [firstTimeFlag, setFirstTimeFlag] = useState<boolean>(false);
   const [localStorage, setLocalStorage] = useState<Database>();
+  const { startTour } = useTour();
 
   /** Hooks declaration */
   const { getMe, data: userData } = useMe();
@@ -133,6 +135,7 @@ const App: React.FC = () => {
   const getSession = async () => {
     // look for a session
     const val = await localStorage.get("session");
+    startTour();
 
     // check if there is a session
     if (!val) {
