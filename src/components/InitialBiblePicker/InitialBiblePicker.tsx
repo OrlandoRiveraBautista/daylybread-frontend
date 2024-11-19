@@ -9,6 +9,7 @@ import PatternImage from "../../assets/images/Patterns - 4x4.png";
 
 /* Context */
 import { useAppContext } from "../../context/context";
+import { useTour } from "../../context/TourContext";
 
 /* Utils */
 import { displayBibleAbbr } from "../../utils/support";
@@ -22,8 +23,13 @@ const InitialBiblePicker: React.FC = () => {
   const [openSelectedTranslationModal, setOpenSelectedTranslationModal] =
     useState<boolean>(false);
 
-  const handleOpenTranslationModal = () =>
+  const { nextStep } = useTour();
+
+  const handleOpenTranslationModal = () => {
     setOpenSelectedTranslationModal(!openSelectedTranslationModal);
+
+    setTimeout(nextStep, 100);
+  };
 
   return (
     <>
@@ -40,7 +46,7 @@ const InitialBiblePicker: React.FC = () => {
           color="dark"
           size="large"
           onClick={handleOpenTranslationModal}
-          className="translation-button"
+          className="translation-button tour-step-1"
         >
           {chosenBible?.abbr
             ? displayBibleAbbr(chosenBible?.abbr)
