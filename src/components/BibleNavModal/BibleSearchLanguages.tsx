@@ -97,7 +97,7 @@ const BibleSearchLanguages: React.FC = () => {
           <IonSearchbar
             placeholder="Search a language"
             onIonInput={handleSearch}
-            className="flat"
+            className="flat tour-step-3"
           ></IonSearchbar>
         </div>
       </IonHeader>
