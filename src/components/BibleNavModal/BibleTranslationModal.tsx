@@ -20,6 +20,7 @@ import { text, play } from "ionicons/icons";
 
 /* Context */
 import { useAppContext } from "../../context/context";
+import { useTour } from "../../context/TourContext";
 
 /* GraphQL */
 import {
@@ -59,6 +60,7 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
     chosenBible,
     chosenBook,
   } = useAppContext();
+  const { nextStep } = useTour();
 
   const history = useHistory();
 
@@ -296,7 +298,8 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
           color="dark"
           size="large"
           id="select-language"
-          className="flat full-width"
+          className="flat full-width tour-step-2"
+          onClick={() => setTimeout(nextStep, 100)}
         >
           Language: {chosenLanguage ? chosenLanguage.name : null}
         </IonButton>
