@@ -72,7 +72,7 @@ export const TourProvider: React.FC<ITourProvider> = ({
       disableOverlayClose: true,
       spotlightClicks: true,
       placement: "top",
-      hideFooter: true,
+      hideBackButton: true,
     },
   ]);
   const [run, setRun] = useState(false);
