@@ -45,7 +45,7 @@ const BibleSearchLanguages: React.FC = () => {
     if (!data?.searchListOfLanguages.data) return;
     if (stepIndex >= 3) return;
     setTimeout(nextStep, 500);
-  }, [data]);
+  }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /**
    * Function to handle setting the language for the bible and pushing the url.
