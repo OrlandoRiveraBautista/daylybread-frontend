@@ -135,12 +135,12 @@ const App: React.FC = () => {
   const getSession = async () => {
     // look for a session
     const val = await localStorage.get("session");
-    startTour();
 
     // check if there is a session
     if (!val) {
       setHasSession(false);
       setFirstTimeFlag(true);
+      startTour();
     }
     /**
      * ! This will be deleted later, for now we need to check if the deviceId has been set so that the ai works properly
