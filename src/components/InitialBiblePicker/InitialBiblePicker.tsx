@@ -27,7 +27,7 @@ const InitialBiblePicker: React.FC = () => {
 
   const handleOpenTranslationModal = () => {
     setOpenSelectedTranslationModal(!openSelectedTranslationModal);
-
+    if (openSelectedTranslationModal) return;
     setTimeout(nextStep, 100);
   };
 
