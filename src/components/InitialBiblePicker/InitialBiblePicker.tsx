@@ -34,16 +34,17 @@ const InitialBiblePicker: React.FC = () => {
   return (
     <>
       <div className="helper-container">
-        <IonImg
-          src={PatternImage}
-          alt="Pattern image"
-          className="helper-image"
-        />
-        <IonText>Please pick a bible to begin</IonText>
+        <div className="image-and-text">
+          <IonImg
+            src={PatternImage}
+            alt="Pattern image"
+            className="helper-image"
+          />
+          <IonText>Please pick a bible to begin</IonText>
+        </div>
         <IonButton
           shape="round"
-          fill="clear"
-          color="dark"
+          color="primary"
           size="large"
           onClick={handleOpenTranslationModal}
           className="translation-button tour-step-1"
