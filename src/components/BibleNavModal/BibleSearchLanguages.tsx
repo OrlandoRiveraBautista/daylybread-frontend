@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   IonContent,
   IonHeader,
@@ -18,6 +18,7 @@ import Skeleton from "../Loading/Skeleton";
 
 /* Context */
 import { useAppContext } from "../../context/context";
+import { useTour } from "../../context/TourContext";
 
 /* GraphQL */
 import { useLazySearchListOfLanguages } from "../../hooks/BibleBrainHooks";
@@ -32,13 +33,19 @@ const BibleSearchLanguages: React.FC = () => {
   /* State */
   // global
   const { setBibleLanguage } = useAppContext();
-  // local
+  const { stepIndex, nextStep, run: tourIsRunning } = useTour();
 
   // lazy api call to search languages
   const { searchListOfLanguages, data, loading } =
     useLazySearchListOfLanguages();
 
   const modal = useRef<HTMLIonModalElement>(null);
+
+  useEffect(() => {
+    if (!data?.searchListOfLanguages.data) return;
+    if (stepIndex >= 3) return;
+    setTimeout(nextStep, 500);
+  }, [data]);
 
   /**
    * Function to handle setting the language for the bible and pushing the url.
@@ -48,6 +55,13 @@ const BibleSearchLanguages: React.FC = () => {
     setBibleLanguage(language);
 
     modal.current?.dismiss();
+
+    // check if tour is running
+    if (!tourIsRunning) return;
+    // check the step
+    if (stepIndex >= 4) return;
+    //  go to the next step
+    setTimeout(nextStep, 500);
   };
 
   const handleSearch = (
@@ -101,7 +115,7 @@ const BibleSearchLanguages: React.FC = () => {
           ></IonSearchbar>
         </div>
       </IonHeader>
-      <IonContent className="ion-padding">
+      <IonContent className="ion-padding tour-step-4">
         {loading ? (
           <div className="flex-column gap-4">{renderSkeleton()}</div>
         ) : (
