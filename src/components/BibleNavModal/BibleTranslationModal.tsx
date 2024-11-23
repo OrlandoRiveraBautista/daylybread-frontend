@@ -60,7 +60,7 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
     chosenBible,
     chosenBook,
   } = useAppContext();
-  const { nextStep } = useTour();
+  const { nextStep, stepIndex, run: tourIsRunning } = useTour();
 
   const history = useHistory();
 
@@ -199,24 +199,8 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
     setIsNewBible(false);
   }, [booksData, urlParams?.currentBookId, urlParams?.currentChapterNumber]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  /**
-   * Function to handle setting the bible and pushing the path
-   */
-  const handleSettingBible = (bible: BbBible) => {
-    // set the bible to the global state
-    setBible(bible);
-    setIsNewBible(true); // set the new bible flag to true
-
-    // find the books associated with the bible
-    getListOfBooksFromBible({
-      variables: {
-        options: {
-          bibleId: bible.abbr!,
-        },
-      },
-    });
-
-    /*--- Setting Url --- */
+  /*--- Setting Url --- */
+  const handlePathSetting = (bible: BbBible) => {
     // Get the current URL
     const currentUrl = history.location.pathname;
 
@@ -238,15 +222,45 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
     // Join the parts back together to form the new URL
     const newUrl = parts.join("/");
     history.push(newUrl);
+  };
+
+  const tourFunc = () => {
+    if (!tourIsRunning) return;
+    if (stepIndex >= 5) return;
+
+    nextStep();
+  };
+
+  /**
+   * Function to handle setting the bible and pushing the path
+   */
+  const handleSettingBible = (bible: BbBible) => {
+    // set the bible to the global state
+    setBible(bible);
+    setIsNewBible(true); // set the new bible flag to true
+
+    // find the books associated with the bible
+    getListOfBooksFromBible({
+      variables: {
+        options: {
+          bibleId: bible.abbr!,
+        },
+      },
+    });
+
+    handlePathSetting(bible);
 
     // dismiss the modal
     modal.current?.dismiss();
+
+    // tour
+    setTimeout(tourFunc, 2000);
   };
 
   // function to render modal options
   const renderModalOptions = () => {
     return biblesData ? (
-      <IonList>
+      <IonList className="tour-step-5">
         {biblesData.getListOFBibles.data
           .filter(
             (bible) =>
