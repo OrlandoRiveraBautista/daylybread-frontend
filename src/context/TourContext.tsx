@@ -6,6 +6,8 @@ interface TourContextProps {
   startTour: () => void;
   addSteps: (newSteps: Step[]) => void;
   nextStep: () => void;
+  stepIndex: number;
+  run: boolean;
 }
 
 interface ITourProvider {
@@ -20,7 +22,7 @@ export const TourProvider: React.FC<ITourProvider> = ({
   const [steps, setSteps] = useState<Step[]>([
     {
       target: ".tour-step-1",
-      content: "Click to pick a bible",
+      content: "Welcome to Daylybread! Click to begin",
       spotlightClicks: true,
       disableBeacon: true,
       disableOverlayClose: true,
@@ -28,8 +30,8 @@ export const TourProvider: React.FC<ITourProvider> = ({
     },
     {
       target: ".tour-step-2",
-      content: "Click to pick a language",
-      // disableBeacon: true,
+      content: "You must choose a language",
+      disableBeacon: true,
       disableOverlayClose: true,
       spotlightClicks: true,
       placement: "top",
@@ -37,7 +39,31 @@ export const TourProvider: React.FC<ITourProvider> = ({
     {
       target: ".tour-step-3",
       content: "Search for a language",
-      // disableBeacon: true,
+      disableBeacon: true,
+      disableOverlayClose: true,
+      spotlightClicks: true,
+      placement: "top",
+    },
+    {
+      target: ".tour-step-4",
+      content: "Select your language",
+      disableBeacon: true,
+      disableOverlayClose: true,
+      spotlightClicks: true,
+      placement: "top",
+    },
+    {
+      target: ".tour-step-5",
+      content: "Select your bible",
+      disableBeacon: true,
+      disableOverlayClose: true,
+      spotlightClicks: true,
+      placement: "top",
+    },
+    {
+      target: ".tour-step-6",
+      content: "Now you're ready to go! Enjoy!",
+      disableBeacon: true,
       disableOverlayClose: true,
       spotlightClicks: true,
       placement: "top",
@@ -53,14 +79,17 @@ export const TourProvider: React.FC<ITourProvider> = ({
   };
 
   const handleCallback = async (data: CallBackProps) => {
-    const { status } = data;
+    const { status, index, size, action, lifecycle } = data;
 
-    if (status === "finished" || status === "skipped") {
+    if (
+      status === "finished" ||
+      status === "skipped" ||
+      (action === "next" && lifecycle === "complete" && index === size - 1)
+    ) {
       setRun(false); // End the tour
 
       const localStorage = await StorageService.getInstance();
       await localStorage.set("session", { session: true, firstTime: false }); // set the local storage session
-      console.log("herer");
     }
   };
 
@@ -69,7 +98,9 @@ export const TourProvider: React.FC<ITourProvider> = ({
   };
 
   return (
-    <TourContext.Provider value={{ startTour, addSteps, nextStep }}>
+    <TourContext.Provider
+      value={{ startTour, addSteps, nextStep, stepIndex, run }}
+    >
       {children}
       <Joyride
         steps={steps}
