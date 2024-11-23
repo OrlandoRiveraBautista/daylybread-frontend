@@ -87,9 +87,11 @@ export const TourProvider: React.FC<ITourProvider> = ({
   const handleCallback = async (data: CallBackProps) => {
     const { status, index, size, action, lifecycle } = data;
 
+    console.log(data);
     if (
       status === "finished" ||
       status === "skipped" ||
+      action === "close" ||
       (action === "next" && lifecycle === "complete" && index === size - 1)
     ) {
       setRun(false); // End the tour
