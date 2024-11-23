@@ -23,11 +23,11 @@ const InitialBiblePicker: React.FC = () => {
   const [openSelectedTranslationModal, setOpenSelectedTranslationModal] =
     useState<boolean>(false);
 
-  const { nextStep, run: isTourRunning } = useTour();
+  const { nextStep, run: tourIsRunning } = useTour();
 
   const handleOpenTranslationModal = () => {
     setOpenSelectedTranslationModal(!openSelectedTranslationModal);
-    if (openSelectedTranslationModal || !isTourRunning) return;
+    if (openSelectedTranslationModal || !tourIsRunning) return;
     setTimeout(nextStep, 100);
   };
 
