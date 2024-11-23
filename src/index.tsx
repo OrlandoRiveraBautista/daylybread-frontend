@@ -4,6 +4,7 @@ import App from "./App";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
 import { ContextProvider } from "./context/context";
+import { TourProvider } from "./context/TourContext";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 /* GraphQL Imports */
@@ -55,7 +56,9 @@ root.render(
         clientId={process.env.REACT_APP_GOOGLE_OAUTH_CLIENT_ID!}
       >
         <ContextProvider>
-          <App />
+          <TourProvider>
+            <App />
+          </TourProvider>
         </ContextProvider>
       </GoogleOAuthProvider>
     </ApolloProvider>

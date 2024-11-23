@@ -112,7 +112,7 @@ const BibleChapterViewer: React.FC = () => {
           >
             {localChapters.map((value, key) =>
               value ? (
-                <SwiperSlide key={key}>
+                <SwiperSlide key={key} className="tour-step-6">
                   <div id="chapter-viewer">
                     <TextViewer
                       verses={value}

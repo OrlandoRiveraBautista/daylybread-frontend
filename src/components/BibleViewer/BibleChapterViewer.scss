@@ -1,6 +1,7 @@
 @import "../../theme/variables.scss";
 
 #chapter-viewer-container {
+  height: 100%;
   .bibleSwiper {
     height: max-content !important;
 
