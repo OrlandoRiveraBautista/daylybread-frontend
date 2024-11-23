@@ -27,6 +27,7 @@ export const TourProvider: React.FC<ITourProvider> = ({
       disableBeacon: true,
       disableOverlayClose: true,
       hideCloseButton: true,
+      hideFooter: true,
     },
     {
       target: ".tour-step-2",
@@ -35,6 +36,7 @@ export const TourProvider: React.FC<ITourProvider> = ({
       disableOverlayClose: true,
       spotlightClicks: true,
       placement: "top",
+      hideFooter: true,
     },
     {
       target: ".tour-step-3",
@@ -43,6 +45,7 @@ export const TourProvider: React.FC<ITourProvider> = ({
       disableOverlayClose: true,
       spotlightClicks: true,
       placement: "top",
+      hideFooter: true,
     },
     {
       target: ".tour-step-4",
@@ -51,6 +54,7 @@ export const TourProvider: React.FC<ITourProvider> = ({
       disableOverlayClose: true,
       spotlightClicks: true,
       placement: "top",
+      hideFooter: true,
     },
     {
       target: ".tour-step-5",
@@ -59,6 +63,7 @@ export const TourProvider: React.FC<ITourProvider> = ({
       disableOverlayClose: true,
       spotlightClicks: true,
       placement: "top",
+      hideFooter: true,
     },
     {
       target: ".tour-step-6",
@@ -67,6 +72,7 @@ export const TourProvider: React.FC<ITourProvider> = ({
       disableOverlayClose: true,
       spotlightClicks: true,
       placement: "top",
+      hideFooter: true,
     },
   ]);
   const [run, setRun] = useState(false);
@@ -110,7 +116,13 @@ export const TourProvider: React.FC<ITourProvider> = ({
         stepIndex={stepIndex}
         callback={handleCallback}
         styles={{
-          options: { zIndex: 1000 },
+          options: {
+            zIndex: 1000,
+            backgroundColor: "#faf9fd",
+            arrowColor: "#faf9fd",
+            primaryColor: "#0060a8",
+          },
+          buttonNext: { borderRadius: "64px", padding: "16px" },
         }}
         debug
       />
