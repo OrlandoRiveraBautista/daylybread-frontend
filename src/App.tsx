@@ -140,7 +140,7 @@ const App: React.FC = () => {
     if (!val) {
       setHasSession(false);
       setFirstTimeFlag(true);
-      startTour();
+      return;
     }
     /**
      * ! This will be deleted later, for now we need to check if the deviceId has been set so that the ai works properly
@@ -152,6 +152,11 @@ const App: React.FC = () => {
     setHasSession(val.session); // set hasSession depending on the response
     setFirstTimeFlag(val.firstTime);
     setDevice({ id: val.deviceId });
+
+    if (val.firstTime) {
+      startTour();
+    }
+
     return val; // return the same just in case
   };
 
@@ -164,71 +169,71 @@ const App: React.FC = () => {
     <IonApp>
       <IonReactRouter>
         {localStorage && hasSession ? (
-          !firstTimeFlag ? (
-            <IonTabs>
-              {/* App Router */}
-              <IonRouterOutlet animated={false}>
-                {/* Switch needs to wrap all the routes */}
-                {/* 
+          // !firstTimeFlag ? (
+          <IonTabs>
+            {/* App Router */}
+            <IonRouterOutlet animated={false}>
+              {/* Switch needs to wrap all the routes */}
+              {/* 
                   Anything inside of the switch can be used with the
                   useHistory hook, anything outside will now.
                  */}
-                <Switch>
-                  {/* Default route */}
-                  <Route exact path="/">
-                    <Redirect to="/read" />
-                  </Route>
+              <Switch>
+                {/* Default route */}
+                <Route exact path="/">
+                  <Redirect to="/read" />
+                </Route>
 
-                  {/* Tab Routes */}
-                  {/* <Route exact path="/home">
+                {/* Tab Routes */}
+                {/* <Route exact path="/home">
                     <Tab1 />
                   </Route> */}
-                  <Route exact path="/read">
-                    <Tab2 />
-                  </Route>
-                  <Route
-                    exact
-                    path="/read/:currentLanguage?/:currentBibleId?/:currentBookId?/:currentChapterNumber?"
-                  >
-                    <Tab2 />
-                  </Route>
-                  <Route path="/me">
-                    <Tab3 />
-                  </Route>
+                <Route exact path="/read">
+                  <Tab2 />
+                </Route>
+                <Route
+                  exact
+                  path="/read/:currentLanguage?/:currentBibleId?/:currentBookId?/:currentChapterNumber?"
+                >
+                  <Tab2 />
+                </Route>
+                <Route path="/me">
+                  <Tab3 />
+                </Route>
 
-                  {/* Auth routes */}
-                  <Route path="/login">
-                    <Auth />
-                  </Route>
-                  <Route path="/signup">
-                    <Auth />
-                  </Route>
-                  <Route path="/signupupdateuser">
-                    <Auth />
-                  </Route>
-                </Switch>
-              </IonRouterOutlet>
+                {/* Auth routes */}
+                <Route path="/login">
+                  <Auth />
+                </Route>
+                <Route path="/signup">
+                  <Auth />
+                </Route>
+                <Route path="/signupupdateuser">
+                  <Auth />
+                </Route>
+              </Switch>
+            </IonRouterOutlet>
 
-              {/* Tab Bar UI */}
-              <IonTabBar slot="bottom">
-                {/* <IonTabButton tab="tab1" href="/home">
+            {/* Tab Bar UI */}
+            <IonTabBar slot="bottom">
+              {/* <IonTabButton tab="tab1" href="/home">
                 <IonIcon icon={ellipse} />
                 <IonLabel>Home</IonLabel>
               </IonTabButton> */}
-                <IonTabButton tab="tab2" href="/read">
-                  <IonIcon icon={book} />
-                  <IonLabel>Read</IonLabel>
-                </IonTabButton>
-                <IonTabButton tab="tab3" href="/me">
-                  <IonIcon icon={happy} />
-                  <IonLabel>Me</IonLabel>
-                </IonTabButton>
-              </IonTabBar>
-            </IonTabs>
-          ) : (
-            <WelcomeSlides onFinish={removeWelcome} />
-          )
+              <IonTabButton tab="tab2" href="/read">
+                <IonIcon icon={book} />
+                <IonLabel>Read</IonLabel>
+              </IonTabButton>
+              <IonTabButton tab="tab3" href="/me">
+                <IonIcon icon={happy} />
+                <IonLabel>Me</IonLabel>
+              </IonTabButton>
+            </IonTabBar>
+          </IonTabs>
         ) : (
+          // ) : (
+          //   <WelcomeSlides onFinish={removeWelcome} />
+          // )
           <SplashScreen />
         )}
       </IonReactRouter>
