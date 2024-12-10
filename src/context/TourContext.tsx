@@ -31,7 +31,7 @@ export const TourProvider: React.FC<ITourProvider> = ({
     },
     {
       target: ".tour-step-2",
-      content: "You must choose a language",
+      content: "Click here to search for a language",
       disableBeacon: true,
       disableOverlayClose: true,
       spotlightClicks: true,
