@@ -9,6 +9,7 @@ import PatternImage from "../../assets/images/Patterns - 4x4.png";
 
 /* Context */
 import { useAppContext } from "../../context/context";
+import { useTour } from "../../context/TourContext";
 
 /* Utils */
 import { displayBibleAbbr } from "../../utils/support";
@@ -22,25 +23,31 @@ const InitialBiblePicker: React.FC = () => {
   const [openSelectedTranslationModal, setOpenSelectedTranslationModal] =
     useState<boolean>(false);
 
-  const handleOpenTranslationModal = () =>
+  const { nextStep, run: tourIsRunning } = useTour();
+
+  const handleOpenTranslationModal = () => {
     setOpenSelectedTranslationModal(!openSelectedTranslationModal);
+    if (openSelectedTranslationModal || !tourIsRunning) return;
+    setTimeout(nextStep, 100);
+  };
 
   return (
     <>
       <div className="helper-container">
-        <IonImg
-          src={PatternImage}
-          alt="Pattern image"
-          className="helper-image"
-        />
-        <IonText>Please pick a bible to begin</IonText>
+        <div className="image-and-text">
+          <IonImg
+            src={PatternImage}
+            alt="Pattern image"
+            className="helper-image"
+          />
+          <IonText>Please pick a bible to begin</IonText>
+        </div>
         <IonButton
           shape="round"
-          fill="clear"
-          color="dark"
+          color="primary"
           size="large"
           onClick={handleOpenTranslationModal}
-          className="translation-button"
+          className="translation-button tour-step-1"
         >
           {chosenBible?.abbr
             ? displayBibleAbbr(chosenBible?.abbr)

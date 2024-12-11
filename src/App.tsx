@@ -10,6 +10,7 @@ import {
   IonTabs,
   setupIonicReact,
 } from "@ionic/react";
+import { Database } from "@ionic/storage";
 import { IonReactRouter } from "@ionic/react-router";
 import { book, happy } from "ionicons/icons";
 
@@ -17,7 +18,6 @@ import { book, happy } from "ionicons/icons";
 import Tab2 from "./pages/Tab2";
 import Tab3 from "./pages/Tab3";
 import SplashScreen from "./pages/splash/SplashScreen";
-import WelcomeSlides from "./pages/welcomeSlides/WelcomeSlides";
 import Auth from "./pages/Auth/Auth"; // this should be moved to a page does not belong in components
 
 /* Core CSS required for Ionic components to work properly */
@@ -42,8 +42,9 @@ import "./theme/variables.scss";
 import "./theme/components/index.scss";
 
 /* Context */
-import { useLocalStorage as Storage } from "./context/localStorage";
+import StorageService from "./context/localStorage";
 import { useAppContext } from "./context/context";
+import { useTour } from "./context/TourContext";
 
 /** Graphql API Hooks */
 import { useMe } from "./hooks/UserHooks";
@@ -54,10 +55,11 @@ import { useSetStatusBarColor } from "./utils/statusBarUtils";
 setupIonicReact({ mode: "md" });
 
 const App: React.FC = () => {
-  const { localStorage, init } = Storage();
   const { setUser, setDevice } = useAppContext();
   const [hasSession, setHasSession] = useState<boolean>(true);
   const [firstTimeFlag, setFirstTimeFlag] = useState<boolean>(false);
+  const [localStorage, setLocalStorage] = useState<Database>();
+  const { startTour } = useTour();
 
   /** Hooks declaration */
   const { getMe, data: userData } = useMe();
@@ -85,7 +87,11 @@ const App: React.FC = () => {
    * once upon start up
    */
   useEffect(() => {
-    init();
+    const getLocalStorage = async () => {
+      setLocalStorage(await StorageService.getInstance());
+    };
+
+    getLocalStorage();
     getSignInUser();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -128,10 +134,12 @@ const App: React.FC = () => {
   const getSession = async () => {
     // look for a session
     const val = await localStorage.get("session");
+
     // check if there is a session
     if (!val) {
       setHasSession(false);
       setFirstTimeFlag(true);
+      return;
     }
     /**
      * ! This will be deleted later, for now we need to check if the deviceId has been set so that the ai works properly
@@ -143,82 +151,79 @@ const App: React.FC = () => {
     setHasSession(val.session); // set hasSession depending on the response
     setFirstTimeFlag(val.firstTime);
     setDevice({ id: val.deviceId });
-    return val; // return the same just in case
-  };
 
-  const removeWelcome = () => {
-    localStorage.set("session", { session: true, firstTime: false }); // set the local storage session
-    setFirstTimeFlag(false);
+    if (val.firstTime) {
+      startTour();
+    }
+
+    return val; // return the same just in case
   };
 
   return (
     <IonApp>
       <IonReactRouter>
         {localStorage && hasSession ? (
-          !firstTimeFlag ? (
-            <IonTabs>
-              {/* App Router */}
-              <IonRouterOutlet animated={false}>
-                {/* Switch needs to wrap all the routes */}
-                {/* 
+          // !firstTimeFlag ? (
+          <IonTabs>
+            {/* App Router */}
+            <IonRouterOutlet animated={false}>
+              {/* Switch needs to wrap all the routes */}
+              {/* 
                   Anything inside of the switch can be used with the
                   useHistory hook, anything outside will now.
                  */}
-                <Switch>
-                  {/* Default route */}
-                  <Route exact path="/">
-                    <Redirect to="/read" />
-                  </Route>
+              <Switch>
+                {/* Default route */}
+                <Route exact path="/">
+                  <Redirect to="/read" />
+                </Route>
 
-                  {/* Tab Routes */}
-                  {/* <Route exact path="/home">
+                {/* Tab Routes */}
+                {/* <Route exact path="/home">
                     <Tab1 />
                   </Route> */}
-                  <Route exact path="/read">
-                    <Tab2 />
-                  </Route>
-                  <Route
-                    exact
-                    path="/read/:currentLanguage?/:currentBibleId?/:currentBookId?/:currentChapterNumber?"
-                  >
-                    <Tab2 />
-                  </Route>
-                  <Route path="/me">
-                    <Tab3 />
-                  </Route>
+                <Route exact path="/read">
+                  <Tab2 />
+                </Route>
+                <Route
+                  exact
+                  path="/read/:currentLanguage?/:currentBibleId?/:currentBookId?/:currentChapterNumber?"
+                >
+                  <Tab2 />
+                </Route>
+                <Route path="/me">
+                  <Tab3 />
+                </Route>
 
-                  {/* Auth routes */}
-                  <Route path="/login">
-                    <Auth />
-                  </Route>
-                  <Route path="/signup">
-                    <Auth />
-                  </Route>
-                  <Route path="/signupupdateuser">
-                    <Auth />
-                  </Route>
-                </Switch>
-              </IonRouterOutlet>
+                {/* Auth routes */}
+                <Route path="/login">
+                  <Auth />
+                </Route>
+                <Route path="/signup">
+                  <Auth />
+                </Route>
+                <Route path="/signupupdateuser">
+                  <Auth />
+                </Route>
+              </Switch>
+            </IonRouterOutlet>
 
-              {/* Tab Bar UI */}
-              <IonTabBar slot="bottom">
-                {/* <IonTabButton tab="tab1" href="/home">
+            {/* Tab Bar UI */}
+            <IonTabBar slot="bottom">
+              {/* <IonTabButton tab="tab1" href="/home">
                 <IonIcon icon={ellipse} />
                 <IonLabel>Home</IonLabel>
               </IonTabButton> */}
-                <IonTabButton tab="tab2" href="/read">
-                  <IonIcon icon={book} />
-                  <IonLabel>Read</IonLabel>
-                </IonTabButton>
-                <IonTabButton tab="tab3" href="/me">
-                  <IonIcon icon={happy} />
-                  <IonLabel>Me</IonLabel>
-                </IonTabButton>
-              </IonTabBar>
-            </IonTabs>
-          ) : (
-            <WelcomeSlides onFinish={removeWelcome} />
-          )
+              <IonTabButton tab="tab2" href="/read">
+                <IonIcon icon={book} />
+                <IonLabel>Read</IonLabel>
+              </IonTabButton>
+              <IonTabButton tab="tab3" href="/me">
+                <IonIcon icon={happy} />
+                <IonLabel>Me</IonLabel>
+              </IonTabButton>
+            </IonTabBar>
+          </IonTabs>
         ) : (
           <SplashScreen />
         )}
