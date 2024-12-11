@@ -1,19 +1,15 @@
 import { Database, Storage } from "@ionic/storage";
-import { useState } from "react";
 
-export const useLocalStorage = () => {
-  const [localStorage, setLocalStorage] = useState<Database | null>();
+class StorageService {
+  private static instance: Database | null = null;
 
-  const init = async () => {
-    const store = new Storage();
+  static async getInstance(): Promise<Storage> {
+    if (!StorageService.instance) {
+      const store = new Storage();
+      StorageService.instance = await store.create();
+    }
+    return StorageService.instance;
+  }
+}
 
-    const storage = await store.create();
-
-    setLocalStorage(storage);
-  };
-
-  return {
-    init,
-    localStorage,
-  };
-};
+export default StorageService;

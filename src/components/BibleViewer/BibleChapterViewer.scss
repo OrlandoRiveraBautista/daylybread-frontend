@@ -1,6 +1,7 @@
 @import "../../theme/variables.scss";
 
 #chapter-viewer-container {
+  height: 100%;
   .bibleSwiper {
     height: max-content !important;
 
@@ -11,6 +12,7 @@
       justify-content: center;
       border-radius: 12px;
       text-align: inherit !important;
+      font-size: 18px;
       background-color: var(--ion-surface-container);
       box-shadow: 2px 2px 2px 1px rgb(0 0 0 / 20%);
       padding: 16px;
