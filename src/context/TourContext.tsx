@@ -87,7 +87,6 @@ export const TourProvider: React.FC<ITourProvider> = ({
   const handleCallback = async (data: CallBackProps) => {
     const { status, index, size, action, lifecycle } = data;
 
-    console.log(data);
     if (
       status === "finished" ||
       status === "skipped" ||
@@ -126,7 +125,6 @@ export const TourProvider: React.FC<ITourProvider> = ({
           },
           buttonNext: { borderRadius: "64px", padding: "16px" },
         }}
-        debug
       />
     </TourContext.Provider>
   );
