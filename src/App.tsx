@@ -18,7 +18,6 @@ import { book, happy } from "ionicons/icons";
 import Tab2 from "./pages/Tab2";
 import Tab3 from "./pages/Tab3";
 import SplashScreen from "./pages/splash/SplashScreen";
-import WelcomeSlides from "./pages/welcomeSlides/WelcomeSlides";
 import Auth from "./pages/Auth/Auth"; // this should be moved to a page does not belong in components
 
 /* Core CSS required for Ionic components to work properly */
@@ -160,11 +159,6 @@ const App: React.FC = () => {
     return val; // return the same just in case
   };
 
-  const removeWelcome = () => {
-    localStorage.set("session", { session: true, firstTime: false }); // set the local storage session
-    setFirstTimeFlag(false);
-  };
-
   return (
     <IonApp>
       <IonReactRouter>
@@ -231,9 +225,6 @@ const App: React.FC = () => {
             </IonTabBar>
           </IonTabs>
         ) : (
-          // ) : (
-          //   <WelcomeSlides onFinish={removeWelcome} />
-          // )
           <SplashScreen />
         )}
       </IonReactRouter>
