@@ -12,7 +12,7 @@ import {
 } from "@ionic/react";
 import { Database } from "@ionic/storage";
 import { IonReactRouter } from "@ionic/react-router";
-import { book, happy } from "ionicons/icons";
+import { ellipse, book, happy } from "ionicons/icons";
 
 /* Pages */
 import Tab2 from "./pages/Tab2";
@@ -51,6 +51,7 @@ import { useMe } from "./hooks/UserHooks";
 
 /* Utils */
 import { useSetStatusBarColor } from "./utils/statusBarUtils";
+import useAddToHomescreenPrompt from "./utils/addToHomeScreen";
 
 setupIonicReact({ mode: "md" });
 
@@ -64,6 +65,7 @@ const App: React.FC = () => {
   /** Hooks declaration */
   const { getMe, data: userData } = useMe();
   useSetStatusBarColor(); // hook to set the status bar color
+  const [prompt, promptToInstall] = useAddToHomescreenPrompt();
 
   /**
    * Function to get and set the user if signed in
@@ -179,9 +181,12 @@ const App: React.FC = () => {
                 </Route>
 
                 {/* Tab Routes */}
-                {/* <Route exact path="/home">
-                    <Tab1 />
-                  </Route> */}
+                <Route exact path="/home">
+                  {/* <Tab1 /> */}
+                  <button onClick={promptToInstall as any}>
+                    Add to Home Screen
+                  </button>
+                </Route>
                 <Route exact path="/read">
                   <Tab2 />
                 </Route>
@@ -210,10 +215,10 @@ const App: React.FC = () => {
 
             {/* Tab Bar UI */}
             <IonTabBar slot="bottom">
-              {/* <IonTabButton tab="tab1" href="/home">
+              <IonTabButton tab="tab1" href="/home">
                 <IonIcon icon={ellipse} />
                 <IonLabel>Home</IonLabel>
-              </IonTabButton> */}
+              </IonTabButton>
               <IonTabButton tab="tab2" href="/read">
                 <IonIcon icon={book} />
                 <IonLabel>Read</IonLabel>
