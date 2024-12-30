@@ -1,16 +1,18 @@
 {
   "short_name": "Daylybread",
   "name": "Daylybread",
+  "description": "Daylybread is an app aimed biblically educate and connected Christians at scale",
   "icons": [
     {
-      "src": "assets/icon/Daylybread Icon.png",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "src": "assets/icon/Daylybread Icon-small.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "assets/icon/Daylybread Icon.png",
       "type": "image/png",
-      "sizes": "512x512",
+      "sizes": "1048x1048",
       "purpose": "maskable"
     }
   ],
