@@ -8,6 +8,7 @@ import {
   IonTabBar,
   IonTabButton,
   IonTabs,
+  IonToast,
   setupIonicReact,
 } from "@ionic/react";
 import { Database } from "@ionic/storage";
@@ -163,6 +164,18 @@ const App: React.FC = () => {
 
   return (
     <IonApp>
+      <IonToast
+        trigger="open-stacked-toast"
+        message="This is a toast with a long message and a button that appears on the next line."
+        duration={30000}
+        buttons={[
+          {
+            text: "Action With Long Text",
+          },
+        ]}
+        layout="stacked"
+        isOpen={true}
+      ></IonToast>
       <IonReactRouter>
         {localStorage && hasSession ? (
           // !firstTimeFlag ? (
@@ -181,12 +194,12 @@ const App: React.FC = () => {
                 </Route>
 
                 {/* Tab Routes */}
-                <Route exact path="/home">
-                  {/* <Tab1 /> */}
+                {/* <Route exact path="/home">
+                  <Tab1 />
                   <button onClick={promptToInstall as any}>
                     Add to Home Screen
                   </button>
-                </Route>
+                </Route> */}
                 <Route exact path="/read">
                   <Tab2 />
                 </Route>
@@ -215,10 +228,10 @@ const App: React.FC = () => {
 
             {/* Tab Bar UI */}
             <IonTabBar slot="bottom">
-              <IonTabButton tab="tab1" href="/home">
+              {/* <IonTabButton tab="tab1" href="/home">
                 <IonIcon icon={ellipse} />
                 <IonLabel>Home</IonLabel>
-              </IonTabButton>
+              </IonTabButton> */}
               <IonTabButton tab="tab2" href="/read">
                 <IonIcon icon={book} />
                 <IonLabel>Read</IonLabel>
