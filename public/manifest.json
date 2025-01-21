@@ -17,5 +17,21 @@
     }
   ],
   "start_url": ".",
-  "display": "standalone"
+  "display": "standalone",
+  "screenshots": [
+    {
+      "src": "assets/screenshots/home-screenshot-desktop.png",
+      "sizes": "961x542",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Homepage on Desktop"
+    },
+    {
+      "src": "assets/screenshots/home-screenshot-mobile.png",
+      "sizes": "388x857",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Profile on Mobile"
+    }
+  ]
 }
