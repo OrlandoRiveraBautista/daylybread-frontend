@@ -13,7 +13,7 @@ import {
 } from "@ionic/react";
 import { Database } from "@ionic/storage";
 import { IonReactRouter } from "@ionic/react-router";
-import { ellipse, book, happy } from "ionicons/icons";
+import { book, happy } from "ionicons/icons";
 
 /* Pages */
 import Tab2 from "./pages/Tab2";
@@ -66,7 +66,7 @@ const App: React.FC = () => {
   /** Hooks declaration */
   const { getMe, data: userData } = useMe();
   useSetStatusBarColor(); // hook to set the status bar color
-  const [prompt, promptToInstall] = useAddToHomescreenPrompt();
+  const { prompt, promptToInstall } = useAddToHomescreenPrompt();
 
   /**
    * Function to get and set the user if signed in
@@ -166,15 +166,21 @@ const App: React.FC = () => {
     <IonApp>
       <IonToast
         trigger="open-stacked-toast"
-        message="This is a toast with a long message and a button that appears on the next line."
-        duration={30000}
+        message="Install Daylybread"
+        duration={300000}
         buttons={[
           {
-            text: "Action With Long Text",
+            text: "Cancel",
+            role: "cancel",
+          },
+          {
+            text: "Install",
+            role: "confirm",
           },
         ]}
         layout="stacked"
-        isOpen={true}
+        isOpen={!!prompt}
+        onClick={promptToInstall}
       ></IonToast>
       <IonReactRouter>
         {localStorage && hasSession ? (
