@@ -45,7 +45,7 @@ const useAddToHomescreenPrompt = () => {
     };
   }, []);
 
-  return [prompt, promptToInstall];
+  return { prompt, promptToInstall };
 };
 
 export default useAddToHomescreenPrompt;
