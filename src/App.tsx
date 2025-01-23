@@ -165,16 +165,17 @@ const App: React.FC = () => {
   return (
     <IonApp>
       <IonToast
+        color="tertiary"
         trigger="open-stacked-toast"
-        message="Install Daylybread"
+        message="Install Daylybread for a better experience! Access it quickly and use it offline."
         duration={300000}
         buttons={[
           {
-            text: "Cancel",
+            text: "cancel",
             role: "cancel",
           },
           {
-            text: "Install",
+            text: "Install Now",
             role: "confirm",
           },
         ]}
