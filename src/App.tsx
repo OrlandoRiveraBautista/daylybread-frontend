@@ -182,7 +182,7 @@ const App: React.FC = () => {
           },
         ]}
         layout="stacked"
-        isOpen={!!prompt}
+        isOpen={!!prompt && !firstTimeFlag}
       ></IonToast>
       <IonReactRouter>
         {localStorage && hasSession ? (
