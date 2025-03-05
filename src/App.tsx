@@ -154,8 +154,9 @@ const App: React.FC = () => {
     setHasSession(val.session); // set hasSession depending on the response
     setFirstTimeFlag(val.firstTime);
     setDevice({ id: val.deviceId });
+    const queryParameters = window.location.pathname.replace("/read", "");
 
-    if (val.firstTime) {
+    if (val.firstTime && !queryParameters) {
       startTour();
     }
 
