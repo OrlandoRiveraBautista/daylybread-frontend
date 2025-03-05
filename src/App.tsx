@@ -8,6 +8,7 @@ import {
   IonTabBar,
   IonTabButton,
   IonTabs,
+  IonToast,
   setupIonicReact,
 } from "@ionic/react";
 import { Database } from "@ionic/storage";
@@ -51,6 +52,7 @@ import { useMe } from "./hooks/UserHooks";
 
 /* Utils */
 import { useSetStatusBarColor } from "./utils/statusBarUtils";
+import useAddToHomescreenPrompt from "./utils/addToHomeScreen";
 
 setupIonicReact({ mode: "md" });
 
@@ -64,6 +66,7 @@ const App: React.FC = () => {
   /** Hooks declaration */
   const { getMe, data: userData } = useMe();
   useSetStatusBarColor(); // hook to set the status bar color
+  const { prompt, promptToInstall } = useAddToHomescreenPrompt();
 
   /**
    * Function to get and set the user if signed in
@@ -161,6 +164,25 @@ const App: React.FC = () => {
 
   return (
     <IonApp>
+      <IonToast
+        color="tertiary"
+        trigger="open-stacked-toast"
+        message="Install Daylybread for a better experience! Access it quickly and use it offline."
+        duration={300000}
+        buttons={[
+          {
+            text: "cancel",
+            role: "cancel",
+          },
+          {
+            text: "Install Now",
+            role: "confirm",
+          },
+        ]}
+        layout="stacked"
+        isOpen={!!prompt}
+        onClick={promptToInstall}
+      ></IonToast>
       <IonReactRouter>
         {localStorage && hasSession ? (
           // !firstTimeFlag ? (
@@ -180,8 +202,11 @@ const App: React.FC = () => {
 
                 {/* Tab Routes */}
                 {/* <Route exact path="/home">
-                    <Tab1 />
-                  </Route> */}
+                  <Tab1 />
+                  <button onClick={promptToInstall as any}>
+                    Add to Home Screen
+                  </button>
+                </Route> */}
                 <Route exact path="/read">
                   <Tab2 />
                 </Route>
