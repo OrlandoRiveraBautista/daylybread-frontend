@@ -178,11 +178,11 @@ const App: React.FC = () => {
           {
             text: "Install Now",
             role: "confirm",
+            handler: promptToInstall,
           },
         ]}
         layout="stacked"
         isOpen={!!prompt}
-        onClick={promptToInstall}
       ></IonToast>
       <IonReactRouter>
         {localStorage && hasSession ? (
