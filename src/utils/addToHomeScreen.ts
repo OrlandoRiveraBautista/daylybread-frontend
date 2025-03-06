@@ -19,7 +19,7 @@ declare global {
 
 // Taken from: https://gist.github.com/rikukissa/cb291a4a82caa670d2e0547c520eae53
 const useAddToHomescreenPrompt = () => {
-  const [prompt, setState] = useState<BeforeInstallPromptEvent | null>(null);
+  const [prompt, setPropt] = useState<BeforeInstallPromptEvent | null>(null);
 
   const promptToInstall = () => {
     if (prompt) {
@@ -35,7 +35,7 @@ const useAddToHomescreenPrompt = () => {
   useEffect(() => {
     const ready = (e: BeforeInstallPromptEvent) => {
       e.preventDefault();
-      setState(e);
+      setPropt(e);
     };
 
     window.addEventListener("beforeinstallprompt", ready);
