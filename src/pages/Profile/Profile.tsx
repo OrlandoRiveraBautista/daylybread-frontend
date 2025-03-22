@@ -58,7 +58,7 @@ const Profile: React.FC = () => {
     <div id="profile">
       <Helmet>
         <title>
-          `${userInfo.firstName} ${userInfo.lastName} | Profile`
+          {userInfo.firstName} {userInfo.lastName} | Profile
         </title>
         <meta
           name="description"
