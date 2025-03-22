@@ -10,6 +10,7 @@ import {
   IonTextarea,
   IonTitle,
 } from "@ionic/react";
+import { useHistory } from "react-router";
 
 /* Utils */
 import {
@@ -40,6 +41,8 @@ const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
   const [noteCopy, setNoteCopy] = useState(
     selectedBookmark ? selectedBookmark.note : undefined
   );
+
+  const history = useHistory();
 
   useEffect(() => {
     if (!data) return;
@@ -126,13 +129,22 @@ const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
                 </div>
                 {/* Verse verbage */}
                 <IonRow className="ion-justify-content-end">
-                  <IonText>
+                  <IonText
+                    onClick={() =>
+                      history.push(
+                        `/read/${selectedBookmark.languageId}/${
+                          selectedBookmark.bibleId
+                        }/${selectedBookmark.newVerses![0].bookId}/${
+                          selectedBookmark.newVerses![0].chapter
+                        }`
+                      )
+                    }
+                  >
                     <a
-                      href={`/read/${selectedBookmark.languageId}/${
-                        selectedBookmark.bibleId
-                      }/${selectedBookmark.newVerses![0].bookId}/${
-                        selectedBookmark.newVerses![0].chapter
-                      }`}
+                      style={{
+                        cursor: "pointer",
+                        textDecoration: "underline",
+                      }}
                     >
                       {selectedBookmark.verses[0]
                         ? getVerseVerbageByVerses(selectedBookmark.verses!)
