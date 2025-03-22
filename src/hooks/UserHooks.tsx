@@ -54,6 +54,7 @@ const getBookmarks = gql(`
           _id
         }
         bibleId
+        languageId
         newVerses {
           bookId
           bookName
@@ -112,6 +113,7 @@ const createBookmark = gql(`
           bioText
         }
         bibleId
+        languageId
         newVerses {
           bookId
           bookName
