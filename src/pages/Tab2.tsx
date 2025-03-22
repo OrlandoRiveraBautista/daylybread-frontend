@@ -45,12 +45,18 @@ const Tab2: React.FC = () => {
     <IonPage style={{ overflow: "clip" }}>
       <Helmet>
         <title>
-          {`Read ${chosenBook?.name} ${chosenChapterNumber} | ${chosenBible?.name} |
-          - Daylybread`}
+          {chosenBook
+            ? `Read ${chosenBook?.name} ${chosenChapterNumber} | ${chosenBible?.name} |
+          - Daylybread`
+            : "Daylybread: Smart Bible with AI | Feeds your spirit"}
         </title>
         <meta
           name="description"
-          content={`Read ${chosenBook?.name} ${chosenChapterNumber} of the ${chosenBible?.name} Bible.`}
+          content={
+            chosenBook
+              ? `Read ${chosenBook?.name} ${chosenChapterNumber} of the ${chosenBible?.name} Bible.`
+              : "Read the bible in all the languages for free with an ai assistant"
+          }
         />
         <link rel="canonical" href={canonicalUrl} />
       </Helmet>
