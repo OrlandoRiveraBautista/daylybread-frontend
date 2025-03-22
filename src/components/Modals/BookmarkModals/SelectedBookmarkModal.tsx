@@ -127,12 +127,20 @@ const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
                 {/* Verse verbage */}
                 <IonRow className="ion-justify-content-end">
                   <IonText>
-                    {selectedBookmark.verses[0]
-                      ? getVerseVerbageByVerses(selectedBookmark.verses!)
-                      : getVerseVerbageByNewVerses(
-                          selectedBookmark.newVerses!,
-                          selectedBookmark.bibleId!
-                        )}
+                    <a
+                      href={`/read/${selectedBookmark.languageId}/${
+                        selectedBookmark.bibleId
+                      }/${selectedBookmark.newVerses![0].bookId}/${
+                        selectedBookmark.newVerses![0].chapter
+                      }`}
+                    >
+                      {selectedBookmark.verses[0]
+                        ? getVerseVerbageByVerses(selectedBookmark.verses!)
+                        : getVerseVerbageByNewVerses(
+                            selectedBookmark.newVerses!,
+                            selectedBookmark.bibleId!
+                          )}
+                    </a>
                   </IonText>
                 </IonRow>
 
