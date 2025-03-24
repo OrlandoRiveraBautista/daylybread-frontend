@@ -12,6 +12,9 @@ import {
 } from "@ionic/react";
 import { useHistory } from "react-router";
 
+/* Context */
+import { useAppContext } from "../../../context/context";
+
 /* Utils */
 import {
   getVerseVerbageByNewVerses,
@@ -41,6 +44,7 @@ const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
   const [noteCopy, setNoteCopy] = useState(
     selectedBookmark ? selectedBookmark.note : undefined
   );
+  const { setIsProgrammaticSlide, setLocalChapters } = useAppContext();
 
   const history = useHistory();
 
@@ -130,15 +134,18 @@ const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
                 {/* Verse verbage */}
                 <IonRow className="ion-justify-content-end">
                   <IonText
-                    onClick={() =>
+                    onClick={() => {
+                      setLocalChapters(() => undefined);
+                      setIsProgrammaticSlide({ value: true }); // set the flag for programmically changing the slides
+
                       history.push(
                         `/read/${selectedBookmark.languageId}/${
                           selectedBookmark.bibleId
                         }/${selectedBookmark.newVerses![0].bookId}/${
                           selectedBookmark.newVerses![0].chapter
                         }`
-                      )
-                    }
+                      );
+                    }}
                   >
                     <a
                       style={{
