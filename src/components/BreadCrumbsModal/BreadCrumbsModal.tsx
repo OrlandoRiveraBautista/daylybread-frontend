@@ -66,6 +66,7 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
     temp[temp.length - 1].message = openAIMessage;
 
     setMessages(temp);
+    console.log("messages from openai", messages);
   }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // use effect for the stream of response
@@ -75,24 +76,25 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
 
     if (!messages.length) return;
 
-    if (
-      messages[messages.length - 1] &&
-      messages[messages.length - 1].sender === "You"
-    ) {
+    // If the last message is from the user, create a new message for the AI response
+    if (messages[messages.length - 1].sender === "You") {
       const messageObject: IMessagesObject = {
         message: streamResponse,
         sender: "BreadCrumbs",
       };
-      setMessages((prevMessage) => [...prevMessage, messageObject]);
+      setMessages((prevMessages) => [...prevMessages, messageObject]);
       return;
     }
-    const temp = [...messages];
 
-    temp[temp.length - 1].message += streamResponse;
-
-    setMessages(temp);
-    return;
-  }, [openAIReponseStream]); // eslint-disable-line react-hooks/exhaustive-deps
+    // If the last message is from BreadCrumbs, append to it
+    if (messages[messages.length - 1].sender === "BreadCrumbs") {
+      setMessages((prevMessages) => {
+        const updatedMessages = [...prevMessages];
+        updatedMessages[updatedMessages.length - 1].message += streamResponse;
+        return updatedMessages;
+      });
+    }
+  }, [openAIReponseStream]);
 
   const handleSubmit = (value: string) => {
     let inputValue = value;
