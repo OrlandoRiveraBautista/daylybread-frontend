@@ -55,7 +55,13 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
   // context values
   const { selectedVersesCitation, deviceInfo } = useAppContext();
   const { getChatGpt, data } = useLazyOpenAI();
-  const { data: openAIReponseStream } = useOpenAIResponseStream(deviceInfo!.id);
+  const { streamBuffer: openAIReponseStream } = useOpenAIResponseStream(
+    deviceInfo!.id
+  );
+
+  // useEffect(() => {
+  //   console.log("getting messages", JSON.stringify(messages));
+  // }, [messages]);
 
   useEffect(() => {
     if (!data) return;
@@ -63,38 +69,54 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
     const temp = [...messages];
     const openAIMessage = data.getOpen;
 
-    temp[temp.length - 1].message = openAIMessage;
+    if (temp[temp.length - 1].sender === "You") {
+      temp.push({
+        message: openAIMessage,
+        sender: "BreadCrumbs",
+      });
+    } else {
+      temp[temp.length - 1].message = openAIMessage;
+    }
 
     setMessages(temp);
   }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // use effect for the stream of response
   useEffect(() => {
-    if (openAIReponseStream?.aiChatReponseUpdated === undefined) return;
-    const streamResponse = openAIReponseStream?.aiChatReponseUpdated;
+    if (!openAIReponseStream || !messages.length) return;
 
-    if (!messages.length) return;
+    setMessages((prevMessages) => {
+      const lastMessage = prevMessages[prevMessages.length - 1];
 
-    if (
-      messages[messages.length - 1] &&
-      messages[messages.length - 1].sender === "You"
-    ) {
-      const messageObject: IMessagesObject = {
-        message: streamResponse,
-        sender: "BreadCrumbs",
-      };
-      setMessages((prevMessage) => [...prevMessage, messageObject]);
-      return;
-    }
-    const temp = [...messages];
+      // If the last message is from the user, create a new AI message
+      if (lastMessage.sender === "You") {
+        return [
+          ...prevMessages,
+          {
+            message: openAIReponseStream,
+            sender: "BreadCrumbs",
+          },
+        ];
+      }
 
-    temp[temp.length - 1].message += streamResponse;
+      // If the last message is from BreadCrumbs and it doesn't already contain this response
+      if (
+        lastMessage.sender === "BreadCrumbs" &&
+        !lastMessage.message.includes(openAIReponseStream)
+      ) {
+        const updatedMessages = [...prevMessages];
+        updatedMessages[updatedMessages.length - 1] = {
+          ...lastMessage,
+          message: openAIReponseStream,
+        };
+        return updatedMessages;
+      }
 
-    setMessages(temp);
-    return;
+      return prevMessages;
+    });
   }, [openAIReponseStream]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleSubmit = (value: string) => {
+  const handleSubmit = async (value: string) => {
     let inputValue = value;
     if (useChosenTextVerbage) {
       inputValue += selectedVersesCitation;
