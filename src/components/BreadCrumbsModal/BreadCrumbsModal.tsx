@@ -57,23 +57,32 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
   const { getChatGpt, data } = useLazyOpenAI();
   const { data: openAIReponseStream } = useOpenAIResponseStream(deviceInfo!.id);
 
+  // useEffect(() => {
+  //   console.log("getting messages", JSON.stringify(messages));
+  // }, [messages]);
+
   useEffect(() => {
     if (!data) return;
     if (!data?.getOpen) return;
     const temp = [...messages];
     const openAIMessage = data.getOpen;
 
-    temp[temp.length - 1].message = openAIMessage;
+    if (temp[temp.length - 1].sender === "You") {
+      temp.push({
+        message: openAIMessage,
+        sender: "BreadCrumbs",
+      });
+    } else {
+      temp[temp.length - 1].message = openAIMessage;
+    }
 
     setMessages(temp);
-    console.log("messages from openai", messages);
   }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // use effect for the stream of response
   useEffect(() => {
     if (openAIReponseStream?.aiChatReponseUpdated === undefined) return;
     const streamResponse = openAIReponseStream?.aiChatReponseUpdated;
-
     if (!messages.length) return;
 
     // If the last message is from the user, create a new message for the AI response
@@ -96,7 +105,7 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
     }
   }, [openAIReponseStream]);
 
-  const handleSubmit = (value: string) => {
+  const handleSubmit = async (value: string) => {
     let inputValue = value;
     if (useChosenTextVerbage) {
       inputValue += selectedVersesCitation;
