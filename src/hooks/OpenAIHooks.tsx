@@ -1,5 +1,6 @@
 import { gql } from "../__generated__/gql";
 import { useLazyQuery, useSubscription } from "@apollo/client";
+import { useState } from "react";
 
 /* Queries */
 // Name should be changed to getChatGpt
@@ -27,9 +28,30 @@ export const useLazyOpenAI = () => {
 };
 
 export const useOpenAIResponseStream = (deviceId: string) => {
+  const [streamBuffer, setStreamBuffer] = useState<string>("");
+
   const { data, loading, error } = useSubscription(OPEN_AI_STREAM_RESPONSE, {
-    variables: { deviceId }, // Pass the actual deviceId
+    variables: { deviceId },
+    shouldResubscribe: false,
+    onData: ({ data }) => {
+      if (data?.data?.aiChatReponseUpdated) {
+        if (data?.data?.aiChatReponseUpdated === "[DONE]") {
+          setStreamBuffer("");
+          return;
+        }
+
+        setStreamBuffer((prev) => prev + data?.data?.aiChatReponseUpdated);
+      }
+    },
+    onError: (error) => {
+      console.error("Subscription error:", error);
+    },
   });
 
-  return { data, loading, error };
+  return {
+    data,
+    loading,
+    error,
+    streamBuffer,
+  };
 };
