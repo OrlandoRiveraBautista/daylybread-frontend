@@ -55,7 +55,9 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
   // context values
   const { selectedVersesCitation, deviceInfo } = useAppContext();
   const { getChatGpt, data } = useLazyOpenAI();
-  const { data: openAIReponseStream } = useOpenAIResponseStream(deviceInfo!.id);
+  const { streamBuffer: openAIReponseStream } = useOpenAIResponseStream(
+    deviceInfo!.id
+  );
 
   // useEffect(() => {
   //   console.log("getting messages", JSON.stringify(messages));
@@ -81,28 +83,37 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
 
   // use effect for the stream of response
   useEffect(() => {
-    if (openAIReponseStream?.aiChatReponseUpdated === undefined) return;
-    const streamResponse = openAIReponseStream?.aiChatReponseUpdated;
-    if (!messages.length) return;
+    if (!openAIReponseStream || !messages.length) return;
 
-    // If the last message is from the user, create a new message for the AI response
-    if (messages[messages.length - 1].sender === "You") {
-      const messageObject: IMessagesObject = {
-        message: streamResponse,
-        sender: "BreadCrumbs",
-      };
-      setMessages((prevMessages) => [...prevMessages, messageObject]);
-      return;
-    }
+    setMessages((prevMessages) => {
+      const lastMessage = prevMessages[prevMessages.length - 1];
 
-    // If the last message is from BreadCrumbs, append to it
-    if (messages[messages.length - 1].sender === "BreadCrumbs") {
-      setMessages((prevMessages) => {
+      // If the last message is from the user, create a new AI message
+      if (lastMessage.sender === "You") {
+        return [
+          ...prevMessages,
+          {
+            message: openAIReponseStream,
+            sender: "BreadCrumbs",
+          },
+        ];
+      }
+
+      // If the last message is from BreadCrumbs and it doesn't already contain this response
+      if (
+        lastMessage.sender === "BreadCrumbs" &&
+        !lastMessage.message.includes(openAIReponseStream)
+      ) {
         const updatedMessages = [...prevMessages];
-        updatedMessages[updatedMessages.length - 1].message += streamResponse;
+        updatedMessages[updatedMessages.length - 1] = {
+          ...lastMessage,
+          message: openAIReponseStream,
+        };
         return updatedMessages;
-      });
-    }
+      }
+
+      return prevMessages;
+    });
   }, [openAIReponseStream]);
 
   const handleSubmit = async (value: string) => {
