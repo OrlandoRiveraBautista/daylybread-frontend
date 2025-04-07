@@ -114,7 +114,7 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
 
       return prevMessages;
     });
-  }, [openAIReponseStream]);
+  }, [openAIReponseStream]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSubmit = async (value: string) => {
     let inputValue = value;
