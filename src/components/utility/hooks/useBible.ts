@@ -17,6 +17,7 @@ const useBible = () => {
     chosenBibleBooks,
     chosenBook,
     chosenChapterNumber,
+    chosenChapterVerses,
     setChapterVerses,
     setLocalChapters,
   } = useAppContext();
@@ -167,6 +168,8 @@ const useBible = () => {
       current: currentVersesData.getListOfVerseFromBookChapter.data,
       next: nextVersesData?.getListOfVerseFromBookChapter.data,
     };
+    console.log("dto", dto);
+    console.log("chosenChapterVerses", chosenChapterVerses);
 
     // set data to state
     setChapterVerses(dto);
@@ -174,22 +177,25 @@ const useBible = () => {
     // set the rendered chapter
     setLocalChapters((prevVal) => {
       if (!prevVal) return Object.values(dto);
-
+      console.log("prevVal beginning", prevVal);
       // Add previous to the beginning if it doesn't exist
       if (
         dto.previous &&
         !prevVal.some((chapter) => chapter === dto.previous)
       ) {
+        console.log("first condition");
         prevVal = [dto.previous, ...prevVal];
       }
 
       // Add current chapter if it doesn't exist (normally should already exist as middle, so this is more of a safeguard)
       if (dto.current && !prevVal.some((chapter) => chapter === dto.current)) {
+        console.log("second condition");
         prevVal = [...prevVal, dto.current];
       }
 
       // Add next to the end if it doesn't exist
       if (dto.next && !prevVal.some((chapter) => chapter === dto.next)) {
+        console.log("third condition");
         prevVal = [...prevVal, dto.next];
       }
 

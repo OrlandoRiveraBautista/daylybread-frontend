@@ -10,6 +10,10 @@ import {
   IonTextarea,
   IonTitle,
 } from "@ionic/react";
+import { useHistory } from "react-router";
+
+/* Context */
+import { useAppContext } from "../../../context/context";
 
 /* Utils */
 import {
@@ -40,6 +44,9 @@ const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
   const [noteCopy, setNoteCopy] = useState(
     selectedBookmark ? selectedBookmark.note : undefined
   );
+  const { setIsProgrammaticSlide, setLocalChapters } = useAppContext();
+
+  const history = useHistory();
 
   useEffect(() => {
     if (!data) return;
@@ -126,13 +133,33 @@ const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
                 </div>
                 {/* Verse verbage */}
                 <IonRow className="ion-justify-content-end">
-                  <IonText>
-                    {selectedBookmark.verses[0]
-                      ? getVerseVerbageByVerses(selectedBookmark.verses!)
-                      : getVerseVerbageByNewVerses(
-                          selectedBookmark.newVerses!,
-                          selectedBookmark.bibleId!
-                        )}
+                  <IonText
+                    onClick={() => {
+                      setLocalChapters(() => undefined);
+                      setIsProgrammaticSlide({ value: true }); // set the flag for programmically changing the slides
+
+                      history.push(
+                        `/read/${selectedBookmark.languageId}/${
+                          selectedBookmark.bibleId
+                        }/${selectedBookmark.newVerses![0].bookId}/${
+                          selectedBookmark.newVerses![0].chapter
+                        }`
+                      );
+                    }}
+                  >
+                    <a
+                      style={{
+                        cursor: "pointer",
+                        textDecoration: "underline",
+                      }}
+                    >
+                      {selectedBookmark.verses[0]
+                        ? getVerseVerbageByVerses(selectedBookmark.verses!)
+                        : getVerseVerbageByNewVerses(
+                            selectedBookmark.newVerses!,
+                            selectedBookmark.bibleId!
+                          )}
+                    </a>
                   </IonText>
                 </IonRow>
 
