@@ -39,7 +39,7 @@ interface IIsValid {
 
 const Login: React.FC = () => {
   const history = useHistory();
-  const { setUser } = useAppContext();
+  const { setUser, userInfo } = useAppContext();
   const [loginOptions, setLoginOptions] = useState<IUsernamePasswordInput>({
     email: "",
     password: "",
@@ -120,13 +120,30 @@ const Login: React.FC = () => {
     });
   };
 
+  const handleRedirect = () => {
+    // Check subdomain and redirect accordingly
+    const subdomain = window.location.hostname.split(".")[0];
+    if (subdomain === "platform") {
+      history.push("/");
+      return;
+    }
+
+    history.push("/me");
+  };
+
+  useEffect(() => {
+    if (!userInfo) return;
+
+    handleRedirect();
+  }, [userInfo]);
+
   /**
    * Calls after login has been successfull to get the user
    */
   useEffect(() => {
     if (!data?.login.user?._id) return;
     setUser(data.login.user);
-    history.push("/me");
+    handleRedirect();
   }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
