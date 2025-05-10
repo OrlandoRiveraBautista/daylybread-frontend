@@ -95,38 +95,7 @@ const Platform: React.FC = () => {
     console.log("Saving NFC content:", nfcContent);
   };
 
-  if (isLoading) {
-    return (
-      <IonPage>
-        <div className="platform-loading">
-          <IonSpinner name="crescent" />
-
-          <IonText>Checking authentication...</IonText>
-          {/* Go to signup button */}
-          <IonButton
-            shape="round"
-            color="light"
-            onClick={(e) => {
-              e.preventDefault();
-              history.push("/signup");
-            }}
-          >
-            <IonText>
-              <b>
-                Don&apos;t have an account? <u>Sign up</u>
-              </b>
-            </IonText>
-          </IonButton>
-        </div>
-      </IonPage>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return <Redirect to="/login" />;
-  }
-
-  const MainApp = () => {
+  const MainApp: React.FC = () => {
     return (
       <>
         <IonHeader className="ion-no-border">
@@ -265,26 +234,40 @@ const Platform: React.FC = () => {
     );
   };
 
+  if (isLoading) {
+    return (
+      <IonPage>
+        <div className="platform-loading">
+          <IonSpinner name="crescent" />
+
+          <IonText>Checking authentication...</IonText>
+          {/* Go to signup button */}
+          <IonButton
+            shape="round"
+            color="light"
+            onClick={(e) => {
+              e.preventDefault();
+              history.push("/signup");
+            }}
+          >
+            <IonText>
+              <b>
+                Don&apos;t have an account? <u>Sign up</u>
+              </b>
+            </IonText>
+          </IonButton>
+        </div>
+      </IonPage>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Redirect to="/login" />;
+  }
+
   return (
     <IonPage>
-      <IonRouterOutlet animated={false}>
-        <Switch>
-          <Route exact path="/">
-            <MainApp />
-          </Route>
-
-          {/* Auth routes */}
-          <Route exact path="/login">
-            <Auth />
-          </Route>
-          <Route exact path="/signup">
-            <Auth />
-          </Route>
-          <Route path="/signupupdateuser">
-            <Auth />
-          </Route>
-        </Switch>
-      </IonRouterOutlet>
+      <MainApp />
     </IonPage>
   );
 };
