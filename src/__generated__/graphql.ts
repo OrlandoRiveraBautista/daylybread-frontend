@@ -198,6 +198,39 @@ export type BibleHistory = {
   updatedAt: Scalars['String'];
 };
 
+export type BibleInteraction = {
+  __typename?: 'BibleInteraction';
+  _id: Scalars['ID'];
+  bibleId: Scalars['String'];
+  book: Scalars['String'];
+  chapter: Scalars['Float'];
+  content?: Maybe<Scalars['String']>;
+  createdAt: Scalars['DateTime'];
+  highlightColor?: Maybe<Scalars['String']>;
+  metadata?: Maybe<Scalars['String']>;
+  type: InteractionType;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  user: User;
+  verses: Array<Scalars['Float']>;
+};
+
+export type BibleInteractionInput = {
+  bibleId: Scalars['String'];
+  book: Scalars['String'];
+  chapter: Scalars['Float'];
+  content?: InputMaybe<Scalars['String']>;
+  highlightColor?: InputMaybe<Scalars['String']>;
+  metadata?: InputMaybe<Scalars['String']>;
+  type: InteractionType;
+  verses: Array<Scalars['Float']>;
+};
+
+export type BibleInteractionResponse = {
+  __typename?: 'BibleInteractionResponse';
+  errors?: Maybe<Array<FieldError>>;
+  results?: Maybe<BibleInteraction>;
+};
+
 export type BibleReponse = {
   __typename?: 'BibleReponse';
   data: Array<BbBible>;
@@ -303,6 +336,12 @@ export type FieldError = {
   message: Scalars['String'];
 };
 
+export type GetBibleInteractionsResponse = {
+  __typename?: 'GetBibleInteractionsResponse';
+  errors?: Maybe<Array<FieldError>>;
+  results?: Maybe<Array<BibleInteraction>>;
+};
+
 export type GetBookmarkResponse = {
   __typename?: 'GetBookmarkResponse';
   errors?: Maybe<Array<FieldError>>;
@@ -336,6 +375,13 @@ export type HistoryResponse = {
   results?: Maybe<Scalars['Boolean']>;
 };
 
+/** Type of interaction with a Bible verse */
+export enum InteractionType {
+  Bookmark = 'BOOKMARK',
+  Highlight = 'HIGHLIGHT',
+  Note = 'NOTE'
+}
+
 export type LanguageReponse = {
   __typename?: 'LanguageReponse';
   data: Array<BbLanguage>;
@@ -359,12 +405,18 @@ export type MediaTimestampResponse = {
 export type Mutation = {
   __typename?: 'Mutation';
   createBookmark: BookmarkResponse;
+  createInteraction: BibleInteractionResponse;
+  createNFCConfig: NfcConfigResponse;
   deleteBookmarks: Scalars['Boolean'];
+  deleteInteraction: Scalars['Boolean'];
+  deleteNFCConfig: NfcConfigResponse;
   invalidateTokens: Scalars['Boolean'];
   loginWithGoogle: UserResponse;
   register: UserResponse;
   setUserHistory: HistoryResponse;
   updateBookmark: BookmarkResponse;
+  updateInteraction: BibleInteractionResponse;
+  updateNFCConfig: NfcConfigResponse;
   updateUser: UserResponse;
 };
 
@@ -374,8 +426,28 @@ export type MutationCreateBookmarkArgs = {
 };
 
 
+export type MutationCreateInteractionArgs = {
+  options: BibleInteractionInput;
+};
+
+
+export type MutationCreateNfcConfigArgs = {
+  options: NfcConfigInput;
+};
+
+
 export type MutationDeleteBookmarksArgs = {
   ids: Array<Scalars['String']>;
+};
+
+
+export type MutationDeleteInteractionArgs = {
+  id: Scalars['String'];
+};
+
+
+export type MutationDeleteNfcConfigArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -400,8 +472,44 @@ export type MutationUpdateBookmarkArgs = {
 };
 
 
+export type MutationUpdateInteractionArgs = {
+  id: Scalars['String'];
+  options: BibleInteractionInput;
+};
+
+
+export type MutationUpdateNfcConfigArgs = {
+  id: Scalars['String'];
+  options: NfcConfigInput;
+};
+
+
 export type MutationUpdateUserArgs = {
   options: UserUpdateInput;
+};
+
+export type NfcConfig = {
+  __typename?: 'NFCConfig';
+  _id: Scalars['ID'];
+  createdAt: Scalars['String'];
+  description: Scalars['String'];
+  nfcIds: Array<Scalars['String']>;
+  owner: User;
+  title: Scalars['String'];
+  updatedAt: Scalars['String'];
+  url: Scalars['String'];
+};
+
+export type NfcConfigInput = {
+  description: Scalars['String'];
+  title: Scalars['String'];
+  url: Scalars['String'];
+};
+
+export type NfcConfigResponse = {
+  __typename?: 'NFCConfigResponse';
+  errors?: Maybe<Array<FieldError>>;
+  results?: Maybe<NfcConfig>;
 };
 
 export type Query = {
@@ -413,12 +521,15 @@ export type Query = {
   getChapter: Chapter;
   getChapterListByBookBibleId: Array<BookChapter>;
   getCopyRightByBibleId: CopyrightResponse;
+  getInteraction: BibleInteractionResponse;
   getListOFBibles: BibleReponse;
   getListOfBooksForBible: BookResponse;
   getListOfLanguages: LanguageReponse;
   getListOfVerseFromBookChapter: VerseResponse;
   getMediaTimestamps: MediaTimestampResponse;
   getMyBookmarks: GetBookmarkResponse;
+  getMyInteractions: GetBibleInteractionsResponse;
+  getNFCConfig: NfcConfig;
   getOpen: Scalars['String'];
   getTestData: Array<Test>;
   getTranslationByAbbreviation?: Maybe<Translation>;
@@ -474,6 +585,11 @@ export type QueryGetCopyRightByBibleIdArgs = {
 };
 
 
+export type QueryGetInteractionArgs = {
+  id: Scalars['String'];
+};
+
+
 export type QueryGetListOfBiblesArgs = {
   options: BibleArgs;
 };
@@ -496,6 +612,16 @@ export type QueryGetListOfVerseFromBookChapterArgs = {
 
 export type QueryGetMediaTimestampsArgs = {
   options: AudioMediaArgs;
+};
+
+
+export type QueryGetMyInteractionsArgs = {
+  type?: InputMaybe<InteractionType>;
+};
+
+
+export type QueryGetNfcConfigArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -774,6 +900,35 @@ export type SetUserHistoryMutationVariables = Exact<{
 
 export type SetUserHistoryMutation = { __typename?: 'Mutation', setUserHistory: { __typename?: 'HistoryResponse', results?: boolean | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
+export type GetNfcConfigQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetNfcConfigQuery = { __typename?: 'Query', getNFCConfig: { __typename?: 'NFCConfig', _id: string, url: string, title: string, description: string, nfcIds: Array<string>, createdAt: string, updatedAt: string, owner: { __typename?: 'User', _id: string } } };
+
+export type CreateNfcConfigMutationVariables = Exact<{
+  options: NfcConfigInput;
+}>;
+
+
+export type CreateNfcConfigMutation = { __typename?: 'Mutation', createNFCConfig: { __typename?: 'NFCConfigResponse', results?: { __typename?: 'NFCConfig', _id: string, url: string, title: string, description: string, nfcIds: Array<string>, createdAt: string, updatedAt: string, owner: { __typename?: 'User', _id: string } } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+
+export type UpdateNfcConfigMutationVariables = Exact<{
+  id: Scalars['String'];
+  options: NfcConfigInput;
+}>;
+
+
+export type UpdateNfcConfigMutation = { __typename?: 'Mutation', updateNFCConfig: { __typename?: 'NFCConfigResponse', results?: { __typename?: 'NFCConfig', _id: string, url: string, title: string, description: string, nfcIds: Array<string>, createdAt: string, updatedAt: string, owner: { __typename?: 'User', _id: string } } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+
+export type DeleteNfcConfigMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type DeleteNfcConfigMutation = { __typename?: 'Mutation', deleteNFCConfig: { __typename?: 'NFCConfigResponse', results?: { __typename?: 'NFCConfig', _id: string, url: string, title: string, description: string, nfcIds: Array<string>, createdAt: string, updatedAt: string, owner: { __typename?: 'User', _id: string } } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+
 export type OpenAiQueryVariables = Exact<{
   options: GptArgs;
 }>;
@@ -850,6 +1005,10 @@ export const GetBookByIdDocument = {"kind":"Document","definitions":[{"kind":"Op
 export const GetChapterDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetChapter"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"bibleId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getChapter"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"bibleId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"bibleId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"chapterNumber"}},{"kind":"Field","name":{"kind":"Name","value":"bibleId"}},{"kind":"Field","name":{"kind":"Name","value":"bookName"}},{"kind":"Field","name":{"kind":"Name","value":"verses"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"verse"}},{"kind":"Field","name":{"kind":"Name","value":"bibleId"}},{"kind":"Field","name":{"kind":"Name","value":"text"}}]}},{"kind":"Field","name":{"kind":"Name","value":"translation"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"abbreviation"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<GetChapterQuery, GetChapterQueryVariables>;
 export const GetVerseByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetVerseById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"bibleId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getVerseByBibleId"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"bibleId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"bibleId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"translation"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"abbreviation"}}]}},{"kind":"Field","name":{"kind":"Name","value":"bookName"}},{"kind":"Field","name":{"kind":"Name","value":"chapterNumber"}},{"kind":"Field","name":{"kind":"Name","value":"verse"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"bibleId"}}]}}]}}]} as unknown as DocumentNode<GetVerseByIdQuery, GetVerseByIdQueryVariables>;
 export const SetUserHistoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SetUserHistory"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"options"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"HistoryOptions"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"setUserHistory"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"options"},"value":{"kind":"Variable","name":{"kind":"Name","value":"options"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}},{"kind":"Field","name":{"kind":"Name","value":"results"}}]}}]}}]} as unknown as DocumentNode<SetUserHistoryMutation, SetUserHistoryMutationVariables>;
+export const GetNfcConfigDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetNFCConfig"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getNFCConfig"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"nfcIds"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<GetNfcConfigQuery, GetNfcConfigQueryVariables>;
+export const CreateNfcConfigDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateNFCConfig"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"options"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"NFCConfigInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createNFCConfig"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"options"},"value":{"kind":"Variable","name":{"kind":"Name","value":"options"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"nfcIds"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<CreateNfcConfigMutation, CreateNfcConfigMutationVariables>;
+export const UpdateNfcConfigDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateNFCConfig"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"options"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"NFCConfigInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateNFCConfig"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"options"},"value":{"kind":"Variable","name":{"kind":"Name","value":"options"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"nfcIds"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateNfcConfigMutation, UpdateNfcConfigMutationVariables>;
+export const DeleteNfcConfigDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteNFCConfig"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteNFCConfig"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"nfcIds"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<DeleteNfcConfigMutation, DeleteNfcConfigMutationVariables>;
 export const OpenAiDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"OpenAi"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"options"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"GptArgs"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getOpen"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"options"},"value":{"kind":"Variable","name":{"kind":"Name","value":"options"}}}]}]}}]} as unknown as DocumentNode<OpenAiQuery, OpenAiQueryVariables>;
 export const SubscriptionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"Subscription"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"deviceId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"aiChatReponseUpdated"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"deviceId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"deviceId"}}}]}]}}]} as unknown as DocumentNode<SubscriptionSubscription, SubscriptionSubscriptionVariables>;
 export const MeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"churchName"}},{"kind":"Field","name":{"kind":"Name","value":"bioText"}},{"kind":"Field","name":{"kind":"Name","value":"dob"}},{"kind":"Field","name":{"kind":"Name","value":"count"}}]}}]}}]}}]} as unknown as DocumentNode<MeQuery, MeQueryVariables>;
