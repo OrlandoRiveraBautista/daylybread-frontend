@@ -44,6 +44,19 @@ const GetMediaByPurpose = gql(`
 `) as DocumentNode;
 
 /* Mutations */
+const GetSignedUrl = gql(`
+  mutation GetSignedUrl($options: SignedUrlInput!) {
+    getSignedUrl(options: $options) {
+      signedUrl
+      fileKey
+      errors {
+        field
+        message
+      }
+    }
+  }
+`) as DocumentNode;
+
 const CreateMedia = gql(`
   mutation CreateMedia($options: MediaInput!) {
     createMedia(options: $options) {
@@ -143,6 +156,10 @@ export const useGetMediaByPurpose = (purpose: string) => {
 
 export const useLazyGetMediaByPurpose = () => {
   return useLazyQuery(GetMediaByPurpose);
+};
+
+export const useGetSignedUrl = () => {
+  return useMutation(GetSignedUrl);
 };
 
 export const useCreateMedia = () => {
