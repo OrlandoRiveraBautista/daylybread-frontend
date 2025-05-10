@@ -20,7 +20,12 @@ import SmallWordLogoDark from "../../../../assets/images/small-word-logo-dark.sv
 
 const NFC: React.FC = () => {
   const handleTryMe = () => {
-    window.location.href = "https://bible.daylybread.com";
+    const currentDomain = window.location.hostname
+      .split(".")
+      .slice(-2)
+      .join(".");
+    const newUrl = `https://bible.${currentDomain}`;
+    window.location.href = newUrl;
   };
 
   const handleBlockButton = () => {
