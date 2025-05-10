@@ -39,7 +39,11 @@ const NFC: React.FC = () => {
         <IonToolbar style={{ "--background": "var(--ion-background-color)" }}>
           <div className="nfc-header-container">
             <IonImg
-              src={SmallWordLogo}
+              src={
+                window.matchMedia("(prefers-color-scheme: dark)").matches
+                  ? SmallWordLogoDark
+                  : SmallWordLogo
+              }
               alt="DaylyBread Logo"
               className="nfc-logo"
             />
