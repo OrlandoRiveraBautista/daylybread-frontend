@@ -57,7 +57,7 @@ const NFC: React.FC = () => {
                 className="translation-button"
                 onClick={handleTryMe}
               >
-                Try Me
+                Try Daylybread
               </IonButton>
             </IonButtons>
           </div>
