@@ -21,6 +21,7 @@ import Tab3 from "./pages/Tab3";
 import SplashScreen from "./pages/splash/SplashScreen";
 import Auth from "./pages/Auth/Auth"; // this should be moved to a page does not belong in components
 import NFC from "./pages/Platform/NFC/NFC/NFC";
+import Platform from "./pages/Platform/Platform/Platform";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -169,6 +170,8 @@ const App: React.FC = () => {
     const subdomain = window.location.hostname.split(".")[0];
     if (subdomain === "nfc") {
       return <NFC />;
+    } else if (subdomain === "platform") {
+      return <Platform />;
     }
   };
 
