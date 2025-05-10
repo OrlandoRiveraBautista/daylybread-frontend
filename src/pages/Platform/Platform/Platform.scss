@@ -1,3 +1,5 @@
+@import "../../../theme/variables.scss";
+
 .platform-header-container {
   display: flex;
   justify-content: space-between;
@@ -73,4 +75,29 @@
   margin: 32px auto 0;
   max-width: 400px;
   height: 48px;
+}
+
+.platform-loading {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  background: var(--ion-background-color);
+
+  ion-spinner {
+    width: 48px;
+    height: 48px;
+    --color: var(--ion-color-primary);
+  }
+
+  ion-button {
+    width: 100%;
+    --box-shadow: none;
+    text-transform: capitalize;
+    u {
+      color: $color-primary;
+    }
+  }
 }

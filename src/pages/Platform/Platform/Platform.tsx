@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   IonContent,
   IonHeader,
@@ -18,8 +18,9 @@ import {
   IonSelect,
   IonSelectOption,
   IonRouterOutlet,
+  IonSpinner,
 } from "@ionic/react";
-import { Redirect, Route, Switch } from "react-router";
+import { Redirect, Route, Switch, useHistory } from "react-router";
 import "./Platform.scss";
 
 /* Images */
@@ -38,13 +39,47 @@ interface NFCContent {
 }
 
 const Platform: React.FC = () => {
+  const history = useHistory();
   const { userInfo } = useAppContext();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [nfcContent, setNfcContent] = useState<NFCContent>({
     type: "link",
     title: "",
     description: "",
     content: "",
   });
+
+  useEffect(() => {
+    let tries = 0;
+    const checkAuth = () => {
+      const hasUserInfo = !!userInfo;
+
+      if (tries > 10) {
+        setIsAuthenticated(hasUserInfo);
+        setIsLoading(false);
+        return;
+      }
+
+      if (hasUserInfo) {
+        setIsAuthenticated(true);
+        setIsLoading(false);
+        return;
+      }
+
+      tries++;
+    };
+
+    setTimeout(() => {
+      checkAuth();
+    }, 1500);
+
+    // Set up an interval to check periodically
+    const intervalId = setInterval(checkAuth, 1500);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
+  }, [userInfo]);
 
   const handleTryMe = () => {
     const currentDomain = window.location.hostname
@@ -60,9 +95,34 @@ const Platform: React.FC = () => {
     console.log("Saving NFC content:", nfcContent);
   };
 
-  // Redirect to login if not authenticated
-  if (!document.cookie.includes("refresh-token") && !userInfo) {
-    console.log("Redirecting to login");
+  if (isLoading) {
+    return (
+      <IonPage>
+        <div className="platform-loading">
+          <IonSpinner name="crescent" />
+
+          <IonText>Checking authentication...</IonText>
+          {/* Go to signup button */}
+          <IonButton
+            shape="round"
+            color="light"
+            onClick={(e) => {
+              e.preventDefault();
+              history.push("/signup");
+            }}
+          >
+            <IonText>
+              <b>
+                Don&apos;t have an account? <u>Sign up</u>
+              </b>
+            </IonText>
+          </IonButton>
+        </div>
+      </IonPage>
+    );
+  }
+
+  if (!isAuthenticated) {
     return <Redirect to="/login" />;
   }
 
@@ -207,23 +267,17 @@ const Platform: React.FC = () => {
 
   return (
     <IonPage>
-      {/* App Router */}
       <IonRouterOutlet animated={false}>
-        {/* Switch needs to wrap all the routes */}
-        {/* 
-                  Anything inside of the switch can be used with the
-                  useHistory hook, anything outside will now.
-                 */}
         <Switch>
-          <Route path="/">
+          <Route exact path="/">
             <MainApp />
           </Route>
 
           {/* Auth routes */}
-          <Route path="/login">
+          <Route exact path="/login">
             <Auth />
           </Route>
-          <Route path="/signup">
+          <Route exact path="/signup">
             <Auth />
           </Route>
           <Route path="/signupupdateuser">
