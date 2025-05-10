@@ -168,11 +168,25 @@ const App: React.FC = () => {
 
   const renderOtherApps = () => {
     const subdomain = window.location.hostname.split(".")[0];
-    if (subdomain === "nfc") {
-      return <NFC />;
-    } else if (subdomain === "platform") {
-      return <Platform />;
-    }
+    return (
+      <IonRouterOutlet>
+        <Switch>
+          {/* Platform Routes */}
+          {subdomain === "platform" && <Route path="/login" component={Auth} />}
+          {subdomain === "platform" && (
+            <Route path="/signup" component={Auth} />
+          )}
+          {subdomain === "platform" && (
+            <Route path="/signupupdateuser" component={Auth} />
+          )}
+          {subdomain === "platform" && <Route path="/*" component={Platform} />}
+
+          {/* NFC Routes */}
+          {subdomain === "nfc" && <Route path="/*" component={NFC} />}
+          {/* other routes */}
+        </Switch>
+      </IonRouterOutlet>
+    );
   };
 
   return (
