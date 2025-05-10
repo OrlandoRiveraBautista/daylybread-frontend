@@ -20,6 +20,7 @@ import Tab2 from "./pages/Tab2";
 import Tab3 from "./pages/Tab3";
 import SplashScreen from "./pages/splash/SplashScreen";
 import Auth from "./pages/Auth/Auth"; // this should be moved to a page does not belong in components
+import NFC from "./pages/Platform/NFC/NFC/NFC";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -53,6 +54,7 @@ import { useMe } from "./hooks/UserHooks";
 /* Utils */
 import { useSetStatusBarColor } from "./utils/statusBarUtils";
 import useAddToHomescreenPrompt from "./utils/addToHomeScreen";
+import { generateUUID } from "./utils/polyfills";
 
 setupIonicReact({ mode: "md" });
 
@@ -121,7 +123,7 @@ const App: React.FC = () => {
    * This function will only be called on the first time a user has come to the site
    */
   const setSession = () => {
-    const deviceId = crypto.randomUUID();
+    const deviceId = generateUUID();
     localStorage.set("session", {
       session: true,
       firstTime: true,
@@ -148,7 +150,7 @@ const App: React.FC = () => {
      * ! This will be deleted later, for now we need to check if the deviceId has been set so that the ai works properly
      */
     if (!val.deviceId) {
-      val.deviceId = crypto.randomUUID();
+      val.deviceId = generateUUID();
       localStorage.set("session", val);
     }
     setHasSession(val.session); // set hasSession depending on the response
@@ -161,6 +163,13 @@ const App: React.FC = () => {
     }
 
     return val; // return the same just in case
+  };
+
+  const renderOtherApps = () => {
+    const subdomain = window.location.hostname.split(".")[0];
+    if (subdomain === "nfc") {
+      return <NFC />;
+    }
   };
 
   return (
@@ -185,73 +194,79 @@ const App: React.FC = () => {
         isOpen={!!prompt && !firstTimeFlag}
       ></IonToast>
       <IonReactRouter>
-        {localStorage && hasSession ? (
-          // !firstTimeFlag ? (
-          <IonTabs>
-            {/* App Router */}
-            <IonRouterOutlet animated={false}>
-              {/* Switch needs to wrap all the routes */}
-              {/* 
+        {window.location.hostname.split(".")[0] !== "app" &&
+        window.location.hostname.split(".")[0] !== "bible" ? (
+          renderOtherApps()
+        ) : (
+          <>
+            {localStorage && hasSession ? (
+              <IonTabs>
+                {/* App Router */}
+                <IonRouterOutlet animated={false}>
+                  {/* Switch needs to wrap all the routes */}
+                  {/* 
                   Anything inside of the switch can be used with the
                   useHistory hook, anything outside will now.
                  */}
-              <Switch>
-                {/* Default route */}
-                <Route exact path="/">
-                  <Redirect to="/read" />
-                </Route>
+                  <Switch>
+                    {/* Default route */}
+                    <Route exact path="/">
+                      <Redirect to="/read" />
+                    </Route>
 
-                {/* Tab Routes */}
-                {/* <Route exact path="/home">
+                    {/* Tab Routes */}
+                    {/* <Route exact path="/home">
                   <Tab1 />
                   <button onClick={promptToInstall as any}>
                     Add to Home Screen
                   </button>
                 </Route> */}
-                <Route exact path="/read">
-                  <Tab2 />
-                </Route>
-                <Route
-                  exact
-                  path="/read/:currentLanguage?/:currentBibleId?/:currentBookId?/:currentChapterNumber?"
-                >
-                  <Tab2 />
-                </Route>
-                <Route path="/me">
-                  <Tab3 />
-                </Route>
+                    <Route exact path="/read">
+                      <Tab2 />
+                    </Route>
+                    <Route
+                      exact
+                      path="/read/:currentLanguage?/:currentBibleId?/:currentBookId?/:currentChapterNumber?"
+                    >
+                      <Tab2 />
+                    </Route>
+                    <Route path="/me">
+                      <Tab3 />
+                    </Route>
 
-                {/* Auth routes */}
-                <Route path="/login">
-                  <Auth />
-                </Route>
-                <Route path="/signup">
-                  <Auth />
-                </Route>
-                <Route path="/signupupdateuser">
-                  <Auth />
-                </Route>
-              </Switch>
-            </IonRouterOutlet>
+                    {/* Auth routes */}
+                    <Route path="/login">
+                      <Auth />
+                    </Route>
+                    <Route path="/signup">
+                      <Auth />
+                    </Route>
+                    <Route path="/signupupdateuser">
+                      <Auth />
+                    </Route>
+                  </Switch>
+                </IonRouterOutlet>
 
-            {/* Tab Bar UI */}
-            <IonTabBar slot="bottom">
-              {/* <IonTabButton tab="tab1" href="/home">
+                {/* Tab Bar UI */}
+                <IonTabBar slot="bottom">
+                  {/* <IonTabButton tab="tab1" href="/home">
                 <IonIcon icon={ellipse} />
                 <IonLabel>Home</IonLabel>
               </IonTabButton> */}
-              <IonTabButton tab="tab2" href="/read">
-                <IonIcon icon={book} />
-                <IonLabel>Read</IonLabel>
-              </IonTabButton>
-              <IonTabButton tab="tab3" href="/me">
-                <IonIcon icon={happy} />
-                <IonLabel>Me</IonLabel>
-              </IonTabButton>
-            </IonTabBar>
-          </IonTabs>
-        ) : (
-          <SplashScreen />
+                  <IonTabButton tab="tab2" href="/read">
+                    <IonIcon icon={book} />
+                    <IonLabel>Read</IonLabel>
+                  </IonTabButton>
+                  <IonTabButton tab="tab3" href="/me">
+                    <IonIcon icon={happy} />
+                    <IonLabel>Me</IonLabel>
+                  </IonTabButton>
+                </IonTabBar>
+              </IonTabs>
+            ) : (
+              <SplashScreen />
+            )}
+          </>
         )}
       </IonReactRouter>
     </IonApp>
