@@ -21,6 +21,7 @@ import Tab3 from "./pages/Tab3";
 import SplashScreen from "./pages/splash/SplashScreen";
 import Auth from "./pages/Auth/Auth"; // this should be moved to a page does not belong in components
 import NFC from "./pages/Platform/NFC/NFC/NFC";
+import Platform from "./pages/Platform/Platform/Platform";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -167,9 +168,25 @@ const App: React.FC = () => {
 
   const renderOtherApps = () => {
     const subdomain = window.location.hostname.split(".")[0];
-    if (subdomain === "nfc") {
-      return <NFC />;
-    }
+    return (
+      <IonRouterOutlet>
+        <Switch>
+          {/* Platform Routes */}
+          {subdomain === "platform" && <Route path="/login" component={Auth} />}
+          {subdomain === "platform" && (
+            <Route path="/signup" component={Auth} />
+          )}
+          {subdomain === "platform" && (
+            <Route path="/signupupdateuser" component={Auth} />
+          )}
+          {subdomain === "platform" && <Route path="/*" component={Platform} />}
+
+          {/* NFC Routes */}
+          {subdomain === "nfc" && <Route path="/*" component={NFC} />}
+          {/* other routes */}
+        </Switch>
+      </IonRouterOutlet>
+    );
   };
 
   return (

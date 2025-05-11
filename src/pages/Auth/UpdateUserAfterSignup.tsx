@@ -102,13 +102,24 @@ const UpdateUserAfterSignup: React.FC = () => {
     });
   };
 
+  const handleRedirect = () => {
+    // Check subdomain and redirect accordingly
+    const subdomain = window.location.hostname.split(".")[0];
+    if (subdomain === "platform") {
+      history.push("/");
+      return;
+    }
+
+    history.push("/me");
+  };
+
   /**
    * Calls after signup has been successfull to get the user
    */
   useEffect(() => {
     if (!data?.updateUser.user?._id) return;
     setUser(data.updateUser.user);
-    history.push("/me");
+    handleRedirect();
   }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (

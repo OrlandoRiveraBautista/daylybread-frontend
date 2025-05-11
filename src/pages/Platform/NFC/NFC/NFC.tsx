@@ -18,7 +18,13 @@ import "./NFC.scss";
 import SmallWordLogo from "../../../../assets/images/small-word-logo.svg";
 import SmallWordLogoDark from "../../../../assets/images/small-word-logo-dark.svg";
 
+/* Hooks */
+import { useGetNFCConfig } from "../../../../hooks/NFCConfigHooks";
+
 const NFC: React.FC = () => {
+  const id = new URLSearchParams(window.location.search).get("id") || "";
+  const { data: nfcConfig } = useGetNFCConfig(id);
+
   const handleTryMe = () => {
     const currentDomain = window.location.hostname
       .split(".")
@@ -30,7 +36,7 @@ const NFC: React.FC = () => {
 
   const handleBlockButton = () => {
     // Replace with your desired link
-    window.location.href = "https://your-chosen-link.com";
+    window.location.href = nfcConfig?.getNFCConfig?.url! || "";
   };
 
   return (
@@ -57,7 +63,7 @@ const NFC: React.FC = () => {
                 className="translation-button"
                 onClick={handleTryMe}
               >
-                Try Me
+                Try Daylybread
               </IonButton>
             </IonButtons>
           </div>
@@ -71,13 +77,12 @@ const NFC: React.FC = () => {
         <div className="nfc-content-container">
           <IonCard className="nfc-card">
             <IonCardContent>
-              <IonTitle className="nfc-title">Welcome to DaylyBread</IonTitle>
+              <IonTitle className="nfc-title">
+                {nfcConfig?.getNFCConfig?.title}
+              </IonTitle>
 
               <IonText color="medium" className="nfc-description">
-                <p>
-                  Your daily source of spiritual nourishment. Discover
-                  meaningful insights and grow in your faith journey with us.
-                </p>
+                <p>{nfcConfig?.getNFCConfig?.description}</p>
               </IonText>
 
               <IonButton
@@ -86,7 +91,7 @@ const NFC: React.FC = () => {
                 onClick={handleBlockButton}
                 className="nfc-get-started-button"
               >
-                Get Started
+                Navigate to link
               </IonButton>
             </IonCardContent>
           </IonCard>
