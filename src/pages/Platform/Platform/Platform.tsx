@@ -17,10 +17,10 @@ import {
   IonTextarea,
   IonSelect,
   IonSelectOption,
-  IonRouterOutlet,
   IonSpinner,
+  IonToast,
 } from "@ionic/react";
-import { Redirect, Route, Switch, useHistory } from "react-router";
+import { Redirect, useHistory } from "react-router";
 import "./Platform.scss";
 
 /* Images */
@@ -29,7 +29,15 @@ import SmallWordLogoDark from "../../../assets/images/small-word-logo-dark.svg";
 
 /* Context */
 import { useAppContext } from "../../../context/context";
-import Auth from "../../Auth/Auth";
+import { MediaUploader } from "../../../components/MediaUploader/MediaUploader";
+import { MediaPurpose } from "../../../__generated__/graphql";
+
+/* Hooks */
+import {
+  useCreateNFCConfig,
+  useGetNFCConfigByOwner,
+  useUpdateNFCConfig,
+} from "../../../hooks/NFCConfigHooks";
 
 interface NFCContent {
   type: "link" | "file";
@@ -49,13 +57,22 @@ const Platform: React.FC = () => {
     description: "",
     content: "",
   });
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+
+  const [getNFCConfigByOwner, { data: nfcConfigData }] =
+    useGetNFCConfigByOwner();
+  const [createNFCConfig] = useCreateNFCConfig();
+  const [updateNFCConfig] = useUpdateNFCConfig();
 
   useEffect(() => {
     let tries = 0;
     const checkAuth = () => {
       const hasUserInfo = !!userInfo;
 
-      if (tries > 10) {
+      if (tries > 3) {
         setIsAuthenticated(hasUserInfo);
         setIsLoading(false);
         return;
@@ -64,6 +81,8 @@ const Platform: React.FC = () => {
       if (hasUserInfo) {
         setIsAuthenticated(true);
         setIsLoading(false);
+        console.log("userInfo", userInfo);
+        getNFCConfigByOwner({ variables: { ownerId: userInfo?._id! } });
         return;
       }
 
@@ -73,14 +92,21 @@ const Platform: React.FC = () => {
     setTimeout(() => {
       checkAuth();
     }, 1500);
-
-    // Set up an interval to check periodically
-    const intervalId = setInterval(checkAuth, 1500);
-
-    // Cleanup interval on component unmount
-    return () => clearInterval(intervalId);
   }, [userInfo]);
 
+  useEffect(() => {
+    if (nfcConfigData) {
+      setIsUpdating(true);
+      setNfcContent({
+        type: "link",
+        title: nfcConfigData.getNFCConfigByOwner.title,
+        description: nfcConfigData.getNFCConfigByOwner.description,
+        content: nfcConfigData.getNFCConfigByOwner.url,
+      });
+      return;
+    }
+    setIsUpdating(false);
+  }, [nfcConfigData]);
   const handleTryMe = () => {
     const currentDomain = window.location.hostname
       .split(".")
@@ -90,9 +116,67 @@ const Platform: React.FC = () => {
     window.location.href = newUrl;
   };
 
-  const handleSave = () => {
-    // TODO: Implement saving NFC content
-    console.log("Saving NFC content:", nfcContent);
+  const handleSave = async () => {
+    try {
+      if (!userInfo?._id) {
+        throw new Error("User not authenticated");
+      }
+
+      // Validate required fields
+      if (!nfcContent.title.trim()) {
+        throw new Error("Title is required");
+      }
+      if (!nfcContent.description.trim()) {
+        throw new Error("Description is required");
+      }
+      if (!nfcContent.content.trim()) {
+        throw new Error("URL is required");
+      }
+
+      setIsSaving(true);
+      const nfcConfig = nfcConfigData?.getNFCConfigByOwner;
+      const configData = {
+        title: nfcContent.title.trim(),
+        description: nfcContent.description.trim(),
+        url: nfcContent.content.trim(),
+      };
+
+      if (nfcConfig) {
+        // Update existing config
+        const { data: updateData } = await updateNFCConfig({
+          variables: {
+            id: nfcConfig._id,
+            options: configData,
+          },
+        });
+
+        if (updateData?.updateNFCConfig.errors) {
+          throw new Error(updateData.updateNFCConfig.errors[0].message);
+        }
+      } else {
+        // Create new config
+        const { data: createData } = await createNFCConfig({
+          variables: {
+            options: configData,
+          },
+        });
+
+        if (createData?.createNFCConfig.errors) {
+          throw new Error(createData.createNFCConfig.errors[0].message);
+        }
+      }
+
+      setToastMessage("NFC config saved successfully");
+      setShowToast(true);
+    } catch (error) {
+      console.error("Error saving NFC config:", error);
+      setToastMessage(
+        error instanceof Error ? error.message : "Failed to save NFC config"
+      );
+      setShowToast(true);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const MainApp: React.FC = () => {
@@ -147,7 +231,7 @@ const Platform: React.FC = () => {
                       }
                     >
                       <IonSelectOption value="link">Link</IonSelectOption>
-                      <IonSelectOption value="file">File</IonSelectOption>
+                      {/* <IonSelectOption value="file">File</IonSelectOption> */}
                     </IonSelect>
                   </IonItem>
 
@@ -177,11 +261,11 @@ const Platform: React.FC = () => {
                     />
                   </IonItem>
 
-                  <IonItem>
-                    <IonLabel position="stacked">
-                      {nfcContent.type === "link" ? "URL" : "File"}
-                    </IonLabel>
-                    {nfcContent.type === "link" ? (
+                  {nfcContent.type === "link" ? (
+                    <IonItem>
+                      <IonLabel position="stacked">
+                        {nfcContent.type === "link" ? "URL" : "File"}
+                      </IonLabel>
                       <IonInput
                         type="url"
                         value={nfcContent.content}
@@ -193,17 +277,15 @@ const Platform: React.FC = () => {
                         }
                         placeholder="Enter URL"
                       />
-                    ) : (
-                      <IonButton
-                        fill="clear"
-                        onClick={() =>
-                          document.getElementById("fileInput")?.click()
-                        }
-                      >
-                        Choose File
-                      </IonButton>
-                    )}
-                  </IonItem>
+                    </IonItem>
+                  ) : (
+                    <MediaUploader
+                      purpose={MediaPurpose.Other}
+                      onUploadSuccess={(mediaId, url) => {
+                        setNfcContent({ ...nfcContent, content: url });
+                      }}
+                    />
+                  )}
 
                   <input
                     type="file"
@@ -223,8 +305,17 @@ const Platform: React.FC = () => {
                     onClick={handleSave}
                     className="platform-save-button"
                   >
-                    Save NFC Content
+                    {isSaving && <IonSpinner name="crescent" />}
+                    {isUpdating ? "Update NFC Content" : "Save NFC Content"}
                   </IonButton>
+                  {/* <IonButton
+                    expand="block"
+                    color="light"
+                    className="platform-save-button"
+                    // onClick={handlePreview}
+                  >
+                    Preview
+                  </IonButton> */}
                 </div>
               </IonCardContent>
             </IonCard>
@@ -268,6 +359,13 @@ const Platform: React.FC = () => {
   return (
     <IonPage>
       <MainApp />
+      <IonToast
+        isOpen={showToast}
+        onDidDismiss={() => setShowToast(false)}
+        message={toastMessage}
+        duration={3000}
+        position="bottom"
+      />
     </IonPage>
   );
 };
