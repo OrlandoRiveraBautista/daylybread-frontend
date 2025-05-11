@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { MediaPurpose } from "../__generated__/graphql";
 import { MediaService } from "../services/MediaService";
+import { useCreateMedia, useGetSignedUrl } from "./MediaHooks";
 
 interface UseMediaUploadOptions {
   onSuccess?: (mediaId: string, url: string) => void;
@@ -20,6 +21,9 @@ export const useMediaUpload = (options?: UseMediaUploadOptions) => {
     error: null,
   });
 
+  const [getSignedUrl] = useGetSignedUrl();
+  const [createMedia] = useCreateMedia();
+
   const uploadFile = async (
     file: File,
     purpose: MediaPurpose,
@@ -32,16 +36,54 @@ export const useMediaUpload = (options?: UseMediaUploadOptions) => {
       error: null,
     });
 
+    const { data, errors } = await getSignedUrl({
+      variables: {
+        options: {
+          filename: file.name,
+          mimeType: file.type,
+          purpose,
+        },
+      },
+    });
+
+    const { signedUrl, fileKey } = data?.getSignedUrl || {};
+
+    if (errors || !signedUrl || !fileKey) {
+      throw new Error(errors?.[0]?.message || "Failed to get signed URL");
+    }
+
     try {
       const result = await MediaService.uploadFile({
         file,
-        purpose,
-        description,
-        isPublic,
+        signedUrl,
       });
 
-      if (result.success && result.mediaId && result.url) {
-        options?.onSuccess?.(result.mediaId, result.url);
+      if (result.success) {
+        // 3. Create media record
+        const { data, errors } = await createMedia({
+          variables: {
+            options: {
+              filename: file.name,
+              mimeType: file.type,
+              size: file.size,
+              purpose,
+              isPublic,
+              description,
+              url: `https://daylybread.s3.us-east-2.amazonaws.com/${fileKey}`,
+            },
+          },
+        });
+
+        if (errors || !data?.createMedia.results) {
+          throw new Error(
+            errors?.[0]?.message || "Failed to create media record"
+          );
+        }
+
+        options?.onSuccess?.(
+          data.createMedia.results._id,
+          data.createMedia.results.url
+        );
         setUploadState({
           isUploading: false,
           progress: 100,
