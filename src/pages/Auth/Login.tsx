@@ -135,7 +135,7 @@ const Login: React.FC = () => {
     if (!userInfo) return;
 
     handleRedirect();
-  }, [userInfo]);
+  }, [userInfo]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /**
    * Calls after login has been successfull to get the user

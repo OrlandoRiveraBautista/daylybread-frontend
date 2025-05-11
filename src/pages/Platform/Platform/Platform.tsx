@@ -92,7 +92,7 @@ const Platform: React.FC = () => {
     setTimeout(() => {
       checkAuth();
     }, 1500);
-  }, [userInfo]);
+  }, [userInfo]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (nfcConfigData) {
