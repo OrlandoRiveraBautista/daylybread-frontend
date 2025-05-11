@@ -19,6 +19,23 @@ const GetNFCConfig = gql(`
   }
 `);
 
+const GetNFCConfigByOwner = gql(`
+  query GetNFCConfigByOwner($ownerId: String!) {
+    getNFCConfigByOwner(ownerId: $ownerId) {
+      _id
+      url
+      title
+      description
+      owner {
+        _id
+      }
+      nfcIds
+      createdAt
+      updatedAt
+    }
+  }
+`);
+
 /* Mutations */
 const CreateNFCConfig = gql(`
   mutation CreateNFCConfig($options: NFCConfigInput!) {
@@ -95,6 +112,10 @@ export const useGetNFCConfig = (id: string) => {
     variables: { id },
     skip: !id,
   });
+};
+
+export const useGetNFCConfigByOwner = () => {
+  return useLazyQuery(GetNFCConfigByOwner);
 };
 
 export const useLazyGetNFCConfig = () => {
