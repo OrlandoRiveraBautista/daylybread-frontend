@@ -16,11 +16,18 @@ import {
 import { MediaUploader } from "../MediaUploader/MediaUploader";
 import { MediaPurpose } from "../../__generated__/graphql";
 
+interface SocialMediaSettings {
+  facebook?: boolean;
+  instagram?: boolean;
+  twitter?: boolean;
+}
+
 interface NFCContent {
   type: "link" | "file";
   title: string;
   description: string;
   content: string;
+  socialMedia: SocialMediaSettings;
 }
 
 interface NFCConfigFormProps {
@@ -28,11 +35,13 @@ interface NFCConfigFormProps {
     title: string;
     description: string;
     url: string;
+    socialMedia?: SocialMediaSettings;
   };
   onSave: (data: {
     title: string;
     description: string;
     url: string;
+    socialMedia?: SocialMediaSettings;
   }) => Promise<void>;
   isSaving: boolean;
   isUpdating: boolean;
@@ -49,6 +58,11 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
     title: initialData?.title || "",
     description: initialData?.description || "",
     content: initialData?.url || "",
+    socialMedia: {
+      facebook: initialData?.socialMedia?.facebook || false,
+      instagram: initialData?.socialMedia?.instagram || false,
+      twitter: initialData?.socialMedia?.twitter || false,
+    },
   });
 
   // Update form when initialData changes
@@ -59,6 +73,11 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
         title: initialData.title,
         description: initialData.description,
         content: initialData.url,
+        socialMedia: {
+          facebook: initialData.socialMedia?.facebook || false,
+          instagram: initialData.socialMedia?.instagram || false,
+          twitter: initialData.socialMedia?.twitter || false,
+        },
       });
     }
   }, [initialData]);
@@ -68,6 +87,7 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
       title: nfcContent.title.trim(),
       description: nfcContent.description.trim(),
       url: nfcContent.content.trim(),
+      socialMedia: nfcContent.socialMedia,
     });
   };
 
@@ -133,15 +153,52 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
 
               <IonItem>
                 <IonCheckbox
-                // checked={nfcContent.shareWithFacebook}
-                // onIonChange={(e) =>
-                //   setNfcContent({
-                //     ...nfcContent,
-                //     shareWithFacebook: e.detail.checked,
-                //   })
-                // }
+                  checked={nfcContent.socialMedia.facebook}
+                  onIonChange={(e) =>
+                    setNfcContent({
+                      ...nfcContent,
+                      socialMedia: {
+                        ...nfcContent.socialMedia,
+                        facebook: e.detail.checked,
+                      },
+                    })
+                  }
                 >
-                  Include social share button
+                  Share on Facebook
+                </IonCheckbox>
+              </IonItem>
+
+              <IonItem>
+                <IonCheckbox
+                  checked={nfcContent.socialMedia.instagram}
+                  onIonChange={(e) =>
+                    setNfcContent({
+                      ...nfcContent,
+                      socialMedia: {
+                        ...nfcContent.socialMedia,
+                        instagram: e.detail.checked,
+                      },
+                    })
+                  }
+                >
+                  Share on Instagram
+                </IonCheckbox>
+              </IonItem>
+
+              <IonItem>
+                <IonCheckbox
+                  checked={nfcContent.socialMedia.twitter}
+                  onIonChange={(e) =>
+                    setNfcContent({
+                      ...nfcContent,
+                      socialMedia: {
+                        ...nfcContent.socialMedia,
+                        twitter: e.detail.checked,
+                      },
+                    })
+                  }
+                >
+                  Share on Twitter
                 </IonCheckbox>
               </IonItem>
             </>
