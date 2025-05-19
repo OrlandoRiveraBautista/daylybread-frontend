@@ -7,12 +7,8 @@ import "./Platform.scss";
 import { useAppContext } from "../../../context/context";
 
 /* Hooks */
-import {
-  useCreateNFCConfig,
-  useGetNFCConfigByOwner,
-  useUpdateNFCConfig,
-} from "../../../hooks/NFCConfigHooks";
 import { useToast } from "../../../hooks/useToast";
+import { useNFCConfig } from "../../../hooks/useNFCConfig";
 
 /* Components */
 import CheckingAuthentication from "../../../components/Auth/CheckingAuthentication";
@@ -26,15 +22,10 @@ const Platform: React.FC = () => {
   const { userInfo } = useAppContext();
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(false);
-
-  const [getNFCConfigByOwner, { data: nfcConfigData }] =
-    useGetNFCConfigByOwner();
-  const [createNFCConfig] = useCreateNFCConfig();
-  const [updateNFCConfig] = useUpdateNFCConfig();
 
   const { showToast, toastMessage, toastOptions, show, hide } = useToast();
+  const { nfcConfigData, isSaving, isUpdating, fetchConfig, saveConfig } =
+    useNFCConfig(userInfo?._id!);
 
   useEffect(() => {
     let tries = 0;
@@ -51,7 +42,7 @@ const Platform: React.FC = () => {
         setIsAuthenticated(true);
         setIsLoading(false);
         console.log("userInfo", userInfo);
-        getNFCConfigByOwner({ variables: { ownerId: userInfo?._id! } });
+        fetchConfig();
         return;
       }
 
@@ -62,14 +53,6 @@ const Platform: React.FC = () => {
       checkAuth();
     }, 1500);
   }, [userInfo]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    if (nfcConfigData) {
-      setIsUpdating(true);
-      return;
-    }
-    setIsUpdating(false);
-  }, [nfcConfigData]);
 
   const handleTryMe = () => {
     window.location.href = getBibleUrl();
@@ -85,42 +68,13 @@ const Platform: React.FC = () => {
         throw new Error("User not authenticated");
       }
 
-      setIsSaving(true);
-      const nfcConfig = nfcConfigData?.getNFCConfigByOwner;
-
-      if (nfcConfig) {
-        // Update existing config
-        const { data: updateData } = await updateNFCConfig({
-          variables: {
-            id: nfcConfig._id,
-            options: formData,
-          },
-        });
-
-        if (updateData?.updateNFCConfig.errors) {
-          throw new Error(updateData.updateNFCConfig.errors[0].message);
-        }
-      } else {
-        // Create new config
-        const { data: createData } = await createNFCConfig({
-          variables: {
-            options: formData,
-          },
-        });
-
-        if (createData?.createNFCConfig.errors) {
-          throw new Error(createData.createNFCConfig.errors[0].message);
-        }
-      }
-
+      await saveConfig(formData);
       show("NFC config saved successfully");
     } catch (error) {
       console.error("Error saving NFC config:", error);
       show(
         error instanceof Error ? error.message : "Failed to save NFC config"
       );
-    } finally {
-      setIsSaving(false);
     }
   };
 
