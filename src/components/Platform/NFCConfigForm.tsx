@@ -91,7 +91,7 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
             <IonLabel position="stacked">Title</IonLabel>
             <IonInput
               value={nfcContent.title}
-              onIonChange={(e) =>
+              onIonInput={(e) =>
                 setNfcContent({ ...nfcContent, title: e.detail.value! })
               }
               placeholder="Enter title for the NFC tag"
@@ -102,7 +102,7 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
             <IonLabel position="stacked">Description</IonLabel>
             <IonTextarea
               value={nfcContent.description}
-              onIonChange={(e) =>
+              onIonInput={(e) =>
                 setNfcContent({
                   ...nfcContent,
                   description: e.detail.value!,
@@ -119,7 +119,7 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
               <IonInput
                 type="url"
                 value={nfcContent.content}
-                onIonChange={(e) =>
+                onIonInput={(e) =>
                   setNfcContent({
                     ...nfcContent,
                     content: e.detail.value!,
