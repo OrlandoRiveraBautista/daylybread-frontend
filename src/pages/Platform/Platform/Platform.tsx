@@ -1,35 +1,10 @@
 import React, { useState, useEffect } from "react";
-import {
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-  IonButton,
-  IonImg,
-  IonCard,
-  IonCardContent,
-  IonButtons,
-  IonInput,
-  IonItem,
-  IonLabel,
-  IonTextarea,
-  IonSelect,
-  IonSelectOption,
-  IonSpinner,
-  IonToast,
-} from "@ionic/react";
-import { Redirect, useHistory } from "react-router";
+import { IonContent, IonPage, IonToast } from "@ionic/react";
+import { Redirect } from "react-router";
 import "./Platform.scss";
-
-/* Images */
-import SmallWordLogo from "../../../assets/images/small-word-logo.svg";
-import SmallWordLogoDark from "../../../assets/images/small-word-logo-dark.svg";
 
 /* Context */
 import { useAppContext } from "../../../context/context";
-import { MediaUploader } from "../../../components/MediaUploader/MediaUploader";
-import { MediaPurpose } from "../../../__generated__/graphql";
 
 /* Hooks */
 import {
@@ -40,6 +15,8 @@ import {
 
 /* Components */
 import CheckingAuthentication from "../../../components/Auth/CheckingAuthentication";
+import { PlatformHeader } from "../../../components/Platform/PlatformHeader";
+import { NFCConfigForm } from "../../../components/Platform/NFCConfigForm";
 
 interface NFCContent {
   type: "link" | "file";
@@ -180,152 +157,6 @@ const Platform: React.FC = () => {
     }
   };
 
-  const MainApp: React.FC = () => {
-    return (
-      <>
-        <IonHeader className="ion-no-border">
-          <IonToolbar style={{ "--background": "var(--ion-background-color)" }}>
-            <div className="platform-header-container">
-              <IonImg
-                src={
-                  window.matchMedia("(prefers-color-scheme: dark)").matches
-                    ? SmallWordLogoDark
-                    : SmallWordLogo
-                }
-                alt="DaylyBread Logo"
-                className="platform-logo"
-              />
-              <IonButtons slot="end">
-                <IonButton
-                  shape="round"
-                  fill="clear"
-                  color="dark"
-                  size="large"
-                  className="translation-button"
-                  onClick={handleTryMe}
-                >
-                  Try Daylybread
-                </IonButton>
-              </IonButtons>
-            </div>
-          </IonToolbar>
-        </IonHeader>
-
-        <IonContent
-          className="ion-padding"
-          style={{ "--background": "var(--ion-background-color)" }}
-        >
-          <div className="platform-content-container">
-            <IonCard className="platform-card">
-              <IonCardContent>
-                <IonTitle className="platform-title">
-                  NFC Tag Configuration
-                </IonTitle>
-
-                <div className="platform-form">
-                  <IonItem>
-                    <IonLabel position="stacked">Content Type</IonLabel>
-                    <IonSelect
-                      value={nfcContent.type}
-                      onIonChange={(e) =>
-                        setNfcContent({ ...nfcContent, type: e.detail.value })
-                      }
-                    >
-                      <IonSelectOption value="link">Link</IonSelectOption>
-                      {/* <IonSelectOption value="file">File</IonSelectOption> */}
-                    </IonSelect>
-                  </IonItem>
-
-                  <IonItem>
-                    <IonLabel position="stacked">Title</IonLabel>
-                    <IonInput
-                      value={nfcContent.title}
-                      onIonChange={(e) =>
-                        setNfcContent({ ...nfcContent, title: e.detail.value! })
-                      }
-                      placeholder="Enter title for the NFC tag"
-                    />
-                  </IonItem>
-
-                  <IonItem>
-                    <IonLabel position="stacked">Description</IonLabel>
-                    <IonTextarea
-                      value={nfcContent.description}
-                      onIonChange={(e) =>
-                        setNfcContent({
-                          ...nfcContent,
-                          description: e.detail.value!,
-                        })
-                      }
-                      placeholder="Enter description for the NFC tag"
-                      rows={3}
-                    />
-                  </IonItem>
-
-                  {nfcContent.type === "link" ? (
-                    <IonItem>
-                      <IonLabel position="stacked">
-                        {nfcContent.type === "link" ? "URL" : "File"}
-                      </IonLabel>
-                      <IonInput
-                        type="url"
-                        value={nfcContent.content}
-                        onIonChange={(e) =>
-                          setNfcContent({
-                            ...nfcContent,
-                            content: e.detail.value!,
-                          })
-                        }
-                        placeholder="Enter URL"
-                      />
-                    </IonItem>
-                  ) : (
-                    <MediaUploader
-                      purpose={MediaPurpose.Other}
-                      onUploadSuccess={(mediaId, url) => {
-                        setNfcContent({ ...nfcContent, content: url });
-                      }}
-                    />
-                  )}
-
-                  <input
-                    type="file"
-                    id="fileInput"
-                    style={{ display: "none" }}
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        setNfcContent({ ...nfcContent, content: file.name });
-                      }
-                    }}
-                  />
-
-                  <IonButton
-                    expand="block"
-                    size="large"
-                    onClick={handleSave}
-                    className="platform-save-button"
-                  >
-                    {isSaving && <IonSpinner name="crescent" />}
-                    {isUpdating ? "Update NFC Content" : "Save NFC Content"}
-                  </IonButton>
-                  {/* <IonButton
-                    expand="block"
-                    color="light"
-                    className="platform-save-button"
-                    // onClick={handlePreview}
-                  >
-                    Preview
-                  </IonButton> */}
-                </div>
-              </IonCardContent>
-            </IonCard>
-          </div>
-        </IonContent>
-      </>
-    );
-  };
-
   if (isLoading) {
     return <CheckingAuthentication />;
   }
@@ -336,7 +167,21 @@ const Platform: React.FC = () => {
 
   return (
     <IonPage>
-      <MainApp />
+      <PlatformHeader onTryMe={handleTryMe} />
+      <IonContent
+        className="ion-padding"
+        style={{ "--background": "var(--ion-background-color)" }}
+      >
+        <div className="platform-content-container">
+          <NFCConfigForm
+            nfcContent={nfcContent}
+            setNfcContent={setNfcContent}
+            onSave={handleSave}
+            isSaving={isSaving}
+            isUpdating={isUpdating}
+          />
+        </div>
+      </IonContent>
       <IonToast
         isOpen={showToast}
         onDidDismiss={() => setShowToast(false)}
