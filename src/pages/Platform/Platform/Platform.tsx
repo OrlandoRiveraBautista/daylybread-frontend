@@ -18,6 +18,9 @@ import CheckingAuthentication from "../../../components/Auth/CheckingAuthenticat
 import { PlatformHeader } from "../../../components/Platform/PlatformHeader";
 import { NFCConfigForm } from "../../../components/Platform/NFCConfigForm";
 
+/* Utils */
+import { getBibleUrl } from "../../../utils/support";
+
 const Platform: React.FC = () => {
   const { userInfo } = useAppContext();
   const [isLoading, setIsLoading] = useState(true);
@@ -68,12 +71,7 @@ const Platform: React.FC = () => {
   }, [nfcConfigData]);
 
   const handleTryMe = () => {
-    const currentDomain = window.location.hostname
-      .split(".")
-      .slice(-2)
-      .join(".");
-    const newUrl = `https://bible.${currentDomain}`;
-    window.location.href = newUrl;
+    window.location.href = getBibleUrl();
   };
 
   const handleSave = async (formData: {
