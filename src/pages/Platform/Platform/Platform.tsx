@@ -7,7 +7,6 @@ import {
   IonToolbar,
   IonButton,
   IonImg,
-  IonText,
   IonCard,
   IonCardContent,
   IonButtons,
@@ -39,6 +38,9 @@ import {
   useUpdateNFCConfig,
 } from "../../../hooks/NFCConfigHooks";
 
+/* Components */
+import CheckingAuthentication from "../../../components/Auth/CheckingAuthentication";
+
 interface NFCContent {
   type: "link" | "file";
   title: string;
@@ -47,7 +49,6 @@ interface NFCContent {
 }
 
 const Platform: React.FC = () => {
-  const history = useHistory();
   const { userInfo } = useAppContext();
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -326,30 +327,7 @@ const Platform: React.FC = () => {
   };
 
   if (isLoading) {
-    return (
-      <IonPage>
-        <div className="platform-loading">
-          <IonSpinner name="crescent" />
-
-          <IonText>Checking authentication...</IonText>
-          {/* Go to signup button */}
-          <IonButton
-            shape="round"
-            color="light"
-            onClick={(e) => {
-              e.preventDefault();
-              history.push("/signup");
-            }}
-          >
-            <IonText>
-              <b>
-                Don&apos;t have an account? <u>Sign up</u>
-              </b>
-            </IonText>
-          </IonButton>
-        </div>
-      </IonPage>
-    );
+    return <CheckingAuthentication />;
   }
 
   if (!isAuthenticated) {
