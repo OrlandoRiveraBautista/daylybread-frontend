@@ -11,6 +11,7 @@ import {
   IonSelectOption,
   IonButton,
   IonSpinner,
+  IonCheckbox,
 } from "@ionic/react";
 import { MediaUploader } from "../MediaUploader/MediaUploader";
 import { MediaPurpose } from "../../__generated__/graphql";
@@ -114,20 +115,36 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
           </IonItem>
 
           {nfcContent.type === "link" ? (
-            <IonItem>
-              <IonLabel position="stacked">URL</IonLabel>
-              <IonInput
-                type="url"
-                value={nfcContent.content}
-                onIonInput={(e) =>
-                  setNfcContent({
-                    ...nfcContent,
-                    content: e.detail.value!,
-                  })
-                }
-                placeholder="Enter URL"
-              />
-            </IonItem>
+            <>
+              <IonItem>
+                <IonLabel position="stacked">URL</IonLabel>
+                <IonInput
+                  type="url"
+                  value={nfcContent.content}
+                  onIonInput={(e) =>
+                    setNfcContent({
+                      ...nfcContent,
+                      content: e.detail.value!,
+                    })
+                  }
+                  placeholder="Enter URL"
+                />
+              </IonItem>
+
+              <IonItem>
+                <IonCheckbox
+                // checked={nfcContent.shareWithFacebook}
+                // onIonChange={(e) =>
+                //   setNfcContent({
+                //     ...nfcContent,
+                //     shareWithFacebook: e.detail.checked,
+                //   })
+                // }
+                >
+                  Include social share button
+                </IonCheckbox>
+              </IonItem>
+            </>
           ) : (
             <MediaUploader
               purpose={MediaPurpose.Other}
