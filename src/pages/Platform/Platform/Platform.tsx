@@ -12,6 +12,7 @@ import {
   useGetNFCConfigByOwner,
   useUpdateNFCConfig,
 } from "../../../hooks/NFCConfigHooks";
+import { useToast } from "../../../hooks/useToast";
 
 /* Components */
 import CheckingAuthentication from "../../../components/Auth/CheckingAuthentication";
@@ -26,14 +27,14 @@ const Platform: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
 
   const [getNFCConfigByOwner, { data: nfcConfigData }] =
     useGetNFCConfigByOwner();
   const [createNFCConfig] = useCreateNFCConfig();
   const [updateNFCConfig] = useUpdateNFCConfig();
+
+  const { showToast, toastMessage, toastOptions, show, hide } = useToast();
 
   useEffect(() => {
     let tries = 0;
@@ -112,14 +113,12 @@ const Platform: React.FC = () => {
         }
       }
 
-      setToastMessage("NFC config saved successfully");
-      setShowToast(true);
+      show("NFC config saved successfully");
     } catch (error) {
       console.error("Error saving NFC config:", error);
-      setToastMessage(
+      show(
         error instanceof Error ? error.message : "Failed to save NFC config"
       );
-      setShowToast(true);
     } finally {
       setIsSaving(false);
     }
@@ -151,10 +150,10 @@ const Platform: React.FC = () => {
       </IonContent>
       <IonToast
         isOpen={showToast}
-        onDidDismiss={() => setShowToast(false)}
+        onDidDismiss={hide}
         message={toastMessage}
-        duration={3000}
-        position="bottom"
+        duration={toastOptions.duration}
+        position={toastOptions.position}
       />
     </IonPage>
   );
