@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   IonCard,
   IonCardContent,
@@ -23,20 +23,53 @@ interface NFCContent {
 }
 
 interface NFCConfigFormProps {
-  nfcContent: NFCContent;
-  setNfcContent: (content: NFCContent) => void;
-  onSave: () => void;
+  initialData?: {
+    title: string;
+    description: string;
+    url: string;
+  };
+  onSave: (data: {
+    title: string;
+    description: string;
+    url: string;
+  }) => Promise<void>;
   isSaving: boolean;
   isUpdating: boolean;
 }
 
 export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
-  nfcContent,
-  setNfcContent,
+  initialData,
   onSave,
   isSaving,
   isUpdating,
 }) => {
+  const [nfcContent, setNfcContent] = useState<NFCContent>({
+    type: "link",
+    title: initialData?.title || "",
+    description: initialData?.description || "",
+    content: initialData?.url || "",
+  });
+
+  // Update form when initialData changes
+  useEffect(() => {
+    if (initialData) {
+      setNfcContent({
+        type: "link",
+        title: initialData.title,
+        description: initialData.description,
+        content: initialData.url,
+      });
+    }
+  }, [initialData]);
+
+  const handleSave = async () => {
+    await onSave({
+      title: nfcContent.title.trim(),
+      description: nfcContent.description.trim(),
+      url: nfcContent.content.trim(),
+    });
+  };
+
   return (
     <IonCard className="platform-card">
       <IonCardContent>
@@ -107,7 +140,7 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
           <IonButton
             expand="block"
             size="large"
-            onClick={onSave}
+            onClick={handleSave}
             className="platform-save-button"
           >
             {isSaving && <IonSpinner name="crescent" />}

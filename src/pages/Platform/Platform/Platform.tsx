@@ -18,27 +18,14 @@ import CheckingAuthentication from "../../../components/Auth/CheckingAuthenticat
 import { PlatformHeader } from "../../../components/Platform/PlatformHeader";
 import { NFCConfigForm } from "../../../components/Platform/NFCConfigForm";
 
-interface NFCContent {
-  type: "link" | "file";
-  title: string;
-  description: string;
-  content: string;
-}
-
 const Platform: React.FC = () => {
   const { userInfo } = useAppContext();
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [nfcContent, setNfcContent] = useState<NFCContent>({
-    type: "link",
-    title: "",
-    description: "",
-    content: "",
-  });
-  const [isUpdating, setIsUpdating] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
-  const [isSaving, setIsSaving] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const [getNFCConfigByOwner, { data: nfcConfigData }] =
     useGetNFCConfigByOwner();
@@ -75,16 +62,11 @@ const Platform: React.FC = () => {
   useEffect(() => {
     if (nfcConfigData) {
       setIsUpdating(true);
-      setNfcContent({
-        type: "link",
-        title: nfcConfigData.getNFCConfigByOwner.title,
-        description: nfcConfigData.getNFCConfigByOwner.description,
-        content: nfcConfigData.getNFCConfigByOwner.url,
-      });
       return;
     }
     setIsUpdating(false);
   }, [nfcConfigData]);
+
   const handleTryMe = () => {
     const currentDomain = window.location.hostname
       .split(".")
@@ -94,37 +76,25 @@ const Platform: React.FC = () => {
     window.location.href = newUrl;
   };
 
-  const handleSave = async () => {
+  const handleSave = async (formData: {
+    title: string;
+    description: string;
+    url: string;
+  }) => {
     try {
       if (!userInfo?._id) {
         throw new Error("User not authenticated");
       }
 
-      // Validate required fields
-      if (!nfcContent.title.trim()) {
-        throw new Error("Title is required");
-      }
-      if (!nfcContent.description.trim()) {
-        throw new Error("Description is required");
-      }
-      if (!nfcContent.content.trim()) {
-        throw new Error("URL is required");
-      }
-
       setIsSaving(true);
       const nfcConfig = nfcConfigData?.getNFCConfigByOwner;
-      const configData = {
-        title: nfcContent.title.trim(),
-        description: nfcContent.description.trim(),
-        url: nfcContent.content.trim(),
-      };
 
       if (nfcConfig) {
         // Update existing config
         const { data: updateData } = await updateNFCConfig({
           variables: {
             id: nfcConfig._id,
-            options: configData,
+            options: formData,
           },
         });
 
@@ -135,7 +105,7 @@ const Platform: React.FC = () => {
         // Create new config
         const { data: createData } = await createNFCConfig({
           variables: {
-            options: configData,
+            options: formData,
           },
         });
 
@@ -174,8 +144,7 @@ const Platform: React.FC = () => {
       >
         <div className="platform-content-container">
           <NFCConfigForm
-            nfcContent={nfcContent}
-            setNfcContent={setNfcContent}
+            initialData={nfcConfigData?.getNFCConfigByOwner}
             onSave={handleSave}
             isSaving={isSaving}
             isUpdating={isUpdating}
