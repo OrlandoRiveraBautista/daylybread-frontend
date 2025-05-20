@@ -94,7 +94,7 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
   return (
     <IonCard className="platform-card">
       <IonCardContent>
-        <IonTitle className="platform-title">NFC Tag Configuration</IonTitle>
+        <IonTitle className="platform-title">Church Tap</IonTitle>
         <div className="platform-form">
           <IonItem>
             <IonLabel position="stacked">Content Type</IonLabel>
