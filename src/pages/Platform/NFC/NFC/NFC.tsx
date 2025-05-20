@@ -13,6 +13,7 @@ import {
   IonButtons,
 } from "@ionic/react";
 import "./NFC.scss";
+import { NFCShare } from "../../../../components/Platform/NFCShare";
 
 /* Images */
 import SmallWordLogo from "../../../../assets/images/small-word-logo.svg";
@@ -40,7 +41,7 @@ const NFC: React.FC = () => {
   };
 
   return (
-    <IonPage>
+    <IonPage id="nfc-page">
       <IonHeader className="ion-no-border">
         <IonToolbar style={{ "--background": "var(--ion-background-color)" }}>
           <div className="nfc-header-container">
@@ -74,27 +75,31 @@ const NFC: React.FC = () => {
         className="ion-padding"
         style={{ "--background": "var(--ion-background-color)" }}
       >
-        <div className="nfc-content-container">
-          <IonCard className="nfc-card">
-            <IonCardContent>
-              <IonTitle className="nfc-title">
-                {nfcConfig?.getNFCConfig?.title}
-              </IonTitle>
+        <div className="nfc-container">
+          <div className="nfc-content-container">
+            <IonCard className="nfc-card">
+              <IonCardContent>
+                <IonTitle className="nfc-title">
+                  {nfcConfig?.getNFCConfig?.title}
+                </IonTitle>
 
-              <IonText color="medium" className="nfc-description">
-                <p>{nfcConfig?.getNFCConfig?.description}</p>
-              </IonText>
+                <IonText color="medium" className="nfc-description">
+                  <p>{nfcConfig?.getNFCConfig?.description}</p>
+                </IonText>
 
-              <IonButton
-                expand="block"
-                size="large"
-                onClick={handleBlockButton}
-                className="nfc-get-started-button"
-              >
-                Navigate to link
-              </IonButton>
-            </IonCardContent>
-          </IonCard>
+                <IonButton
+                  expand="block"
+                  size="large"
+                  onClick={handleBlockButton}
+                  className="nfc-get-started-button"
+                >
+                  Navigate to link
+                </IonButton>
+
+                <NFCShare />
+              </IonCardContent>
+            </IonCard>
+          </div>
         </div>
       </IonContent>
     </IonPage>
