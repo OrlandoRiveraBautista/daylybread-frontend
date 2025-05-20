@@ -168,7 +168,7 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
                 </IonCheckbox>
               </IonItem>
 
-              <IonItem>
+              {/* <IonItem>
                 <IonCheckbox
                   checked={nfcContent.socialMedia.instagram}
                   onIonChange={(e) =>
@@ -183,9 +183,9 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
                 >
                   Share on Instagram
                 </IonCheckbox>
-              </IonItem>
+              </IonItem> */}
 
-              <IonItem>
+              {/* <IonItem>
                 <IonCheckbox
                   checked={nfcContent.socialMedia.twitter}
                   onIonChange={(e) =>
@@ -200,7 +200,7 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
                 >
                   Share on Twitter
                 </IonCheckbox>
-              </IonItem>
+              </IonItem> */}
             </>
           ) : (
             <MediaUploader
