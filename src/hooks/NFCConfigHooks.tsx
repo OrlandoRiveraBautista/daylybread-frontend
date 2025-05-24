@@ -18,6 +18,8 @@ const GetNFCConfig = gql(`
         instagram
         twitter
       }
+      givingLink
+      memberRegistrationLink
       createdAt
       updatedAt
     }
@@ -40,6 +42,8 @@ const GetNFCConfigByOwner = gql(`
         instagram
         twitter
       }
+      givingLink
+      memberRegistrationLink
       createdAt
       updatedAt
     }
@@ -64,6 +68,8 @@ const CreateNFCConfig = gql(`
           instagram
           twitter
         }
+        givingLink
+        memberRegistrationLink
         createdAt
         updatedAt
       }
@@ -92,6 +98,8 @@ const UpdateNFCConfig = gql(`
           instagram
           twitter
         }
+        givingLink
+        memberRegistrationLink
         createdAt
         updatedAt
       }
@@ -120,6 +128,8 @@ const DeleteNFCConfig = gql(`
           instagram
           twitter
         }
+        givingLink
+        memberRegistrationLink
         createdAt
         updatedAt
       }
