@@ -12,13 +12,14 @@ import {
   IonCardContent,
   IonButtons,
   IonSpinner,
-  IonFab,
-  IonFabButton,
-  IonFabList,
-  IonIcon,
 } from "@ionic/react";
+
+/* Components */
+import { NFCShare } from "../../../../components/NFC/NFCShare";
+import { NFCMoreActions } from "../../../../components/NFC/NFCMoreActions";
+
+/* Styles */
 import "./NFC.scss";
-import { NFCShare } from "../../../../components/Platform/NFCShare";
 
 /* Images */
 import SmallWordLogo from "../../../../assets/images/small-word-logo.svg";
@@ -26,7 +27,6 @@ import SmallWordLogoDark from "../../../../assets/images/small-word-logo-dark.sv
 
 /* Hooks */
 import { useGetNFCConfig } from "../../../../hooks/NFCConfigHooks";
-import { ellipsisVertical, cash, share } from "ionicons/icons";
 
 const NFC: React.FC = () => {
   const id = new URLSearchParams(window.location.search).get("id") || "";
@@ -120,6 +120,8 @@ const NFC: React.FC = () => {
             </div>
           )}
         </div>
+
+        <NFCMoreActions onCash={() => {}} onNewMember={() => {}} />
       </IonContent>
     </IonPage>
   );
