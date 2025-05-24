@@ -271,6 +271,15 @@ const getVerseClass = (
   return "";
 };
 
+/**
+ * Function to get the bible url
+ * @returns string
+ */
+const getBibleUrl = () => {
+  const currentDomain = window.location.hostname.split(".").slice(-2).join(".");
+  return `https://bible.${currentDomain}`;
+};
+
 export {
   zeroPad,
   clusterNumbers,
@@ -281,4 +290,5 @@ export {
   getHighestBitrateAudio,
   displayBibleAbbr,
   getVerseClass,
+  getBibleUrl,
 };

@@ -1,57 +1,71 @@
-.nfc-header-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 16px;
-  height: 64px;
-}
+#nfc-page {
+  .nfc-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 16px;
+    height: 64px;
+  }
 
-.nfc-logo {
-  height: 32px;
-  width: 8rem;
-}
+  .nfc-logo {
+    height: 32px;
+    width: 8rem;
+  }
 
-.nfc-try-me-button {
-  --border-radius: 20px;
-  --padding-start: 16px;
-  --padding-end: 16px;
-  height: 36px;
-}
+  .nfc-try-me-button {
+    --border-radius: 20px;
+    --padding-start: 16px;
+    --padding-end: 16px;
+    height: 36px;
+  }
 
-.nfc-content-container {
-  max-width: 600px;
-  margin: 77.7% auto;
-  padding: 24px 16px;
-}
+  .nfc-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    .nfc-content-container {
+      max-width: 600px;
+      width: 100%;
+    }
+  }
 
-.nfc-card {
-  --background: var(--ion-surface-container);
-  border-radius: 16px;
-  box-shadow: none;
-  margin: 0 0 24px 0;
-}
+  .nfc-card {
+    --background: var(--ion-surface-container);
+    border-radius: 16px;
+    box-shadow: none;
+    margin: 0 0 24px 0;
 
-.nfc-title {
-  font-size: 28px;
-  font-weight: 500;
-  color: var(--ion-text-color);
-  margin-bottom: 16px;
-  text-align: center;
-}
+    ion-card-content {
+      display: flex;
+      width: 100%;
+      flex-direction: column;
+      gap: 16px;
+    }
+  }
 
-.nfc-description {
-  display: block;
-  margin-bottom: 32px;
-  font-size: 16px;
-  line-height: 1.5;
-  text-align: center;
-}
+  .nfc-title {
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--ion-text-color);
+    text-align: center;
+  }
 
-.nfc-get-started-button {
-  --border-radius: 12px;
-  --padding-top: 16px;
-  --padding-bottom: 16px;
-  margin: 0 auto;
-  max-width: 400px;
-  height: 48px;
+  .nfc-description {
+    display: block;
+    margin-bottom: 16px;
+    font-size: 16px;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  .nfc-get-started-button {
+    --border-radius: 12px;
+    --padding-top: 16px;
+    --padding-bottom: 16px;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 400px;
+    height: 48px;
+  }
 }

@@ -11,8 +11,10 @@ import {
   IonCard,
   IonCardContent,
   IonButtons,
+  IonSpinner,
 } from "@ionic/react";
 import "./NFC.scss";
+import { NFCShare } from "../../../../components/Platform/NFCShare";
 
 /* Images */
 import SmallWordLogo from "../../../../assets/images/small-word-logo.svg";
@@ -23,7 +25,7 @@ import { useGetNFCConfig } from "../../../../hooks/NFCConfigHooks";
 
 const NFC: React.FC = () => {
   const id = new URLSearchParams(window.location.search).get("id") || "";
-  const { data: nfcConfig } = useGetNFCConfig(id);
+  const { data: nfcConfig, loading } = useGetNFCConfig(id);
 
   const handleTryMe = () => {
     const currentDomain = window.location.hostname
@@ -40,7 +42,7 @@ const NFC: React.FC = () => {
   };
 
   return (
-    <IonPage>
+    <IonPage id="nfc-page">
       <IonHeader className="ion-no-border">
         <IonToolbar style={{ "--background": "var(--ion-background-color)" }}>
           <div className="nfc-header-container">
@@ -74,27 +76,44 @@ const NFC: React.FC = () => {
         className="ion-padding"
         style={{ "--background": "var(--ion-background-color)" }}
       >
-        <div className="nfc-content-container">
-          <IonCard className="nfc-card">
-            <IonCardContent>
-              <IonTitle className="nfc-title">
-                {nfcConfig?.getNFCConfig?.title}
-              </IonTitle>
-
-              <IonText color="medium" className="nfc-description">
-                <p>{nfcConfig?.getNFCConfig?.description}</p>
-              </IonText>
-
-              <IonButton
-                expand="block"
-                size="large"
-                onClick={handleBlockButton}
-                className="nfc-get-started-button"
+        <div className="nfc-container">
+          <div className="nfc-content-container">
+            {loading ? (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  minHeight: "300px",
+                }}
               >
-                Navigate to link
-              </IonButton>
-            </IonCardContent>
-          </IonCard>
+                <IonSpinner name="crescent" style={{ width: 48, height: 48 }} />
+              </div>
+            ) : (
+              <IonCard className="nfc-card">
+                <IonCardContent>
+                  <IonTitle className="nfc-title">
+                    {nfcConfig?.getNFCConfig?.title}
+                  </IonTitle>
+
+                  <IonText color="medium" className="nfc-description">
+                    <p>{nfcConfig?.getNFCConfig?.description}</p>
+                  </IonText>
+
+                  <IonButton
+                    expand="block"
+                    size="large"
+                    onClick={handleBlockButton}
+                    className="nfc-get-started-button"
+                  >
+                    Navigate to link
+                  </IonButton>
+
+                  <NFCShare nfcConfig={nfcConfig?.getNFCConfig!} />
+                </IonCardContent>
+              </IonCard>
+            )}
+          </div>
         </div>
       </IonContent>
     </IonPage>
