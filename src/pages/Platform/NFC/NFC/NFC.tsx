@@ -20,6 +20,7 @@ import { NFCMoreActions } from "../../../../components/NFC/NFCMoreActions";
 
 /* Styles */
 import "./NFC.scss";
+import { NFCShare } from "../../../../components/Platform/NFCShare";
 
 /* Images */
 import SmallWordLogo from "../../../../assets/images/small-word-logo.svg";
@@ -98,19 +99,19 @@ const NFC: React.FC = () => {
         style={{ "--background": "var(--ion-background-color)" }}
       >
         <div className="nfc-container">
-          {loading ? (
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                minHeight: "300px",
-              }}
-            >
-              <IonSpinner name="crescent" style={{ width: 48, height: 48 }} />
-            </div>
-          ) : (
-            <div className="nfc-content-container">
+          <div className="nfc-content-container">
+            {loading ? (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  minHeight: "300px",
+                }}
+              >
+                <IonSpinner name="crescent" style={{ width: 48, height: 48 }} />
+              </div>
+            ) : (
               <IonCard className="nfc-card">
                 <IonCardContent>
                   <IonTitle className="nfc-title">
@@ -133,8 +134,8 @@ const NFC: React.FC = () => {
                   <NFCShare nfcConfig={nfcConfig?.getNFCConfig!} />
                 </IonCardContent>
               </IonCard>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         {(nfcConfig?.getNFCConfig?.givingLink ||
