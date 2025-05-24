@@ -28,6 +28,8 @@ interface NFCContent {
   description: string;
   content: string;
   socialMedia: SocialMediaSettings;
+  givingLink?: string | null;
+  memberRegistrationLink?: string | null;
 }
 
 interface NFCConfigFormProps {
@@ -36,12 +38,16 @@ interface NFCConfigFormProps {
     description: string;
     url: string;
     socialMedia?: SocialMediaSettings;
+    givingLink?: string | null;
+    memberRegistrationLink?: string | null;
   };
   onSave: (data: {
     title: string;
     description: string;
     url: string;
     socialMedia?: SocialMediaSettings;
+    givingLink?: string | null;
+    memberRegistrationLink?: string | null;
   }) => Promise<void>;
   isSaving: boolean;
   isUpdating: boolean;
@@ -63,6 +69,8 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
       instagram: initialData?.socialMedia?.instagram || false,
       twitter: initialData?.socialMedia?.twitter || false,
     },
+    givingLink: initialData?.givingLink || null,
+    memberRegistrationLink: initialData?.memberRegistrationLink || null,
   });
 
   // Update form when initialData changes
@@ -78,6 +86,8 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
           instagram: initialData.socialMedia?.instagram || false,
           twitter: initialData.socialMedia?.twitter || false,
         },
+        givingLink: initialData.givingLink || null,
+        memberRegistrationLink: initialData.memberRegistrationLink || null,
       });
     }
   }, [initialData]);
@@ -88,6 +98,8 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
       description: nfcContent.description.trim(),
       url: nfcContent.content.trim(),
       socialMedia: nfcContent.socialMedia,
+      givingLink: nfcContent.givingLink,
+      memberRegistrationLink: nfcContent.memberRegistrationLink,
     });
   };
 
