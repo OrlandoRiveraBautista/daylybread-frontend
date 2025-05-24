@@ -60,7 +60,7 @@ export const NFCShare: React.FC<NFCShareProps> = ({ nfcConfig }) => {
       }
       element.setAttribute("content", content);
     });
-  }, [nfcConfig.url]);
+  }, [nfcConfig.url]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const shareOnFacebook = () => {
     const shareUrl = encodeURIComponent(
