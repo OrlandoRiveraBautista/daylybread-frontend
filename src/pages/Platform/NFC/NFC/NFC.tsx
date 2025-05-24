@@ -11,6 +11,7 @@ import {
   IonCard,
   IonCardContent,
   IonButtons,
+  IonSpinner,
 } from "@ionic/react";
 import "./NFC.scss";
 import { NFCShare } from "../../../../components/Platform/NFCShare";
@@ -24,7 +25,7 @@ import { useGetNFCConfig } from "../../../../hooks/NFCConfigHooks";
 
 const NFC: React.FC = () => {
   const id = new URLSearchParams(window.location.search).get("id") || "";
-  const { data: nfcConfig } = useGetNFCConfig(id);
+  const { data: nfcConfig, loading } = useGetNFCConfig(id);
 
   const handleTryMe = () => {
     const currentDomain = window.location.hostname
@@ -77,28 +78,41 @@ const NFC: React.FC = () => {
       >
         <div className="nfc-container">
           <div className="nfc-content-container">
-            <IonCard className="nfc-card">
-              <IonCardContent>
-                <IonTitle className="nfc-title">
-                  {nfcConfig?.getNFCConfig?.title}
-                </IonTitle>
+            {loading ? (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  minHeight: "300px",
+                }}
+              >
+                <IonSpinner name="crescent" style={{ width: 48, height: 48 }} />
+              </div>
+            ) : (
+              <IonCard className="nfc-card">
+                <IonCardContent>
+                  <IonTitle className="nfc-title">
+                    {nfcConfig?.getNFCConfig?.title}
+                  </IonTitle>
 
-                <IonText color="medium" className="nfc-description">
-                  <p>{nfcConfig?.getNFCConfig?.description}</p>
-                </IonText>
+                  <IonText color="medium" className="nfc-description">
+                    <p>{nfcConfig?.getNFCConfig?.description}</p>
+                  </IonText>
 
-                <IonButton
-                  expand="block"
-                  size="large"
-                  onClick={handleBlockButton}
-                  className="nfc-get-started-button"
-                >
-                  Navigate to link
-                </IonButton>
+                  <IonButton
+                    expand="block"
+                    size="large"
+                    onClick={handleBlockButton}
+                    className="nfc-get-started-button"
+                  >
+                    Navigate to link
+                  </IonButton>
 
-                <NFCShare />
-              </IonCardContent>
-            </IonCard>
+                  <NFCShare nfcConfig={nfcConfig?.getNFCConfig!} />
+                </IonCardContent>
+              </IonCard>
+            )}
           </div>
         </div>
       </IonContent>
