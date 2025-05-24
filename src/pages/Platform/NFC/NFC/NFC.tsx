@@ -12,6 +12,10 @@ import {
   IonCardContent,
   IonButtons,
   IonSpinner,
+  IonFab,
+  IonFabButton,
+  IonFabList,
+  IonIcon,
 } from "@ionic/react";
 import "./NFC.scss";
 import { NFCShare } from "../../../../components/Platform/NFCShare";
@@ -22,6 +26,7 @@ import SmallWordLogoDark from "../../../../assets/images/small-word-logo-dark.sv
 
 /* Hooks */
 import { useGetNFCConfig } from "../../../../hooks/NFCConfigHooks";
+import { ellipsisVertical, cash, share } from "ionicons/icons";
 
 const NFC: React.FC = () => {
   const id = new URLSearchParams(window.location.search).get("id") || "";
@@ -77,19 +82,19 @@ const NFC: React.FC = () => {
         style={{ "--background": "var(--ion-background-color)" }}
       >
         <div className="nfc-container">
-          <div className="nfc-content-container">
-            {loading ? (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  minHeight: "300px",
-                }}
-              >
-                <IonSpinner name="crescent" style={{ width: 48, height: 48 }} />
-              </div>
-            ) : (
+          {loading ? (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                minHeight: "300px",
+              }}
+            >
+              <IonSpinner name="crescent" style={{ width: 48, height: 48 }} />
+            </div>
+          ) : (
+            <div className="nfc-content-container">
               <IonCard className="nfc-card">
                 <IonCardContent>
                   <IonTitle className="nfc-title">
@@ -112,8 +117,8 @@ const NFC: React.FC = () => {
                   <NFCShare nfcConfig={nfcConfig?.getNFCConfig!} />
                 </IonCardContent>
               </IonCard>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </IonContent>
     </IonPage>
