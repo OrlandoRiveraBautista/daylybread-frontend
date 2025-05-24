@@ -1,10 +1,10 @@
 import React from "react";
 import { IonIcon } from "@ionic/react";
 import {
-  logoTwitter,
+  //   logoTwitter,
   logoFacebook,
-  logoPinterest,
-  logoLinkedin,
+  //   logoPinterest,
+  //   logoLinkedin,
 } from "ionicons/icons";
 import "./NFCShare.scss";
 import { GetNfcConfigQuery } from "../../__generated__/graphql";

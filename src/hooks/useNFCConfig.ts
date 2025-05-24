@@ -7,7 +7,7 @@ import {
 
 export const useNFCConfig = (userId: string) => {
   const [isSaving, setIsSaving] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(false);
+  const [isUpdating, _] = useState(false);
 
   const [getNFCConfigByOwner, { data: nfcConfigData }] =
     useGetNFCConfigByOwner();
