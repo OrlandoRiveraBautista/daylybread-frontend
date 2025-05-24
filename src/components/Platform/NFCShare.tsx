@@ -6,7 +6,7 @@ import {
   logoPinterest,
   logoLinkedin,
 } from "ionicons/icons";
-import "./NFCShare.css";
+import "./NFCShare.scss";
 import { GetNfcConfigQuery } from "../../__generated__/graphql";
 
 const socials = [
@@ -74,7 +74,7 @@ export const NFCShare: React.FC<NFCShareProps> = ({ nfcConfig }) => {
   };
   return (
     <div className="nfc-share-container">
-      <span className="nfc-share-label">Share</span>
+      <span className="nfc-share-label">Share:</span>
       <div className="nfc-share-icons">
         {socials.map(
           (social) =>
