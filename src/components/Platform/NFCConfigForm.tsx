@@ -30,6 +30,7 @@ interface NFCContent {
   socialMedia: SocialMediaSettings;
   givingLink?: string | null;
   memberRegistrationLink?: string | null;
+  eventsLink?: string | null;
 }
 
 interface NFCConfigFormProps {
@@ -40,6 +41,7 @@ interface NFCConfigFormProps {
     socialMedia?: SocialMediaSettings;
     givingLink?: string | null;
     memberRegistrationLink?: string | null;
+    eventsLink?: string | null;
   };
   onSave: (data: {
     title: string;
@@ -48,6 +50,7 @@ interface NFCConfigFormProps {
     socialMedia?: SocialMediaSettings;
     givingLink?: string | null;
     memberRegistrationLink?: string | null;
+    eventsLink?: string | null;
   }) => Promise<void>;
   isSaving: boolean;
   isUpdating: boolean;
@@ -72,6 +75,7 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
     },
     givingLink: initialData?.givingLink || null,
     memberRegistrationLink: initialData?.memberRegistrationLink || null,
+    eventsLink: initialData?.eventsLink || null,
   });
 
   // form toggle state
@@ -80,6 +84,7 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
     memberRegistrationLinkEnabled: initialData?.memberRegistrationLink
       ? true
       : false,
+    eventsLinkEnabled: initialData?.eventsLink ? true : false,
   });
 
   // Update form when initialData changes
@@ -97,6 +102,7 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
         },
         givingLink: initialData.givingLink || null,
         memberRegistrationLink: initialData.memberRegistrationLink || null,
+        eventsLink: initialData.eventsLink || null,
       });
     }
   }, [initialData]);
@@ -109,6 +115,7 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
       socialMedia: nfcContent.socialMedia,
       givingLink: nfcContent.givingLink,
       memberRegistrationLink: nfcContent.memberRegistrationLink,
+      eventsLink: nfcContent.eventsLink,
     });
   };
 
@@ -302,6 +309,43 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
                   })
                 }
                 placeholder="Enter member registration URL"
+              />
+            </IonItem>
+          )}
+
+          <IonItem>
+            <IonCheckbox
+              checked={formToggles.eventsLinkEnabled}
+              onIonChange={(e) => {
+                setFormToggles({
+                  ...formToggles,
+                  eventsLinkEnabled: e.detail.checked,
+                });
+                if (!e.detail.checked) {
+                  setNfcContent({
+                    ...nfcContent,
+                    eventsLink: null,
+                  });
+                }
+              }}
+            >
+              Enable Events Link
+            </IonCheckbox>
+          </IonItem>
+
+          {formToggles.eventsLinkEnabled && (
+            <IonItem>
+              <IonLabel position="stacked">Events Link URL</IonLabel>
+              <IonInput
+                type="url"
+                value={nfcContent.eventsLink}
+                onIonInput={(e) =>
+                  setNfcContent({
+                    ...nfcContent,
+                    eventsLink: e.detail.value || null,
+                  })
+                }
+                placeholder="Enter events link URL"
               />
             </IonItem>
           )}
