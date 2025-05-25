@@ -72,6 +72,15 @@ export const NFCShare: React.FC<NFCShareProps> = ({ nfcConfig }) => {
       "_blank"
     );
   };
+
+  // Only render if any social media links are enabled (true)
+  if (
+    !nfcConfig?.socialMedia ||
+    !Object.values(nfcConfig.socialMedia).some((value) => value === true)
+  ) {
+    return null;
+  }
+
   return (
     <div className="nfc-share-container">
       <span className="nfc-share-label">Share:</span>
