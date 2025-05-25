@@ -46,6 +46,17 @@ const NFC: React.FC = () => {
     window.location.href = nfcConfig?.getNFCConfig?.url! || "";
   };
 
+  const handleCash = () => {
+    // Replace with your desired link
+    window.location.href = nfcConfig?.getNFCConfig?.givingLink! || "";
+  };
+
+  const handleNewMember = () => {
+    // Replace with your desired link
+    window.location.href =
+      nfcConfig?.getNFCConfig?.memberRegistrationLink! || "";
+  };
+
   return (
     <IonPage id="nfc-page">
       <IonHeader className="ion-no-border">
@@ -121,7 +132,19 @@ const NFC: React.FC = () => {
           )}
         </div>
 
-        <NFCMoreActions onCash={() => {}} onNewMember={() => {}} />
+        {(nfcConfig?.getNFCConfig?.givingLink ||
+          nfcConfig?.getNFCConfig?.memberRegistrationLink) && (
+          <NFCMoreActions
+            onCash={
+              nfcConfig?.getNFCConfig?.givingLink ? handleCash : undefined
+            }
+            onNewMember={
+              nfcConfig?.getNFCConfig?.memberRegistrationLink
+                ? handleNewMember
+                : undefined
+            }
+          />
+        )}
       </IonContent>
     </IonPage>
   );
