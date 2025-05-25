@@ -13,8 +13,13 @@ import {
   IonButtons,
   IonSpinner,
 } from "@ionic/react";
+
+/* Components */
+import { NFCShare } from "../../../../components/NFC/NFCShare";
+import { NFCMoreActions } from "../../../../components/NFC/NFCMoreActions";
+
+/* Styles */
 import "./NFC.scss";
-import { NFCShare } from "../../../../components/Platform/NFCShare";
 
 /* Images */
 import SmallWordLogo from "../../../../assets/images/small-word-logo.svg";
@@ -39,6 +44,17 @@ const NFC: React.FC = () => {
   const handleBlockButton = () => {
     // Replace with your desired link
     window.location.href = nfcConfig?.getNFCConfig?.url! || "";
+  };
+
+  const handleCash = () => {
+    // Replace with your desired link
+    window.location.href = nfcConfig?.getNFCConfig?.givingLink! || "";
+  };
+
+  const handleNewMember = () => {
+    // Replace with your desired link
+    window.location.href =
+      nfcConfig?.getNFCConfig?.memberRegistrationLink! || "";
   };
 
   return (
@@ -77,19 +93,19 @@ const NFC: React.FC = () => {
         style={{ "--background": "var(--ion-background-color)" }}
       >
         <div className="nfc-container">
-          <div className="nfc-content-container">
-            {loading ? (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  minHeight: "300px",
-                }}
-              >
-                <IonSpinner name="crescent" style={{ width: 48, height: 48 }} />
-              </div>
-            ) : (
+          {loading ? (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                minHeight: "300px",
+              }}
+            >
+              <IonSpinner name="crescent" style={{ width: 48, height: 48 }} />
+            </div>
+          ) : (
+            <div className="nfc-content-container">
               <IonCard className="nfc-card">
                 <IonCardContent>
                   <IonTitle className="nfc-title">
@@ -112,9 +128,23 @@ const NFC: React.FC = () => {
                   <NFCShare nfcConfig={nfcConfig?.getNFCConfig!} />
                 </IonCardContent>
               </IonCard>
-            )}
-          </div>
+            </div>
+          )}
         </div>
+
+        {(nfcConfig?.getNFCConfig?.givingLink ||
+          nfcConfig?.getNFCConfig?.memberRegistrationLink) && (
+          <NFCMoreActions
+            onCash={
+              nfcConfig?.getNFCConfig?.givingLink ? handleCash : undefined
+            }
+            onNewMember={
+              nfcConfig?.getNFCConfig?.memberRegistrationLink
+                ? handleNewMember
+                : undefined
+            }
+          />
+        )}
       </IonContent>
     </IonPage>
   );
