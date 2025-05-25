@@ -59,7 +59,7 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
   isSaving,
   isUpdating,
 }) => {
-    // local state
+  // local state
   const [nfcContent, setNfcContent] = useState<NFCContent>({
     type: "link",
     title: initialData?.title || "",
@@ -76,8 +76,10 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
 
   // form toggle state
   const [formToggles, setFormToggles] = useState({
-    givingLinkEnabled: false,
-    memberRegistrationLinkEnabled: false
+    givingLinkEnabled: initialData?.givingLink ? true : false,
+    memberRegistrationLinkEnabled: initialData?.memberRegistrationLink
+      ? true
+      : false,
   });
 
   // Update form when initialData changes
@@ -250,10 +252,10 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
               <IonInput
                 type="url"
                 value={nfcContent.givingLink}
-                onIonChange={(e) =>
+                onIonInput={(e) =>
                   setNfcContent({
                     ...nfcContent,
-                    givingLink: e.detail.value || "",
+                    givingLink: e.detail.value || null,
                   })
                 }
                 placeholder="Enter giving link URL"
@@ -281,10 +283,10 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
               <IonInput
                 type="url"
                 value={nfcContent.memberRegistrationLink}
-                onIonChange={(e) =>
+                onIonInput={(e) =>
                   setNfcContent({
                     ...nfcContent,
-                    memberRegistrationLink: e.detail.value || "",
+                    memberRegistrationLink: e.detail.value || null,
                   })
                 }
                 placeholder="Enter member registration URL"
