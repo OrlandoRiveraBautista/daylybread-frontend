@@ -235,12 +235,18 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
           <IonItem>
             <IonCheckbox
               checked={formToggles.givingLinkEnabled}
-              onIonChange={(e) =>
+              onIonChange={(e) => {
                 setFormToggles({
                   ...formToggles,
                   givingLinkEnabled: e.detail.checked,
-                })
-              }
+                });
+                if (!e.detail.checked) {
+                  setNfcContent({
+                    ...nfcContent,
+                    givingLink: null,
+                  });
+                }
+              }}
             >
               Enable Giving Link
             </IonCheckbox>
@@ -266,12 +272,18 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
           <IonItem>
             <IonCheckbox
               checked={formToggles.memberRegistrationLinkEnabled}
-              onIonChange={(e) =>
+              onIonChange={(e) => {
                 setFormToggles({
                   ...formToggles,
                   memberRegistrationLinkEnabled: e.detail.checked,
-                })
-              }
+                });
+                if (!e.detail.checked) {
+                  setNfcContent({
+                    ...nfcContent,
+                    memberRegistrationLink: null,
+                  });
+                }
+              }}
             >
               Enable Member Registration Link
             </IonCheckbox>
