@@ -5,13 +5,13 @@ import { ellipsisVertical, cash, personAdd, calendar } from "ionicons/icons";
 interface NFCMoreActionProps {
   onCash?: () => void;
   onNewMember?: () => void;
-  onNewEvent?: () => void;
+  onEventLink?: () => void;
 }
 
 export const NFCMoreActions: React.FC<NFCMoreActionProps> = ({
   onCash,
   onNewMember,
-  onNewEvent,
+  onEventLink,
 }) => {
   return (
     <>
@@ -35,8 +35,8 @@ export const NFCMoreActions: React.FC<NFCMoreActionProps> = ({
               <IonIcon icon={personAdd} />
             </IonFabButton>
           )}
-          {onNewEvent && (
-            <IonFabButton color="secondary" onClick={onNewEvent}>
+          {onEventLink && (
+            <IonFabButton color="secondary" onClick={onEventLink}>
               <IonIcon icon={calendar} />
             </IonFabButton>
           )}
