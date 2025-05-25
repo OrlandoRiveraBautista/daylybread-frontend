@@ -20,6 +20,7 @@ const GetNFCConfig = gql(`
       }
       givingLink
       memberRegistrationLink
+      eventsLink
       createdAt
       updatedAt
     }
@@ -44,6 +45,7 @@ const GetNFCConfigByOwner = gql(`
       }
       givingLink
       memberRegistrationLink
+      eventsLink
       createdAt
       updatedAt
     }
@@ -70,6 +72,7 @@ const CreateNFCConfig = gql(`
         }
         givingLink
         memberRegistrationLink
+        eventsLink
         createdAt
         updatedAt
       }
@@ -100,6 +103,7 @@ const UpdateNFCConfig = gql(`
         }
         givingLink
         memberRegistrationLink
+        eventsLink
         createdAt
         updatedAt
       }
@@ -130,6 +134,7 @@ const DeleteNFCConfig = gql(`
         }
         givingLink
         memberRegistrationLink
+        eventsLink
         createdAt
         updatedAt
       }
