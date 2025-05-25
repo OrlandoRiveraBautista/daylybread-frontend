@@ -13,6 +13,14 @@ const GetNFCConfig = gql(`
         _id
       }
       nfcIds
+      socialMedia {
+        facebook
+        instagram
+        twitter
+      }
+      givingLink
+      memberRegistrationLink
+      eventsLink
       createdAt
       updatedAt
     }
@@ -30,6 +38,14 @@ const GetNFCConfigByOwner = gql(`
         _id
       }
       nfcIds
+      socialMedia {
+        facebook
+        instagram
+        twitter
+      }
+      givingLink
+      memberRegistrationLink
+      eventsLink
       createdAt
       updatedAt
     }
@@ -49,6 +65,14 @@ const CreateNFCConfig = gql(`
           _id
         }
         nfcIds
+        socialMedia {
+          facebook
+          instagram
+          twitter
+        }
+        givingLink
+        memberRegistrationLink
+        eventsLink
         createdAt
         updatedAt
       }
@@ -72,6 +96,14 @@ const UpdateNFCConfig = gql(`
           _id
         }
         nfcIds
+        socialMedia {
+          facebook
+          instagram
+          twitter
+        }
+        givingLink
+        memberRegistrationLink
+        eventsLink
         createdAt
         updatedAt
       }
@@ -95,6 +127,14 @@ const DeleteNFCConfig = gql(`
           _id
         }
         nfcIds
+        socialMedia {
+          facebook
+          instagram
+          twitter
+        }
+        givingLink
+        memberRegistrationLink
+        eventsLink
         createdAt
         updatedAt
       }

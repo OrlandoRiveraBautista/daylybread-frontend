@@ -11,7 +11,14 @@ import {
   IonCard,
   IonCardContent,
   IonButtons,
+  IonSpinner,
 } from "@ionic/react";
+
+/* Components */
+import { NFCShare } from "../../../../components/NFC/NFCShare";
+import { NFCMoreActions } from "../../../../components/NFC/NFCMoreActions";
+
+/* Styles */
 import "./NFC.scss";
 
 /* Images */
@@ -23,7 +30,7 @@ import { useGetNFCConfig } from "../../../../hooks/NFCConfigHooks";
 
 const NFC: React.FC = () => {
   const id = new URLSearchParams(window.location.search).get("id") || "";
-  const { data: nfcConfig } = useGetNFCConfig(id);
+  const { data: nfcConfig, loading } = useGetNFCConfig(id);
 
   const handleTryMe = () => {
     const currentDomain = window.location.hostname
@@ -39,8 +46,24 @@ const NFC: React.FC = () => {
     window.location.href = nfcConfig?.getNFCConfig?.url! || "";
   };
 
+  const handleCash = () => {
+    // Replace with your desired link
+    window.location.href = nfcConfig?.getNFCConfig?.givingLink! || "";
+  };
+
+  const handleNewMember = () => {
+    // Replace with your desired link
+    window.location.href =
+      nfcConfig?.getNFCConfig?.memberRegistrationLink! || "";
+  };
+
+  const handleEventLink = () => {
+    // Replace with your desired link
+    window.location.href = nfcConfig?.getNFCConfig?.eventsLink! || "";
+  };
+
   return (
-    <IonPage>
+    <IonPage id="nfc-page">
       <IonHeader className="ion-no-border">
         <IonToolbar style={{ "--background": "var(--ion-background-color)" }}>
           <div className="nfc-header-container">
@@ -74,28 +97,63 @@ const NFC: React.FC = () => {
         className="ion-padding"
         style={{ "--background": "var(--ion-background-color)" }}
       >
-        <div className="nfc-content-container">
-          <IonCard className="nfc-card">
-            <IonCardContent>
-              <IonTitle className="nfc-title">
-                {nfcConfig?.getNFCConfig?.title}
-              </IonTitle>
+        <div className="nfc-container">
+          {loading ? (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                minHeight: "300px",
+              }}
+            >
+              <IonSpinner name="crescent" style={{ width: 48, height: 48 }} />
+            </div>
+          ) : (
+            <div className="nfc-content-container">
+              <IonCard className="nfc-card">
+                <IonCardContent>
+                  <IonTitle className="nfc-title">
+                    {nfcConfig?.getNFCConfig?.title}
+                  </IonTitle>
 
-              <IonText color="medium" className="nfc-description">
-                <p>{nfcConfig?.getNFCConfig?.description}</p>
-              </IonText>
+                  <IonText color="medium" className="nfc-description">
+                    <p>{nfcConfig?.getNFCConfig?.description}</p>
+                  </IonText>
 
-              <IonButton
-                expand="block"
-                size="large"
-                onClick={handleBlockButton}
-                className="nfc-get-started-button"
-              >
-                Navigate to link
-              </IonButton>
-            </IonCardContent>
-          </IonCard>
+                  <IonButton
+                    expand="block"
+                    size="large"
+                    onClick={handleBlockButton}
+                    className="nfc-get-started-button"
+                  >
+                    Navigate to link
+                  </IonButton>
+
+                  <NFCShare nfcConfig={nfcConfig?.getNFCConfig!} />
+                </IonCardContent>
+              </IonCard>
+            </div>
+          )}
         </div>
+
+        {(nfcConfig?.getNFCConfig?.givingLink ||
+          nfcConfig?.getNFCConfig?.memberRegistrationLink ||
+          nfcConfig?.getNFCConfig?.eventsLink) && (
+          <NFCMoreActions
+            onCash={
+              nfcConfig?.getNFCConfig?.givingLink ? handleCash : undefined
+            }
+            onNewMember={
+              nfcConfig?.getNFCConfig?.memberRegistrationLink
+                ? handleNewMember
+                : undefined
+            }
+            onEventLink={
+              nfcConfig?.getNFCConfig?.eventsLink ? handleEventLink : undefined
+            }
+          />
+        )}
       </IonContent>
     </IonPage>
   );
