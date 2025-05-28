@@ -26,6 +26,21 @@ const CheckingAuthentication: React.FC = () => {
             </b>
           </IonText>
         </IonButton>
+        {/* Go to Login button */}
+        <IonButton
+          shape="round"
+          color="primary"
+          onClick={(e) => {
+            e.preventDefault();
+            history.push("/login");
+          }}
+        >
+          <IonText>
+            <b>
+              Have an account? <u style={{ color: "white" }}>Login</u>
+            </b>
+          </IonText>
+        </IonButton>
       </div>
     </IonPage>
   );
