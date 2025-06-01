@@ -48,18 +48,18 @@ const NFC: React.FC = () => {
 
   const handleCash = () => {
     // Replace with your desired link
-    window.location.href = nfcConfig?.getNFCConfig?.givingLink! || "";
+    window.location.href = nfcConfig?.getNFCConfig?.givingLink?.url || "";
   };
 
   const handleNewMember = () => {
     // Replace with your desired link
     window.location.href =
-      nfcConfig?.getNFCConfig?.memberRegistrationLink! || "";
+      nfcConfig?.getNFCConfig?.memberRegistrationLink?.url || "";
   };
 
   const handleEventLink = () => {
     // Replace with your desired link
-    window.location.href = nfcConfig?.getNFCConfig?.eventsLink! || "";
+    window.location.href = nfcConfig?.getNFCConfig?.eventsLink?.url || "";
   };
 
   return (
@@ -137,20 +137,24 @@ const NFC: React.FC = () => {
           )}
         </div>
 
-        {(nfcConfig?.getNFCConfig?.givingLink ||
-          nfcConfig?.getNFCConfig?.memberRegistrationLink ||
-          nfcConfig?.getNFCConfig?.eventsLink) && (
+        {(nfcConfig?.getNFCConfig?.givingLink?.isVisible ||
+          nfcConfig?.getNFCConfig?.memberRegistrationLink?.isVisible ||
+          nfcConfig?.getNFCConfig?.eventsLink?.isVisible) && (
           <NFCMoreActions
             onCash={
-              nfcConfig?.getNFCConfig?.givingLink ? handleCash : undefined
+              nfcConfig?.getNFCConfig?.givingLink?.isVisible
+                ? handleCash
+                : undefined
             }
             onNewMember={
-              nfcConfig?.getNFCConfig?.memberRegistrationLink
+              nfcConfig?.getNFCConfig?.memberRegistrationLink?.isVisible
                 ? handleNewMember
                 : undefined
             }
             onEventLink={
-              nfcConfig?.getNFCConfig?.eventsLink ? handleEventLink : undefined
+              nfcConfig?.getNFCConfig?.eventsLink?.isVisible
+                ? handleEventLink
+                : undefined
             }
           />
         )}
