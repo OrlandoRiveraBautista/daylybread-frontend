@@ -22,15 +22,20 @@ interface SocialMediaSettings {
   twitter?: boolean;
 }
 
+interface LinkSettings {
+  isVisible: boolean;
+  url: string;
+}
+
 interface NFCContent {
   type: "link" | "file";
   title: string;
   description: string;
   content: string;
   socialMedia: SocialMediaSettings;
-  givingLink?: string | null;
-  memberRegistrationLink?: string | null;
-  eventsLink?: string | null;
+  givingLink?: LinkSettings | null;
+  memberRegistrationLink?: LinkSettings | null;
+  eventsLink?: LinkSettings | null;
 }
 
 interface NFCConfigFormProps {
@@ -39,18 +44,18 @@ interface NFCConfigFormProps {
     description: string;
     url: string;
     socialMedia?: SocialMediaSettings;
-    givingLink?: string | null;
-    memberRegistrationLink?: string | null;
-    eventsLink?: string | null;
+    givingLink?: LinkSettings | null;
+    memberRegistrationLink?: LinkSettings | null;
+    eventsLink?: LinkSettings | null;
   };
   onSave: (data: {
     title: string;
     description: string;
     url: string;
     socialMedia?: SocialMediaSettings;
-    givingLink?: string | null;
-    memberRegistrationLink?: string | null;
-    eventsLink?: string | null;
+    givingLink?: LinkSettings | null;
+    memberRegistrationLink?: LinkSettings | null;
+    eventsLink?: LinkSettings | null;
   }) => Promise<void>;
   isSaving: boolean;
   isUpdating: boolean;
@@ -76,15 +81,6 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
     givingLink: initialData?.givingLink || null,
     memberRegistrationLink: initialData?.memberRegistrationLink || null,
     eventsLink: initialData?.eventsLink || null,
-  });
-
-  // form toggle state
-  const [formToggles, setFormToggles] = useState({
-    givingLinkEnabled: initialData?.givingLink ? true : false,
-    memberRegistrationLinkEnabled: initialData?.memberRegistrationLink
-      ? true
-      : false,
-    eventsLinkEnabled: initialData?.eventsLink ? true : false,
   });
 
   // Update form when initialData changes
@@ -241,34 +237,34 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
 
           <IonItem>
             <IonCheckbox
-              checked={formToggles.givingLinkEnabled}
+              checked={nfcContent.givingLink?.isVisible}
               onIonChange={(e) => {
-                setFormToggles({
-                  ...formToggles,
-                  givingLinkEnabled: e.detail.checked,
+                setNfcContent({
+                  ...nfcContent,
+                  givingLink: {
+                    isVisible: e.detail.checked,
+                    url: nfcContent.givingLink?.url || "",
+                  },
                 });
-                if (!e.detail.checked) {
-                  setNfcContent({
-                    ...nfcContent,
-                    givingLink: null,
-                  });
-                }
               }}
             >
               Enable Giving Link
             </IonCheckbox>
           </IonItem>
 
-          {formToggles.givingLinkEnabled && (
+          {nfcContent.givingLink?.isVisible && (
             <IonItem>
               <IonLabel position="stacked">Giving Link URL</IonLabel>
               <IonInput
                 type="url"
-                value={nfcContent.givingLink}
+                value={nfcContent.givingLink?.url}
                 onIonInput={(e) =>
                   setNfcContent({
                     ...nfcContent,
-                    givingLink: e.detail.value || null,
+                    givingLink: {
+                      isVisible: true,
+                      url: e.detail.value || "",
+                    },
                   })
                 }
                 placeholder="Enter giving link URL"
@@ -278,34 +274,34 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
 
           <IonItem>
             <IonCheckbox
-              checked={formToggles.memberRegistrationLinkEnabled}
+              checked={nfcContent.memberRegistrationLink?.isVisible}
               onIonChange={(e) => {
-                setFormToggles({
-                  ...formToggles,
-                  memberRegistrationLinkEnabled: e.detail.checked,
+                setNfcContent({
+                  ...nfcContent,
+                  memberRegistrationLink: {
+                    isVisible: e.detail.checked,
+                    url: nfcContent.memberRegistrationLink?.url || "",
+                  },
                 });
-                if (!e.detail.checked) {
-                  setNfcContent({
-                    ...nfcContent,
-                    memberRegistrationLink: null,
-                  });
-                }
               }}
             >
               Enable Member Registration Link
             </IonCheckbox>
           </IonItem>
 
-          {formToggles.memberRegistrationLinkEnabled && (
+          {nfcContent.memberRegistrationLink?.isVisible && (
             <IonItem>
               <IonLabel position="stacked">Member Registration URL</IonLabel>
               <IonInput
                 type="url"
-                value={nfcContent.memberRegistrationLink}
+                value={nfcContent.memberRegistrationLink?.url}
                 onIonInput={(e) =>
                   setNfcContent({
                     ...nfcContent,
-                    memberRegistrationLink: e.detail.value || null,
+                    memberRegistrationLink: {
+                      isVisible: true,
+                      url: e.detail.value || "",
+                    },
                   })
                 }
                 placeholder="Enter member registration URL"
@@ -315,34 +311,34 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
 
           <IonItem>
             <IonCheckbox
-              checked={formToggles.eventsLinkEnabled}
+              checked={nfcContent.eventsLink?.isVisible}
               onIonChange={(e) => {
-                setFormToggles({
-                  ...formToggles,
-                  eventsLinkEnabled: e.detail.checked,
+                setNfcContent({
+                  ...nfcContent,
+                  eventsLink: {
+                    isVisible: e.detail.checked,
+                    url: nfcContent.eventsLink?.url || "",
+                  },
                 });
-                if (!e.detail.checked) {
-                  setNfcContent({
-                    ...nfcContent,
-                    eventsLink: null,
-                  });
-                }
               }}
             >
               Enable Events Link
             </IonCheckbox>
           </IonItem>
 
-          {formToggles.eventsLinkEnabled && (
+          {nfcContent.eventsLink?.isVisible && (
             <IonItem>
               <IonLabel position="stacked">Events Link URL</IonLabel>
               <IonInput
                 type="url"
-                value={nfcContent.eventsLink}
+                value={nfcContent.eventsLink?.url}
                 onIonInput={(e) =>
                   setNfcContent({
                     ...nfcContent,
-                    eventsLink: e.detail.value || null,
+                    eventsLink: {
+                      isVisible: true,
+                      url: e.detail.value || "",
+                    },
                   })
                 }
                 placeholder="Enter events link URL"
