@@ -127,7 +127,7 @@ const NFC: React.FC = () => {
                     onClick={handleBlockButton}
                     className="nfc-get-started-button"
                   >
-                    Navigate to link
+                    {nfcConfig?.getNFCConfig?.mainButton.text}
                   </IonButton>
 
                   <NFCShare nfcConfig={nfcConfig?.getNFCConfig!} />
