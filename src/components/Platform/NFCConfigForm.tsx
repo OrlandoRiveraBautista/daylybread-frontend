@@ -190,7 +190,24 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
           {nfcContent.type === "link" ? (
             <>
               <IonItem>
-                <IonLabel position="stacked">URL</IonLabel>
+                <IonLabel position="stacked">Center Button Label</IonLabel>
+                <IonInput
+                  type="text"
+                  value={nfcContent.mainButton.text}
+                  onIonInput={(e) =>
+                    setNfcContent({
+                      ...nfcContent,
+                      mainButton: {
+                        ...nfcContent.mainButton,
+                        text: e.detail.value!,
+                      },
+                    })
+                  }
+                  placeholder="Enter button label"
+                />
+              </IonItem>
+              <IonItem>
+                <IonLabel position="stacked">Center Button URL</IonLabel>
                 <IonInput
                   type="url"
                   value={nfcContent.mainButton.url}
