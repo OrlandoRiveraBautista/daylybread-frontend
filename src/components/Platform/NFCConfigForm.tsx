@@ -78,9 +78,18 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
       instagram: initialData?.socialMedia?.instagram || false,
       twitter: initialData?.socialMedia?.twitter || false,
     },
-    givingLink: initialData?.givingLink || null,
-    memberRegistrationLink: initialData?.memberRegistrationLink || null,
-    eventsLink: initialData?.eventsLink || null,
+    givingLink: {
+      isVisible: initialData?.givingLink?.isVisible || false,
+      url: initialData?.givingLink?.url || "",
+    },
+    memberRegistrationLink: {
+      isVisible: initialData?.memberRegistrationLink?.isVisible || false,
+      url: initialData?.memberRegistrationLink?.url || "",
+    },
+    eventsLink: {
+      isVisible: initialData?.eventsLink?.isVisible || false,
+      url: initialData?.eventsLink?.url || "",
+    },
   });
 
   // Update form when initialData changes
@@ -96,9 +105,18 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
           instagram: initialData.socialMedia?.instagram || false,
           twitter: initialData.socialMedia?.twitter || false,
         },
-        givingLink: initialData.givingLink || null,
-        memberRegistrationLink: initialData.memberRegistrationLink || null,
-        eventsLink: initialData.eventsLink || null,
+        givingLink: {
+          isVisible: initialData.givingLink?.isVisible || false,
+          url: initialData.givingLink?.url || "",
+        },
+        memberRegistrationLink: {
+          isVisible: initialData.memberRegistrationLink?.isVisible || false,
+          url: initialData.memberRegistrationLink?.url || "",
+        },
+        eventsLink: {
+          isVisible: initialData.eventsLink?.isVisible || false,
+          url: initialData.eventsLink?.url || "",
+        },
       });
     }
   }, [initialData]);
