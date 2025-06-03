@@ -43,7 +43,7 @@ const NFC: React.FC = () => {
 
   const handleBlockButton = () => {
     // Replace with your desired link
-    window.location.href = nfcConfig?.getNFCConfig?.url! || "";
+    window.location.href = nfcConfig?.getNFCConfig?.mainButton.url! || "";
   };
 
   const handleCash = () => {
