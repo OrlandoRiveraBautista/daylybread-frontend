@@ -25,7 +25,7 @@ export const NFCShare: React.FC<NFCShareProps> = ({ nfcConfig }) => {
     return {
       title: nfcConfig.title,
       description: nfcConfig.description,
-      url: nfcConfig.url || "https://bible.daylybread.com",
+      url: nfcConfig.mainButton.url || "https://bible.daylybread.com",
     };
   };
 
@@ -60,11 +60,11 @@ export const NFCShare: React.FC<NFCShareProps> = ({ nfcConfig }) => {
       }
       element.setAttribute("content", content);
     });
-  }, [nfcConfig.url]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [nfcConfig.mainButton.url]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const shareOnFacebook = () => {
     const shareUrl = encodeURIComponent(
-      nfcConfig.url || "https://bible.daylybread.com"
+      nfcConfig.mainButton.url || "https://bible.daylybread.com"
     ); // or your deep link
     const quote = encodeURIComponent(nfcConfig.title);
     window.open(
