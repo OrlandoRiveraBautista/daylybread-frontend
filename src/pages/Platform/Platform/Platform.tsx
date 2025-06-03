@@ -61,7 +61,10 @@ const Platform: React.FC = () => {
   const handleSave = async (formData: {
     title: string;
     description: string;
-    url: string;
+    mainButton: {
+      url: string;
+      text: string;
+    };
   }) => {
     try {
       if (!userInfo?._id) {
