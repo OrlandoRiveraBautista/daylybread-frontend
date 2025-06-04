@@ -6,13 +6,16 @@ const GetNFCConfig = gql(`
   query GetNFCConfig($id: String!) {
     getNFCConfig(id: $id) {
       _id
-      url
       title
       description
       owner {
         _id
       }
       nfcIds
+      mainButton {
+        url
+        text
+      }
       socialMedia {
         facebook
         instagram
@@ -40,13 +43,16 @@ const GetNFCConfigByOwner = gql(`
   query GetNFCConfigByOwner($ownerId: String!) {
     getNFCConfigByOwner(ownerId: $ownerId) {
       _id
-      url
       title
       description
       owner {
         _id
       }
       nfcIds
+      mainButton {
+        url
+        text
+      }
       socialMedia {
         facebook
         instagram
@@ -76,13 +82,16 @@ const CreateNFCConfig = gql(`
     createNFCConfig(options: $options) {
       results {
         _id
-        url
         title
         description
         owner {
           _id
         }
         nfcIds
+        mainButton {
+          url
+          text
+        }
         socialMedia {
           facebook
           instagram
@@ -116,13 +125,16 @@ const UpdateNFCConfig = gql(`
     updateNFCConfig(id: $id, options: $options) {
       results {
         _id
-        url
         title
         description
         owner {
           _id
         }
         nfcIds
+        mainButton {
+          url
+          text
+        }
         socialMedia {
           facebook
           instagram
@@ -156,13 +168,16 @@ const DeleteNFCConfig = gql(`
     deleteNFCConfig(id: $id) {
       results {
         _id
-        url
         title
         description
         owner {
           _id
         }
         nfcIds
+        mainButton {
+          url
+          text
+        }
         socialMedia {
           facebook
           instagram
