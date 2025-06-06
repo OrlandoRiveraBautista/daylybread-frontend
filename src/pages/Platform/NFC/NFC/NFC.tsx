@@ -43,7 +43,7 @@ const NFC: React.FC = () => {
 
   const handleBlockButton = () => {
     // Replace with your desired link
-    window.location.href = nfcConfig?.getNFCConfig?.url! || "";
+    window.location.href = nfcConfig?.getNFCConfig?.mainButton.url! || "";
   };
 
   const handleCash = () => {
@@ -127,7 +127,7 @@ const NFC: React.FC = () => {
                     onClick={handleBlockButton}
                     className="nfc-get-started-button"
                   >
-                    Navigate to link
+                    {nfcConfig?.getNFCConfig?.mainButton.text}
                   </IonButton>
 
                   <NFCShare nfcConfig={nfcConfig?.getNFCConfig!} />

@@ -23,7 +23,10 @@ export const useNFCConfig = (userId: string) => {
   const saveConfig = async (formData: {
     title: string;
     description: string;
-    url: string;
+    mainButton: {
+      url: string;
+      text: string;
+    };
   }) => {
     try {
       setIsSaving(true);

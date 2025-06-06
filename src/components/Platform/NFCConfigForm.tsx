@@ -27,11 +27,16 @@ interface LinkSettings {
   url: string;
 }
 
+interface MainButtonSettings {
+  url: string;
+  text: string;
+}
+
 interface NFCContent {
   type: "link" | "file";
   title: string;
   description: string;
-  content: string;
+  mainButton: MainButtonSettings;
   socialMedia: SocialMediaSettings;
   givingLink?: LinkSettings | null;
   memberRegistrationLink?: LinkSettings | null;
@@ -42,7 +47,7 @@ interface NFCConfigFormProps {
   initialData?: {
     title: string;
     description: string;
-    url: string;
+    mainButton: MainButtonSettings;
     socialMedia?: SocialMediaSettings;
     givingLink?: LinkSettings | null;
     memberRegistrationLink?: LinkSettings | null;
@@ -51,7 +56,7 @@ interface NFCConfigFormProps {
   onSave: (data: {
     title: string;
     description: string;
-    url: string;
+    mainButton: MainButtonSettings;
     socialMedia?: SocialMediaSettings;
     givingLink?: LinkSettings | null;
     memberRegistrationLink?: LinkSettings | null;
@@ -71,8 +76,11 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
   const [nfcContent, setNfcContent] = useState<NFCContent>({
     type: "link",
     title: initialData?.title || "",
+    mainButton: {
+      url: initialData?.mainButton.url || "",
+      text: initialData?.mainButton.text || "",
+    },
     description: initialData?.description || "",
-    content: initialData?.url || "",
     socialMedia: {
       facebook: initialData?.socialMedia?.facebook || false,
       instagram: initialData?.socialMedia?.instagram || false,
@@ -99,7 +107,10 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
         type: "link",
         title: initialData.title,
         description: initialData.description,
-        content: initialData.url,
+        mainButton: {
+          url: initialData.mainButton.url,
+          text: initialData.mainButton.text,
+        },
         socialMedia: {
           facebook: initialData.socialMedia?.facebook || false,
           instagram: initialData.socialMedia?.instagram || false,
@@ -125,7 +136,7 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
     await onSave({
       title: nfcContent.title.trim(),
       description: nfcContent.description.trim(),
-      url: nfcContent.content.trim(),
+      mainButton: nfcContent.mainButton,
       socialMedia: nfcContent.socialMedia,
       givingLink: nfcContent.givingLink,
       memberRegistrationLink: nfcContent.memberRegistrationLink,
@@ -179,14 +190,34 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
           {nfcContent.type === "link" ? (
             <>
               <IonItem>
-                <IonLabel position="stacked">URL</IonLabel>
+                <IonLabel position="stacked">Center Button Label</IonLabel>
                 <IonInput
-                  type="url"
-                  value={nfcContent.content}
+                  type="text"
+                  value={nfcContent.mainButton.text}
                   onIonInput={(e) =>
                     setNfcContent({
                       ...nfcContent,
-                      content: e.detail.value!,
+                      mainButton: {
+                        ...nfcContent.mainButton,
+                        text: e.detail.value!,
+                      },
+                    })
+                  }
+                  placeholder="Enter button label"
+                />
+              </IonItem>
+              <IonItem>
+                <IonLabel position="stacked">Center Button URL</IonLabel>
+                <IonInput
+                  type="url"
+                  value={nfcContent.mainButton.url}
+                  onIonInput={(e) =>
+                    setNfcContent({
+                      ...nfcContent,
+                      mainButton: {
+                        ...nfcContent.mainButton,
+                        url: e.detail.value!,
+                      },
                     })
                   }
                   placeholder="Enter URL"
@@ -248,7 +279,13 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
             <MediaUploader
               purpose={MediaPurpose.Other}
               onUploadSuccess={(mediaId, url) => {
-                setNfcContent({ ...nfcContent, content: url });
+                setNfcContent({
+                  ...nfcContent,
+                  mainButton: {
+                    ...nfcContent.mainButton,
+                    url: url,
+                  },
+                });
               }}
             />
           )}
