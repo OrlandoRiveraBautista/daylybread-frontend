@@ -71,6 +71,16 @@ const App: React.FC = () => {
   useSetStatusBarColor(); // hook to set the status bar color
   const { prompt, promptToInstall } = useAddToHomescreenPrompt();
 
+  // Add version check effect
+  useEffect(() => {
+    // Check for updates when the app starts
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.ready.then((registration) => {
+        registration.update(); // This will check for a new service worker
+      });
+    }
+  }, []);
+
   /**
    * Function to get and set the user if signed in
    */
