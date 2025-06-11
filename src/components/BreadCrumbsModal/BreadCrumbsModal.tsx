@@ -183,7 +183,7 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
       backdropBreakpoint={0.5}
       onDidPresent={(e) => handleBreakpointChange(e)}
     >
-      <IonContent className="ion-padding">
+      <IonContent className="ion-padding bread-crumbs-modal-content">
         <IonGrid
           className={
             selectedVersesCitation
