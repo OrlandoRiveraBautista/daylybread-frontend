@@ -165,9 +165,9 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
   };
 
   const getBreakpoints = () => {
-    if (navigator.userAgent.includes("iPhone")) {
-      return [0, 0.25, 0.75, 0.97];
-    }
+    // if (navigator.userAgent.includes("iPhone")) {
+    //   return [0, 0.25, 0.75, 0.97];
+    // }
     return [0, 0.25, 0.75, 1];
   };
 
@@ -183,10 +183,16 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
       backdropBreakpoint={0.5}
       onDidPresent={(e) => handleBreakpointChange(e)}
     >
-      <IonContent className="ion-padding">
-        <IonGrid>
+      <IonContent className="ion-padding bread-crumbs-modal-content">
+        <IonGrid
+          className={
+            selectedVersesCitation
+              ? "bread-crumbs-modal-main-grid-modified"
+              : ""
+          }
+        >
           {selectedVersesCitation ? (
-            <IonRow>
+            <IonRow className="selected-indicator-container">
               <IonCol className="selected-indicator">
                 {/* Row is for quick actions on the selected text, it is always on the selected text */}
                 <IonRow>
