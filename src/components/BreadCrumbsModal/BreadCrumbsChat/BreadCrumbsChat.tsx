@@ -46,15 +46,19 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChat> = ({
     onSubmit(value);
     setValue(""); // reset value
     setLoadingChatResponse(true);
+    scrollToBottom();
   };
 
   const scrollToBottom = () => {
     if (!messagesContainer.current) return;
 
     messagesContainer.current.scrollIntoView({
-      block: "end",
+      block: "start",
       behavior: "smooth",
     });
+
+    // // Add offset after scrolling
+    // window.scrollBy(0, 1000); // Adjust -100 to your desired offset in pixels
   };
 
   useEffect(() => {
@@ -65,7 +69,7 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChat> = ({
   }, [messages]);
 
   return (
-    <IonGrid>
+    <>
       {/* Chat header */}
       <IonRow className="breadcrumbs-header">
         <IonCol>
@@ -99,57 +103,59 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChat> = ({
         <div ref={messagesContainer} />
       </div>
 
-      {/* Suggestions based on chosen text */}
-      {useChosenTextVerbage ? (
-        <div className="breadcrumbs-suggestions-row">
-          <div className="breadcrumbs-suggestions-col">
-            {Object.entries(breadCrumbsSuggestions).map(([key, value]) => {
-              return (
-                <IonChip
-                  onClick={() => handleSubmit(value)}
-                  color="secondary"
-                  key={key}
-                >
-                  {key}
-                </IonChip>
-              );
-            })}
+      <div className="breadcrumbs-chat-input-and-suggestions-container">
+        {/* Suggestions based on chosen text */}
+        {useChosenTextVerbage ? (
+          <div className="breadcrumbs-suggestions-row">
+            <div className="breadcrumbs-suggestions-col">
+              {Object.entries(breadCrumbsSuggestions).map(([key, value]) => {
+                return (
+                  <IonChip
+                    onClick={() => handleSubmit(value)}
+                    color="secondary"
+                    key={key}
+                  >
+                    {key}
+                  </IonChip>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      ) : null}
+        ) : null}
 
-      {/* Chat Input */}
-      <IonRow className="chat-input-row">
-        {/* Text area input container */}
-        <IonCol>
-          <IonTextarea
-            labelPlacement="floating"
-            color="primary"
-            placeholder="Ask me anything!"
-            autoGrow={true}
-            fill="outline"
-            value={value}
-            onIonInput={(e) => setValue(e.target.value)}
-          ></IonTextarea>
-        </IonCol>
-        {/* Submit/Send button container */}
-        <IonCol size="auto" className="textarea-send-button-container">
-          <IonButton
-            fill="clear"
-            className="textarea-send-button"
-            color="dark"
-            onClick={() => (value ? handleSubmit(value) : null)}
-            disabled={loadingChatResponse}
-          >
-            {loadingChatResponse ? (
-              <IonSpinner color="dark" />
-            ) : (
-              <IonIcon icon={send} />
-            )}
-          </IonButton>
-        </IonCol>
-      </IonRow>
-    </IonGrid>
+        {/* Chat Input */}
+        <IonRow className="chat-input-row">
+          {/* Text area input container */}
+          <IonCol>
+            <IonTextarea
+              labelPlacement="floating"
+              color="primary"
+              placeholder="Ask me anything!"
+              autoGrow={true}
+              fill="outline"
+              value={value}
+              onIonInput={(e) => setValue(e.target.value)}
+            ></IonTextarea>
+          </IonCol>
+          {/* Submit/Send button container */}
+          <IonCol size="auto" className="textarea-send-button-container">
+            <IonButton
+              fill="clear"
+              className="textarea-send-button"
+              color="dark"
+              onClick={() => (value ? handleSubmit(value) : null)}
+              disabled={loadingChatResponse}
+            >
+              {loadingChatResponse ? (
+                <IonSpinner color="dark" />
+              ) : (
+                <IonIcon icon={send} />
+              )}
+            </IonButton>
+          </IonCol>
+        </IonRow>
+      </div>
+    </>
   );
 };
 
