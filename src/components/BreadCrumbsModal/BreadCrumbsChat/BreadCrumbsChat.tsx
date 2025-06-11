@@ -1,5 +1,4 @@
 import {
-  IonGrid,
   IonRow,
   IonCol,
   IonText,
