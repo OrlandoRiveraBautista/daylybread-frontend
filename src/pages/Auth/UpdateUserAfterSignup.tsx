@@ -38,14 +38,14 @@ const UpdateUserAfterSignup: React.FC = () => {
     dob: undefined,
   });
   const [isValid, setIsValid] = useState<IIsValid>({
-    firstName: undefined,
-    lastName: undefined,
+    firstName: userInfo?.firstName ? true : undefined,
+    lastName: userInfo?.lastName ? true : undefined,
     churchName: undefined,
     dob: undefined,
   });
   const [isTouched, setIsTouched] = useState<IIsValid>({
-    firstName: undefined,
-    lastName: undefined,
+    firstName: userInfo?.firstName ? true : undefined,
+    lastName: userInfo?.lastName ? true : undefined,
     churchName: undefined,
     dob: undefined,
   });
