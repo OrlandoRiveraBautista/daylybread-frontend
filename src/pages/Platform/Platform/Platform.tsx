@@ -12,7 +12,7 @@ import { useNFCConfig } from "../../../hooks/useNFCConfig";
 
 /* Components */
 import CheckingAuthentication from "../../../components/Auth/CheckingAuthentication";
-import { PlatformHeader } from "../../../components/Platform/PlatformHeader";
+import Header from "../Header/Header";
 import { NFCConfigForm } from "../../../components/Platform/NFCConfigForm";
 
 /* Utils */
@@ -91,7 +91,7 @@ const Platform: React.FC = () => {
 
   return (
     <IonPage>
-      <PlatformHeader onTryMe={handleTryMe} />
+      <Header />
       <IonContent
         className="ion-padding"
         style={{ "--background": "var(--ion-background-color)" }}

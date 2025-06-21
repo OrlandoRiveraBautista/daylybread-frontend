@@ -1,24 +1,4 @@
 #nfc-page {
-  .nfc-header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 16px;
-    height: 64px;
-  }
-
-  .nfc-logo {
-    height: 32px;
-    width: 8rem;
-  }
-
-  .nfc-try-me-button {
-    --border-radius: 20px;
-    --padding-start: 16px;
-    --padding-end: 16px;
-    height: 36px;
-  }
-
   .nfc-container {
     display: flex;
     justify-content: center;

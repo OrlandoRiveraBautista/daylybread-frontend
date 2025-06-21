@@ -1,29 +1,22 @@
 import React from "react";
 import {
   IonContent,
-  IonHeader,
   IonPage,
   IonTitle,
-  IonToolbar,
   IonButton,
-  IonImg,
   IonText,
   IonCard,
   IonCardContent,
-  IonButtons,
   IonSpinner,
 } from "@ionic/react";
 
 /* Components */
 import { NFCShare } from "../../../../components/NFC/NFCShare";
 import { NFCMoreActions } from "../../../../components/NFC/NFCMoreActions";
+import PlatformHeader from "../../Header/Header";
 
 /* Styles */
 import "./NFC.scss";
-
-/* Images */
-import SmallWordLogo from "../../../../assets/images/small-word-logo.svg";
-import SmallWordLogoDark from "../../../../assets/images/small-word-logo-dark.svg";
 
 /* Hooks */
 import { useGetNFCConfig } from "../../../../hooks/NFCConfigHooks";
@@ -31,15 +24,6 @@ import { useGetNFCConfig } from "../../../../hooks/NFCConfigHooks";
 const NFC: React.FC = () => {
   const id = new URLSearchParams(window.location.search).get("id") || "";
   const { data: nfcConfig, loading } = useGetNFCConfig(id);
-
-  const handleTryMe = () => {
-    const currentDomain = window.location.hostname
-      .split(".")
-      .slice(-2)
-      .join(".");
-    const newUrl = `https://bible.${currentDomain}`;
-    window.location.href = newUrl;
-  };
 
   const handleBlockButton = () => {
     // Replace with your desired link
@@ -64,34 +48,7 @@ const NFC: React.FC = () => {
 
   return (
     <IonPage id="nfc-page">
-      <IonHeader className="ion-no-border">
-        <IonToolbar style={{ "--background": "var(--ion-background-color)" }}>
-          <div className="nfc-header-container">
-            <IonImg
-              src={
-                window.matchMedia("(prefers-color-scheme: dark)").matches
-                  ? SmallWordLogoDark
-                  : SmallWordLogo
-              }
-              alt="DaylyBread Logo"
-              className="nfc-logo"
-            />
-            {/* Header secondary buttons */}
-            <IonButtons slot="end">
-              <IonButton
-                shape="round"
-                fill="clear"
-                color="dark"
-                size="large"
-                className="translation-button"
-                onClick={handleTryMe}
-              >
-                Try Daylybread
-              </IonButton>
-            </IonButtons>
-          </div>
-        </IonToolbar>
-      </IonHeader>
+      <PlatformHeader />
 
       <IonContent
         className="ion-padding"
