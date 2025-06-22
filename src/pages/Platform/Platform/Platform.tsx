@@ -12,11 +12,8 @@ import { useNFCConfig } from "../../../hooks/useNFCConfig";
 
 /* Components */
 import CheckingAuthentication from "../../../components/Auth/CheckingAuthentication";
-import { PlatformHeader } from "../../../components/Platform/PlatformHeader";
+import Header from "../Header/Header";
 import { NFCConfigForm } from "../../../components/Platform/NFCConfigForm";
-
-/* Utils */
-import { getBibleUrl } from "../../../utils/support";
 
 const Platform: React.FC = () => {
   const { userInfo } = useAppContext();
@@ -54,10 +51,6 @@ const Platform: React.FC = () => {
     }, 1500);
   }, [userInfo]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleTryMe = () => {
-    window.location.href = getBibleUrl();
-  };
-
   const handleSave = async (formData: {
     title: string;
     description: string;
@@ -91,7 +84,7 @@ const Platform: React.FC = () => {
 
   return (
     <IonPage>
-      <PlatformHeader onTryMe={handleTryMe} />
+      <Header />
       <IonContent
         className="ion-padding"
         style={{ "--background": "var(--ion-background-color)" }}
