@@ -15,9 +15,6 @@ import CheckingAuthentication from "../../../components/Auth/CheckingAuthenticat
 import Header from "../Header/Header";
 import { NFCConfigForm } from "../../../components/Platform/NFCConfigForm";
 
-/* Utils */
-import { getBibleUrl } from "../../../utils/support";
-
 const Platform: React.FC = () => {
   const { userInfo } = useAppContext();
   const [isLoading, setIsLoading] = useState(true);
@@ -53,10 +50,6 @@ const Platform: React.FC = () => {
       checkAuth();
     }, 1500);
   }, [userInfo]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const handleTryMe = () => {
-    window.location.href = getBibleUrl();
-  };
 
   const handleSave = async (formData: {
     title: string;
