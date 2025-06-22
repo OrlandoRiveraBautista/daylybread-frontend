@@ -9,10 +9,10 @@ import {
   IonCardContent,
   IonSpinner,
 } from "@ionic/react";
+import { shareSocial } from "ionicons/icons";
+import { Share } from "@capacitor/share";
 
 /* Components */
-import { NFCShare } from "../../../../components/NFC/NFCShare";
-import { NFCMoreActions } from "../../../../components/NFC/NFCMoreActions";
 import PlatformHeader from "../../Header/Header";
 
 /* Styles */
@@ -20,6 +20,8 @@ import "./NFC.scss";
 
 /* Hooks */
 import { useGetNFCConfig } from "../../../../hooks/NFCConfigHooks";
+import { cash, personAdd, calendar } from "ionicons/icons";
+import Tabs, { Tab } from "../../Tabs/Tabs";
 
 const NFC: React.FC = () => {
   const id = new URLSearchParams(window.location.search).get("id") || "";
@@ -44,6 +46,52 @@ const NFC: React.FC = () => {
   const handleEventLink = () => {
     // Replace with your desired link
     window.location.href = nfcConfig?.getNFCConfig?.eventsLink?.url || "";
+  };
+
+  const tabs = (): Tab[] => {
+    const tabsPrototype: Tab[] = [];
+
+    if (nfcConfig?.getNFCConfig?.givingLink?.isVisible) {
+      tabsPrototype.push({
+        icon: cash,
+        label: "Give",
+        value: "give",
+        onClick: handleCash,
+      });
+    }
+
+    if (nfcConfig?.getNFCConfig?.memberRegistrationLink?.isVisible) {
+      tabsPrototype.push({
+        icon: personAdd,
+        label: "New Member",
+        value: "new-member",
+        onClick: handleNewMember,
+      });
+    }
+
+    if (nfcConfig?.getNFCConfig?.eventsLink?.isVisible) {
+      tabsPrototype.push({
+        icon: calendar,
+        label: "Events",
+        value: "events",
+        onClick: handleEventLink,
+      });
+    }
+
+    tabsPrototype.push({
+      icon: shareSocial,
+      label: "Share",
+      value: "share",
+      onClick: () => {
+        Share.share({
+          title: "Share with everyone!",
+          // text: "Shar",
+          url: nfcConfig?.getNFCConfig.mainButton.url,
+        });
+      },
+    });
+
+    return tabsPrototype;
   };
 
   return (
@@ -78,43 +126,18 @@ const NFC: React.FC = () => {
                     <p>{nfcConfig?.getNFCConfig?.description}</p>
                   </IonText>
 
-                  <IonButton
-                    expand="block"
-                    size="large"
-                    onClick={handleBlockButton}
-                    className="nfc-get-started-button"
-                  >
+                  {/* <NFCShare nfcConfig={nfcConfig?.getNFCConfig!} /> */}
+
+                  <IonButton onClick={handleBlockButton}>
                     {nfcConfig?.getNFCConfig?.mainButton.text}
                   </IonButton>
-
-                  <NFCShare nfcConfig={nfcConfig?.getNFCConfig!} />
                 </IonCardContent>
               </IonCard>
             </div>
           )}
         </div>
 
-        {(nfcConfig?.getNFCConfig?.givingLink?.isVisible ||
-          nfcConfig?.getNFCConfig?.memberRegistrationLink?.isVisible ||
-          nfcConfig?.getNFCConfig?.eventsLink?.isVisible) && (
-          <NFCMoreActions
-            onCash={
-              nfcConfig?.getNFCConfig?.givingLink?.isVisible
-                ? handleCash
-                : undefined
-            }
-            onNewMember={
-              nfcConfig?.getNFCConfig?.memberRegistrationLink?.isVisible
-                ? handleNewMember
-                : undefined
-            }
-            onEventLink={
-              nfcConfig?.getNFCConfig?.eventsLink?.isVisible
-                ? handleEventLink
-                : undefined
-            }
-          />
-        )}
+        <Tabs tabs={tabs()} />
       </IonContent>
     </IonPage>
   );
