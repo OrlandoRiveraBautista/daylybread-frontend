@@ -1,0 +1,15 @@
+#platform-header {
+  .header-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 16px;
+    height: 64px;
+  }
+
+  .logo {
+    height: 32px;
+    width: 8rem;
+  }
+}

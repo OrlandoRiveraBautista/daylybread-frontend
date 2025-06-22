@@ -1,0 +1,47 @@
+.tabs-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 64px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+
+  .tabs-segment {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    flex: 1;
+    margin: 0;
+    --border-radius: 0;
+    --ion-color-base: var(--ion-surface-container);
+    --box-shadow: none;
+
+    .tabs-segment-icon {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      gap: 4px;
+
+      ion-icon {
+        font-size: 16px;
+        padding: 0;
+        margin: 0;
+      }
+
+      ion-label {
+        font-size: 12px;
+        padding: 0;
+        margin: 0;
+      }
+    }
+  }
+}

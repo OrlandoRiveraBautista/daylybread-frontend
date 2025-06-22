@@ -7,6 +7,7 @@ ion-button {
   height: 40px;
   font-family: $font-family;
   text-transform: none;
+  --border-radius: 64px;
 
   &.translation-button {
     font-size: 14px;
