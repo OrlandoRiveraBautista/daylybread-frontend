@@ -53,6 +53,9 @@ export const useNFCConfig = (userId: string) => {
         if (createData?.createNFCConfig.errors) {
           throw new Error(createData.createNFCConfig.errors[0].message);
         }
+
+        // reload the config
+        fetchConfig();
       }
 
       return true;
