@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { MediaPurpose } from "../__generated__/graphql";
 import { MediaService } from "../services/MediaService";
-import { useCreateMedia, useGetSignedUrl } from "./MediaHooks";
+import { useCreateMedia, useGetPostSignedUrl } from "./MediaHooks";
 
 interface UseMediaUploadOptions {
   onSuccess?: (mediaId: string, url: string) => void;
@@ -21,7 +21,7 @@ export const useMediaUpload = (options?: UseMediaUploadOptions) => {
     error: null,
   });
 
-  const [getSignedUrl] = useGetSignedUrl();
+  const [getPostSignedUrl] = useGetPostSignedUrl();
   const [createMedia] = useCreateMedia();
 
   const uploadFile = async (
@@ -36,7 +36,7 @@ export const useMediaUpload = (options?: UseMediaUploadOptions) => {
       error: null,
     });
 
-    const { data, errors } = await getSignedUrl({
+    const { data, errors } = await getPostSignedUrl({
       variables: {
         options: {
           filename: file.name,
@@ -46,16 +46,17 @@ export const useMediaUpload = (options?: UseMediaUploadOptions) => {
       },
     });
 
-    const { signedUrl, fileKey } = data?.getSignedUrl || {};
+    const { signedUrl, fields, fileKey } = data?.getPostSignedUrl || {};
 
-    if (errors || !signedUrl || !fileKey) {
+    if (errors || !signedUrl || !fields || !fileKey) {
       throw new Error(errors?.[0]?.message || "Failed to get signed URL");
     }
 
     try {
-      const result = await MediaService.uploadFile({
+      const result = await MediaService.uploadFileWithPresignedPost({
         file,
-        signedUrl,
+        url: signedUrl,
+        fields: JSON.parse(fields),
       });
 
       if (result.success) {
