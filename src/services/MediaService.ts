@@ -20,7 +20,6 @@ export class MediaService {
         headers: {
           "Content-Type": file.type,
         },
-        mode: "cors",
       });
 
       if (!response.ok) {
@@ -28,9 +27,7 @@ export class MediaService {
         console.error("S3 Upload Error:", {
           status: response.status,
           statusText: response.statusText,
-          headers: Object.fromEntries(response.headers.entries()),
           error: errorText,
-          url: signedUrl,
         });
         return false;
       }
@@ -51,7 +48,6 @@ export class MediaService {
         throw new Error("Failed to get signed URL");
       }
 
-      // 2. Upload to S3
       const uploadSuccess = await this.uploadToS3(file, signedUrl);
       if (!uploadSuccess) {
         throw new Error("Failed to upload to S3");
@@ -62,6 +58,42 @@ export class MediaService {
       };
     } catch (error) {
       console.error("Error in uploadFile:", error);
+      return {
+        success: false,
+        error:
+          error instanceof Error ? error.message : "Unknown error occurred",
+      };
+    }
+  }
+
+  public static async uploadFileWithPresignedPost(options: {
+    file: File;
+    url: string;
+    fields: Record<string, string>;
+  }): Promise<UploadResponse> {
+    console.log("uploadFileWithPresignedPost", options);
+
+    const formData = new FormData();
+    Object.entries(options.fields).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+    formData.append("file", options.file);
+
+    try {
+      const response = await fetch(options.url, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to upload to S3");
+      }
+
+      return {
+        success: true,
+      };
+    } catch (error) {
+      console.error("Error in uploadFileWithPresignedPost:", error);
       return {
         success: false,
         error:

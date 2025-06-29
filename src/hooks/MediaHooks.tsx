@@ -1,6 +1,5 @@
 import { gql } from "../__generated__/gql";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import { DocumentNode } from "graphql";
 
 /* Queries */
 const GetMedia = gql(`
@@ -21,7 +20,7 @@ const GetMedia = gql(`
       updatedAt
     }
   }
-`) as DocumentNode;
+`);
 
 const GetMediaByPurpose = gql(`
   query GetMediaByPurpose($purpose: String!) {
@@ -41,12 +40,12 @@ const GetMediaByPurpose = gql(`
       updatedAt
     }
   }
-`) as DocumentNode;
+`);
 
 /* Mutations */
-const GetSignedUrl = gql(`
-  mutation GetSignedUrl($options: SignedUrlInput!) {
-    getSignedUrl(options: $options) {
+const GetGetSignedUrl = gql(`
+  mutation GetGetSignedUrl($options: SignedUrlInput!) {
+    getGetSignedUrl(options: $options) {
       signedUrl
       fileKey
       errors {
@@ -55,7 +54,21 @@ const GetSignedUrl = gql(`
       }
     }
   }
-`) as DocumentNode;
+`);
+
+const GetPostSignedUrl = gql(`
+  mutation GetPostSignedUrl($options: SignedUrlInput!) {
+    getPostSignedUrl(options: $options) {
+      signedUrl
+      fields
+      fileKey
+      errors {
+        field
+        message
+      }
+    }
+  }
+`);
 
 const CreateMedia = gql(`
   mutation CreateMedia($options: MediaInput!) {
@@ -81,7 +94,7 @@ const CreateMedia = gql(`
       }
     }
   }
-`) as DocumentNode;
+`);
 
 const UpdateMedia = gql(`
   mutation UpdateMedia($id: String!, $options: MediaInput!) {
@@ -107,7 +120,7 @@ const UpdateMedia = gql(`
       }
     }
   }
-`) as DocumentNode;
+`);
 
 const DeleteMedia = gql(`
   mutation DeleteMedia($id: String!) {
@@ -133,7 +146,7 @@ const DeleteMedia = gql(`
       }
     }
   }
-`) as DocumentNode;
+`);
 
 /* Hooks */
 export const useGetMedia = (id: string) => {
@@ -158,8 +171,12 @@ export const useLazyGetMediaByPurpose = () => {
   return useLazyQuery(GetMediaByPurpose);
 };
 
-export const useGetSignedUrl = () => {
-  return useMutation(GetSignedUrl);
+export const useGetGetSignedUrl = () => {
+  return useMutation(GetGetSignedUrl);
+};
+
+export const useGetPostSignedUrl = () => {
+  return useMutation(GetPostSignedUrl);
 };
 
 export const useCreateMedia = () => {

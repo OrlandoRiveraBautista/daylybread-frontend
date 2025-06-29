@@ -158,6 +158,7 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
               }
             >
               <IonSelectOption value="link">Link</IonSelectOption>
+              <IonSelectOption value="file">File</IonSelectOption>
             </IonSelect>
           </IonItem>
 
