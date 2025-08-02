@@ -61,6 +61,7 @@ interface NFCConfigFormProps {
     givingLink?: LinkSettings | null;
     memberRegistrationLink?: LinkSettings | null;
     eventsLink?: LinkSettings | null;
+    type: string;
   }) => Promise<void>;
   isSaving: boolean;
   isUpdating: boolean;
@@ -141,6 +142,7 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
       givingLink: nfcContent.givingLink,
       memberRegistrationLink: nfcContent.memberRegistrationLink,
       eventsLink: nfcContent.eventsLink,
+      type: nfcContent.type,
     });
   };
 
