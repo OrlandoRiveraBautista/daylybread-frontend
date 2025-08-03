@@ -33,7 +33,7 @@ interface MainButtonSettings {
 }
 
 interface NFCContent {
-  type: "link" | "file";
+  type: string;
   title: string;
   description: string;
   mainButton: MainButtonSettings;
@@ -45,6 +45,7 @@ interface NFCContent {
 
 interface NFCConfigFormProps {
   initialData?: {
+    type: string;
     title: string;
     description: string;
     mainButton: MainButtonSettings;
@@ -75,7 +76,7 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
 }) => {
   // local state
   const [nfcContent, setNfcContent] = useState<NFCContent>({
-    type: "link",
+    type: initialData?.type || "link",
     title: initialData?.title || "",
     mainButton: {
       url: initialData?.mainButton.url || "",
@@ -105,7 +106,7 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
   useEffect(() => {
     if (initialData) {
       setNfcContent({
-        type: "link",
+        type: initialData.type,
         title: initialData.title,
         description: initialData.description,
         mainButton: {
@@ -289,6 +290,10 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
                     url: url,
                   },
                 });
+              }}
+              initialFile={{
+                url: nfcContent.mainButton.url,
+                fileName: nfcContent.mainButton.text,
               }}
             />
           )}
