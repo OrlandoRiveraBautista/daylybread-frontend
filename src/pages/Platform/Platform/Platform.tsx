@@ -58,6 +58,7 @@ const Platform: React.FC = () => {
       url: string;
       text: string;
     };
+    type: string;
   }) => {
     try {
       if (!userInfo?._id) {
@@ -91,7 +92,7 @@ const Platform: React.FC = () => {
       >
         <div className="platform-content-container">
           <NFCConfigForm
-            initialData={nfcConfigData?.getNFCConfigByOwner}
+            initialData={nfcConfigData?.getNFCConfigByOwner?.results!}
             onSave={handleSave}
             isSaving={isSaving}
             isUpdating={isUpdating}
