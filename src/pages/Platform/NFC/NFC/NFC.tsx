@@ -25,33 +25,38 @@ import Tabs, { Tab } from "../../Tabs/Tabs";
 
 const NFC: React.FC = () => {
   const id = new URLSearchParams(window.location.search).get("id") || "";
-  const { data: nfcConfig, loading } = useGetNFCConfig(id);
+  const { data: nfcConfigResults, loading } = useGetNFCConfig(id);
 
   const handleBlockButton = () => {
     // Replace with your desired link
-    window.location.href = nfcConfig?.getNFCConfig?.mainButton.url! || "";
+    window.location.href =
+      nfcConfigResults?.getNFCConfig?.results?.mainButton.url! || "";
   };
 
   const handleCash = () => {
     // Replace with your desired link
-    window.location.href = nfcConfig?.getNFCConfig?.givingLink?.url || "";
+    window.location.href =
+      nfcConfigResults?.getNFCConfig?.results?.givingLink?.url || "";
   };
 
   const handleNewMember = () => {
     // Replace with your desired link
     window.location.href =
-      nfcConfig?.getNFCConfig?.memberRegistrationLink?.url || "";
+      nfcConfigResults?.getNFCConfig?.results?.memberRegistrationLink?.url ||
+      "";
   };
 
   const handleEventLink = () => {
     // Replace with your desired link
-    window.location.href = nfcConfig?.getNFCConfig?.eventsLink?.url || "";
+    window.location.href =
+      nfcConfigResults?.getNFCConfig?.results?.eventsLink?.url || "";
   };
 
   const tabs = (): Tab[] => {
     const tabsPrototype: Tab[] = [];
+    const nfcConfig = nfcConfigResults?.getNFCConfig?.results;
 
-    if (nfcConfig?.getNFCConfig?.givingLink?.isVisible) {
+    if (nfcConfig?.givingLink?.isVisible) {
       tabsPrototype.push({
         icon: cash,
         label: "Give",
@@ -60,7 +65,7 @@ const NFC: React.FC = () => {
       });
     }
 
-    if (nfcConfig?.getNFCConfig?.memberRegistrationLink?.isVisible) {
+    if (nfcConfig?.memberRegistrationLink?.isVisible) {
       tabsPrototype.push({
         icon: personAdd,
         label: "New Member",
@@ -69,7 +74,7 @@ const NFC: React.FC = () => {
       });
     }
 
-    if (nfcConfig?.getNFCConfig?.eventsLink?.isVisible) {
+    if (nfcConfig?.eventsLink?.isVisible) {
       tabsPrototype.push({
         icon: calendar,
         label: "Events",
@@ -86,7 +91,7 @@ const NFC: React.FC = () => {
         Share.share({
           title: "Share with everyone!",
           // text: "Shar",
-          url: nfcConfig?.getNFCConfig.mainButton.url,
+          url: nfcConfig?.mainButton.url,
         });
       },
     });
@@ -119,17 +124,19 @@ const NFC: React.FC = () => {
               <IonCard className="nfc-card">
                 <IonCardContent>
                   <IonTitle className="nfc-title">
-                    {nfcConfig?.getNFCConfig?.title}
+                    {nfcConfigResults?.getNFCConfig?.results?.title}
                   </IonTitle>
 
                   <IonText color="medium" className="nfc-description">
-                    <p>{nfcConfig?.getNFCConfig?.description}</p>
+                    <p>
+                      {nfcConfigResults?.getNFCConfig?.results?.description}
+                    </p>
                   </IonText>
 
                   {/* <NFCShare nfcConfig={nfcConfig?.getNFCConfig!} /> */}
 
                   <IonButton onClick={handleBlockButton}>
-                    {nfcConfig?.getNFCConfig?.mainButton.text}
+                    {nfcConfigResults?.getNFCConfig?.results?.mainButton.text}
                   </IonButton>
                 </IonCardContent>
               </IonCard>
