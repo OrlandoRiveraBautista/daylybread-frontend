@@ -1,13 +1,12 @@
 import { gql } from "../__generated__/gql";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import { DocumentNode } from "graphql";
 
 /* Queries */
 const GetMedia = gql(`
   query GetMedia($id: String!) {
     getMedia(id: $id) {
       _id
-      url
+      fileKey
       filename
       mimeType
       size
@@ -17,17 +16,22 @@ const GetMedia = gql(`
       owner {
         _id
       }
+      cache {
+        url
+        expiresAt
+        duration
+      }
       createdAt
       updatedAt
     }
   }
-`) as DocumentNode;
+`);
 
 const GetMediaByPurpose = gql(`
   query GetMediaByPurpose($purpose: String!) {
     getMediaByPurpose(purpose: $purpose) {
       _id
-      url
+      fileKey
       filename
       mimeType
       size
@@ -37,16 +41,33 @@ const GetMediaByPurpose = gql(`
       owner {
         _id
       }
+      cache {
+        url
+        expiresAt
+        duration
+      }
       createdAt
       updatedAt
     }
   }
-`) as DocumentNode;
+`);
+
+const GetMediaUrl = gql(`
+  query GetMediaUrl($fileKey: String!) {
+    getMediaUrl(fileKey: $fileKey) {
+      signedUrl
+      errors {
+        field
+        message
+      }
+    }
+  }
+`);
 
 /* Mutations */
-const GetSignedUrl = gql(`
-  mutation GetSignedUrl($options: SignedUrlInput!) {
-    getSignedUrl(options: $options) {
+const GetGetSignedUrl = gql(`
+  mutation GetGetSignedUrl($options: SignedUrlInput!) {
+    getGetSignedUrl(options: $options) {
       signedUrl
       fileKey
       errors {
@@ -55,14 +76,28 @@ const GetSignedUrl = gql(`
       }
     }
   }
-`) as DocumentNode;
+`);
+
+const GetPostSignedUrl = gql(`
+  mutation GetPostSignedUrl($options: SignedUrlInput!) {
+    getPostSignedUrl(options: $options) {
+      signedUrl
+      fields
+      fileKey
+      errors {
+        field
+        message
+      }
+    }
+  }
+`);
 
 const CreateMedia = gql(`
   mutation CreateMedia($options: MediaInput!) {
     createMedia(options: $options) {
       results {
         _id
-        url
+        fileKey
         filename
         mimeType
         size
@@ -71,6 +106,11 @@ const CreateMedia = gql(`
         description
         owner {
           _id
+        }
+        cache {
+          url
+          expiresAt
+          duration
         }
         createdAt
         updatedAt
@@ -81,14 +121,14 @@ const CreateMedia = gql(`
       }
     }
   }
-`) as DocumentNode;
+`);
 
 const UpdateMedia = gql(`
   mutation UpdateMedia($id: String!, $options: MediaInput!) {
     updateMedia(id: $id, options: $options) {
       results {
         _id
-        url
+        fileKey
         filename
         mimeType
         size
@@ -97,6 +137,11 @@ const UpdateMedia = gql(`
         description
         owner {
           _id
+        }
+        cache {
+          url
+          expiresAt
+          duration
         }
         createdAt
         updatedAt
@@ -107,14 +152,14 @@ const UpdateMedia = gql(`
       }
     }
   }
-`) as DocumentNode;
+`);
 
 const DeleteMedia = gql(`
   mutation DeleteMedia($id: String!) {
     deleteMedia(id: $id) {
       results {
         _id
-        url
+        fileKey
         filename
         mimeType
         size
@@ -123,6 +168,11 @@ const DeleteMedia = gql(`
         description
         owner {
           _id
+        }
+        cache {
+          url
+          expiresAt
+          duration
         }
         createdAt
         updatedAt
@@ -133,7 +183,7 @@ const DeleteMedia = gql(`
       }
     }
   }
-`) as DocumentNode;
+`);
 
 /* Hooks */
 export const useGetMedia = (id: string) => {
@@ -158,8 +208,16 @@ export const useLazyGetMediaByPurpose = () => {
   return useLazyQuery(GetMediaByPurpose);
 };
 
-export const useGetSignedUrl = () => {
-  return useMutation(GetSignedUrl);
+export const useLazyGetMediaUrl = () => {
+  return useLazyQuery(GetMediaUrl);
+};
+
+export const useGetGetSignedUrl = () => {
+  return useMutation(GetGetSignedUrl);
+};
+
+export const useGetPostSignedUrl = () => {
+  return useMutation(GetPostSignedUrl);
 };
 
 export const useCreateMedia = () => {

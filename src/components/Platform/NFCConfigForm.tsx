@@ -33,7 +33,7 @@ interface MainButtonSettings {
 }
 
 interface NFCContent {
-  type: "link" | "file";
+  type: string;
   title: string;
   description: string;
   mainButton: MainButtonSettings;
@@ -45,6 +45,7 @@ interface NFCContent {
 
 interface NFCConfigFormProps {
   initialData?: {
+    type: string;
     title: string;
     description: string;
     mainButton: MainButtonSettings;
@@ -61,6 +62,7 @@ interface NFCConfigFormProps {
     givingLink?: LinkSettings | null;
     memberRegistrationLink?: LinkSettings | null;
     eventsLink?: LinkSettings | null;
+    type: string;
   }) => Promise<void>;
   isSaving: boolean;
   isUpdating: boolean;
@@ -74,7 +76,7 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
 }) => {
   // local state
   const [nfcContent, setNfcContent] = useState<NFCContent>({
-    type: "link",
+    type: initialData?.type || "link",
     title: initialData?.title || "",
     mainButton: {
       url: initialData?.mainButton.url || "",
@@ -104,7 +106,7 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
   useEffect(() => {
     if (initialData) {
       setNfcContent({
-        type: "link",
+        type: initialData.type,
         title: initialData.title,
         description: initialData.description,
         mainButton: {
@@ -141,6 +143,7 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
       givingLink: nfcContent.givingLink,
       memberRegistrationLink: nfcContent.memberRegistrationLink,
       eventsLink: nfcContent.eventsLink,
+      type: nfcContent.type,
     });
   };
 
@@ -158,6 +161,7 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
               }
             >
               <IonSelectOption value="link">Link</IonSelectOption>
+              <IonSelectOption value="file">File</IonSelectOption>
             </IonSelect>
           </IonItem>
 
@@ -186,26 +190,26 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
               rows={3}
             />
           </IonItem>
+          <IonItem>
+            <IonLabel position="stacked">Center Button Label</IonLabel>
+            <IonInput
+              type="text"
+              value={nfcContent.mainButton.text}
+              onIonInput={(e) =>
+                setNfcContent({
+                  ...nfcContent,
+                  mainButton: {
+                    ...nfcContent.mainButton,
+                    text: e.detail.value!,
+                  },
+                })
+              }
+              placeholder="Enter button label"
+            />
+          </IonItem>
 
           {nfcContent.type === "link" ? (
             <>
-              <IonItem>
-                <IonLabel position="stacked">Center Button Label</IonLabel>
-                <IonInput
-                  type="text"
-                  value={nfcContent.mainButton.text}
-                  onIonInput={(e) =>
-                    setNfcContent({
-                      ...nfcContent,
-                      mainButton: {
-                        ...nfcContent.mainButton,
-                        text: e.detail.value!,
-                      },
-                    })
-                  }
-                  placeholder="Enter button label"
-                />
-              </IonItem>
               <IonItem>
                 <IonLabel position="stacked">Center Button URL</IonLabel>
                 <IonInput
@@ -223,57 +227,6 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
                   placeholder="Enter URL"
                 />
               </IonItem>
-
-              <IonItem>
-                <IonCheckbox
-                  checked={nfcContent.socialMedia.facebook}
-                  onIonChange={(e) =>
-                    setNfcContent({
-                      ...nfcContent,
-                      socialMedia: {
-                        ...nfcContent.socialMedia,
-                        facebook: e.detail.checked,
-                      },
-                    })
-                  }
-                >
-                  Share on Facebook
-                </IonCheckbox>
-              </IonItem>
-
-              {/* <IonItem>
-                <IonCheckbox
-                  checked={nfcContent.socialMedia.instagram}
-                  onIonChange={(e) =>
-                    setNfcContent({
-                      ...nfcContent,
-                      socialMedia: {
-                        ...nfcContent.socialMedia,
-                        instagram: e.detail.checked,
-                      },
-                    })
-                  }
-                >
-                  Share on Instagram
-                </IonCheckbox>
-              </IonItem> */}
-
-              {/* <IonItem>
-                <IonCheckbox
-                  checked={nfcContent.socialMedia.twitter}
-                  onIonChange={(e) =>
-                    setNfcContent({
-                      ...nfcContent,
-                      socialMedia: {
-                        ...nfcContent.socialMedia,
-                        twitter: e.detail.checked,
-                      },
-                    })
-                  }
-                >
-                  Share on Twitter
-                </IonCheckbox>
-              </IonItem> */}
             </>
           ) : (
             <MediaUploader
@@ -286,6 +239,10 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
                     url: url,
                   },
                 });
+              }}
+              initialFile={{
+                url: nfcContent.mainButton.url,
+                fileName: nfcContent.mainButton.text,
               }}
             />
           )}

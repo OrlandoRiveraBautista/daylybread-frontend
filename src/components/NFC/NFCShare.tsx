@@ -17,15 +17,15 @@ const socials = [
 ];
 
 interface NFCShareProps {
-  nfcConfig: GetNfcConfigQuery["getNFCConfig"];
+  nfcConfig: GetNfcConfigQuery["getNFCConfig"]["results"];
 }
 
 export const NFCShare: React.FC<NFCShareProps> = ({ nfcConfig }) => {
   const getMetadata = () => {
     return {
-      title: nfcConfig.title,
-      description: nfcConfig.description,
-      url: nfcConfig.mainButton.url || "https://bible.daylybread.com",
+      title: nfcConfig?.title,
+      description: nfcConfig?.description,
+      url: nfcConfig?.mainButton.url || "https://bible.daylybread.com",
     };
   };
 
@@ -33,7 +33,7 @@ export const NFCShare: React.FC<NFCShareProps> = ({ nfcConfig }) => {
     const metadata = getMetadata();
 
     // Update meta tags
-    document.title = metadata.title;
+    document.title = metadata.title || "";
 
     const metaTags = {
       description: metadata.description,
@@ -58,15 +58,15 @@ export const NFCShare: React.FC<NFCShareProps> = ({ nfcConfig }) => {
         );
         document.head.appendChild(element);
       }
-      element.setAttribute("content", content);
+      element.setAttribute("content", content || "");
     });
-  }, [nfcConfig.mainButton.url]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [nfcConfig?.mainButton.url]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const shareOnFacebook = () => {
     const shareUrl = encodeURIComponent(
-      nfcConfig.mainButton.url || "https://bible.daylybread.com"
+      nfcConfig?.mainButton.url || "https://bible.daylybread.com"
     ); // or your deep link
-    const quote = encodeURIComponent(nfcConfig.title);
+    const quote = encodeURIComponent(nfcConfig?.title || "");
     window.open(
       `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}&quote=${quote}`,
       "_blank"
