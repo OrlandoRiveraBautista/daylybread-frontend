@@ -38,4 +38,13 @@ ion-button {
   &.full-width {
     width: 100%;
   }
+
+  &.icon-button {
+    --border-radius: 50%;
+    --padding-start: 0 !important;
+    --padding-end: 0 !important;
+    --padding-top: 0 !important;
+    --padding-bottom: 0 !important;
+    --height: 40px !important;
+  }
 }

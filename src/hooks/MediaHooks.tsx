@@ -6,7 +6,7 @@ const GetMedia = gql(`
   query GetMedia($id: String!) {
     getMedia(id: $id) {
       _id
-      url
+      fileKey
       filename
       mimeType
       size
@@ -15,6 +15,11 @@ const GetMedia = gql(`
       description
       owner {
         _id
+      }
+      cache {
+        url
+        expiresAt
+        duration
       }
       createdAt
       updatedAt
@@ -26,7 +31,7 @@ const GetMediaByPurpose = gql(`
   query GetMediaByPurpose($purpose: String!) {
     getMediaByPurpose(purpose: $purpose) {
       _id
-      url
+      fileKey
       filename
       mimeType
       size
@@ -36,8 +41,25 @@ const GetMediaByPurpose = gql(`
       owner {
         _id
       }
+      cache {
+        url
+        expiresAt
+        duration
+      }
       createdAt
       updatedAt
+    }
+  }
+`);
+
+const GetMediaUrl = gql(`
+  query GetMediaUrl($fileKey: String!) {
+    getMediaUrl(fileKey: $fileKey) {
+      signedUrl
+      errors {
+        field
+        message
+      }
     }
   }
 `);
@@ -75,7 +97,7 @@ const CreateMedia = gql(`
     createMedia(options: $options) {
       results {
         _id
-        url
+        fileKey
         filename
         mimeType
         size
@@ -84,6 +106,11 @@ const CreateMedia = gql(`
         description
         owner {
           _id
+        }
+        cache {
+          url
+          expiresAt
+          duration
         }
         createdAt
         updatedAt
@@ -101,7 +128,7 @@ const UpdateMedia = gql(`
     updateMedia(id: $id, options: $options) {
       results {
         _id
-        url
+        fileKey
         filename
         mimeType
         size
@@ -110,6 +137,11 @@ const UpdateMedia = gql(`
         description
         owner {
           _id
+        }
+        cache {
+          url
+          expiresAt
+          duration
         }
         createdAt
         updatedAt
@@ -127,7 +159,7 @@ const DeleteMedia = gql(`
     deleteMedia(id: $id) {
       results {
         _id
-        url
+        fileKey
         filename
         mimeType
         size
@@ -136,6 +168,11 @@ const DeleteMedia = gql(`
         description
         owner {
           _id
+        }
+        cache {
+          url
+          expiresAt
+          duration
         }
         createdAt
         updatedAt
@@ -169,6 +206,10 @@ export const useGetMediaByPurpose = (purpose: string) => {
 
 export const useLazyGetMediaByPurpose = () => {
   return useLazyQuery(GetMediaByPurpose);
+};
+
+export const useLazyGetMediaUrl = () => {
+  return useLazyQuery(GetMediaUrl);
 };
 
 export const useGetGetSignedUrl = () => {

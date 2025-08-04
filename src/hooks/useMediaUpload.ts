@@ -66,11 +66,11 @@ export const useMediaUpload = (options?: UseMediaUploadOptions) => {
             options: {
               filename: file.name,
               mimeType: file.type,
+              fileKey,
               size: file.size,
               purpose,
               isPublic,
               description,
-              url: `https://daylybread.s3.us-east-2.amazonaws.com/${fileKey}`,
             },
           },
         });
@@ -83,7 +83,7 @@ export const useMediaUpload = (options?: UseMediaUploadOptions) => {
 
         options?.onSuccess?.(
           data.createMedia.results._id,
-          data.createMedia.results.url
+          data.createMedia.results.cache?.url || ""
         );
         setUploadState({
           isUploading: false,

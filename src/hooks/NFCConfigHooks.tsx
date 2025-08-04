@@ -5,83 +5,9 @@ import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 const GetNFCConfig = gql(`
   query GetNFCConfig($id: String!) {
     getNFCConfig(id: $id) {
-      _id
-      title
-      description
-      owner {
-        _id
-      }
-      nfcIds
-      mainButton {
-        url
-        text
-      }
-      socialMedia {
-        facebook
-        instagram
-        twitter
-      }
-      givingLink {
-        isVisible
-        url
-      }
-      memberRegistrationLink {
-        isVisible
-        url
-      }
-      eventsLink {
-        isVisible
-        url
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`);
-
-const GetNFCConfigByOwner = gql(`
-  query GetNFCConfigByOwner($ownerId: String!) {
-    getNFCConfigByOwner(ownerId: $ownerId) {
-      _id
-      title
-      description
-      owner {
-        _id
-      }
-      nfcIds
-      mainButton {
-        url
-        text
-      }
-      socialMedia {
-        facebook
-        instagram
-        twitter
-      }
-      givingLink {
-        isVisible
-        url
-      }
-      memberRegistrationLink {
-        isVisible
-        url
-      }
-      eventsLink {
-        isVisible
-        url
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`);
-
-/* Mutations */
-const CreateNFCConfig = gql(`
-  mutation CreateNFCConfig($options: NFCConfigInput!) {
-    createNFCConfig(options: $options) {
       results {
         _id
+        type
         title
         description
         owner {
@@ -109,6 +35,98 @@ const CreateNFCConfig = gql(`
           isVisible
           url
         }
+        mediaId
+        createdAt
+        updatedAt
+      }
+      errors {
+        field
+        message
+      }
+    }
+  }
+`);
+
+const GetNFCConfigByOwner = gql(`
+  query GetNFCConfigByOwner($ownerId: String!) {
+    getNFCConfigByOwner(ownerId: $ownerId) {
+      results {
+        _id
+        type
+        title
+        description
+        owner {
+          _id
+        }
+        nfcIds
+        mainButton {
+          url
+          text
+        }
+        socialMedia {
+          facebook
+          instagram
+          twitter
+        }
+        givingLink {
+          isVisible
+          url
+        }
+        memberRegistrationLink {
+          isVisible
+          url
+        }
+        eventsLink {
+          isVisible
+          url
+        }
+        mediaId
+        createdAt
+        updatedAt
+      }
+      errors {
+        field
+        message
+      }
+    }
+  }
+`);
+
+/* Mutations */
+const CreateNFCConfig = gql(`
+  mutation CreateNFCConfig($options: NFCConfigInput!) {
+    createNFCConfig(options: $options) {
+      results {
+        _id
+        type
+        title
+        description
+        owner {
+          _id
+        }
+        nfcIds
+        mainButton {
+          url
+          text
+        }
+        socialMedia {
+          facebook
+          instagram
+          twitter
+        }
+        givingLink {
+          isVisible
+          url
+        }
+        memberRegistrationLink {
+          isVisible
+          url
+        }
+        eventsLink {
+          isVisible
+          url
+        }
+        mediaId
         createdAt
         updatedAt
       }
@@ -125,6 +143,7 @@ const UpdateNFCConfig = gql(`
     updateNFCConfig(id: $id, options: $options) {
       results {
         _id
+        type
         title
         description
         owner {
@@ -152,6 +171,7 @@ const UpdateNFCConfig = gql(`
           isVisible
           url
         }
+        mediaId
         createdAt
         updatedAt
       }
@@ -168,6 +188,7 @@ const DeleteNFCConfig = gql(`
     deleteNFCConfig(id: $id) {
       results {
         _id
+        type
         title
         description
         owner {
@@ -195,6 +216,7 @@ const DeleteNFCConfig = gql(`
           isVisible
           url
         }
+        mediaId
         createdAt
         updatedAt
       }
