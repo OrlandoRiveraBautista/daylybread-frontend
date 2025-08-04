@@ -190,26 +190,26 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
               rows={3}
             />
           </IonItem>
+          <IonItem>
+            <IonLabel position="stacked">Center Button Label</IonLabel>
+            <IonInput
+              type="text"
+              value={nfcContent.mainButton.text}
+              onIonInput={(e) =>
+                setNfcContent({
+                  ...nfcContent,
+                  mainButton: {
+                    ...nfcContent.mainButton,
+                    text: e.detail.value!,
+                  },
+                })
+              }
+              placeholder="Enter button label"
+            />
+          </IonItem>
 
           {nfcContent.type === "link" ? (
             <>
-              <IonItem>
-                <IonLabel position="stacked">Center Button Label</IonLabel>
-                <IonInput
-                  type="text"
-                  value={nfcContent.mainButton.text}
-                  onIonInput={(e) =>
-                    setNfcContent({
-                      ...nfcContent,
-                      mainButton: {
-                        ...nfcContent.mainButton,
-                        text: e.detail.value!,
-                      },
-                    })
-                  }
-                  placeholder="Enter button label"
-                />
-              </IonItem>
               <IonItem>
                 <IonLabel position="stacked">Center Button URL</IonLabel>
                 <IonInput
@@ -227,57 +227,6 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
                   placeholder="Enter URL"
                 />
               </IonItem>
-
-              <IonItem>
-                <IonCheckbox
-                  checked={nfcContent.socialMedia.facebook}
-                  onIonChange={(e) =>
-                    setNfcContent({
-                      ...nfcContent,
-                      socialMedia: {
-                        ...nfcContent.socialMedia,
-                        facebook: e.detail.checked,
-                      },
-                    })
-                  }
-                >
-                  Share on Facebook
-                </IonCheckbox>
-              </IonItem>
-
-              {/* <IonItem>
-                <IonCheckbox
-                  checked={nfcContent.socialMedia.instagram}
-                  onIonChange={(e) =>
-                    setNfcContent({
-                      ...nfcContent,
-                      socialMedia: {
-                        ...nfcContent.socialMedia,
-                        instagram: e.detail.checked,
-                      },
-                    })
-                  }
-                >
-                  Share on Instagram
-                </IonCheckbox>
-              </IonItem> */}
-
-              {/* <IonItem>
-                <IonCheckbox
-                  checked={nfcContent.socialMedia.twitter}
-                  onIonChange={(e) =>
-                    setNfcContent({
-                      ...nfcContent,
-                      socialMedia: {
-                        ...nfcContent.socialMedia,
-                        twitter: e.detail.checked,
-                      },
-                    })
-                  }
-                >
-                  Share on Twitter
-                </IonCheckbox>
-              </IonItem> */}
             </>
           ) : (
             <MediaUploader
