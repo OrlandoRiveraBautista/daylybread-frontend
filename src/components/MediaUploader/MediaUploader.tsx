@@ -129,6 +129,10 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
     return ["mp3", "wav", "ogg", "aac", "m4a"].includes(fileType);
   };
 
+  const isFile = (fileType: string) => {
+    return !isImage(fileType) && !isVideo(fileType) && !isAudio(fileType);
+  };
+
   return (
     <div style={{ margin: "16px 0" }}>
       <input
@@ -225,6 +229,21 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
                   controls
                   style={{ width: "100%" }}
                 />
+              </div>
+            )}
+
+            {/* should show the file if its just a file and not an image or video or audio */}
+            {isFile(uploadedFile.fileType) && (
+              <div style={{ textAlign: "center", marginBottom: "12px" }}>
+                <IonText>
+                  <a
+                    href={uploadedFile.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {uploadedFile.fileName}
+                  </a>
+                </IonText>
               </div>
             )}
 
