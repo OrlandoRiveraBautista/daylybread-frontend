@@ -6,8 +6,6 @@ import {
   IonItem,
   IonLabel,
   IonIcon,
-  IonCard,
-  IonCardContent,
 } from "@ionic/react";
 import {
   trashOutline,
@@ -132,10 +130,6 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
 
   const isAudio = (fileType: string) => {
     return ["mp3", "wav", "ogg", "aac", "m4a"].includes(fileType);
-  };
-
-  const isFile = (fileType: string) => {
-    return !isImage(fileType) && !isVideo(fileType) && !isAudio(fileType);
   };
 
   return (
