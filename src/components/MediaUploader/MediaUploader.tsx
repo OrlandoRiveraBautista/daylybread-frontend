@@ -9,7 +9,12 @@ import {
   IonCard,
   IonCardContent,
 } from "@ionic/react";
-import { trashOutline, documentOutline, imageOutline } from "ionicons/icons";
+import {
+  trashOutline,
+  documentOutline,
+  imageOutline,
+  eyeOutline,
+} from "ionicons/icons";
 import { MediaPurpose } from "../../__generated__/graphql";
 import { useMediaUpload } from "../../hooks/useMediaUpload";
 
@@ -157,106 +162,112 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
           </IonLabel>
         </IonItem>
       ) : (
-        <IonCard>
-          <IonCardContent>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginBottom: "12px",
-              }}
-            >
-              <div
-                style={{ display: "flex", alignItems: "center", gap: "8px" }}
-              >
-                <IonIcon
-                  icon={
-                    isImage(uploadedFile.fileType)
-                      ? imageOutline
-                      : documentOutline
-                  }
-                  size="small"
-                />
-                <IonText>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "8px",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: "12px",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <IonIcon
+                icon={
+                  isImage(uploadedFile.fileType)
+                    ? imageOutline
+                    : documentOutline
+                }
+                size="small"
+              />
+              <IonText>
+                <a
+                  href={uploadedFile.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <strong>{uploadedFile.fileName}</strong>
-                </IonText>
-              </div>
+                </a>
+              </IonText>
+            </div>
+            <div style={{ display: "flex", gap: "8px" }}>
+              <IonButton
+                fill="clear"
+                color="primary"
+                size="small"
+                onClick={() =>
+                  window.open(uploadedFile.url, "_blank", "noopener,noreferrer")
+                }
+                class="icon-button"
+              >
+                <IonIcon icon={eyeOutline} />
+              </IonButton>
               <IonButton
                 fill="clear"
                 color="danger"
-                size="small"
                 onClick={handleRemoveFile}
+                class="icon-button"
               >
                 <IonIcon icon={trashOutline} />
               </IonButton>
             </div>
+          </div>
 
-            {/* Preview based on file type */}
-            {isImage(uploadedFile.fileType) && (
-              <div style={{ textAlign: "center", marginBottom: "12px" }}>
-                <img
-                  src={uploadedFile.url}
-                  alt="Preview"
-                  style={{
-                    maxWidth: "100%",
-                    maxHeight: "200px",
-                    borderRadius: "8px",
-                    border: "1px solid var(--ion-color-light)",
-                  }}
-                />
-              </div>
-            )}
+          {/* Preview based on file type */}
+          {isImage(uploadedFile.fileType) && (
+            <div style={{ textAlign: "center", marginBottom: "12px" }}>
+              <img
+                src={uploadedFile.url}
+                alt="Preview"
+                style={{
+                  maxWidth: "100%",
+                  maxHeight: "200px",
+                  borderRadius: "8px",
+                  border: "1px solid var(--ion-color-light)",
+                }}
+              />
+            </div>
+          )}
 
-            {isVideo(uploadedFile.fileType) && (
-              <div style={{ textAlign: "center", marginBottom: "12px" }}>
-                <video
-                  src={uploadedFile.url}
-                  controls
-                  style={{
-                    maxWidth: "100%",
-                    maxHeight: "200px",
-                    borderRadius: "8px",
-                  }}
-                />
-              </div>
-            )}
+          {isVideo(uploadedFile.fileType) && (
+            <div style={{ textAlign: "center", marginBottom: "12px" }}>
+              <video
+                src={uploadedFile.url}
+                controls
+                style={{
+                  maxWidth: "100%",
+                  maxHeight: "200px",
+                  borderRadius: "8px",
+                }}
+              />
+            </div>
+          )}
 
-            {isAudio(uploadedFile.fileType) && (
-              <div style={{ textAlign: "center", marginBottom: "12px" }}>
-                <audio
-                  src={uploadedFile.url}
-                  controls
-                  style={{ width: "100%" }}
-                />
-              </div>
-            )}
+          {isAudio(uploadedFile.fileType) && (
+            <div style={{ textAlign: "center", marginBottom: "12px" }}>
+              <audio
+                src={uploadedFile.url}
+                controls
+                style={{ width: "100%" }}
+              />
+            </div>
+          )}
 
-            {/* should show the file if its just a file and not an image or video or audio */}
-            {isFile(uploadedFile.fileType) && (
-              <div style={{ textAlign: "center", marginBottom: "12px" }}>
-                <IonText>
-                  <a
-                    href={uploadedFile.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {uploadedFile.fileName}
-                  </a>
-                </IonText>
-              </div>
-            )}
-
-            <IonButton
-              fill="clear"
-              size="small"
-              onClick={() => document.getElementById("fileInput")?.click()}
-              disabled={isUploading}
-            >
-              Replace File
-            </IonButton>
-          </IonCardContent>
-        </IonCard>
+          <IonButton
+            fill="outline"
+            size="small"
+            onClick={() => document.getElementById("fileInput")?.click()}
+            disabled={isUploading}
+          >
+            Replace File
+          </IonButton>
+        </div>
       )}
 
       {isUploading && (
