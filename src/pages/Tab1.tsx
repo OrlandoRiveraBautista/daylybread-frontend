@@ -18,7 +18,11 @@ import {
 } from "@ionic/react";
 import { useHistory } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { book, happy, library, star, chevronForward } from "ionicons/icons";
+import { library, star } from "ionicons/icons";
+
+/* Components */
+import QuickActions from "../components/Home/QuickActions";
+import AppFeatures from "../components/Home/AppFeatures";
 
 /* Context */
 import { useAppContext } from "../context/context";
@@ -31,8 +35,7 @@ import "./Tab1.scss";
 
 const Tab1: React.FC = () => {
   const history = useHistory();
-  const { userInfo, chosenBible, chosenBook, chosenChapterNumber } =
-    useAppContext();
+  const { chosenBible, chosenBook, chosenChapterNumber } = useAppContext();
 
   const handleQuickRead = () => {
     if (chosenBible && chosenBook && chosenChapterNumber) {
@@ -43,44 +46,6 @@ const Tab1: React.FC = () => {
       history.push("/read");
     }
   };
-
-  const handleViewProfile = () => {
-    history.push("/me");
-  };
-
-  const featuredActions = [
-    {
-      title: "Continue Reading",
-      description: chosenBook
-        ? `${chosenBook.name} ${chosenChapterNumber}`
-        : "Pick up where you left off",
-      icon: book,
-      color: "primary",
-      action: handleQuickRead,
-    },
-    {
-      title: "My Profile",
-      description: userInfo?.firstName
-        ? `Welcome back, ${userInfo.firstName}`
-        : "View your reading progress",
-      icon: happy,
-      color: "secondary",
-      action: handleViewProfile,
-    },
-  ];
-
-  const appFeatures = [
-    {
-      title: "Multiple Translations",
-      description: "Access the Bible in various languages and translations",
-      icon: library,
-    },
-    {
-      title: "AI Assistant",
-      description: "Get insights and answers with our BreadCrumbs AI",
-      icon: star,
-    },
-  ];
 
   return (
     <IonPage>
@@ -113,69 +78,10 @@ const Tab1: React.FC = () => {
 
         <IonGrid className="home-grid">
           {/* Quick Actions */}
-          <IonRow>
-            <IonCol size="12">
-              <IonText>
-                <h2>Quick Actions</h2>
-              </IonText>
-            </IonCol>
-          </IonRow>
-
-          {featuredActions.map((action, index) => (
-            <IonRow key={index}>
-              <IonCol size="12">
-                <IonCard className="action-card" button onClick={action.action}>
-                  <IonCardContent>
-                    <div className="card-content">
-                      <div className="card-icon">
-                        <IonIcon icon={action.icon} color={action.color} />
-                      </div>
-                      <div className="card-text">
-                        <IonCardTitle>{action.title}</IonCardTitle>
-                        <IonText>
-                          <p>{action.description}</p>
-                        </IonText>
-                      </div>
-                      <div className="card-arrow">
-                        <IonIcon icon={chevronForward} />
-                      </div>
-                    </div>
-                  </IonCardContent>
-                </IonCard>
-              </IonCol>
-            </IonRow>
-          ))}
+          <QuickActions />
 
           {/* App Features */}
-          <IonRow>
-            <IonCol size="12">
-              <IonText>
-                <h2>Discover Features</h2>
-              </IonText>
-            </IonCol>
-          </IonRow>
-
-          {appFeatures.map((feature, index) => (
-            <IonRow key={index}>
-              <IonCol size="12" size-md="6">
-                <IonCard className="feature-card">
-                  <IonCardContent>
-                    <div className="feature-content">
-                      <div className="feature-icon">
-                        <IonIcon icon={feature.icon} color="tertiary" />
-                      </div>
-                      <div className="feature-text">
-                        <IonCardTitle>{feature.title}</IonCardTitle>
-                        <IonText>
-                          <p>{feature.description}</p>
-                        </IonText>
-                      </div>
-                    </div>
-                  </IonCardContent>
-                </IonCard>
-              </IonCol>
-            </IonRow>
-          ))}
+          <AppFeatures />
 
           {/* Call to Action */}
           <IonRow>
