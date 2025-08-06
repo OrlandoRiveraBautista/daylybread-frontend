@@ -1,14 +1,10 @@
 import React from "react";
 import {
   IonButton,
-  IonCard,
-  IonCardContent,
-  IonCardTitle,
   IonContent,
   IonGrid,
   IonRow,
   IonCol,
-  IonIcon,
   IonImg,
   IonPage,
   IonText,
@@ -18,7 +14,6 @@ import {
 } from "@ionic/react";
 import { useHistory } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { library, star } from "ionicons/icons";
 
 /* Components */
 import QuickActions from "../components/Home/QuickActions";
