@@ -3,6 +3,16 @@
 .app-features-grid {
   padding: 0;
 
+  h2 {
+    font-family: "Product Sans", -apple-system, BlinkMacSystemFont,
+      "Helvetica Neue", "Roboto", sans-serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--ion-text-color);
+    margin: 0 0 16px 0;
+    letter-spacing: -0.3px;
+  }
+
   .feature-card {
     margin: 0 0 12px 0;
     border-radius: 16px;
