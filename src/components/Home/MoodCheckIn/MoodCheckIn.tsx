@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   IonGrid,
   IonRow,
@@ -10,8 +10,13 @@ import {
   IonButton,
   IonChip,
   IonIcon,
+  IonLoading,
+  IonToast,
 } from "@ionic/react";
 import { heart, share, chatbubble, bookmark } from "ionicons/icons";
+import { useMoodApi, MoodRequestInput } from "../../../hooks/useMoodApi";
+import { useAppContext } from "../../../context/context";
+import { useUserBibleHistory } from "../../../hooks/UserHooks";
 
 /* Styles */
 import "./MoodCheckIn.scss";
@@ -29,15 +34,87 @@ interface VerseResponse {
   reflection: string;
 }
 
-interface MoodData {
-  [key: string]: VerseResponse[];
-}
-
 const MoodCheckIn: React.FC = () => {
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [currentResponse, setCurrentResponse] = useState<VerseResponse | null>(
     null
   );
+  const [showErrorToast, setShowErrorToast] = useState(false);
+
+  // Get user's current Bible translation from global context
+  const { chosenTranslation } = useAppContext();
+
+  // Get user's Bible history to use their most recently read Bible translation
+  const { data: userBibleHistoryData } = useUserBibleHistory();
+
+  // Function to get the user's most recently used Bible translation
+  const getUserPreferredBibleVersion = (): string => {
+    // First, try to get from Bible history (most recent reading activity)
+    if (userBibleHistoryData) {
+      const currentUserBibleHistory =
+        userBibleHistoryData.me?.user?.bibleHistory?.find(
+          (history) => history.current
+        );
+
+      if (
+        currentUserBibleHistory &&
+        currentUserBibleHistory.history.length > 0
+      ) {
+        const latestHistory = currentUserBibleHistory.history[0];
+        if (latestHistory?.bibleAbbr) {
+          return latestHistory.bibleAbbr;
+        }
+      }
+    }
+
+    // Fallback to current translation if available
+    if (chosenTranslation?.abbreviation) {
+      return chosenTranslation.abbreviation;
+    }
+
+    // Final fallback to NIV
+    return "NIV";
+  };
+
+  // Function to get additional context about the user's Bible reading
+  const getBibleHistoryContext = (): string => {
+    if (userBibleHistoryData) {
+      const currentUserBibleHistory =
+        userBibleHistoryData.me?.user?.bibleHistory?.find(
+          (history) => history.current
+        );
+
+      if (
+        currentUserBibleHistory &&
+        currentUserBibleHistory.history.length > 0
+      ) {
+        const latestHistory = currentUserBibleHistory.history[0];
+        if (latestHistory?.bibleAbbr && latestHistory?.bookId) {
+          return `from your recent reading in ${latestHistory.bookId}`;
+        }
+        return "from your reading history";
+      }
+    }
+
+    if (chosenTranslation) {
+      return "from your current selection";
+    }
+
+    return "(default)";
+  };
+
+  // Use the more complex mood API hook
+  const {
+    getMoodBasedVerse,
+    verseLoading,
+    verseError,
+    verseData,
+    resetVerse,
+    fetchSupportedMoods,
+    moodsLoading,
+    moodsError,
+    moods,
+  } = useMoodApi();
 
   const moodOptions: MoodOption[] = [
     { emoji: "😇", label: "Peaceful", tag: "peaceful", color: "success" },
@@ -50,200 +127,86 @@ const MoodCheckIn: React.FC = () => {
     { emoji: "🌱", label: "Hopeful", tag: "hopeful", color: "success" },
   ];
 
-  const moodData: MoodData = {
-    peaceful: [
-      {
-        verse:
-          "Peace I leave with you; my peace I give you. I do not give to you as the world gives. Do not let your hearts be troubled and do not be afraid.",
-        reference: "John 14:27",
-        reflection:
-          "God's peace surpasses all understanding. Rest in His presence today.",
-      },
-      {
-        verse:
-          "You will keep in perfect peace those whose minds are steadfast, because they trust in you.",
-        reference: "Isaiah 26:3",
-        reflection: "Trust anchors the soul in God's unshakeable peace.",
-      },
-      {
-        verse:
-          "And the peace of God, which transcends all understanding, will guard your hearts and your minds in Christ Jesus.",
-        reference: "Philippians 4:7",
-        reflection:
-          "Let God's peace be your guardian today, protecting your heart and mind.",
-      },
-    ],
-    grateful: [
-      {
-        verse:
-          "Rejoice always, pray continually, give thanks in all circumstances; for this is God's will for you in Christ Jesus.",
-        reference: "1 Thessalonians 5:16-18",
-        reflection:
-          "Gratitude transforms ordinary moments into extraordinary blessings.",
-      },
-      {
-        verse:
-          "Give thanks to the Lord, for he is good; his love endures forever.",
-        reference: "Psalm 107:1",
-        reflection:
-          "Your grateful heart reflects God's goodness back to the world.",
-      },
-      {
-        verse:
-          "Enter his gates with thanksgiving and his courts with praise; give thanks to him and praise his name.",
-        reference: "Psalm 100:4",
-        reflection: "Thanksgiving opens the door to deeper intimacy with God.",
-      },
-    ],
-    downcast: [
-      {
-        verse:
-          "Why, my soul, are you downcast? Why so disturbed within me? Put your hope in God, for I will yet praise him, my Savior and my God.",
-        reference: "Psalm 42:11",
-        reflection:
-          "Even in darkness, hope anchors your soul. God sees and cares for you.",
-      },
-      {
-        verse:
-          "The Lord is close to the brokenhearted and saves those who are crushed in spirit.",
-        reference: "Psalm 34:18",
-        reflection:
-          "In your lowest moments, God draws nearest. You are not alone.",
-      },
-      {
-        verse:
-          "Weeping may stay for the night, but rejoicing comes in the morning.",
-        reference: "Psalm 30:5",
-        reflection: "This season of sorrow is temporary. Joy will dawn again.",
-      },
-    ],
-    frustrated: [
-      {
-        verse:
-          "My dear brothers and sisters, take note of this: Everyone should be quick to listen, slow to speak and slow to become angry.",
-        reference: "James 1:19",
-        reflection:
-          "Pause and breathe. God's wisdom brings clarity to chaotic moments.",
-      },
-      {
-        verse:
-          "In your anger do not sin: Do not let the sun go down while you are still angry.",
-        reference: "Ephesians 4:26",
-        reflection:
-          "Release today's frustrations to God. Don't carry them into tomorrow.",
-      },
-      {
-        verse:
-          "A gentle answer turns away wrath, but a harsh word stirs up anger.",
-        reference: "Proverbs 15:1",
-        reflection:
-          "Choose gentleness today. It has the power to transform hearts.",
-      },
-    ],
-    anxious: [
-      {
-        verse: "Cast all your anxiety on him because he cares for you.",
-        reference: "1 Peter 5:7",
-        reflection:
-          "God sees your anxious heart today. Let Him carry what troubles you.",
-      },
-      {
-        verse:
-          "Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God.",
-        reference: "Philippians 4:6",
-        reflection:
-          "Transform your worries into prayers. God hears every concern.",
-      },
-      {
-        verse:
-          "Therefore do not worry about tomorrow, for tomorrow will worry about itself. Each day has enough trouble of its own.",
-        reference: "Matthew 6:34",
-        reflection:
-          "Focus on today's grace. Tomorrow is in God's capable hands.",
-      },
-    ],
-    loved: [
-      {
-        verse:
-          "For I am convinced that neither death nor life, neither angels nor demons, neither the present nor the future, nor any powers, neither height nor depth, nor anything else in all creation, will be able to separate us from the love of God that is in Christ Jesus our Lord.",
-        reference: "Romans 8:38-39",
-        reflection:
-          "Nothing can diminish God's love for you. You are eternally cherished.",
-      },
-      {
-        verse:
-          "See what great love the Father has lavished on us, that we should be called children of God! And that is what we are!",
-        reference: "1 John 3:1",
-        reflection:
-          "You are God's beloved child. His love for you knows no bounds.",
-      },
-      {
-        verse:
-          "But God demonstrates his own love for us in this: While we were still sinners, Christ died for us.",
-        reference: "Romans 5:8",
-        reflection:
-          "God's love isn't based on your performance. It's pure, unconditional grace.",
-      },
-    ],
-    guilty: [
-      {
-        verse:
-          "If we confess our sins, he is faithful and just and will forgive us our sins and purify us from all unrighteousness.",
-        reference: "1 John 1:9",
-        reflection:
-          "God's forgiveness is complete and immediate. You are clean before Him.",
-      },
-      {
-        verse:
-          "Therefore, there is now no condemnation for those who are in Christ Jesus.",
-        reference: "Romans 8:1",
-        reflection: "Guilt has no power over you. Christ has set you free.",
-      },
-      {
-        verse:
-          "As far as the east is from the west, so far has he removed our transgressions from us.",
-        reference: "Psalm 103:12",
-        reflection:
-          "Your past doesn't define you. God has removed it completely.",
-      },
-    ],
-    hopeful: [
-      {
-        verse:
-          "May the God of hope fill you with all joy and peace as you trust in him, so that you may overflow with hope by the power of the Holy Spirit.",
-        reference: "Romans 15:13",
-        reflection:
-          "Hope is rising in your heart. God is writing a beautiful story.",
-      },
-      {
-        verse:
-          'For I know the plans I have for you," declares the Lord, "plans to prosper you and not to harm you, to give you hope and a future.',
-        reference: "Jeremiah 29:11",
-        reflection:
-          "Your future is bright in God's hands. He has good plans for you.",
-      },
-      {
-        verse:
-          "But those who hope in the Lord will renew their strength. They will soar on wings like eagles; they will run and not grow weary, they will walk and not be faint.",
-        reference: "Isaiah 40:31",
-        reflection:
-          "Hope in God renews everything. Your strength is being restored.",
-      },
-    ],
-  };
-
-  const handleMoodSelect = (mood: MoodOption) => {
+  const handleMoodSelect = async (mood: MoodOption) => {
     setSelectedMood(mood.tag);
-    const responses = moodData[mood.tag];
-    const randomResponse =
-      responses[Math.floor(Math.random() * responses.length)];
-    setCurrentResponse(randomResponse);
+    setCurrentResponse(null); // Clear previous response
+
+    try {
+      // Get user's preferred Bible version based on their reading history
+      const userBibleVersion = getUserPreferredBibleVersion();
+
+      console.log(
+        `Getting mood verse for "${
+          mood.tag
+        }" using ${userBibleVersion} translation ${getBibleHistoryContext()}`
+      );
+
+      // Prepare input object for the API
+      const input: MoodRequestInput = {
+        mood: mood.tag,
+        additionalContext: undefined, // Could add a text input for this later
+        preferredBibleVersion: userBibleVersion,
+      };
+
+      // Call the more complex API
+      const response = await getMoodBasedVerse(input);
+
+      if (response.errors) {
+        // Handle API errors
+        console.error("API errors:", response.errors);
+        setShowErrorToast(true);
+      } else if (response.result) {
+        // Handle successful response
+        setCurrentResponse({
+          verse: response.result.verse,
+          reference: response.result.reference,
+          reflection: response.result.reflection,
+        });
+      } else {
+        // Fallback error
+        setShowErrorToast(true);
+      }
+    } catch (err) {
+      console.error("Error getting mood-based verse:", err);
+      setShowErrorToast(true);
+    }
   };
 
   const handleNewCheckIn = () => {
     setSelectedMood(null);
     setCurrentResponse(null);
+    resetVerse(); // Reset the verse data
+    setShowErrorToast(false);
   };
+
+  // Show error toast when there's an API error
+  React.useEffect(() => {
+    if (verseError || moodsError) {
+      setShowErrorToast(true);
+    }
+  }, [verseError, moodsError]);
+
+  const handleErrorToastDismiss = () => {
+    setShowErrorToast(false);
+  };
+
+  // Automatically use verse data from the hook when available
+  useEffect(() => {
+    if (verseData && !currentResponse) {
+      setCurrentResponse({
+        verse: verseData.verse,
+        reference: verseData.reference,
+        reflection: verseData.reflection,
+      });
+    }
+  }, [verseData, currentResponse]);
+
+  // Optional: Fetch supported moods on component mount (for future use)
+  useEffect(() => {
+    if (moods.length === 0) {
+      fetchSupportedMoods();
+    }
+  }, [moods.length, fetchSupportedMoods]);
 
   const handleSaveVerse = () => {
     // TODO: Implement save functionality
@@ -276,6 +239,16 @@ const MoodCheckIn: React.FC = () => {
                   <IonText>
                     <h2>🤔 How are you feeling today?</h2>
                     <p>Let God's Word speak to your heart</p>
+                    <p
+                      style={{
+                        fontSize: "0.8rem",
+                        color: "var(--ion-color-medium)",
+                        marginTop: "4px",
+                      }}
+                    >
+                      Using {getUserPreferredBibleVersion()}{" "}
+                      {getBibleHistoryContext()}
+                    </p>
                   </IonText>
                 </div>
 
@@ -283,9 +256,9 @@ const MoodCheckIn: React.FC = () => {
                   {moodOptions.map((mood, index) => (
                     <IonChip
                       key={index}
-                      className="mood-chip"
-                      color={mood.color}
+                      className={`mood-chip chip-${mood.color}`}
                       onClick={() => handleMoodSelect(mood)}
+                      disabled={verseLoading}
                     >
                       <span className="mood-emoji">{mood.emoji}</span>
                       <span className="mood-label">{mood.label}</span>
@@ -325,6 +298,15 @@ const MoodCheckIn: React.FC = () => {
                   <p className="verse-text">"{currentResponse.verse}"</p>
                   <p className="verse-reference">
                     — {currentResponse.reference}
+                    <span
+                      style={{
+                        fontSize: "0.8rem",
+                        color: "var(--ion-color-medium)",
+                        marginLeft: "8px",
+                      }}
+                    >
+                      ({getUserPreferredBibleVersion()})
+                    </span>
                   </p>
                 </IonText>
               </div>
@@ -371,6 +353,25 @@ const MoodCheckIn: React.FC = () => {
           </IonCard>
         </IonCol>
       </IonRow>
+
+      {/* Loading overlay */}
+      <IonLoading
+        isOpen={verseLoading}
+        message="Getting your verse..."
+        duration={0}
+      />
+
+      {/* Error toast */}
+      <IonToast
+        isOpen={showErrorToast}
+        onDidDismiss={handleErrorToastDismiss}
+        message={
+          verseError || moodsError || "Something went wrong. Please try again."
+        }
+        duration={4000}
+        color="danger"
+        position="top"
+      />
     </IonGrid>
   );
 };
