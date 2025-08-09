@@ -40,7 +40,7 @@ const getSupportedMoodsQuery = gql(`
 
 // Hook for getting mood-based verses (using lazy query)
 export const useMoodResolver = () => {
-  const [getMoodBasedVerse, { loading, error, data }] = useLazyQuery(
+  const [getMoodBasedVerse, { loading, error }] = useLazyQuery(
     getMoodBasedVerseQuery
   );
 

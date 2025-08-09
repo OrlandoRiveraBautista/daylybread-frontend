@@ -6,14 +6,13 @@ import {
   IonText,
   IonCard,
   IonCardContent,
-  IonCardTitle,
   IonButton,
   IonChip,
   IonIcon,
   IonLoading,
   IonToast,
 } from "@ionic/react";
-import { heart, share, chatbubble, bookmark } from "ionicons/icons";
+import { share, chatbubble, bookmark } from "ionicons/icons";
 import { useMoodApi, MoodRequestInput } from "../../../hooks/useMoodApi";
 import { useAppContext } from "../../../context/context";
 import { useUserBibleHistory } from "../../../hooks/UserHooks";
@@ -111,7 +110,6 @@ const MoodCheckIn: React.FC = () => {
     verseData,
     resetVerse,
     fetchSupportedMoods,
-    moodsLoading,
     moodsError,
     moods,
   } = useMoodApi();
