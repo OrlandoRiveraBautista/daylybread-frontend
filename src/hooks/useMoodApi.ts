@@ -13,26 +13,10 @@ export interface VerseResponseType {
   reference: string;
   reflection: string;
   mood: string;
-  fromCache: boolean;
-  nextRequestAllowed?: Date;
 }
 
 export interface FieldError {
   message: string;
-}
-
-export interface MoodCache {
-  _id: string;
-  userId: string;
-  mood: string;
-  verse: string;
-  reference: string;
-  reflection: string;
-  additionalContext?: string;
-  preferredBibleVersion?: string;
-  expiresAt: Date;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 export interface MoodResponse {
@@ -52,8 +36,6 @@ const getMoodBasedVerseQuery = gql(`
         reference
         reflection
         mood
-        fromCache
-        nextRequestAllowed
       }
     }
   }
@@ -62,30 +44,6 @@ const getMoodBasedVerseQuery = gql(`
 const getSupportedMoodsQuery = gql(`
   query GetSupportedMoods {
     getSupportedMoods
-  }
-`);
-
-const getUserMoodHistoryQuery = gql(`
-  query GetUserMoodHistory {
-    getUserMoodHistory {
-      _id
-      userId
-      mood
-      verse
-      reference
-      reflection
-      additionalContext
-      preferredBibleVersion
-      expiresAt
-      createdAt
-      updatedAt
-    }
-  }
-`);
-
-const getNextMoodRequestTimeQuery = gql(`
-  query GetNextMoodRequestTime($mood: String!) {
-    getNextMoodRequestTime(mood: $mood)
   }
 `);
 
@@ -151,56 +109,10 @@ export const useSupportedMoods = () => {
   };
 };
 
-// Hook for getting user's mood history
-export const useMoodHistory = () => {
-  const { loading, error, data, refetch } = useQuery(getUserMoodHistoryQuery);
-
-  return {
-    loading,
-    error: error?.message || null,
-    moodHistory: data?.getUserMoodHistory || [],
-    refetchHistory: refetch,
-  };
-};
-
-// Hook for getting next allowed request time for a specific mood
-export const useNextMoodRequestTime = () => {
-  const [getNextRequestTime, { loading, error, data }] = useLazyQuery(
-    getNextMoodRequestTimeQuery
-  );
-
-  const checkNextRequestTime = async (mood: string): Promise<Date | null> => {
-    try {
-      const result = await getNextRequestTime({
-        variables: { mood },
-      });
-
-      if (result.error) {
-        console.error("Error getting next request time:", result.error.message);
-        return null;
-      }
-
-      return result.data?.getNextMoodRequestTime || null;
-    } catch (err) {
-      console.error("Error checking next request time:", err);
-      return null;
-    }
-  };
-
-  return {
-    checkNextRequestTime,
-    loading,
-    error: error?.message || null,
-    nextRequestTime: data?.getNextMoodRequestTime || null,
-  };
-};
-
 // Combined hook for convenience
 export const useMoodApi = () => {
   const moodVerse = useMoodBasedVerse();
   const supportedMoods = useSupportedMoods();
-  const moodHistory = useMoodHistory();
-  const nextRequestTime = useNextMoodRequestTime();
 
   return {
     // Mood-based verse functionality
@@ -215,18 +127,6 @@ export const useMoodApi = () => {
     moodsLoading: supportedMoods.loading,
     moodsError: supportedMoods.error,
     moods: supportedMoods.moods,
-
-    // Mood history functionality
-    moodHistory: moodHistory.moodHistory,
-    historyLoading: moodHistory.loading,
-    historyError: moodHistory.error,
-    refetchHistory: moodHistory.refetchHistory,
-
-    // Next request time functionality
-    checkNextRequestTime: nextRequestTime.checkNextRequestTime,
-    nextRequestLoading: nextRequestTime.loading,
-    nextRequestError: nextRequestTime.error,
-    nextRequestTime: nextRequestTime.nextRequestTime,
   };
 };
 

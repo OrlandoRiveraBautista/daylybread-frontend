@@ -18,6 +18,7 @@ import { Helmet } from "react-helmet";
 /* Components */
 import QuickActions from "../components/Home/QuickActions";
 import AppFeatures from "../components/Home/AppFeatures";
+import MoodCheckIn from "../components/Home/MoodCheckIn";
 
 /* Context */
 import { useAppContext } from "../context/context";
@@ -72,6 +73,9 @@ const Tab1: React.FC = () => {
         </div>
 
         <IonGrid className="home-grid">
+          {/* Mood Check-In */}
+          <MoodCheckIn />
+
           {/* Quick Actions */}
           <QuickActions />
 
