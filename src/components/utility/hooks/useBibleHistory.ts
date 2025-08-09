@@ -31,12 +31,33 @@ const useBibleHistory = () => {
     // get it's latest history
     const latestHistory = currentUserBibleHistory.history[0];
 
-    // Get the current URL
+    // Get the current URL and construct the proper path
     const currentUrl = history.location.pathname;
 
-    history.push(
-      `${currentUrl}/${latestHistory?.language}/${latestHistory?.bibleAbbr}/${latestHistory?.bookId}/${latestHistory?.chapterNumber}`
-    );
+    // Remove any existing parameters to avoid duplication
+    const basePath = currentUrl.split("/").slice(0, 2).join("/"); // Gets "/read" part
+
+    // Ensure we have all required history data
+    if (
+      !latestHistory?.language ||
+      !latestHistory?.bibleAbbr ||
+      !latestHistory?.bookId ||
+      !latestHistory?.chapterNumber
+    ) {
+      console.warn("Incomplete Bible history data:", latestHistory);
+      return;
+    }
+
+    // Construct the correct URL with fresh parameters
+    const newUrl = `${basePath}/${latestHistory.language}/${latestHistory.bibleAbbr}/${latestHistory.bookId}/${latestHistory.chapterNumber}`;
+
+    console.log("Redirecting to Bible history:", {
+      from: currentUrl,
+      to: newUrl,
+      historyData: latestHistory,
+    });
+
+    history.push(newUrl);
   }, [userBibleHistoryData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // checks for change in the global state for bible changes and pushes the route with param
