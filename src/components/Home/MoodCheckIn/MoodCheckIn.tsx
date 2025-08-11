@@ -251,17 +251,28 @@ const MoodCheckIn: React.FC = () => {
                 </div>
 
                 <div className="mood-options">
-                  {moodOptions.map((mood, index) => (
-                    <IonChip
-                      key={index}
-                      className={`mood-chip chip-${mood.color}`}
-                      onClick={() => handleMoodSelect(mood)}
-                      disabled={verseLoading}
-                    >
-                      <span className="mood-emoji">{mood.emoji}</span>
-                      <span className="mood-label">{mood.label}</span>
-                    </IonChip>
-                  ))}
+                  {verseLoading ? (
+                    <div className="mood-loading-container">
+                      <div className="mood-loading-spinner">
+                        <div className="loading-ring"></div>
+                        <div className="loading-ring"></div>
+                        <div className="loading-ring"></div>
+                      </div>
+                      <p className="mood-loading-text">Finding your verse...</p>
+                    </div>
+                  ) : (
+                    moodOptions.map((mood, index) => (
+                      <IonChip
+                        key={index}
+                        className={`mood-chip chip-${mood.color}`}
+                        onClick={() => handleMoodSelect(mood)}
+                        disabled={verseLoading}
+                      >
+                        <span className="mood-emoji">{mood.emoji}</span>
+                        <span className="mood-label">{mood.label}</span>
+                      </IonChip>
+                    ))
+                  )}
                 </div>
               </IonCardContent>
             </IonCard>
