@@ -1,0 +1,122 @@
+@import "../../../../theme/variables.scss";
+
+.mood-response-card {
+  margin: 0 0 12px 0;
+  border-radius: 12px;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.12), 0px 1px 2px rgba(0, 0, 0, 0.24);
+  transition: all 0.2s ease;
+  animation: fadeInUp 0.5s ease-out;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15), 0px 2px 4px rgba(0, 0, 0, 0.12);
+  }
+
+  ion-card-content {
+    padding: 20px;
+  }
+}
+
+.response-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+
+  h3 {
+    color: var(--ion-color-primary);
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin: 0;
+    font-family: "Product Sans", sans-serif;
+  }
+
+  .new-checkin-btn {
+    --color: var(--ion-color-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+}
+
+.verse-content {
+  margin-bottom: 20px;
+  padding: 16px 0;
+  border-left: 4px solid var(--ion-color-primary-tint);
+  padding-left: 16px;
+  background: linear-gradient(
+    90deg,
+    rgba(var(--ion-color-primary-rgb), 0.03),
+    transparent
+  );
+
+  .verse-text {
+    font-size: 1.1rem;
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--ion-text-color);
+    margin: 0 0 8px 0;
+    font-style: italic;
+  }
+
+  .verse-reference {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--ion-color-primary);
+    margin: 0;
+    text-align: right;
+  }
+}
+
+.reflection-content {
+  margin-bottom: 24px;
+
+  .reflection-text {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--ion-text-color);
+    margin: 0;
+    font-weight: 400;
+  }
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+
+  .action-btn {
+    flex: 1;
+    min-width: 80px;
+    --border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 500;
+
+    &.talk-btn {
+      --background: linear-gradient(
+        135deg,
+        var(--ion-color-primary),
+        var(--ion-color-primary-shade)
+      );
+    }
+  }
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+
+    .action-btn {
+      flex: none;
+    }
+  }
+}
+
+// Animation
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
