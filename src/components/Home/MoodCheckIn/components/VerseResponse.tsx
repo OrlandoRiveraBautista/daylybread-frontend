@@ -6,7 +6,13 @@ import {
   IonButton,
   IonIcon,
 } from "@ionic/react";
-import { share, chatbubble, bookmark } from "ionicons/icons";
+import {
+  share,
+  chatbubble,
+  bookmark,
+  arrowBack,
+  refresh,
+} from "ionicons/icons";
 import { VerseResponse as VerseResponseType } from "../hooks/useMoodCheckIn";
 import "./VerseResponse.scss";
 
@@ -62,11 +68,12 @@ const VerseResponse: React.FC<VerseResponseProps> = ({
             <h3>A word for your heart today</h3>
           </IonText>
           <IonButton
-            fill="clear"
+            fill="outline"
             size="small"
             onClick={onNewCheckIn}
             className="new-checkin-btn"
           >
+            <IonIcon icon={arrowBack} slot="start" />
             Check in again
           </IonButton>
         </div>

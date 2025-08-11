@@ -33,8 +33,20 @@
 
   .new-checkin-btn {
     --color: var(--ion-color-secondary);
+    --border-color: var(--ion-color-secondary);
     font-size: 0.9rem;
-    font-weight: 500;
+    font-weight: 600;
+    --border-radius: 8px;
+    --padding-start: 12px;
+    --padding-end: 16px;
+
+    &:hover {
+      --background: rgba(var(--ion-color-secondary-rgb), 0.1);
+    }
+
+    ion-icon {
+      margin-right: 4px;
+    }
   }
 }
 
