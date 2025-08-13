@@ -1,0 +1,127 @@
+@import "../../../../theme/variables.scss";
+
+.next-mood-timer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 16px;
+  font-size: 0.75rem;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  border: 1px solid transparent;
+
+  .timer-icon {
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .timer-text {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 500;
+    line-height: 1.2;
+
+    .timer-label {
+      opacity: 0.8;
+    }
+
+    .timer-value {
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+  }
+
+  // Ready state - subtle green
+  &.ready {
+    background: rgba(var(--ion-color-success-rgb), 0.1);
+    border-color: rgba(var(--ion-color-success-rgb), 0.2);
+    color: var(--ion-color-success);
+
+    .ready-icon {
+      color: var(--ion-color-success);
+    }
+
+    .ready-text {
+      color: var(--ion-color-success);
+    }
+
+    &:hover {
+      background: rgba(var(--ion-color-success-rgb), 0.15);
+      transform: translateY(-1px);
+    }
+  }
+
+  // Waiting state - subtle blue/neutral
+  &.waiting {
+    background: rgba(var(--ion-color-primary-rgb), 0.08);
+    border-color: rgba(var(--ion-color-primary-rgb), 0.15);
+    color: var(--ion-color-primary);
+
+    .waiting-icon {
+      color: var(--ion-color-primary);
+      opacity: 0.8;
+    }
+
+    .waiting-text {
+      color: var(--ion-color-primary);
+    }
+
+    &:hover {
+      background: rgba(var(--ion-color-primary-rgb), 0.12);
+      transform: translateY(-1px);
+    }
+  }
+
+  // Responsive design
+  @media (max-width: 480px) {
+    font-size: 0.7rem;
+    padding: 6px 10px;
+    gap: 6px;
+
+    .timer-icon {
+      font-size: 0.9rem;
+    }
+  }
+}
+
+// Dark mode adjustments
+@media (prefers-color-scheme: dark) {
+  .next-mood-timer {
+    backdrop-filter: blur(10px);
+
+    &.ready {
+      background: rgba(var(--ion-color-success-rgb), 0.15);
+      border-color: rgba(var(--ion-color-success-rgb), 0.25);
+    }
+
+    &.waiting {
+      background: rgba(var(--ion-color-primary-rgb), 0.12);
+      border-color: rgba(var(--ion-color-primary-rgb), 0.2);
+    }
+  }
+}
+
+// Animation for timer updates
+.timer-value {
+  animation: timerPulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes timerPulse {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.7;
+  }
+}
+
+// Subtle glow effect when ready
+.next-mood-timer.ready {
+  box-shadow: 0 0 8px rgba(var(--ion-color-success-rgb), 0.2);
+}
+
+.next-mood-timer.waiting {
+  box-shadow: 0 0 4px rgba(var(--ion-color-primary-rgb), 0.1);
+}
