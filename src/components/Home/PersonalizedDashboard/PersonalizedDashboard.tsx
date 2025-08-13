@@ -12,7 +12,6 @@ import {
 import {
   bookOutline,
   bookmarkOutline,
-  timeOutline,
   heartOutline,
   trendingUpOutline,
   calendarOutline,

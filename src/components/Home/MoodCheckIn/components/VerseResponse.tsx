@@ -6,13 +6,7 @@ import {
   IonButton,
   IonIcon,
 } from "@ionic/react";
-import {
-  share,
-  chatbubble,
-  bookmark,
-  arrowBack,
-  refresh,
-} from "ionicons/icons";
+import { share, chatbubble, bookmark, arrowBack } from "ionicons/icons";
 import { VerseResponse as VerseResponseType } from "../hooks/useMoodCheckIn";
 import NextMoodTimer from "./NextMoodTimer";
 import "./VerseResponse.scss";
