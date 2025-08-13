@@ -21,6 +21,9 @@ export const useMoodCheckIn = () => {
   const [currentResponse, setCurrentResponse] = useState<VerseResponse | null>(
     null
   );
+  const [nextRequestAllowed, setNextRequestAllowed] = useState<string | null>(
+    null
+  );
   const [showErrorToast, setShowErrorToast] = useState(false);
 
   // Get user's current Bible translation from global context
@@ -132,6 +135,18 @@ export const useMoodCheckIn = () => {
           reference: response.result.reference,
           reflection: response.result.reflection,
         });
+
+        // Store the next request allowed time if provided
+        if (response.result.nextRequestAllowed) {
+          // Convert Date object to ISO string for consistent handling
+          const nextRequestTime =
+            typeof response.result.nextRequestAllowed === "string"
+              ? response.result.nextRequestAllowed
+              : response.result.nextRequestAllowed.toISOString();
+
+          console.log("Next request allowed:", nextRequestTime);
+          setNextRequestAllowed(nextRequestTime);
+        }
       } else {
         // Fallback error
         setShowErrorToast(true);
@@ -145,6 +160,7 @@ export const useMoodCheckIn = () => {
   const handleNewCheckIn = () => {
     setSelectedMood(null);
     setCurrentResponse(null);
+    setNextRequestAllowed(null); // Reset the timer
     resetVerse(); // Reset the verse data
     setShowErrorToast(false);
   };
@@ -182,6 +198,7 @@ export const useMoodCheckIn = () => {
     // State
     selectedMood,
     currentResponse,
+    nextRequestAllowed,
     showErrorToast,
     verseLoading,
     verseError,
