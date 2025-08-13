@@ -21,6 +21,7 @@ const MoodCheckIn: React.FC = () => {
   const {
     selectedMood,
     currentResponse,
+    nextRequestAllowed,
     showErrorToast,
     verseLoading,
     verseError,
@@ -42,6 +43,7 @@ const MoodCheckIn: React.FC = () => {
                 <MoodCheckInHeader
                   bibleVersion={getUserPreferredBibleVersion()}
                   bibleContext={getBibleHistoryContext()}
+                  nextRequestAllowed={nextRequestAllowed}
                 />
 
                 <MoodSelector
