@@ -129,12 +129,22 @@ const PersonalizedDashboard: React.FC = () => {
         }).length || 0;
 
       // Format member since date
-      const memberSince = userInfo.createdAt
-        ? new Date(userInfo.createdAt).toLocaleDateString("en-US", {
+      let memberSince = "";
+      if (userInfo.createdAt) {
+        // Handle both string and number timestamps
+        const timestamp =
+          typeof userInfo.createdAt === "string"
+            ? parseInt(userInfo.createdAt)
+            : userInfo.createdAt;
+
+        const date = new Date(timestamp);
+        if (!isNaN(date.getTime())) {
+          memberSince = date.toLocaleDateString("en-US", {
             month: "long",
             year: "numeric",
-          })
-        : "";
+          });
+        }
+      }
 
       setUserStats({
         totalReadingSessions: totalSessions,
