@@ -6,12 +6,7 @@ import {
   IonButton,
   IonIcon,
 } from "@ionic/react";
-import {
-  share,
-  // chatbubble,
-  bookmark,
-  arrowBack,
-} from "ionicons/icons";
+import { share, chatbubble, bookmark, arrowBack } from "ionicons/icons";
 import { VerseResponse as VerseResponseType } from "../hooks/useMoodCheckIn";
 import NextMoodTimer from "./NextMoodTimer";
 import "./VerseResponse.scss";
@@ -33,7 +28,7 @@ const VerseResponse: React.FC<VerseResponseProps> = ({
   onNewCheckIn,
   onSave,
   onShare,
-  // onTalkToGod,
+  onTalkToGod,
 }) => {
   const handleSave = () => {
     if (onSave) {
@@ -48,20 +43,19 @@ const VerseResponse: React.FC<VerseResponseProps> = ({
       onShare();
     } else if (navigator.share) {
       navigator.share({
-        title: "Daily Scripture from Daylybread",
-        text: `"${response.verse}" - ${response.reference}\n\n${response.reflection}\n\nShared from Daylybread - Your smart Bible companion with AI assistance.\n\n✨ Get personalized verses for your mood at bible.daylybread.com`,
-        url: `https://bible.daylybread.com/`,
+        title: "Daily Scripture",
+        text: `"${response.verse}" - ${response.reference}\n\n${response.reflection}`,
       });
     }
   };
 
-  // const handleTalkToGod = () => {
-  //   if (onTalkToGod) {
-  //     onTalkToGod();
-  //   } else {
-  //     console.log("Opening prayer chat...");
-  //   }
-  // };
+  const handleTalkToGod = () => {
+    if (onTalkToGod) {
+      onTalkToGod();
+    } else {
+      console.log("Opening prayer chat...");
+    }
+  };
 
   return (
     <IonCard className="mood-response-card">
@@ -129,7 +123,7 @@ const VerseResponse: React.FC<VerseResponseProps> = ({
             <IonIcon icon={share} slot="start" />
             Share
           </IonButton>
-          {/* <IonButton
+          <IonButton
             fill="solid"
             size="small"
             color="primary"
@@ -138,7 +132,7 @@ const VerseResponse: React.FC<VerseResponseProps> = ({
           >
             <IonIcon icon={chatbubble} slot="start" />
             Talk to God
-          </IonButton> */}
+          </IonButton>
         </div>
       </IonCardContent>
     </IonCard>
