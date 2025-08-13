@@ -43,7 +43,6 @@ const MoodCheckIn: React.FC = () => {
                 <MoodCheckInHeader
                   bibleVersion={getUserPreferredBibleVersion()}
                   bibleContext={getBibleHistoryContext()}
-                  nextRequestAllowed={nextRequestAllowed}
                 />
 
                 <MoodSelector
@@ -81,6 +80,7 @@ const MoodCheckIn: React.FC = () => {
           <VerseResponse
             response={currentResponse}
             bibleVersion={getUserPreferredBibleVersion()}
+            nextRequestAllowed={nextRequestAllowed}
             onNewCheckIn={handleNewCheckIn}
           />
         </IonCol>

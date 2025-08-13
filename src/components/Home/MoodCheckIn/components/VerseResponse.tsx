@@ -14,11 +14,13 @@ import {
   refresh,
 } from "ionicons/icons";
 import { VerseResponse as VerseResponseType } from "../hooks/useMoodCheckIn";
+import NextMoodTimer from "./NextMoodTimer";
 import "./VerseResponse.scss";
 
 interface VerseResponseProps {
   response: VerseResponseType;
   bibleVersion: string;
+  nextRequestAllowed?: string | Date | null;
   onNewCheckIn: () => void;
   onSave?: () => void;
   onShare?: () => void;
@@ -28,6 +30,7 @@ interface VerseResponseProps {
 const VerseResponse: React.FC<VerseResponseProps> = ({
   response,
   bibleVersion,
+  nextRequestAllowed,
   onNewCheckIn,
   onSave,
   onShare,
@@ -63,6 +66,11 @@ const VerseResponse: React.FC<VerseResponseProps> = ({
   return (
     <IonCard className="mood-response-card">
       <IonCardContent>
+        {/* Timer for next mood check-in */}
+        <NextMoodTimer
+          nextRequestAllowed={nextRequestAllowed}
+          className="verse-response-timer"
+        />
         <div className="response-header">
           <IonText>
             <h3>A word for your heart today</h3>
