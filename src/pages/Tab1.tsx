@@ -5,7 +5,6 @@ import {
   IonGrid,
   IonRow,
   IonCol,
-  IonImg,
   IonPage,
   IonText,
   IonHeader,
@@ -19,12 +18,10 @@ import { Helmet } from "react-helmet";
 import QuickActions from "../components/Home/QuickActions";
 import AppFeatures from "../components/Home/AppFeatures";
 import MoodCheckIn from "../components/Home/MoodCheckIn";
+import PersonalizedDashboard from "../components/Home/PersonalizedDashboard";
 
 /* Context */
 import { useAppContext } from "../context/context";
-
-/* Images */
-import DaylybreadLogo from "../assets/images/daylybread-logo-pink.svg";
 
 /* Styles */
 import "./Tab1.scss";
@@ -60,17 +57,8 @@ const Tab1: React.FC = () => {
       </IonHeader>
 
       <IonContent className="home-content">
-        <div className="home-hero">
-          <IonImg
-            src={DaylybreadLogo}
-            alt="Daylybread Logo"
-            className="home-logo"
-          />
-          <IonText>
-            <h1>Welcome to Daylybread</h1>
-            <p>Your smart Bible reading companion</p>
-          </IonText>
-        </div>
+        {/* Personalized Dashboard */}
+        <PersonalizedDashboard />
 
         <IonGrid className="home-grid">
           {/* Mood Check-In */}
