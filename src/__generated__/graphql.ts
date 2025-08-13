@@ -478,6 +478,46 @@ export type MediaUrlResponse = {
   signedUrl?: Maybe<Scalars['String']>;
 };
 
+export type MoodCache = {
+  __typename?: 'MoodCache';
+  _id: Scalars['String'];
+  additionalContext?: Maybe<Scalars['String']>;
+  createdAt: Scalars['DateTime'];
+  expiresAt: Scalars['DateTime'];
+  mood: Scalars['String'];
+  preferredBibleVersion?: Maybe<Scalars['String']>;
+  reference: Scalars['String'];
+  reflection: Scalars['String'];
+  updatedAt: Scalars['DateTime'];
+  userId: Scalars['String'];
+  verse: Scalars['String'];
+};
+
+export type MoodNotification = {
+  __typename?: 'MoodNotification';
+  _id: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  deviceId?: Maybe<Scalars['String']>;
+  errorMessage?: Maybe<Scalars['String']>;
+  message?: Maybe<Scalars['String']>;
+  mood: Scalars['String'];
+  pushSubscription?: Maybe<Scalars['String']>;
+  scheduledFor: Scalars['DateTime'];
+  sentAt?: Maybe<Scalars['DateTime']>;
+  status: Scalars['String'];
+  type: Scalars['String'];
+  updatedAt: Scalars['DateTime'];
+  userId: Scalars['String'];
+};
+
+export type MoodNotificationMessage = {
+  __typename?: 'MoodNotificationMessage';
+  message: Scalars['String'];
+  mood: Scalars['String'];
+  timestamp: Scalars['DateTime'];
+  userId: Scalars['String'];
+};
+
 export type MoodRequestInput = {
   additionalContext?: InputMaybe<Scalars['String']>;
   mood: Scalars['String'];
@@ -492,6 +532,7 @@ export type MoodResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  cancelNotification: Scalars['Boolean'];
   createBookmark: BookmarkResponse;
   createInteraction: BibleInteractionResponse;
   createMedia: MediaResponse;
@@ -506,12 +547,19 @@ export type Mutation = {
   loginWithGoogle: UserResponse;
   refreshMediaCache: MediaResponse;
   register: UserResponse;
+  scheduleMoodNotification: ScheduleNotificationResponse;
   setUserHistory: HistoryResponse;
   updateBookmark: BookmarkResponse;
   updateInteraction: BibleInteractionResponse;
   updateMedia: MediaResponse;
   updateNFCConfig: NfcConfigResponse;
+  updateNotificationSettings: NotificationSettingsResponse;
   updateUser: UserResponse;
+};
+
+
+export type MutationCancelNotificationArgs = {
+  notificationId: Scalars['String'];
 };
 
 
@@ -581,6 +629,11 @@ export type MutationRegisterArgs = {
 };
 
 
+export type MutationScheduleMoodNotificationArgs = {
+  input: ScheduleNotificationInput;
+};
+
+
 export type MutationSetUserHistoryArgs = {
   options: HistoryOptions;
 };
@@ -607,6 +660,11 @@ export type MutationUpdateMediaArgs = {
 export type MutationUpdateNfcConfigArgs = {
   id: Scalars['String'];
   options: NfcConfigInput;
+};
+
+
+export type MutationUpdateNotificationSettingsArgs = {
+  input: NotificationSettingsInput;
 };
 
 
@@ -651,6 +709,20 @@ export type NfcConfigResponse = {
   results?: Maybe<NfcConfig>;
 };
 
+export type NotificationSettingsInput = {
+  enableBrowserPushNotifications?: InputMaybe<Scalars['Boolean']>;
+  enableEmailNotifications?: InputMaybe<Scalars['Boolean']>;
+  enableWebSocketNotifications?: InputMaybe<Scalars['Boolean']>;
+  pushSubscriptionEndpoint?: InputMaybe<Scalars['String']>;
+  pushSubscriptionKeys?: InputMaybe<Scalars['String']>;
+};
+
+export type NotificationSettingsResponse = {
+  __typename?: 'NotificationSettingsResponse';
+  errors?: Maybe<Array<FieldError>>;
+  settings?: Maybe<UserNotificationSettings>;
+};
+
 export type PostSignedUrlResponse = {
   __typename?: 'PostSignedUrlResponse';
   errors?: Maybe<Array<FieldError>>;
@@ -683,6 +755,7 @@ export type Query = {
   getMyInteractions: GetBibleInteractionsResponse;
   getNFCConfig: NfcConfigResponse;
   getNFCConfigByOwner: NfcConfigResponse;
+  getNextMoodRequestTime?: Maybe<Scalars['DateTime']>;
   getOpen: Scalars['String'];
   getSupportedMoods: Array<Scalars['String']>;
   getTestData: Array<Test>;
@@ -691,6 +764,9 @@ export type Query = {
   getTranslationByLanguage?: Maybe<Array<Translation>>;
   getTranslationByName?: Maybe<Translation>;
   getTranslations: Array<Translation>;
+  getUserMoodHistory: Array<MoodCache>;
+  getUserNotificationSettings: NotificationSettingsResponse;
+  getUserPendingNotifications: Array<MoodNotification>;
   getVerseByBibleId: Verse;
   getVerseListByChapterBibleId: Array<ChapterVerse>;
   hello: Scalars['String'];
@@ -809,6 +885,11 @@ export type QueryGetNfcConfigByOwnerArgs = {
 };
 
 
+export type QueryGetNextMoodRequestTimeArgs = {
+  mood: Scalars['String'];
+};
+
+
 export type QueryGetOpenArgs = {
   options: GptArgs;
 };
@@ -863,6 +944,20 @@ export type QuerySearchListOfLanguagesArgs = {
   options: SearchLanguageArgs;
 };
 
+export type ScheduleNotificationInput = {
+  deviceId?: InputMaybe<Scalars['String']>;
+  message?: InputMaybe<Scalars['String']>;
+  mood: Scalars['String'];
+  scheduledFor: Scalars['DateTime'];
+  type: Scalars['String'];
+};
+
+export type ScheduleNotificationResponse = {
+  __typename?: 'ScheduleNotificationResponse';
+  errors?: Maybe<Array<FieldError>>;
+  notification?: Maybe<MoodNotification>;
+};
+
 export type SearchLanguageArgs = {
   mediaInclude?: InputMaybe<Scalars['String']>;
   search?: InputMaybe<Scalars['String']>;
@@ -890,11 +985,17 @@ export type SocialMediaSettingsInput = {
 export type Subscription = {
   __typename?: 'Subscription';
   aiChatReponseUpdated: Scalars['String'];
+  moodRequestAvailable: MoodNotificationMessage;
 };
 
 
 export type SubscriptionAiChatReponseUpdatedArgs = {
   deviceId: Scalars['String'];
+};
+
+
+export type SubscriptionMoodRequestAvailableArgs = {
+  userId: Scalars['String'];
 };
 
 export type Test = {
@@ -945,6 +1046,19 @@ export type User = {
   updatedAt: Scalars['String'];
 };
 
+export type UserNotificationSettings = {
+  __typename?: 'UserNotificationSettings';
+  _id: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  enableBrowserPushNotifications: Scalars['Boolean'];
+  enableEmailNotifications: Scalars['Boolean'];
+  enableWebSocketNotifications: Scalars['Boolean'];
+  pushSubscriptionEndpoint?: Maybe<Scalars['String']>;
+  pushSubscriptionKeys?: Maybe<Scalars['String']>;
+  updatedAt: Scalars['DateTime'];
+  userId: Scalars['String'];
+};
+
 export type UserResponse = {
   __typename?: 'UserResponse';
   errors?: Maybe<Array<FieldError>>;
@@ -988,7 +1102,9 @@ export type VerseResponse = {
 
 export type VerseResponseType = {
   __typename?: 'VerseResponseType';
+  fromCache: Scalars['Boolean'];
   mood: Scalars['String'];
+  nextRequestAllowed?: Maybe<Scalars['DateTime']>;
   reference: Scalars['String'];
   reflection: Scalars['String'];
   verse: Scalars['String'];
@@ -1174,18 +1290,6 @@ export type DeleteMediaMutationVariables = Exact<{
 
 export type DeleteMediaMutation = { __typename?: 'Mutation', deleteMedia: { __typename?: 'MediaResponse', results?: { __typename?: 'Media', _id: string, fileKey: string, filename: string, mimeType: string, size: number, purpose: MediaPurpose, isPublic: boolean, description?: string | null, createdAt: string, updatedAt: string, owner: { __typename?: 'User', _id: string }, cache?: { __typename?: 'MediaCache', url: string, expiresAt: string, duration?: number | null } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
-export type GetMoodBasedVerseQueryVariables = Exact<{
-  input: MoodRequestInput;
-}>;
-
-
-export type GetMoodBasedVerseQuery = { __typename?: 'Query', getMoodBasedVerse: { __typename?: 'MoodResponse', errors?: Array<{ __typename?: 'FieldError', message: string }> | null, result?: { __typename?: 'VerseResponseType', verse: string, reference: string, reflection: string, mood: string } | null } };
-
-export type GetSupportedMoodsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetSupportedMoodsQuery = { __typename?: 'Query', getSupportedMoods: Array<string> };
-
 export type GetNfcConfigQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
@@ -1280,6 +1384,94 @@ export type DeleteBookmarksMutationVariables = Exact<{
 
 export type DeleteBookmarksMutation = { __typename?: 'Mutation', deleteBookmarks: boolean };
 
+export type GetMoodBasedVerseQueryVariables = Exact<{
+  input: MoodRequestInput;
+}>;
+
+
+export type GetMoodBasedVerseQuery = { __typename?: 'Query', getMoodBasedVerse: { __typename?: 'MoodResponse', errors?: Array<{ __typename?: 'FieldError', message: string }> | null, result?: { __typename?: 'VerseResponseType', verse: string, reference: string, reflection: string, mood: string, fromCache: boolean, nextRequestAllowed?: any | null } | null } };
+
+export type GetSupportedMoodsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetSupportedMoodsQuery = { __typename?: 'Query', getSupportedMoods: Array<string> };
+
+export type GetUserMoodHistoryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetUserMoodHistoryQuery = { __typename?: 'Query', getUserMoodHistory: Array<{ __typename?: 'MoodCache', _id: string, userId: string, mood: string, verse: string, reference: string, reflection: string, additionalContext?: string | null, preferredBibleVersion?: string | null, expiresAt: any, createdAt: any, updatedAt: any }> };
+
+export type GetNextMoodRequestTimeQueryVariables = Exact<{
+  mood: Scalars['String'];
+}>;
+
+
+export type GetNextMoodRequestTimeQuery = { __typename?: 'Query', getNextMoodRequestTime?: any | null };
+
+export type GetUserNotificationSettingsDetailedQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetUserNotificationSettingsDetailedQuery = { __typename?: 'Query', getUserNotificationSettings: { __typename?: 'NotificationSettingsResponse', errors?: Array<{ __typename?: 'FieldError', message: string }> | null, settings?: { __typename?: 'UserNotificationSettings', _id: string, userId: string, enableWebSocketNotifications: boolean, enableBrowserPushNotifications: boolean, enableEmailNotifications: boolean, pushSubscriptionEndpoint?: string | null, pushSubscriptionKeys?: string | null, createdAt: any, updatedAt: any } | null } };
+
+export type UpdateNotificationSettingsDetailedMutationVariables = Exact<{
+  input: NotificationSettingsInput;
+}>;
+
+
+export type UpdateNotificationSettingsDetailedMutation = { __typename?: 'Mutation', updateNotificationSettings: { __typename?: 'NotificationSettingsResponse', errors?: Array<{ __typename?: 'FieldError', message: string }> | null, settings?: { __typename?: 'UserNotificationSettings', _id: string, userId: string, enableWebSocketNotifications: boolean, enableBrowserPushNotifications: boolean, enableEmailNotifications: boolean, pushSubscriptionEndpoint?: string | null, pushSubscriptionKeys?: string | null, createdAt: any, updatedAt: any } | null } };
+
+export type ScheduleMoodNotificationDetailedMutationVariables = Exact<{
+  input: ScheduleNotificationInput;
+}>;
+
+
+export type ScheduleMoodNotificationDetailedMutation = { __typename?: 'Mutation', scheduleMoodNotification: { __typename?: 'ScheduleNotificationResponse', errors?: Array<{ __typename?: 'FieldError', message: string }> | null, notification?: { __typename?: 'MoodNotification', _id: string, userId: string, mood: string, type: string, scheduledFor: any, deviceId?: string | null, message?: string | null, status: string, createdAt: any, updatedAt: any } | null } };
+
+export type GetUserPendingNotificationsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetUserPendingNotificationsQuery = { __typename?: 'Query', getUserPendingNotifications: Array<{ __typename?: 'MoodNotification', _id: string, userId: string, mood: string, type: string, scheduledFor: any, deviceId?: string | null, message?: string | null, status: string, createdAt: any, updatedAt: any }> };
+
+export type CancelNotificationMutationVariables = Exact<{
+  notificationId: Scalars['String'];
+}>;
+
+
+export type CancelNotificationMutation = { __typename?: 'Mutation', cancelNotification: boolean };
+
+export type MoodRequestAvailableDetailedSubscriptionVariables = Exact<{
+  userId: Scalars['String'];
+}>;
+
+
+export type MoodRequestAvailableDetailedSubscription = { __typename?: 'Subscription', moodRequestAvailable: { __typename?: 'MoodNotificationMessage', mood: string, message: string, timestamp: any, userId: string } };
+
+export type GetUserNotificationSettingsBasicQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetUserNotificationSettingsBasicQuery = { __typename?: 'Query', getUserNotificationSettings: { __typename?: 'NotificationSettingsResponse', errors?: Array<{ __typename?: 'FieldError', message: string }> | null, settings?: { __typename?: 'UserNotificationSettings', _id: string, userId: string, enableWebSocketNotifications: boolean, enableBrowserPushNotifications: boolean, enableEmailNotifications: boolean, pushSubscriptionEndpoint?: string | null, pushSubscriptionKeys?: string | null, createdAt: any, updatedAt: any } | null } };
+
+export type UpdateNotificationSettingsBasicMutationVariables = Exact<{
+  input: NotificationSettingsInput;
+}>;
+
+
+export type UpdateNotificationSettingsBasicMutation = { __typename?: 'Mutation', updateNotificationSettings: { __typename?: 'NotificationSettingsResponse', errors?: Array<{ __typename?: 'FieldError', message: string }> | null, settings?: { __typename?: 'UserNotificationSettings', _id: string, userId: string, enableWebSocketNotifications: boolean, enableBrowserPushNotifications: boolean, enableEmailNotifications: boolean, pushSubscriptionEndpoint?: string | null, pushSubscriptionKeys?: string | null, createdAt: any, updatedAt: any } | null } };
+
+export type ScheduleMoodNotificationBasicMutationVariables = Exact<{
+  input: ScheduleNotificationInput;
+}>;
+
+
+export type ScheduleMoodNotificationBasicMutation = { __typename?: 'Mutation', scheduleMoodNotification: { __typename?: 'ScheduleNotificationResponse', errors?: Array<{ __typename?: 'FieldError', message: string }> | null, notification?: { __typename?: 'MoodNotification', _id: string, mood: string, type: string, scheduledFor: any, message?: string | null, status: string } | null } };
+
+export type MoodRequestAvailableBasicSubscriptionVariables = Exact<{
+  userId: Scalars['String'];
+}>;
+
+
+export type MoodRequestAvailableBasicSubscription = { __typename?: 'Subscription', moodRequestAvailable: { __typename?: 'MoodNotificationMessage', mood: string, message: string, timestamp: any, userId: string } };
+
 
 export const LoginDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Login"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"options"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UsernamePasswordInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"options"},"value":{"kind":"Variable","name":{"kind":"Name","value":"options"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"churchName"}},{"kind":"Field","name":{"kind":"Name","value":"dob"}},{"kind":"Field","name":{"kind":"Name","value":"count"}},{"kind":"Field","name":{"kind":"Name","value":"bioText"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<LoginQuery, LoginQueryVariables>;
 export const RegisterDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"Register"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"options"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UsernamePasswordInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"register"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"options"},"value":{"kind":"Variable","name":{"kind":"Name","value":"options"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"churchName"}},{"kind":"Field","name":{"kind":"Name","value":"dob"}},{"kind":"Field","name":{"kind":"Name","value":"count"}},{"kind":"Field","name":{"kind":"Name","value":"bioText"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<RegisterMutation, RegisterMutationVariables>;
@@ -1306,8 +1498,6 @@ export const GetPostSignedUrlDocument = {"kind":"Document","definitions":[{"kind
 export const CreateMediaDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateMedia"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"options"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"MediaInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createMedia"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"options"},"value":{"kind":"Variable","name":{"kind":"Name","value":"options"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"fileKey"}},{"kind":"Field","name":{"kind":"Name","value":"filename"}},{"kind":"Field","name":{"kind":"Name","value":"mimeType"}},{"kind":"Field","name":{"kind":"Name","value":"size"}},{"kind":"Field","name":{"kind":"Name","value":"purpose"}},{"kind":"Field","name":{"kind":"Name","value":"isPublic"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"cache"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"expiresAt"}},{"kind":"Field","name":{"kind":"Name","value":"duration"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<CreateMediaMutation, CreateMediaMutationVariables>;
 export const UpdateMediaDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateMedia"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"options"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"MediaInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateMedia"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"options"},"value":{"kind":"Variable","name":{"kind":"Name","value":"options"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"fileKey"}},{"kind":"Field","name":{"kind":"Name","value":"filename"}},{"kind":"Field","name":{"kind":"Name","value":"mimeType"}},{"kind":"Field","name":{"kind":"Name","value":"size"}},{"kind":"Field","name":{"kind":"Name","value":"purpose"}},{"kind":"Field","name":{"kind":"Name","value":"isPublic"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"cache"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"expiresAt"}},{"kind":"Field","name":{"kind":"Name","value":"duration"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateMediaMutation, UpdateMediaMutationVariables>;
 export const DeleteMediaDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteMedia"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteMedia"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"fileKey"}},{"kind":"Field","name":{"kind":"Name","value":"filename"}},{"kind":"Field","name":{"kind":"Name","value":"mimeType"}},{"kind":"Field","name":{"kind":"Name","value":"size"}},{"kind":"Field","name":{"kind":"Name","value":"purpose"}},{"kind":"Field","name":{"kind":"Name","value":"isPublic"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"cache"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"expiresAt"}},{"kind":"Field","name":{"kind":"Name","value":"duration"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<DeleteMediaMutation, DeleteMediaMutationVariables>;
-export const GetMoodBasedVerseDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetMoodBasedVerse"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"MoodRequestInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getMoodBasedVerse"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"message"}}]}},{"kind":"Field","name":{"kind":"Name","value":"result"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"verse"}},{"kind":"Field","name":{"kind":"Name","value":"reference"}},{"kind":"Field","name":{"kind":"Name","value":"reflection"}},{"kind":"Field","name":{"kind":"Name","value":"mood"}}]}}]}}]}}]} as unknown as DocumentNode<GetMoodBasedVerseQuery, GetMoodBasedVerseQueryVariables>;
-export const GetSupportedMoodsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetSupportedMoods"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getSupportedMoods"}}]}}]} as unknown as DocumentNode<GetSupportedMoodsQuery, GetSupportedMoodsQueryVariables>;
 export const GetNfcConfigDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetNFCConfig"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getNFCConfig"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"nfcIds"}},{"kind":"Field","name":{"kind":"Name","value":"mainButton"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"text"}}]}},{"kind":"Field","name":{"kind":"Name","value":"socialMedia"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"facebook"}},{"kind":"Field","name":{"kind":"Name","value":"instagram"}},{"kind":"Field","name":{"kind":"Name","value":"twitter"}}]}},{"kind":"Field","name":{"kind":"Name","value":"givingLink"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"isVisible"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"memberRegistrationLink"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"isVisible"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"eventsLink"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"isVisible"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"mediaId"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<GetNfcConfigQuery, GetNfcConfigQueryVariables>;
 export const GetNfcConfigByOwnerDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetNFCConfigByOwner"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ownerId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getNFCConfigByOwner"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ownerId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ownerId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"nfcIds"}},{"kind":"Field","name":{"kind":"Name","value":"mainButton"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"text"}}]}},{"kind":"Field","name":{"kind":"Name","value":"socialMedia"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"facebook"}},{"kind":"Field","name":{"kind":"Name","value":"instagram"}},{"kind":"Field","name":{"kind":"Name","value":"twitter"}}]}},{"kind":"Field","name":{"kind":"Name","value":"givingLink"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"isVisible"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"memberRegistrationLink"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"isVisible"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"eventsLink"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"isVisible"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"mediaId"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<GetNfcConfigByOwnerQuery, GetNfcConfigByOwnerQueryVariables>;
 export const CreateNfcConfigDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateNFCConfig"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"options"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"NFCConfigInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createNFCConfig"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"options"},"value":{"kind":"Variable","name":{"kind":"Name","value":"options"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"nfcIds"}},{"kind":"Field","name":{"kind":"Name","value":"mainButton"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"text"}}]}},{"kind":"Field","name":{"kind":"Name","value":"socialMedia"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"facebook"}},{"kind":"Field","name":{"kind":"Name","value":"instagram"}},{"kind":"Field","name":{"kind":"Name","value":"twitter"}}]}},{"kind":"Field","name":{"kind":"Name","value":"givingLink"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"isVisible"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"memberRegistrationLink"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"isVisible"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"eventsLink"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"isVisible"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"mediaId"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<CreateNfcConfigMutation, CreateNfcConfigMutationVariables>;
@@ -1322,3 +1512,17 @@ export const CreateBookmarkDocument = {"kind":"Document","definitions":[{"kind":
 export const UpdateUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"options"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UserUpdateInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"options"},"value":{"kind":"Variable","name":{"kind":"Name","value":"options"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"churchName"}},{"kind":"Field","name":{"kind":"Name","value":"bioText"}},{"kind":"Field","name":{"kind":"Name","value":"dob"}},{"kind":"Field","name":{"kind":"Name","value":"count"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateUserMutation, UpdateUserMutationVariables>;
 export const UpdateBookmarkDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateBookmark"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"updateBookmarkId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"options"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"BookmarkOptions"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateBookmark"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"updateBookmarkId"}}},{"kind":"Argument","name":{"kind":"Name","value":"options"},"value":{"kind":"Variable","name":{"kind":"Name","value":"options"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}},{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"author"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"note"}},{"kind":"Field","name":{"kind":"Name","value":"verses"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}}]}}]}}]}}]} as unknown as DocumentNode<UpdateBookmarkMutation, UpdateBookmarkMutationVariables>;
 export const DeleteBookmarksDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteBookmarks"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteBookmarks"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ids"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}}]}]}}]} as unknown as DocumentNode<DeleteBookmarksMutation, DeleteBookmarksMutationVariables>;
+export const GetMoodBasedVerseDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetMoodBasedVerse"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"MoodRequestInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getMoodBasedVerse"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"message"}}]}},{"kind":"Field","name":{"kind":"Name","value":"result"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"verse"}},{"kind":"Field","name":{"kind":"Name","value":"reference"}},{"kind":"Field","name":{"kind":"Name","value":"reflection"}},{"kind":"Field","name":{"kind":"Name","value":"mood"}},{"kind":"Field","name":{"kind":"Name","value":"fromCache"}},{"kind":"Field","name":{"kind":"Name","value":"nextRequestAllowed"}}]}}]}}]}}]} as unknown as DocumentNode<GetMoodBasedVerseQuery, GetMoodBasedVerseQueryVariables>;
+export const GetSupportedMoodsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetSupportedMoods"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getSupportedMoods"}}]}}]} as unknown as DocumentNode<GetSupportedMoodsQuery, GetSupportedMoodsQueryVariables>;
+export const GetUserMoodHistoryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetUserMoodHistory"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getUserMoodHistory"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"mood"}},{"kind":"Field","name":{"kind":"Name","value":"verse"}},{"kind":"Field","name":{"kind":"Name","value":"reference"}},{"kind":"Field","name":{"kind":"Name","value":"reflection"}},{"kind":"Field","name":{"kind":"Name","value":"additionalContext"}},{"kind":"Field","name":{"kind":"Name","value":"preferredBibleVersion"}},{"kind":"Field","name":{"kind":"Name","value":"expiresAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<GetUserMoodHistoryQuery, GetUserMoodHistoryQueryVariables>;
+export const GetNextMoodRequestTimeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetNextMoodRequestTime"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"mood"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getNextMoodRequestTime"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"mood"},"value":{"kind":"Variable","name":{"kind":"Name","value":"mood"}}}]}]}}]} as unknown as DocumentNode<GetNextMoodRequestTimeQuery, GetNextMoodRequestTimeQueryVariables>;
+export const GetUserNotificationSettingsDetailedDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetUserNotificationSettingsDetailed"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getUserNotificationSettings"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"message"}}]}},{"kind":"Field","name":{"kind":"Name","value":"settings"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"enableWebSocketNotifications"}},{"kind":"Field","name":{"kind":"Name","value":"enableBrowserPushNotifications"}},{"kind":"Field","name":{"kind":"Name","value":"enableEmailNotifications"}},{"kind":"Field","name":{"kind":"Name","value":"pushSubscriptionEndpoint"}},{"kind":"Field","name":{"kind":"Name","value":"pushSubscriptionKeys"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]}}]} as unknown as DocumentNode<GetUserNotificationSettingsDetailedQuery, GetUserNotificationSettingsDetailedQueryVariables>;
+export const UpdateNotificationSettingsDetailedDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateNotificationSettingsDetailed"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"NotificationSettingsInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateNotificationSettings"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"message"}}]}},{"kind":"Field","name":{"kind":"Name","value":"settings"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"enableWebSocketNotifications"}},{"kind":"Field","name":{"kind":"Name","value":"enableBrowserPushNotifications"}},{"kind":"Field","name":{"kind":"Name","value":"enableEmailNotifications"}},{"kind":"Field","name":{"kind":"Name","value":"pushSubscriptionEndpoint"}},{"kind":"Field","name":{"kind":"Name","value":"pushSubscriptionKeys"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateNotificationSettingsDetailedMutation, UpdateNotificationSettingsDetailedMutationVariables>;
+export const ScheduleMoodNotificationDetailedDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"ScheduleMoodNotificationDetailed"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ScheduleNotificationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"scheduleMoodNotification"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"message"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notification"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"mood"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"scheduledFor"}},{"kind":"Field","name":{"kind":"Name","value":"deviceId"}},{"kind":"Field","name":{"kind":"Name","value":"message"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]}}]} as unknown as DocumentNode<ScheduleMoodNotificationDetailedMutation, ScheduleMoodNotificationDetailedMutationVariables>;
+export const GetUserPendingNotificationsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetUserPendingNotifications"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getUserPendingNotifications"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"mood"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"scheduledFor"}},{"kind":"Field","name":{"kind":"Name","value":"deviceId"}},{"kind":"Field","name":{"kind":"Name","value":"message"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<GetUserPendingNotificationsQuery, GetUserPendingNotificationsQueryVariables>;
+export const CancelNotificationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CancelNotification"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"notificationId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cancelNotification"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"notificationId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"notificationId"}}}]}]}}]} as unknown as DocumentNode<CancelNotificationMutation, CancelNotificationMutationVariables>;
+export const MoodRequestAvailableDetailedDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"MoodRequestAvailableDetailed"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"moodRequestAvailable"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"userId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"mood"}},{"kind":"Field","name":{"kind":"Name","value":"message"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}}]}}]}}]} as unknown as DocumentNode<MoodRequestAvailableDetailedSubscription, MoodRequestAvailableDetailedSubscriptionVariables>;
+export const GetUserNotificationSettingsBasicDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetUserNotificationSettingsBasic"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getUserNotificationSettings"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"message"}}]}},{"kind":"Field","name":{"kind":"Name","value":"settings"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"enableWebSocketNotifications"}},{"kind":"Field","name":{"kind":"Name","value":"enableBrowserPushNotifications"}},{"kind":"Field","name":{"kind":"Name","value":"enableEmailNotifications"}},{"kind":"Field","name":{"kind":"Name","value":"pushSubscriptionEndpoint"}},{"kind":"Field","name":{"kind":"Name","value":"pushSubscriptionKeys"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]}}]} as unknown as DocumentNode<GetUserNotificationSettingsBasicQuery, GetUserNotificationSettingsBasicQueryVariables>;
+export const UpdateNotificationSettingsBasicDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateNotificationSettingsBasic"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"NotificationSettingsInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateNotificationSettings"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"message"}}]}},{"kind":"Field","name":{"kind":"Name","value":"settings"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"enableWebSocketNotifications"}},{"kind":"Field","name":{"kind":"Name","value":"enableBrowserPushNotifications"}},{"kind":"Field","name":{"kind":"Name","value":"enableEmailNotifications"}},{"kind":"Field","name":{"kind":"Name","value":"pushSubscriptionEndpoint"}},{"kind":"Field","name":{"kind":"Name","value":"pushSubscriptionKeys"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateNotificationSettingsBasicMutation, UpdateNotificationSettingsBasicMutationVariables>;
+export const ScheduleMoodNotificationBasicDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"ScheduleMoodNotificationBasic"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ScheduleNotificationInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"scheduleMoodNotification"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"message"}}]}},{"kind":"Field","name":{"kind":"Name","value":"notification"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"mood"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"scheduledFor"}},{"kind":"Field","name":{"kind":"Name","value":"message"}},{"kind":"Field","name":{"kind":"Name","value":"status"}}]}}]}}]}}]} as unknown as DocumentNode<ScheduleMoodNotificationBasicMutation, ScheduleMoodNotificationBasicMutationVariables>;
+export const MoodRequestAvailableBasicDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"MoodRequestAvailableBasic"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"moodRequestAvailable"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"userId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"mood"}},{"kind":"Field","name":{"kind":"Name","value":"message"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}}]}}]}}]} as unknown as DocumentNode<MoodRequestAvailableBasicSubscription, MoodRequestAvailableBasicSubscriptionVariables>;

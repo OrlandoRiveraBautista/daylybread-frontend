@@ -13,6 +13,8 @@ export interface VerseResponse {
   reference: string;
   reflection: string;
   mood: string;
+  fromCache: boolean;
+  nextRequestAllowed?: Date;
 }
 
 // GraphQL queries using gql
@@ -27,6 +29,8 @@ const getMoodBasedVerseQuery = gql(`
         reference
         reflection
         mood
+        fromCache
+        nextRequestAllowed
       }
     }
   }

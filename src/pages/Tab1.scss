@@ -7,33 +7,7 @@
   --padding-bottom: 20px;
 }
 
-.home-hero {
-  text-align: center;
-  padding: 20px 0 40px 0;
-
-  .home-logo {
-    width: 120px;
-    height: auto;
-    margin: 0 auto 20px auto;
-  }
-
-  h1 {
-    font-family: "Product Sans", -apple-system, BlinkMacSystemFont,
-      "Helvetica Neue", "Roboto", sans-serif;
-    font-size: 28px;
-    font-weight: 500;
-    color: var(--ion-text-color);
-    margin: 0 0 8px 0;
-    letter-spacing: -0.5px;
-  }
-
-  p {
-    font-size: 16px;
-    color: var(--ion-color-medium);
-    margin: 0;
-    font-weight: 400;
-  }
-}
+// Personalized dashboard replaces the generic hero section
 
 .home-grid {
   padding: 0;
@@ -77,18 +51,6 @@
   .home-content {
     --padding-start: 32px;
     --padding-end: 32px;
-  }
-
-  .home-hero {
-    padding: 40px 0 60px 0;
-
-    h1 {
-      font-size: 32px;
-    }
-
-    p {
-      font-size: 18px;
-    }
   }
 
   .action-card .card-content .card-text {
