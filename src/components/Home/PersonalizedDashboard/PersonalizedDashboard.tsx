@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   IonText,
-  IonIcon,
+  // IonIcon,
   IonCard,
   IonCardContent,
   IonGrid,
@@ -9,13 +9,13 @@ import {
   IonCol,
   IonSkeletonText,
 } from "@ionic/react";
-import {
-  bookOutline,
-  bookmarkOutline,
-  heartOutline,
-  trendingUpOutline,
-  calendarOutline,
-} from "ionicons/icons";
+// import {
+//   bookOutline,
+//   bookmarkOutline,
+//   heartOutline,
+//   trendingUpOutline,
+//   calendarOutline,
+// } from "ionicons/icons";
 
 /* Context */
 import { useAppContext } from "../../../context/context";
@@ -187,7 +187,7 @@ const PersonalizedDashboard: React.FC = () => {
             <IonSkeletonText animated style={{ width: "40%" }} />
           </IonCardContent>
         </IonCard>
-        <IonGrid>
+        {/* <IonGrid>
           <IonRow>
             {[1, 2, 3].map((i) => (
               <IonCol size="4" key={i}>
@@ -199,7 +199,7 @@ const PersonalizedDashboard: React.FC = () => {
               </IonCol>
             ))}
           </IonRow>
-        </IonGrid>
+        </IonGrid> */}
       </div>
     );
   }
@@ -218,7 +218,7 @@ const PersonalizedDashboard: React.FC = () => {
 
       {/* Quick Stats Grid */}
       <IonGrid className="stats-grid">
-        <IonRow className="stats-row">
+        {/* <IonRow className="stats-row">
           <IonCol size="6" sizeMd="3">
             <IonCard className="stat-card reading-sessions">
               <IonCardContent>
@@ -279,10 +279,10 @@ const PersonalizedDashboard: React.FC = () => {
               </IonCardContent>
             </IonCard>
           </IonCol>
-        </IonRow>
+        </IonRow> */}
 
         {/* Additional Info Row */}
-        <IonRow className="stats-row">
+        {/* <IonRow className="stats-row">
           <IonCol size="12" sizeMd="6">
             <IonCard className="info-card favorite-book">
               <IonCardContent>
@@ -306,7 +306,7 @@ const PersonalizedDashboard: React.FC = () => {
               </IonCardContent>
             </IonCard>
           </IonCol>
-        </IonRow>
+        </IonRow> */}
       </IonGrid>
     </div>
   );
