@@ -7,9 +7,9 @@ import {
   IonCol,
   IonPage,
   IonText,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
+  // IonHeader,
+  // IonToolbar,
+  // IonTitle,
 } from "@ionic/react";
 import { useHistory } from "react-router-dom";
 import { Helmet } from "react-helmet";

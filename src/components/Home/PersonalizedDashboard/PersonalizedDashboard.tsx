@@ -5,8 +5,8 @@ import {
   IonCard,
   IonCardContent,
   IonGrid,
-  IonRow,
-  IonCol,
+  // IonRow,
+  // IonCol,
   IonSkeletonText,
 } from "@ionic/react";
 // import {
