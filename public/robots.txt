@@ -6,14 +6,27 @@ Disallow: /api/
 Disallow: /admin/
 Disallow: /private/
 Disallow: /*.json$
-Disallow: /*?*
+Disallow: /*?*auth*
+Disallow: /*?*token*
+Disallow: /*?*session*
 
-# Allow important pages
+# Allow important pages for Bible content
 Allow: /read
-Allow: /me
+Allow: /read/*
 Allow: /login
 Allow: /signup
 Allow: /welcome
+Allow: /?mood=checkin
+Allow: /assets/
+
+# Disallow user-specific pages from indexing
+Disallow: /me
+Disallow: /profile
+
+# Important resources
+Allow: /manifest.json
+Allow: /sw.js
+Allow: /service-worker.js
 
 # Sitemaps
 Sitemap: https://bible.daylybread.com/sitemap.xml
@@ -24,14 +37,47 @@ Crawl-delay: 1
 # Specific rules for different bots
 User-agent: Googlebot
 Allow: /
+Allow: /read/*
+Allow: /?mood=checkin
 Crawl-delay: 1
+Request-rate: 1/10
 
 User-agent: Bingbot
 Allow: /
+Allow: /read/*
+Allow: /?mood=checkin
 Crawl-delay: 1
 
 User-agent: facebookexternalhit
 Allow: /
+Allow: /read/*
+Allow: /?mood=checkin
 
 User-agent: Twitterbot
 Allow: /
+Allow: /read/*
+Allow: /?mood=checkin
+
+User-agent: LinkedInBot
+Allow: /
+Allow: /read/*
+
+User-agent: WhatsApp
+Allow: /
+Allow: /read/*
+
+# Block unwanted bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
