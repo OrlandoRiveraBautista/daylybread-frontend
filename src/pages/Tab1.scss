@@ -1,19 +1,65 @@
-.splash-container {
-  overflow: hidden;
-  background: var(--ion-color-primary);
-  height: 100%;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 24px;
-  flex-direction: column;
+@import "../theme/variables.scss";
 
-  & ion-text {
-    font-weight: medium;
-    color: white;
-    & h2 {
-      margin: 0;
+.home-content {
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 20px;
+  --padding-bottom: 20px;
+}
+
+// Personalized dashboard replaces the generic hero section
+
+.home-grid {
+  padding: 0;
+
+  h3 {
+    font-family: "Product Sans", -apple-system, BlinkMacSystemFont,
+      "Helvetica Neue", "Roboto", sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--ion-text-color);
+    margin: 0 0 8px 0;
+    letter-spacing: -0.3px;
+  }
+}
+
+.cta-section {
+  text-align: center;
+  padding: 40px 0 20px 0;
+
+  p {
+    font-size: 16px;
+    color: var(--ion-color-medium);
+    margin: 0 0 24px 0;
+    line-height: 1.5;
+  }
+
+  ion-button {
+    --border-radius: 24px;
+    --padding-start: 32px;
+    --padding-end: 32px;
+    --padding-top: 16px;
+    --padding-bottom: 16px;
+    font-weight: 500;
+    font-size: 16px;
+    letter-spacing: 0.1px;
+  }
+}
+
+// Responsive design for larger screens
+@media (min-width: 768px) {
+  .home-content {
+    --padding-start: 32px;
+    --padding-end: 32px;
+  }
+
+  .action-card .card-content .card-text {
+    ion-card-title {
+      font-size: 20px;
+    }
+
+    p {
+      font-size: 16px;
     }
   }
 }

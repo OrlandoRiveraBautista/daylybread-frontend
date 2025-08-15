@@ -1,0 +1,67 @@
+@import "../../../theme/variables.scss";
+
+.app-features-grid {
+  padding: 0;
+
+  h2 {
+    font-family: "Product Sans", -apple-system, BlinkMacSystemFont,
+      "Helvetica Neue", "Roboto", sans-serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--ion-text-color);
+    margin: 0 0 16px 0;
+    letter-spacing: -0.3px;
+  }
+
+  .feature-card {
+    margin: 0 0 12px 0;
+    border-radius: 16px;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.08), 0px 1px 2px rgba(0, 0, 0, 0.16);
+
+    ion-card-content {
+      padding: 20px;
+    }
+
+    .feature-content {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+
+      .feature-icon {
+        flex-shrink: 0;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        background: var(--ion-color-tertiary-container);
+
+        ion-icon {
+          font-size: 20px;
+        }
+      }
+
+      .feature-text {
+        flex: 1;
+
+        ion-card-title {
+          font-family: "Product Sans", -apple-system, BlinkMacSystemFont,
+            "Helvetica Neue", "Roboto", sans-serif;
+          font-size: 18px;
+          font-weight: 500 !important;
+          color: var(--ion-text-color);
+          margin: 0 0 4px 0;
+          letter-spacing: -0.2px;
+        }
+
+        p {
+          font-size: 14px;
+          color: var(--ion-color-medium);
+          margin: 0;
+          line-height: 1.4;
+        }
+      }
+    }
+  }
+}

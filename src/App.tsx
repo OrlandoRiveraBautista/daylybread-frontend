@@ -13,9 +13,10 @@ import {
 } from "@ionic/react";
 import { Database } from "@ionic/storage";
 import { IonReactRouter } from "@ionic/react-router";
-import { book, happy } from "ionicons/icons";
+import { book, happy, home } from "ionicons/icons";
 
 /* Pages */
+import Tab1 from "./pages/Tab1";
 import Tab2 from "./pages/Tab2";
 import Tab3 from "./pages/Tab3";
 import SplashScreen from "./pages/splash/SplashScreen";
@@ -203,7 +204,6 @@ const App: React.FC = () => {
     <IonApp>
       <IonToast
         color="tertiary"
-        trigger="open-stacked-toast"
         message="Install Daylybread for a better experience! Access it quickly and use it offline."
         duration={300000}
         buttons={[
@@ -238,16 +238,13 @@ const App: React.FC = () => {
                   <Switch>
                     {/* Default route */}
                     <Route exact path="/">
-                      <Redirect to="/read" />
+                      <Redirect to="/home" />
                     </Route>
 
                     {/* Tab Routes */}
-                    {/* <Route exact path="/home">
-                  <Tab1 />
-                  <button onClick={promptToInstall as any}>
-                    Add to Home Screen
-                  </button>
-                </Route> */}
+                    <Route exact path="/home">
+                      <Tab1 />
+                    </Route>
                     <Route exact path="/read">
                       <Tab2 />
                     </Route>
@@ -276,10 +273,10 @@ const App: React.FC = () => {
 
                 {/* Tab Bar UI */}
                 <IonTabBar slot="bottom">
-                  {/* <IonTabButton tab="tab1" href="/home">
-                <IonIcon icon={ellipse} />
-                <IonLabel>Home</IonLabel>
-              </IonTabButton> */}
+                  <IonTabButton tab="tab1" href="/home">
+                    <IonIcon icon={home} />
+                    <IonLabel>Home</IonLabel>
+                  </IonTabButton>
                   <IonTabButton tab="tab2" href="/read">
                     <IonIcon icon={book} />
                     <IonLabel>Read</IonLabel>

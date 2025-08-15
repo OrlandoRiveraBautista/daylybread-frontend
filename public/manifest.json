@@ -1,8 +1,25 @@
 {
   "short_name": "Daylybread",
-  "name": "Daylybread",
-  "description": "Daylybread is an app that helps Christians grow spiritually, connect globally, and explore the Bible with interactive, AI-driven tools.",
+  "name": "Daylybread: Smart Bible with AI",
+  "description": "Your smart Bible companion with AI assistance, multiple translations, mood-based verses, and personalized spiritual growth features. Read the Bible in all languages for free.",
+  "categories": ["lifestyle", "education", "books"],
+  "lang": "en",
+  "dir": "ltr",
+  "orientation": "portrait-primary",
+  "theme_color": "#faf9fd",
+  "background_color": "#faf9fd",
+  "scope": "/",
+  "start_url": "/",
+  "display": "standalone",
+  "prefer_related_applications": false,
+  "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
   "icons": [
+    {
+      "src": "assets/icon/favicon.png",
+      "sizes": "16x16",
+      "type": "image/png",
+      "purpose": "any"
+    },
     {
       "src": "assets/icon/Daylybread Icon-small.png",
       "sizes": "512x512",
@@ -16,22 +33,75 @@
       "purpose": "maskable"
     }
   ],
-  "start_url": ".",
-  "display": "standalone",
+  "shortcuts": [
+    {
+      "name": "Read Bible",
+      "short_name": "Read",
+      "description": "Start reading the Bible",
+      "url": "/read",
+      "icons": [
+        {
+          "src": "assets/icon/Daylybread Icon-small.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Mood Check-in",
+      "short_name": "Mood",
+      "description": "Check your mood and get a verse",
+      "url": "/?mood=checkin",
+      "icons": [
+        {
+          "src": "assets/icon/Daylybread Icon-small.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "My Profile",
+      "short_name": "Profile",
+      "description": "View your profile and bookmarks",
+      "url": "/me",
+      "icons": [
+        {
+          "src": "assets/icon/Daylybread Icon-small.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
   "screenshots": [
     {
       "src": "assets/screenshots/home-screenshot-desktop.png",
       "sizes": "961x542",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Homepage on Desktop"
+      "label": "Personalized Dashboard with AI-powered features on Desktop"
     },
     {
       "src": "assets/screenshots/home-screenshot-mobile.png",
       "sizes": "388x857",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Profile on Mobile"
+      "label": "Bible Reading and Mood Check-in on Mobile"
+    }
+  ],
+  "protocol_handlers": [
+    {
+      "protocol": "web+bible",
+      "url": "/read?verse=%s"
+    }
+  ],
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.daylybread.app",
+      "id": "com.daylybread.app"
+    },
+    {
+      "platform": "itunes",
+      "url": "https://apps.apple.com/app/daylybread/idXXXXXXXXX"
     }
   ]
 }
