@@ -9,9 +9,9 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import Avatar from "boring-avatars";
-import { Helmet } from "react-helmet";
 
 /* Components */
+import SEOHead from "../../components/SEO/SEOHead";
 import UserBio from "../../components/UserBio/UserBio";
 import UserAssetsViewer from "../../components/UserAssetsViewer/UserAssetsViewer";
 
@@ -36,8 +36,6 @@ const Profile: React.FC = () => {
   // api/graphql
   const { deleteBookmarks, loading, data } = useDeleteBookmarks();
 
-  const canonicalUrl = window.location.href;
-
   useEffect(() => {
     if (!data || !data.deleteBookmarks) return;
     resetUserAssetList();
@@ -54,18 +52,43 @@ const Profile: React.FC = () => {
     deleteBookmarks({ variables: { ids: assetIds } });
   };
 
+  // Generate SEO data
+  const userName = `${userInfo?.firstName || ""} ${
+    userInfo?.lastName || ""
+  }`.trim();
+  const profileSEO = {
+    title: userName
+      ? `${userName} | My Profile - Daylybread`
+      : "My Profile - Daylybread",
+    description: userName
+      ? `${userName}'s personal profile on Daylybread. View bookmarks, reading history, and spiritual journey progress.`
+      : "Manage your personal Bible reading profile, bookmarks, and spiritual growth journey on Daylybread.",
+    keywords:
+      "Bible profile, Christian profile, Bible bookmarks, spiritual journey, Bible reading history, Christian growth tracker, faith profile, Bible study progress",
+    url: "https://bible.daylybread.com/me",
+    type: "profile",
+    section: "User Profile",
+    noindex: true, // Keep user profiles private from search engines
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@type": "ProfilePage",
+      mainEntity: {
+        "@type": "Person",
+        name: userName,
+        description: `${userName}'s spiritual journey on Daylybread`,
+      },
+      about: {
+        "@type": "WebApplication",
+        name: "Daylybread",
+        description: "Smart Bible reading platform with AI assistance",
+      },
+    },
+  };
+
   return !userInfo ? null : (
     <div id="profile">
-      <Helmet>
-        <title>
-          {userInfo.firstName} {userInfo.lastName} | Profile
-        </title>
-        <meta
-          name="description"
-          content={`Welcome to ${userInfo.firstName} ${userInfo.lastName}'s profile!`}
-        />
-        <link rel="canonical" href={canonicalUrl} />
-      </Helmet>
+      {/* Enhanced SEO Head */}
+      <SEOHead {...profileSEO} />
       {/* Header */}
       <IonHeader className="ion-no-border padding-left-right">
         {/* Toolbar */}
