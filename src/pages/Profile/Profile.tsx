@@ -36,8 +36,6 @@ const Profile: React.FC = () => {
   // api/graphql
   const { deleteBookmarks, loading, data } = useDeleteBookmarks();
 
-  const canonicalUrl = window.location.href;
-
   useEffect(() => {
     if (!data || !data.deleteBookmarks) return;
     resetUserAssetList();

@@ -204,7 +204,6 @@ const App: React.FC = () => {
     <IonApp>
       <IonToast
         color="tertiary"
-        trigger="open-stacked-toast"
         message="Install Daylybread for a better experience! Access it quickly and use it offline."
         duration={300000}
         buttons={[

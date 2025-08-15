@@ -51,7 +51,6 @@ const Tab1: React.FC = () => {
   const currentMood = urlParams.get("feeling");
 
   // Generate URLs
-  const currentUrl = window.location.href;
   const canonicalUrl = window.location.origin + window.location.pathname;
 
   // Generate personalized metadata
