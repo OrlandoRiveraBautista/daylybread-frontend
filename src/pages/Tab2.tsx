@@ -8,14 +8,16 @@ import {
   IonPage,
   IonToolbar,
 } from "@ionic/react";
-import { Helmet } from "react-helmet";
+import { useParams } from "react-router-dom";
 
 /* Context */
 import { useAppContext } from "../context/context";
 
 /** Hooks */
+import { generateBiblePageSEO } from "../hooks/useSEO";
 
 /* Components */
+import SEOHead from "../components/SEO/SEOHead";
 import BibleNavModal from "../components/BibleNavModal/BibleNavModal";
 import BibleTranslationModal from "../components/BibleNavModal/BibleTranslationModal";
 import BibleChapterViewer from "../components/BibleViewer/BibleChapterViewer";
@@ -35,31 +37,31 @@ const Tab2: React.FC = () => {
   const { chosenBible, chosenBook, chosenChapterMedia, chosenChapterNumber } =
     useAppContext();
 
+  // Get URL parameters for SEO
+  const params = useParams<{
+    currentLanguage?: string;
+    currentBibleId?: string;
+    currentBookId?: string;
+    currentChapterNumber?: string;
+  }>();
+
   /* States */
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [openBibleNavModal, setOpenBibleNavModal] = useState<boolean>(false);
 
-  const canonicalUrl = window.location.href;
+  // Generate SEO configuration
+  const seoConfig = generateBiblePageSEO({
+    book: chosenBook?.name || params.currentBookId,
+    chapter:
+      chosenChapterNumber || parseInt(params.currentChapterNumber || "0"),
+    translation: chosenBible?.abbr || params.currentBibleId,
+    language: params.currentLanguage || "en",
+  });
 
   return (
     <IonPage style={{ overflow: "clip" }}>
-      <Helmet>
-        <title>
-          {chosenBook
-            ? `Read ${chosenBook?.name} ${chosenChapterNumber} | ${chosenBible?.name} |
-          - Daylybread`
-            : "Daylybread: Smart Bible with AI | Feeds your spirit"}
-        </title>
-        <meta
-          name="description"
-          content={
-            chosenBook
-              ? `Read ${chosenBook?.name} ${chosenChapterNumber} of the ${chosenBible?.name} Bible.`
-              : "Read the bible in all the languages for free with an ai assistant"
-          }
-        />
-        <link rel="canonical" href={canonicalUrl} />
-      </Helmet>
+      {/* Enhanced SEO Head */}
+      <SEOHead {...seoConfig} />
       {/* Header */}
       <IonHeader className="ion-no-border padding-left-right">
         {/* Toolbar */}
