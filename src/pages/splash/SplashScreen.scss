@@ -2,12 +2,14 @@
   overflow: hidden;
   background: linear-gradient(
     -45deg,
-    var(--ion-color-secondary),
-    var(--ion-color-tertiary),
-    var(--ion-color-primary) 60%
+    var(--ion-color-secondary) 0%,
+    var(--ion-color-tertiary) 25%,
+    var(--ion-color-primary) 50%,
+    var(--ion-color-secondary) 75%,
+    var(--ion-color-tertiary) 100%
   );
   background-size: 400% 400%;
-  animation: gradient 7s ease-in-out infinite;
+  animation: gradient 30s ease-in-out infinite;
   height: 100%;
   width: 100%;
   display: flex;
@@ -29,8 +31,17 @@
   0% {
     background-position: 0% 50%;
   }
-  50% {
+  20% {
+    background-position: 50% 50%;
+  }
+  40% {
     background-position: 100% 50%;
+  }
+  60% {
+    background-position: 100% 100%;
+  }
+  80% {
+    background-position: 50% 100%;
   }
   100% {
     background-position: 0% 50%;
