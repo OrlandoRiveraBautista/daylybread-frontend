@@ -65,6 +65,7 @@ const App: React.FC = () => {
   const [hasSession, setHasSession] = useState<boolean>(true);
   const [firstTimeFlag, setFirstTimeFlag] = useState<boolean>(false);
   const [localStorage, setLocalStorage] = useState<Database>();
+  const [splashScreen, setSplashScreen] = useState<boolean>(true);
   const { startTour } = useTour();
 
   /** Hooks declaration */
@@ -108,8 +109,13 @@ const App: React.FC = () => {
       setLocalStorage(await StorageService.getInstance());
     };
 
+    const splashScreenTimer = setTimeout(() => {
+      setSplashScreen(false);
+    }, 3000);
+
     getLocalStorage();
     getSignInUser();
+    return () => clearTimeout(splashScreenTimer);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   /**
@@ -125,8 +131,10 @@ const App: React.FC = () => {
     if (!hasSession) {
       setTimeout(() => {
         setSession();
+        console.log("hasSession", hasSession);
       }, 3000);
     }
+
     // watch localStorage and hasSession
   }, [localStorage, hasSession, firstTimeFlag]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -226,7 +234,7 @@ const App: React.FC = () => {
           renderOtherApps()
         ) : (
           <>
-            {localStorage && hasSession ? (
+            {localStorage && hasSession && !splashScreen ? (
               <IonTabs>
                 {/* App Router */}
                 <IonRouterOutlet animated={false}>

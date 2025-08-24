@@ -2,7 +2,7 @@
   position: sticky;
   bottom: 8px;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
 
   ion-fab-button {
     margin: 0;
@@ -20,9 +20,59 @@
     &.bread-crumbs-button {
       --box-shadow: 0px 4px 8px 3px rgba(0, 0, 0, 0.15),
         0px 1px 3px rgba(0, 0, 0, 0.3);
+      position: relative;
+      --border-radius: 35%;
+      width: 56px;
+      height: 56px;
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: linear-gradient(
+          45deg,
+          var(--ion-color-primary),
+          var(--ion-color-secondary),
+          var(--ion-color-tertiary),
+          var(--ion-color-primary)
+        );
+        background-size: 300% 300%;
+        border-radius: 35%;
+        z-index: -1;
+        animation: gradient-border 3s ease-in-out infinite;
+        opacity: 0.8;
+      }
+
       .bread-crumbs-icon {
-        fill: var(--ion-color-primary);
+        position: relative;
+        z-index: 1;
+        width: 24px;
+        height: 24px;
+      }
+
+      &:hover::before {
+        opacity: 1;
+        animation-duration: 1.5s;
+      }
+
+      &:active::before {
+        animation-duration: 0.8s;
       }
     }
+  }
+}
+
+@keyframes gradient-border {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }
