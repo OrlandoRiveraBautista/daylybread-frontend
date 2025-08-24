@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 
 /* Components */
-import { IonButton, IonImg, IonText } from "@ionic/react";
+import { IonButton, IonImg, IonText, IonIcon } from "@ionic/react";
 import BibleTranslationModal from "../BibleNavModal/BibleTranslationModal";
 
 /* Images */
 import PatternImage from "../../assets/images/Patterns - 4x4.png";
+import BreadCrumbsIcon from "../../assets/icons/BreadCrumbs-icon.svg";
 
 /* Context */
 import { useAppContext } from "../../context/context";
@@ -31,6 +32,11 @@ const InitialBiblePicker: React.FC = () => {
     setTimeout(nextStep, 100);
   };
 
+  const handleOpenBreadCrumbsModal = () => {
+    // TODO: Implement breadcrumbs modal opening
+    console.log("Opening breadcrumbs modal");
+  };
+
   return (
     <>
       <div className="helper-container">
@@ -42,17 +48,29 @@ const InitialBiblePicker: React.FC = () => {
           />
           <IonText>Please pick a bible to begin</IonText>
         </div>
-        <IonButton
-          shape="round"
-          color="primary"
-          size="large"
-          onClick={handleOpenTranslationModal}
-          className="translation-button tour-step-1"
-        >
-          {chosenBible?.abbr
-            ? displayBibleAbbr(chosenBible?.abbr)
-            : "Pick bible"}
-        </IonButton>
+        <div className="button-container">
+          <IonButton
+            shape="round"
+            color="light"
+            size="default"
+            onClick={handleOpenBreadCrumbsModal}
+            className="bread-crumbs-button"
+          >
+            <IonIcon icon={BreadCrumbsIcon} slot="start" />
+            AI Breadcrumbs
+          </IonButton>
+          <IonButton
+            shape="round"
+            color="primary"
+            size="large"
+            onClick={handleOpenTranslationModal}
+            className="translation-button tour-step-1"
+          >
+            {chosenBible?.abbr
+              ? displayBibleAbbr(chosenBible?.abbr)
+              : "Pick bible"}
+          </IonButton>
+        </div>
       </div>
 
       <BibleTranslationModal
