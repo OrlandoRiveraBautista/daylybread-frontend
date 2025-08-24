@@ -3,6 +3,7 @@ import React, { useState } from "react";
 /* Components */
 import { IonButton, IonImg, IonText, IonIcon } from "@ionic/react";
 import BibleTranslationModal from "../BibleNavModal/BibleTranslationModal";
+import BreadCrumbsModal from "../BreadCrumbsModal/BreadCrumbsModal";
 
 /* Images */
 import PatternImage from "../../assets/images/Patterns - 4x4.png";
@@ -23,6 +24,8 @@ const InitialBiblePicker: React.FC = () => {
 
   const [openSelectedTranslationModal, setOpenSelectedTranslationModal] =
     useState<boolean>(false);
+  const [openBreadCrumbsModal, setOpenBreadCrumbsModal] =
+    useState<boolean>(false);
 
   const { nextStep, run: tourIsRunning } = useTour();
 
@@ -33,8 +36,7 @@ const InitialBiblePicker: React.FC = () => {
   };
 
   const handleOpenBreadCrumbsModal = () => {
-    // TODO: Implement breadcrumbs modal opening
-    console.log("Opening breadcrumbs modal");
+    setOpenBreadCrumbsModal(!openBreadCrumbsModal);
   };
 
   return (
@@ -76,6 +78,12 @@ const InitialBiblePicker: React.FC = () => {
       <BibleTranslationModal
         isOpen={openSelectedTranslationModal}
         onDismiss={handleOpenTranslationModal}
+      />
+
+      <BreadCrumbsModal
+        isOpen={openBreadCrumbsModal}
+        onDismiss={handleOpenBreadCrumbsModal}
+        initialBreakpoint={0.75}
       />
     </>
   );
