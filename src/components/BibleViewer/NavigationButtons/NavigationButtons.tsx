@@ -1,15 +1,15 @@
 import React from "react";
 import { IonFab, IonFabButton, IonIcon } from "@ionic/react";
-import { chevronBack, chevronForward } from "ionicons/icons";
+// import { chevronBack, chevronForward } from "ionicons/icons";
 
 /* Context */
-import { useAppContext } from "../../../context/context";
+// import { useAppContext } from "../../../context/context";
 
 /* Styles */
 import "./NavigationButtons.scss";
 
 /* Hooks */
-import useBibleNavigator from "../../utility/hooks/useBibleNavigator";
+// import useBibleNavigator from "../../utility/hooks/useBibleNavigator";
 
 /* Images */
 import BreadCrumbsIcon from "../../../assets/icons/BreadCrumbs-icon.svg";
@@ -26,14 +26,14 @@ const NavigationButtons: React.FC<INavigationButtons> = ({
   handleOpenBreadCrumbsModal,
 }: INavigationButtons) => {
   /* Context */
-  const { setIsProgrammaticSlide } = useAppContext();
+  // const { setIsProgrammaticSlide } = useAppContext();
 
-  const { nextChapter, backChapter } = useBibleNavigator();
+  // const { nextChapter, backChapter } = useBibleNavigator();
 
   return (
     <>
       <IonFab id="navigation-buttons">
-        {/* Back button */}
+        {/* Back button
         <IonFabButton color="light" size="small" className="left">
           <IonIcon
             icon={chevronBack}
@@ -45,7 +45,7 @@ const NavigationButtons: React.FC<INavigationButtons> = ({
               backChapter();
             }}
           />
-        </IonFabButton>
+        </IonFabButton> */}
 
         {/* Button to open the bible assistant modal */}
         <IonFabButton
@@ -63,7 +63,7 @@ const NavigationButtons: React.FC<INavigationButtons> = ({
         </IonFabButton>
 
         {/* Forward button */}
-        <IonFabButton color="primary" size="small" className="right">
+        {/* <IonFabButton color="primary" size="small" className="right">
           <IonIcon
             icon={chevronForward}
             onClick={() => {
@@ -74,7 +74,7 @@ const NavigationButtons: React.FC<INavigationButtons> = ({
               nextChapter();
             }}
           />
-        </IonFabButton>
+        </IonFabButton> */}
       </IonFab>
     </>
   );
