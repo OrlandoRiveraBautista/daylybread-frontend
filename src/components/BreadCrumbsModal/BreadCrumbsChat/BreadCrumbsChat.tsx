@@ -31,9 +31,14 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChat> = ({
   const [value, setValue] = useState<string | undefined | null>();
   const [loadingChatResponse, setLoadingChatResponse] =
     useState<boolean>(false);
+  const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
+  const [animatedMessages, setAnimatedMessages] = useState<Set<number>>(
+    new Set()
+  );
 
   // references
   const messagesContainer = useRef<HTMLInputElement>(null);
+  const inputRowRef = useRef<HTMLIonRowElement>(null);
 
   /**
    * Function to handle submitting a message
@@ -60,12 +65,68 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChat> = ({
     // window.scrollBy(0, 1000); // Adjust -100 to your desired offset in pixels
   };
 
+  const handleInputFocus = () => {
+    setIsInputFocused(true);
+  };
+
+  const handleInputBlur = () => {
+    setIsInputFocused(false);
+  };
+
   useEffect(() => {
     scrollToBottom();
     if (messages.length > 0 && messages[messages.length - 1].sender !== "You") {
       setLoadingChatResponse(false);
     }
   }, [messages]);
+
+  // Trigger shadow effect for new messages
+  useEffect(() => {
+    if (messages.length > 0) {
+      const lastMessageIndex = messages.length - 1;
+      const lastMessage = messages[lastMessageIndex];
+
+      // Only animate AI responses, not user messages
+      if (lastMessage.sender !== "You") {
+        setAnimatedMessages((prev) => {
+          const newSet = new Set(prev);
+          newSet.add(lastMessageIndex);
+          return newSet;
+        });
+
+        // Remove animation after 2 seconds
+        const timer = setTimeout(() => {
+          setAnimatedMessages((prev) => {
+            const newSet = new Set(prev);
+            newSet.delete(lastMessageIndex);
+            return newSet;
+          });
+        }, 2000);
+
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [messages]);
+
+  // Handle click outside to remove focus
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        inputRowRef.current &&
+        !inputRowRef.current.contains(event.target as Node)
+      ) {
+        setIsInputFocused(false);
+      }
+    };
+
+    if (isInputFocused) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isInputFocused]);
 
   return (
     <>
@@ -82,7 +143,11 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChat> = ({
           ? messages.map(({ message, sender }, index) => (
               <IonRow
                 className={
-                  sender === "You" ? "right-align-self" : "chat-respond"
+                  sender === "You"
+                    ? "right-align-self"
+                    : `chat-respond ${
+                        animatedMessages.has(index) ? "message-animated" : ""
+                      }`
                 }
                 key={index}
               >
@@ -123,7 +188,11 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChat> = ({
         ) : null}
 
         {/* Chat Input */}
-        <IonRow className="chat-input-row">
+        <IonRow
+          ref={inputRowRef}
+          className={`chat-input-row ${isInputFocused ? "focused" : ""}`}
+          onClick={handleInputFocus}
+        >
           {/* Text area input container */}
           <IonCol>
             <IonTextarea
@@ -134,6 +203,8 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChat> = ({
               fill="outline"
               value={value}
               onIonInput={(e) => setValue(e.target.value)}
+              onIonFocus={handleInputFocus}
+              onIonBlur={handleInputBlur}
             ></IonTextarea>
           </IonCol>
           {/* Submit/Send button container */}
