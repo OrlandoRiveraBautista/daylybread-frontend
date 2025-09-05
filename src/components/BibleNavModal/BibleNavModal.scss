@@ -68,3 +68,25 @@
 .nav-selection ion-title {
   text-align: center;
 }
+
+// Styling for Start from Beginning toggle in translation modal
+.start-beginning-toggle {
+  background: inherit;
+  border-radius: var(--ion-border-radius);
+  border: 2px solid var(--ion-color-primary-tint);
+
+  ion-icon {
+    color: var(--ion-color-primary);
+    font-size: 24px;
+  }
+
+  h2 {
+    color: var(--ion-color-primary);
+    font-weight: 600;
+    margin: 0;
+  }
+
+  p {
+    color: var(--ion-color-medium);
+  }
+}
