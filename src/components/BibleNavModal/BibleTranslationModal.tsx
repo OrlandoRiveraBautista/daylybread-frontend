@@ -203,11 +203,17 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
       setChapterNumber(1);
     } else {
       setBook(
-        booksData.getListOfBooksForBible.data.find(
-          (book) => book.bookId === urlParams.currentBookId
-        )!
+        urlParams.currentBookId
+          ? booksData.getListOfBooksForBible.data.find(
+              (book) => book.bookId === urlParams.currentBookId
+            )!
+          : booksData.getListOfBooksForBible.data[0]
       );
-      setChapterNumber(Number(urlParams.currentChapterNumber));
+      setChapterNumber(
+        urlParams.currentChapterNumber
+          ? Number(urlParams.currentChapterNumber)
+          : 1
+      );
     }
     setIsNewBible(false);
     setIsProgrammaticSlide({ value: true });

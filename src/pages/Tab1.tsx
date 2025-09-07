@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   IonButton,
   IonContent,
@@ -7,9 +7,8 @@ import {
   IonCol,
   IonPage,
   IonText,
-  // IonHeader,
-  // IonToolbar,
-  // IonTitle,
+  IonRefresher,
+  IonRefresherContent,
 } from "@ionic/react";
 import { useHistory, useLocation } from "react-router-dom";
 
@@ -34,6 +33,7 @@ const Tab1: React.FC = () => {
   const location = useLocation();
   const { chosenBible, chosenBook, chosenChapterNumber, userInfo } =
     useAppContext();
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const handleQuickRead = () => {
     if (chosenBible && chosenBook && chosenChapterNumber) {
@@ -43,6 +43,15 @@ const Tab1: React.FC = () => {
     } else {
       history.push("/read");
     }
+  };
+
+  const handleRefresh = (event: CustomEvent) => {
+    // Simulate refresh delay
+    setTimeout(() => {
+      // Force re-render by updating a dummy state or trigger context refresh
+      setRefreshKey((prev) => prev + 1);
+      event.detail.complete();
+    }, 1000);
   };
 
   // Check if this is a mood check-in page
@@ -122,12 +131,19 @@ const Tab1: React.FC = () => {
       <SEOHead {...seoConfig} />
 
       <IonContent className="home-content">
+        <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+          <IonRefresherContent
+            pullingText="Pull to refresh..."
+            refreshingText="Refreshing..."
+          />
+        </IonRefresher>
+
         {/* Personalized Dashboard */}
         <PersonalizedDashboard />
 
         <IonGrid className="home-grid">
           {/* Mood Check-In */}
-          <MoodCheckIn />
+          <MoodCheckIn key={`mood-${refreshKey}`} />
 
           {/* Quick Actions */}
           <QuickActions />
