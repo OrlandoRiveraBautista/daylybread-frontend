@@ -41,6 +41,7 @@ const MoodCheckIn: React.FC = () => {
             <IonCard className="mood-checkin-card">
               <IonCardContent>
                 <MoodCheckInHeader
+                  key={getUserPreferredBibleVersion()}
                   bibleVersion={getUserPreferredBibleVersion()}
                   bibleContext={getBibleHistoryContext()}
                 />
