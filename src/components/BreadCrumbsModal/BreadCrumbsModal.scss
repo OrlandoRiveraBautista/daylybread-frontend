@@ -83,6 +83,58 @@
   .chat-respond {
     ion-card {
       background: var(--ion-background-variant);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    // Shadow effect for new AI responses
+    &.message-animated {
+      ion-card {
+        box-shadow: 0 0 0 1px rgba(var(--ion-color-primary-rgb), 0.2),
+          0 4px 20px rgba(var(--ion-color-primary-rgb), 0.15),
+          0 8px 40px rgba(var(--ion-color-primary-rgb), 0.1),
+          0 0 0 1px rgba(var(--ion-color-secondary-rgb), 0.1);
+        transform: translateY(-2px);
+        background: var(--ion-background-variant);
+        position: relative;
+
+        // Shimmer effect overlay
+        &::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(var(--ion-color-primary-rgb), 0.1) 25%,
+            rgba(var(--ion-color-secondary-rgb), 0.15) 50%,
+            rgba(var(--ion-color-primary-rgb), 0.1) 75%,
+            transparent 100%
+          );
+          animation: shimmer 2s ease-in-out;
+          z-index: 1;
+        }
+
+        // Ensure content stays above shimmer
+        ion-card-content {
+          position: relative;
+          z-index: 2;
+        }
+      }
+    }
+  }
+
+  // Shimmer animation keyframes
+  @keyframes shimmer {
+    0% {
+      left: -100%;
+    }
+    100% {
+      left: 100%;
     }
   }
 
@@ -109,15 +161,40 @@
     }
     .chat-input-row {
       background: var(--ion-background-variant);
-      border-radius: 12px;
+      border-radius: var(--ion-border-radius);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      cursor: pointer;
+
+      // Modern gradient shadow effect when focused
+      &.focused {
+        box-shadow: 0 0 0 1px rgba(var(--ion-color-primary-rgb), 0.2),
+          0 4px 20px rgba(var(--ion-color-primary-rgb), 0.15),
+          0 8px 40px rgba(var(--ion-color-primary-rgb), 0.1),
+          0 0 0 1px rgba(var(--ion-color-secondary-rgb), 0.1);
+        transform: translateY(-2px);
+        background: linear-gradient(
+          135deg,
+          var(--ion-background-variant) 0%,
+          rgba(var(--ion-color-primary-rgb), 0.02) 50%,
+          var(--ion-background-variant) 100%
+        );
+      }
+
+      // Hover effect for better UX
+      &:hover:not(.focused) {
+        box-shadow: 0 2px 8px rgba(var(--ion-color-primary-rgb), 0.08),
+          0 4px 16px rgba(var(--ion-color-primary-rgb), 0.04);
+        transform: translateY(-1px);
+      }
 
       ion-col {
         border-radius: 12px;
       }
       ion-textarea,
       .textarea-fill-solid.sc-ion-textarea-md-h {
-        background: var(--ion-background-variant);
-        --background: var(--ion-background-variant);
+        background: transparent;
+        --background: transparent;
         border: none;
         border-radius: 12px;
         --border-radius: 12px;
@@ -125,6 +202,15 @@
         --border-width: 50%;
         --highlight-color-focused: none;
         // --placeholder-opacity: 1;
+      }
+
+      // When focused, ensure textarea background is transparent to show gradient
+      &.focused {
+        ion-textarea,
+        .textarea-fill-solid.sc-ion-textarea-md-h {
+          background: transparent;
+          --background: transparent;
+        }
       }
 
       .textarea-label-placement-floating.sc-ion-textarea-md-h

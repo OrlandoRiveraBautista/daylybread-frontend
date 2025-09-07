@@ -9,6 +9,7 @@ import {
   IonList,
   IonModal,
   IonTitle,
+  IonToggle,
 } from "@ionic/react";
 import { useParams, useHistory } from "react-router";
 
@@ -59,6 +60,7 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
     chosenLanguage,
     chosenBible,
     chosenBook,
+    setIsProgrammaticSlide,
   } = useAppContext();
   const { nextStep, stepIndex, run: tourIsRunning } = useTour();
 
@@ -67,6 +69,7 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
   /* Local state */
   const [isNewBible, setIsNewBible] = useState<boolean>(false); // flag to determine if the bible should be set to the begining
   const [firstRender, setFirstRender] = useState<boolean>(true);
+  const [startFromBeginning, setStartFromBeginning] = useState<boolean>(false); // toggle for starting from beginning
 
   /* Queries */
   // lazy api call to search languages
@@ -194,10 +197,34 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
       return;
     }
 
-    setBook(booksData.getListOfBooksForBible.data[0]);
-    setChapterNumber(1); // set the chapter to 1
+    // If startFromBeginning is enabled, always start with first book and first chapter
+    if (startFromBeginning) {
+      setBook(booksData.getListOfBooksForBible.data[0]);
+      setChapterNumber(1);
+    } else {
+      setBook(
+        urlParams.currentBookId
+          ? booksData.getListOfBooksForBible.data.find(
+              (book) => book.bookId === urlParams.currentBookId
+            )!
+          : booksData.getListOfBooksForBible.data[0]
+      );
+      setChapterNumber(
+        urlParams.currentChapterNumber
+          ? Number(urlParams.currentChapterNumber)
+          : 1
+      );
+    }
     setIsNewBible(false);
-  }, [booksData, urlParams?.currentBookId, urlParams?.currentChapterNumber]); // eslint-disable-line react-hooks/exhaustive-deps
+    setIsProgrammaticSlide({ value: true });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    booksData,
+    urlParams?.currentBookId,
+    urlParams?.currentChapterNumber,
+    startFromBeginning,
+  ]);
 
   /*--- Setting Url --- */
   const handlePathSetting = (bible: BbBible) => {
@@ -257,10 +284,31 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
     setTimeout(tourFunc, 2000);
   };
 
+  /**
+   * Function to toggle start from beginning
+   */
+  const handleToggleStartFromBeginning = () => {
+    setStartFromBeginning(!startFromBeginning);
+  };
+
   // function to render modal options
   const renderModalOptions = () => {
     return biblesData ? (
       <IonList className="tour-step-5">
+        {/* Start from Beginning Toggle */}
+        <IonItem className="start-beginning-toggle">
+          <IonIcon icon={play} slot="start" />
+          <IonLabel>
+            <h2>Start from Beginning</h2>
+            <p>Begin reading from first book, first chapter</p>
+          </IonLabel>
+          <IonToggle
+            checked={startFromBeginning}
+            onIonChange={handleToggleStartFromBeginning}
+            slot="end"
+          />
+        </IonItem>
+
         {biblesData.getListOFBibles.data
           .filter(
             (bible) =>

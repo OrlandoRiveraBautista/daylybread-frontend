@@ -108,17 +108,12 @@ export const useMoodCheckIn = () => {
       // Get user's preferred Bible version based on their reading history
       const userBibleVersion = getUserPreferredBibleVersion();
 
-      console.log(
-        `Getting mood verse for "${
-          mood.tag
-        }" using ${userBibleVersion} translation ${getBibleHistoryContext()}`
-      );
-
       // Prepare input object for the API
       const input: MoodRequestInput = {
         mood: mood.tag,
         additionalContext: undefined, // Could add a text input for this later
-        preferredBibleVersion: userBibleVersion,
+        preferredBibleVersion: userBibleVersion.slice(-3),
+        language: userBibleVersion.slice(0, 3),
       };
 
       // Call the API

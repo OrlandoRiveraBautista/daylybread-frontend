@@ -100,7 +100,7 @@ const BibleChapterViewer: React.FC = () => {
             modules={[EffectCards]}
             className="bibleSwiper ion-padding"
             autoHeight={true}
-            longSwipes={true}
+            longSwipes={false}
             onSlideNextTransitionStart={() => {
               if (isProgrammaticSlide.value) return;
               nextChapter();

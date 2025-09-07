@@ -25,6 +25,8 @@ export interface ScheduleNotificationInput {
   scheduledFor: Date;
   deviceId?: string | null;
   message?: string | null;
+  contentType: string;
+  deliveryType: string;
 }
 
 export interface UserNotificationSettings {
@@ -41,9 +43,9 @@ export interface UserNotificationSettings {
 
 export interface MoodNotification {
   _id: string;
-  mood: string;
+  mood?: string | null;
   type: string;
-  scheduledFor: Date;
+  scheduledFor?: any;
   message?: string | null;
   status: string;
 }

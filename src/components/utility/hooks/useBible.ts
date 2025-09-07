@@ -19,6 +19,7 @@ const useBible = () => {
     chosenChapterNumber,
     setChapterVerses,
     setLocalChapters,
+    handleResetChapterData,
   } = useAppContext();
 
   /* State */
@@ -45,6 +46,13 @@ const useBible = () => {
   } = useLazyGetListOfVersesFromBookChapter();
 
   const { setUserHistory } = useLazySetUserHistory();
+
+  // useEffect to reset all chapter-related data when Bible changes
+  useEffect(() => {
+    // Reset all chapter-related data when Bible changes to ensure clean slate
+    setLocalChapters([]);
+    handleResetChapterData();
+  }, [chosenBible]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // useEffect to get verses when book or chapther changes
   useEffect(() => {

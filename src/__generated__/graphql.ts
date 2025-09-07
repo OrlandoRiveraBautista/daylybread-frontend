@@ -493,23 +493,6 @@ export type MoodCache = {
   verse: Scalars['String'];
 };
 
-export type MoodNotification = {
-  __typename?: 'MoodNotification';
-  _id: Scalars['String'];
-  createdAt: Scalars['DateTime'];
-  deviceId?: Maybe<Scalars['String']>;
-  errorMessage?: Maybe<Scalars['String']>;
-  message?: Maybe<Scalars['String']>;
-  mood: Scalars['String'];
-  pushSubscription?: Maybe<Scalars['String']>;
-  scheduledFor: Scalars['DateTime'];
-  sentAt?: Maybe<Scalars['DateTime']>;
-  status: Scalars['String'];
-  type: Scalars['String'];
-  updatedAt: Scalars['DateTime'];
-  userId: Scalars['String'];
-};
-
 export type MoodNotificationMessage = {
   __typename?: 'MoodNotificationMessage';
   message: Scalars['String'];
@@ -520,6 +503,7 @@ export type MoodNotificationMessage = {
 
 export type MoodRequestInput = {
   additionalContext?: InputMaybe<Scalars['String']>;
+  language?: InputMaybe<Scalars['String']>;
   mood: Scalars['String'];
   preferredBibleVersion?: InputMaybe<Scalars['String']>;
 };
@@ -549,6 +533,7 @@ export type Mutation = {
   register: UserResponse;
   scheduleMoodNotification: ScheduleNotificationResponse;
   setUserHistory: HistoryResponse;
+  testPushNotification: Scalars['Boolean'];
   updateBookmark: BookmarkResponse;
   updateInteraction: BibleInteractionResponse;
   updateMedia: MediaResponse;
@@ -709,12 +694,46 @@ export type NfcConfigResponse = {
   results?: Maybe<NfcConfig>;
 };
 
+export type Notification = {
+  __typename?: 'Notification';
+  _id: Scalars['String'];
+  actionText?: Maybe<Scalars['String']>;
+  actionUrl?: Maybe<Scalars['String']>;
+  contentType: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  deliveryType: Scalars['String'];
+  deviceId?: Maybe<Scalars['String']>;
+  errorMessage?: Maybe<Scalars['String']>;
+  message: Scalars['String'];
+  metadata?: Maybe<Scalars['String']>;
+  mood?: Maybe<Scalars['String']>;
+  priority: Scalars['String'];
+  readAt?: Maybe<Scalars['DateTime']>;
+  retryCount: Scalars['Float'];
+  scheduledFor?: Maybe<Scalars['DateTime']>;
+  sentAt?: Maybe<Scalars['DateTime']>;
+  status: Scalars['String'];
+  title: Scalars['String'];
+  type: Scalars['String'];
+  updatedAt: Scalars['DateTime'];
+  userId: Scalars['String'];
+};
+
 export type NotificationSettingsInput = {
   enableBrowserPushNotifications?: InputMaybe<Scalars['Boolean']>;
+  enableChurchEventNotifications?: InputMaybe<Scalars['Boolean']>;
+  enableCommunityUpdates?: InputMaybe<Scalars['Boolean']>;
+  enableDailyVerseNotifications?: InputMaybe<Scalars['Boolean']>;
   enableEmailNotifications?: InputMaybe<Scalars['Boolean']>;
+  enableInAppNotifications?: InputMaybe<Scalars['Boolean']>;
+  enableMoodRequestNotifications?: InputMaybe<Scalars['Boolean']>;
+  enablePrayerReminders?: InputMaybe<Scalars['Boolean']>;
   enableWebSocketNotifications?: InputMaybe<Scalars['Boolean']>;
   pushSubscriptionEndpoint?: InputMaybe<Scalars['String']>;
   pushSubscriptionKeys?: InputMaybe<Scalars['String']>;
+  quietHoursEnd?: InputMaybe<Scalars['String']>;
+  quietHoursStart?: InputMaybe<Scalars['String']>;
+  timezone?: InputMaybe<Scalars['String']>;
 };
 
 export type NotificationSettingsResponse = {
@@ -766,7 +785,8 @@ export type Query = {
   getTranslations: Array<Translation>;
   getUserMoodHistory: Array<MoodCache>;
   getUserNotificationSettings: NotificationSettingsResponse;
-  getUserPendingNotifications: Array<MoodNotification>;
+  getUserPendingNotifications: Array<Notification>;
+  getVapidPublicKey: Scalars['String'];
   getVerseByBibleId: Verse;
   getVerseListByChapterBibleId: Array<ChapterVerse>;
   hello: Scalars['String'];
@@ -945,17 +965,18 @@ export type QuerySearchListOfLanguagesArgs = {
 };
 
 export type ScheduleNotificationInput = {
+  contentType: Scalars['String'];
+  deliveryType: Scalars['String'];
   deviceId?: InputMaybe<Scalars['String']>;
   message?: InputMaybe<Scalars['String']>;
-  mood: Scalars['String'];
+  metadata?: InputMaybe<Scalars['String']>;
   scheduledFor: Scalars['DateTime'];
-  type: Scalars['String'];
 };
 
 export type ScheduleNotificationResponse = {
   __typename?: 'ScheduleNotificationResponse';
   errors?: Maybe<Array<FieldError>>;
-  notification?: Maybe<MoodNotification>;
+  notification?: Maybe<Notification>;
 };
 
 export type SearchLanguageArgs = {
@@ -1051,10 +1072,19 @@ export type UserNotificationSettings = {
   _id: Scalars['String'];
   createdAt: Scalars['DateTime'];
   enableBrowserPushNotifications: Scalars['Boolean'];
+  enableChurchEventNotifications: Scalars['Boolean'];
+  enableCommunityUpdates: Scalars['Boolean'];
+  enableDailyVerseNotifications: Scalars['Boolean'];
   enableEmailNotifications: Scalars['Boolean'];
+  enableInAppNotifications: Scalars['Boolean'];
+  enableMoodRequestNotifications: Scalars['Boolean'];
+  enablePrayerReminders: Scalars['Boolean'];
   enableWebSocketNotifications: Scalars['Boolean'];
   pushSubscriptionEndpoint?: Maybe<Scalars['String']>;
   pushSubscriptionKeys?: Maybe<Scalars['String']>;
+  quietHoursEnd?: Maybe<Scalars['String']>;
+  quietHoursStart?: Maybe<Scalars['String']>;
+  timezone?: Maybe<Scalars['String']>;
   updatedAt: Scalars['DateTime'];
   userId: Scalars['String'];
 };
@@ -1425,12 +1455,12 @@ export type ScheduleMoodNotificationDetailedMutationVariables = Exact<{
 }>;
 
 
-export type ScheduleMoodNotificationDetailedMutation = { __typename?: 'Mutation', scheduleMoodNotification: { __typename?: 'ScheduleNotificationResponse', errors?: Array<{ __typename?: 'FieldError', message: string }> | null, notification?: { __typename?: 'MoodNotification', _id: string, userId: string, mood: string, type: string, scheduledFor: any, deviceId?: string | null, message?: string | null, status: string, createdAt: any, updatedAt: any } | null } };
+export type ScheduleMoodNotificationDetailedMutation = { __typename?: 'Mutation', scheduleMoodNotification: { __typename?: 'ScheduleNotificationResponse', errors?: Array<{ __typename?: 'FieldError', message: string }> | null, notification?: { __typename?: 'Notification', _id: string, userId: string, mood?: string | null, type: string, scheduledFor?: any | null, deviceId?: string | null, message: string, status: string, createdAt: any, updatedAt: any } | null } };
 
 export type GetUserPendingNotificationsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUserPendingNotificationsQuery = { __typename?: 'Query', getUserPendingNotifications: Array<{ __typename?: 'MoodNotification', _id: string, userId: string, mood: string, type: string, scheduledFor: any, deviceId?: string | null, message?: string | null, status: string, createdAt: any, updatedAt: any }> };
+export type GetUserPendingNotificationsQuery = { __typename?: 'Query', getUserPendingNotifications: Array<{ __typename?: 'Notification', _id: string, userId: string, mood?: string | null, type: string, scheduledFor?: any | null, deviceId?: string | null, message: string, status: string, createdAt: any, updatedAt: any }> };
 
 export type CancelNotificationMutationVariables = Exact<{
   notificationId: Scalars['String'];
@@ -1463,7 +1493,7 @@ export type ScheduleMoodNotificationBasicMutationVariables = Exact<{
 }>;
 
 
-export type ScheduleMoodNotificationBasicMutation = { __typename?: 'Mutation', scheduleMoodNotification: { __typename?: 'ScheduleNotificationResponse', errors?: Array<{ __typename?: 'FieldError', message: string }> | null, notification?: { __typename?: 'MoodNotification', _id: string, mood: string, type: string, scheduledFor: any, message?: string | null, status: string } | null } };
+export type ScheduleMoodNotificationBasicMutation = { __typename?: 'Mutation', scheduleMoodNotification: { __typename?: 'ScheduleNotificationResponse', errors?: Array<{ __typename?: 'FieldError', message: string }> | null, notification?: { __typename?: 'Notification', _id: string, mood?: string | null, type: string, scheduledFor?: any | null, message: string, status: string } | null } };
 
 export type MoodRequestAvailableBasicSubscriptionVariables = Exact<{
   userId: Scalars['String'];
