@@ -113,6 +113,7 @@ export const useMoodCheckIn = () => {
         mood: mood.tag,
         additionalContext: undefined, // Could add a text input for this later
         preferredBibleVersion: userBibleVersion.slice(-3),
+        language: userBibleVersion.slice(0, 3),
       };
 
       // Call the API

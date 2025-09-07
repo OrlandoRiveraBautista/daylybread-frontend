@@ -6,6 +6,7 @@ export interface MoodRequestInput {
   mood: string;
   additionalContext?: string;
   preferredBibleVersion?: string;
+  language?: string;
 }
 
 export interface VerseResponseType {
