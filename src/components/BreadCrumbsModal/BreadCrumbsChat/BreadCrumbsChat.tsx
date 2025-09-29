@@ -67,19 +67,105 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChat> = ({
   };
 
   const handleInputFocus = () => {
+    console.log("🎯 handleInputFocus called");
     setIsInputFocused(true);
-    // Double focus technique for better keyboard alignment
+
+    // Enhanced mobile keyboard positioning
     if (textareaRef.current) {
+      console.log("📱 Starting mobile keyboard positioning");
       // First focus
       textareaRef.current.setFocus();
+      console.log("1️⃣ First focus applied");
 
-      // Second focus after a small delay to ensure proper keyboard positioning
-      setTimeout(() => {
+      // Use Visual Viewport API if available (better for mobile keyboards)
+      const adjustForKeyboard = () => {
+        console.log("🔧 adjustForKeyboard called");
         if (textareaRef.current) {
-          textareaRef.current.setFocus();
-          console.log("textareaRef.current.setFocus()");
+          const element = textareaRef.current;
+
+          // Try Visual Viewport API first (most accurate for mobile)
+          if (window.visualViewport) {
+            console.log("✅ Using Visual Viewport API");
+            const visualViewport = window.visualViewport;
+            const rect = element.getBoundingClientRect();
+            const viewportHeight = visualViewport.height;
+            const viewportTop = visualViewport.offsetTop;
+
+            console.log("📊 Visual Viewport data:", {
+              viewportHeight,
+              viewportTop,
+              rectTop: rect.top,
+              rectBottom: rect.bottom,
+              windowInnerHeight: window.innerHeight,
+            });
+
+            // Calculate if input is visible in the visual viewport
+            const inputBottom = rect.bottom - viewportTop;
+            console.log("📍 Input bottom position:", inputBottom);
+
+            // If input is below the visible area, scroll it into view
+            if (inputBottom > viewportHeight) {
+              const scrollAmount = inputBottom - viewportHeight + 20;
+              console.log("⬆️ Scrolling up by:", scrollAmount);
+              window.scrollBy({
+                top: scrollAmount,
+                behavior: "smooth",
+              });
+            } else {
+              console.log("✅ Input is already visible, no scroll needed");
+            }
+          } else {
+            console.log("⚠️ Visual Viewport API not available, using fallback");
+            // Fallback for browsers without Visual Viewport API
+            const rect = element.getBoundingClientRect();
+            const viewportHeight = window.innerHeight;
+            const keyboardHeight = viewportHeight * 0.4; // Estimate keyboard height
+            const availableHeight = viewportHeight - keyboardHeight;
+
+            console.log("📊 Fallback data:", {
+              viewportHeight,
+              keyboardHeight,
+              availableHeight,
+              rectBottom: rect.bottom,
+            });
+
+            if (rect.bottom > availableHeight) {
+              const scrollAmount = rect.bottom - availableHeight + 20;
+              console.log("⬆️ Fallback scrolling up by:", scrollAmount);
+              window.scrollBy({
+                top: scrollAmount,
+                behavior: "smooth",
+              });
+            } else {
+              console.log(
+                "✅ Fallback: Input is already visible, no scroll needed"
+              );
+            }
+          }
+
+          // Final focus to ensure proper positioning
+          console.log("🎯 Applying final focus");
+          element.setFocus();
         }
-      }, 100);
+      };
+
+      // Wait for keyboard to appear, then adjust positioning
+      setTimeout(() => {
+        console.log("⏰ 150ms timeout reached");
+        if (textareaRef.current) {
+          // Second focus for better positioning
+          textareaRef.current.setFocus();
+          console.log("2️⃣ Second focus applied");
+
+          // Adjust positioning after keyboard is fully visible
+          setTimeout(() => {
+            console.log("⏰ 200ms timeout reached, calling adjustForKeyboard");
+            adjustForKeyboard();
+          }, 200);
+        }
+      }, 150);
+    } else {
+      console.log("❌ textareaRef.current is null");
     }
   };
 
