@@ -15,8 +15,8 @@
   "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
   "icons": [
     {
-      "src": "assets/icon/Daylybread Icon.png",
-      "sizes": "16x16",
+      "src": "assets/icon/Daylybread Icon-small.png",
+      "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
@@ -28,8 +28,14 @@
     },
     {
       "src": "assets/icon/Daylybread Icon.png",
+      "sizes": "1024x1024",
       "type": "image/png",
-      "sizes": "1048x1048",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon/Daylybread Icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
       "purpose": "maskable"
     }
   ],
