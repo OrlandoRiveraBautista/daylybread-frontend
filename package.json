@@ -91,5 +91,5 @@
     "@types/react-responsive-masonry": "^2.1.1",
     "typescript": "^4.9.3"
   },
-  "description": "An Ionic project"
+  "description": "Daylybread - Smart Bible companion with AI assistance, multiple translations, mood-based verses, and personalized spiritual growth features"
 }

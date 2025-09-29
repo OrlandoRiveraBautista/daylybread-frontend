@@ -191,7 +191,6 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChat> = ({
         <IonRow
           ref={inputRowRef}
           className={`chat-input-row ${isInputFocused ? "focused" : ""}`}
-          onClick={handleInputFocus}
         >
           {/* Text area input container */}
           <IonCol>
