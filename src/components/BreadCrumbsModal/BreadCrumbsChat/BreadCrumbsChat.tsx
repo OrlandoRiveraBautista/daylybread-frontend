@@ -77,6 +77,7 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChat> = ({
       setTimeout(() => {
         if (textareaRef.current) {
           textareaRef.current.setFocus();
+          console.log("textareaRef.current.setFocus()");
         }
       }, 100);
     }
