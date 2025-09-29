@@ -39,6 +39,7 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChat> = ({
   // references
   const messagesContainer = useRef<HTMLInputElement>(null);
   const inputRowRef = useRef<HTMLIonRowElement>(null);
+  const textareaRef = useRef<HTMLIonTextareaElement>(null);
 
   /**
    * Function to handle submitting a message
@@ -67,6 +68,18 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChat> = ({
 
   const handleInputFocus = () => {
     setIsInputFocused(true);
+    // Double focus technique for better keyboard alignment
+    if (textareaRef.current) {
+      // First focus
+      textareaRef.current.setFocus();
+
+      // Second focus after a small delay to ensure proper keyboard positioning
+      setTimeout(() => {
+        if (textareaRef.current) {
+          textareaRef.current.setFocus();
+        }
+      }, 100);
+    }
   };
 
   const handleInputBlur = () => {
@@ -196,6 +209,7 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChat> = ({
           {/* Text area input container */}
           <IonCol>
             <IonTextarea
+              ref={textareaRef}
               labelPlacement="floating"
               color="primary"
               placeholder="Ask me anything!"
