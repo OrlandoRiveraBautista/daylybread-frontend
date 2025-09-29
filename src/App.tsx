@@ -52,6 +52,7 @@ import { useTour } from "./context/TourContext";
 
 /** Graphql API Hooks */
 import { useMe } from "./hooks/UserHooks";
+import useBibleHistoryLoader from "./hooks/useBibleHistoryLoader";
 
 /* Utils */
 import { useSetStatusBarColor } from "./utils/statusBarUtils";
@@ -72,6 +73,7 @@ const App: React.FC = () => {
   const { getMe, data: userData } = useMe();
   useSetStatusBarColor(); // hook to set the status bar color
   const { prompt, promptToInstall } = useAddToHomescreenPrompt();
+  useBibleHistoryLoader(); // hook to load bible history on startup
 
   // Add version check effect
   useEffect(() => {
@@ -111,7 +113,7 @@ const App: React.FC = () => {
 
     const splashScreenTimer = setTimeout(() => {
       setSplashScreen(false);
-    }, 3000);
+    }, 1000);
 
     getLocalStorage();
     getSignInUser();
