@@ -6,7 +6,7 @@ import {
   IonCardContent,
   IonCardTitle,
   IonChip,
-  IonInput,
+  IonTextarea,
   IonButton,
   IonSpinner,
   IonIcon,
@@ -193,24 +193,25 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChat> = ({
           className={`chat-input-row ${isInputFocused ? "focused" : ""}`}
           onClick={handleInputFocus}
         >
-          {/* Text input container */}
+          {/* Text area input container */}
           <IonCol>
-            <IonInput
+            <IonTextarea
               labelPlacement="floating"
               color="primary"
               placeholder="Ask me anything!"
+              autoGrow={true}
               fill="outline"
               value={value}
-              onIonInput={(e) => setValue(String(e.target.value || ""))}
+              onIonInput={(e) => setValue(e.target.value)}
               onIonFocus={handleInputFocus}
               onIonBlur={handleInputBlur}
-            ></IonInput>
+            ></IonTextarea>
           </IonCol>
           {/* Submit/Send button container */}
-          <IonCol size="auto" className="input-send-button-container">
+          <IonCol size="auto" className="textarea-send-button-container">
             <IonButton
               fill="clear"
-              className="input-send-button"
+              className="textarea-send-button"
               color="dark"
               onClick={() => (value ? handleSubmit(value) : null)}
               disabled={loadingChatResponse}
