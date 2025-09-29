@@ -13,7 +13,6 @@ import {
 } from "@ionic/react";
 import { useState, useRef, useEffect } from "react";
 import Markdown from "react-markdown";
-import { Keyboard } from "@capacitor/keyboard";
 /* Icons */
 import { send } from "ionicons/icons";
 
@@ -40,7 +39,6 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChat> = ({
   // references
   const messagesContainer = useRef<HTMLInputElement>(null);
   const inputRowRef = useRef<HTMLIonRowElement>(null);
-  const textareaRef = useRef<HTMLIonTextareaElement>(null);
 
   /**
    * Function to handle submitting a message
@@ -81,57 +79,6 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChat> = ({
       setLoadingChatResponse(false);
     }
   }, [messages]);
-
-  // Setup Capacitor Keyboard event listeners
-  useEffect(() => {
-    const setupKeyboardListeners = async () => {
-      // Detect if running in Chrome PWA
-      const isChromePWA =
-        window.matchMedia("(display-mode: standalone)").matches &&
-        navigator.userAgent.includes("Chrome");
-
-      console.log("🌐 Environment:", {
-        isChromePWA,
-        userAgent: navigator.userAgent,
-        displayMode: window.matchMedia("(display-mode: standalone)").matches,
-      });
-
-      try {
-        // Listen for keyboard show/hide events
-        Keyboard.addListener("keyboardWillShow", (info) => {
-          console.log("⌨️ Keyboard will show:", info);
-        });
-
-        Keyboard.addListener("keyboardWillHide", () => {
-          console.log("⌨️ Keyboard will hide");
-        });
-
-        Keyboard.addListener("keyboardDidShow", (info) => {
-          console.log("⌨️ Keyboard did show:", info);
-        });
-
-        Keyboard.addListener("keyboardDidHide", () => {
-          console.log("⌨️ Keyboard did hide");
-        });
-
-        console.log("✅ Capacitor Keyboard listeners setup successfully");
-      } catch (error) {
-        console.log("⚠️ Capacitor Keyboard listeners not available:", error);
-        console.log("💡 Falling back to web APIs for keyboard handling");
-      }
-    };
-
-    setupKeyboardListeners();
-
-    // Cleanup listeners on unmount
-    return () => {
-      try {
-        Keyboard.removeAllListeners();
-      } catch (error) {
-        console.log("⚠️ Error removing keyboard listeners:", error);
-      }
-    };
-  }, []);
 
   // Trigger shadow effect for new messages
   useEffect(() => {
@@ -249,7 +196,6 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChat> = ({
           {/* Text area input container */}
           <IonCol>
             <IonTextarea
-              ref={textareaRef}
               labelPlacement="floating"
               color="primary"
               placeholder="Ask me anything!"
