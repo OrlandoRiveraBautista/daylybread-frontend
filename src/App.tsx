@@ -58,6 +58,7 @@ import useBibleHistoryLoader from "./hooks/useBibleHistoryLoader";
 import { useSetStatusBarColor } from "./utils/statusBarUtils";
 import useAddToHomescreenPrompt from "./utils/addToHomeScreen";
 import { generateUUID } from "./utils/polyfills";
+import { PushNotificationService } from "./services/pushNotificationService";
 
 setupIonicReact({ mode: "md" });
 
@@ -84,6 +85,44 @@ const App: React.FC = () => {
       });
     }
   }, []);
+
+  // Add push notification initialization
+  useEffect(() => {
+    const initializePushNotifications = async () => {
+      const vapidPublicKey = process.env.REACT_APP_VAPID_PUBLIC_KEY;
+
+      if (!vapidPublicKey) {
+        console.warn("VAPID public key not found");
+        return;
+      }
+
+      const pushService = new PushNotificationService(vapidPublicKey);
+
+      // Check if push notifications are supported
+      if (!pushService.isSupported()) {
+        return;
+      }
+
+      // Initialize and request permission
+      const hasPermission = await pushService.initialize();
+
+      if (hasPermission) {
+        // Subscribe to notifications
+        const subscription = await pushService.subscribe();
+
+        if (subscription) {
+          // Get the current user ID from your context
+          const userId = userData?.me?.user?._id || "anonymous";
+          await pushService.sendSubscriptionToBackend(subscription, userId);
+        }
+      }
+    };
+
+    // Only initialize if we have a user and localStorage
+    if (localStorage && hasSession && userData?.me?.user) {
+      initializePushNotifications();
+    }
+  }, [localStorage, hasSession, userData?.me?.user]);
 
   /**
    * Function to get and set the user if signed in
@@ -133,7 +172,6 @@ const App: React.FC = () => {
     if (!hasSession) {
       setTimeout(() => {
         setSession();
-        console.log("hasSession", hasSession);
       }, 3000);
     }
 
@@ -230,10 +268,72 @@ const App: React.FC = () => {
         layout="stacked"
         isOpen={!!prompt && !firstTimeFlag}
       ></IonToast>
+
       <IonReactRouter>
-        {window.location.hostname.split(".")[0] !== "app" &&
-        window.location.hostname.split(".")[0] !== "bible" ? (
-          renderOtherApps()
+        {/* Smart detection: localhost = main app, subdomains = routing */}
+        {window.location.hostname === "localhost" ||
+        (window.location.hostname.split(".")[0] !== "app" &&
+          window.location.hostname.split(".")[0] !== "bible") ? (
+          window.location.hostname === "localhost" ? (
+            // Always show main app for localhost (testing)
+            <>
+              {localStorage && hasSession && !splashScreen ? (
+                <IonTabs>
+                  {/* App Router */}
+                  <IonRouterOutlet animated={false}>
+                    <Switch>
+                      <Route exact path="/">
+                        <Redirect to="/home" />
+                      </Route>
+                      <Route exact path="/home">
+                        <Tab1 />
+                      </Route>
+                      <Route exact path="/read">
+                        <Tab2 />
+                      </Route>
+                      <Route
+                        exact
+                        path="/read/:currentLanguage?/:currentBibleId?/:currentBookId?/:currentChapterNumber?"
+                      >
+                        <Tab2 />
+                      </Route>
+                      <Route path="/me">
+                        <Tab3 />
+                      </Route>
+                      <Route path="/login">
+                        <Auth />
+                      </Route>
+                      <Route path="/signup">
+                        <Auth />
+                      </Route>
+                      <Route path="/signupupdateuser">
+                        <Auth />
+                      </Route>
+                    </Switch>
+                  </IonRouterOutlet>
+                  <IonTabBar slot="bottom">
+                    <IonTabButton tab="tab1" href="/home">
+                      <IonIcon icon={home} />
+                      <IonLabel>Home</IonLabel>
+                    </IonTabButton>
+                    <IonTabButton tab="tab2" href="/read">
+                      <IonIcon icon={book} />
+                      <IonLabel>Read</IonLabel>
+                    </IonTabButton>
+                    <IonTabButton tab="tab3" href="/me">
+                      <IonIcon icon={happy} />
+                      <IonLabel>Me</IonLabel>
+                    </IonTabButton>
+                  </IonTabBar>
+                </IonTabs>
+              ) : (
+                <SplashScreen />
+              )}
+            </>
+          ) : (
+            // Subdomain routing for production
+            renderOtherApps()
+          )
         ) : (
           <>
             {localStorage && hasSession && !splashScreen ? (
