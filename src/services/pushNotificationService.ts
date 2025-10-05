@@ -21,7 +21,7 @@ export class PushNotificationService {
 
     try {
       // Register service worker
-      const registration = await navigator.serviceWorker.register("/sw.js");
+      await navigator.serviceWorker.register("/sw.js");
 
       // Request permission
       const permission = await Notification.requestPermission();
