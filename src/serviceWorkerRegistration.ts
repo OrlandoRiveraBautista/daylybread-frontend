@@ -71,11 +71,19 @@ function registerValidSW(swUrl: string, config?: Config) {
         installingWorker.onstatechange = () => {
           if (installingWorker.state === "installed") {
             if (navigator.serviceWorker.controller) {
-              // Force the new service worker to activate immediately
+              // Ask the new service worker to activate
               installingWorker.postMessage({ type: "SKIP_WAITING" });
 
-              // Reload the page to activate the new service worker
-              window.location.reload();
+              // Reload once when the new service worker takes control
+              let hasReloaded = false;
+              navigator.serviceWorker.addEventListener(
+                "controllerchange",
+                () => {
+                  if (hasReloaded) return;
+                  hasReloaded = true;
+                  window.location.reload();
+                }
+              );
             } else {
               // First time installation
               if (config && config.onSuccess) {

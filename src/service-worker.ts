@@ -24,6 +24,73 @@ clientsClaim();
 // even if you decide not to use precaching. See https://cra.link/PWA
 precacheAndRoute(self.__WB_MANIFEST);
 
+// --- Push Notifications (migrated from public/sw.js) ---
+// Handle incoming push events
+self.addEventListener("push", (event: PushEvent) => {
+  if (!event.data) return;
+
+  const data = event.data.json();
+
+  // Only proceed if Notification API is available and permission granted
+  if (
+    !("Notification" in self) ||
+    (self as any).Notification.permission !== "granted"
+  ) {
+    return;
+  }
+
+  const options: NotificationOptions = {
+    body: data.body,
+    icon: data.icon || "/icon-192x192.png",
+    badge: data.badge || "/badge-72x72.png",
+    tag: data.tag || "daylybread-notification",
+    data: data.data,
+    requireInteraction: false,
+    silent: false,
+    timestamp: Date.now(),
+    vibrate: [200, 100, 200],
+    actions: [
+      { action: "open", title: "Open App", icon: "/action-icon.png" },
+      { action: "dismiss", title: "Dismiss", icon: "/action-icon.png" },
+    ],
+    renotify: true,
+  };
+
+  event.waitUntil(self.registration.showNotification(data.title, options));
+});
+
+// Handle notification clicks
+self.addEventListener("notificationclick", (event: NotificationEvent) => {
+  event.notification.close();
+  if ((event as any).action === "dismiss") return;
+
+  const url =
+    (event.notification as any).data?.url ||
+    (event.notification as any).url ||
+    "/";
+
+  event.waitUntil(
+    self.clients
+      .matchAll({ type: "window", includeUncontrolled: true })
+      .then((clientList) => {
+        for (const client of clientList) {
+          if ((client as WindowClient).url.includes(url) && "focus" in client) {
+            return (client as WindowClient).focus();
+          }
+        }
+        if (self.clients.openWindow) {
+          return self.clients.openWindow(url);
+        }
+        return undefined;
+      })
+  );
+});
+
+// Optional: notification close analytics hook
+self.addEventListener("notificationclose", () => {
+  // no-op
+});
+
 // Set up App Shell-style routing, so that all navigation requests
 // are fulfilled with your index.html shell. Learn more at
 // https://developers.google.com/web/fundamentals/architecture/app-shell

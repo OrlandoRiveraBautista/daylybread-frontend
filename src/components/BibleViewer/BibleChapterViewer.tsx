@@ -21,6 +21,9 @@ import useBibleHistory from "../utility/hooks/useBibleHistory";
 import useBibleNavigator from "../utility/hooks/useBibleNavigator";
 import useBible from "../utility/hooks/useBible";
 
+/* Hooks */
+import { useHaptic } from "../../hooks/useHaptic";
+
 /* Types */
 import { Swiper as SwiperType } from "swiper/types";
 
@@ -45,6 +48,7 @@ const BibleChapterViewer: React.FC = () => {
   useBibleHistory();
   const { nextChapter, backChapter } = useBibleNavigator();
   const { currentVersesLoading } = useBible();
+  const { triggerSlideHaptic } = useHaptic();
 
   /* Side Effects */
   useEffect(() => {
@@ -103,11 +107,14 @@ const BibleChapterViewer: React.FC = () => {
             longSwipes={false}
             onSlideNextTransitionStart={() => {
               if (isProgrammaticSlide.value) return;
+              // Trigger haptic feedback for slide change
+              triggerSlideHaptic();
               nextChapter();
             }}
             onSlidePrevTransitionStart={() => {
               if (isProgrammaticSlide.value) return;
-
+              // Trigger haptic feedback for slide change
+              triggerSlideHaptic();
               backChapter();
             }}
             slidesPerView={1}

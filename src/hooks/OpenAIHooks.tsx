@@ -1,6 +1,7 @@
 import { gql } from "../__generated__/gql";
 import { useLazyQuery, useSubscription } from "@apollo/client";
 import { useState } from "react";
+import { useHaptic } from "./useHaptic";
 
 /* Queries */
 // Name should be changed to getChatGpt
@@ -29,17 +30,23 @@ export const useLazyOpenAI = () => {
 
 export const useOpenAIResponseStream = (deviceId: string) => {
   const [streamBuffer, setStreamBuffer] = useState<string>("");
+  const { triggerChatHaptic, triggerChatCompleteHaptic } = useHaptic();
 
   const { data, loading, error } = useSubscription(OPEN_AI_STREAM_RESPONSE, {
     variables: { deviceId },
     shouldResubscribe: false,
+    skip: !deviceId, // Skip subscription if deviceId is not available
     onData: ({ data }) => {
       if (data?.data?.aiChatReponseUpdated) {
         if (data?.data?.aiChatReponseUpdated === "[DONE]") {
           setStreamBuffer("");
+          // Trigger completion haptic when streaming is done
+          triggerChatCompleteHaptic();
           return;
         }
 
+        // Trigger haptic feedback for each streaming chunk
+        triggerChatHaptic();
         setStreamBuffer((prev) => prev + data?.data?.aiChatReponseUpdated);
       }
     },
