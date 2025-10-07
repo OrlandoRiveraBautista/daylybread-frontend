@@ -1,0 +1,27 @@
+name: Manual Deploy to Firebase Hosting (dev)
+
+on:
+  workflow_dispatch:
+    inputs:
+      channelId:
+        description: "Firebase Hosting channel (use 'live' or a preview channel name)"
+        required: true
+        default: "live"
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    env:
+      REACT_APP_API_URL: "${{ secrets.DEVELOP_API_URL }}"
+      REACT_APP_API_WS_URL: "${{ secrets.DEVELOP_API_WS_URL }}"
+      REACT_APP_GOOGLE_OAUTH_CLIENT_ID: "${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}"
+      REACT_APP_VAPID_PUBLIC_KEY: "${{ secrets.VAPID_PUBLIC_KEY }}"
+    steps:
+      - uses: actions/checkout@v3
+      - run: npm ci && npm install -g @ionic/cli && npm run build
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_DAYLYBREAD_DEV }}"
+          channelId: "${{ github.event.inputs.channelId }}"
+          projectId: daylybread-dev
