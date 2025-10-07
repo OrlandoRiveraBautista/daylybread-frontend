@@ -110,10 +110,10 @@ export class HapticService {
     try {
       if (Capacitor.isNativePlatform()) {
         // Use Capacitor Haptics for native platforms
-        await Haptics.notification({ type: NotificationType.Success });
+        await Haptics.impact({ style: ImpactStyle.Light });
       } else {
-        // Use Web Vibration API for PWA - success pattern
-        navigator.vibrate([100, 50, 100, 50, 100]);
+        // Use Web Vibration API for PWA - single vibration
+        navigator.vibrate(50);
       }
     } catch (error) {
       console.warn("Failed to trigger success haptic:", error);
