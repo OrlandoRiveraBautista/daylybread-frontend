@@ -55,11 +55,30 @@ export class HapticService {
         // Use Capacitor Haptics for native platforms
         await Haptics.impact({ style: ImpactStyle.Light });
       } else {
-        // Use Web Vibration API for PWA
-        navigator.vibrate([50, 30, 50]);
+        // Use Web Vibration API for PWA - toned down original pattern
+        navigator.vibrate([30, 20, 30]);
       }
     } catch (error) {
       console.warn("Failed to trigger chat haptic:", error);
+    }
+  }
+
+  /**
+   * Trigger haptic feedback when chat streaming is complete
+   */
+  public async triggerChatCompleteHaptic(): Promise<void> {
+    if (!(await this.isHapticAvailable())) return;
+
+    try {
+      if (Capacitor.isNativePlatform()) {
+        // Use Capacitor Haptics for native platforms
+        await Haptics.impact({ style: ImpactStyle.Medium });
+      } else {
+        // Use Web Vibration API for PWA - completion pattern
+        navigator.vibrate([50, 25, 50]);
+      }
+    } catch (error) {
+      console.warn("Failed to trigger chat complete haptic:", error);
     }
   }
 
@@ -72,10 +91,10 @@ export class HapticService {
     try {
       if (Capacitor.isNativePlatform()) {
         // Use Capacitor Haptics for native platforms
-        await Haptics.impact({ style: ImpactStyle.Medium });
+        await Haptics.impact({ style: ImpactStyle.Light });
       } else {
-        // Use Web Vibration API for PWA
-        navigator.vibrate([100, 50, 100]);
+        // Use Web Vibration API for PWA - single vibration
+        navigator.vibrate(50);
       }
     } catch (error) {
       console.warn("Failed to trigger slide haptic:", error);

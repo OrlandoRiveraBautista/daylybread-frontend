@@ -30,7 +30,7 @@ export const useLazyOpenAI = () => {
 
 export const useOpenAIResponseStream = (deviceId: string) => {
   const [streamBuffer, setStreamBuffer] = useState<string>("");
-  const { triggerChatHaptic } = useHaptic();
+  const { triggerChatHaptic, triggerChatCompleteHaptic } = useHaptic();
 
   const { data, loading, error } = useSubscription(OPEN_AI_STREAM_RESPONSE, {
     variables: { deviceId },
@@ -40,6 +40,8 @@ export const useOpenAIResponseStream = (deviceId: string) => {
       if (data?.data?.aiChatReponseUpdated) {
         if (data?.data?.aiChatReponseUpdated === "[DONE]") {
           setStreamBuffer("");
+          // Trigger completion haptic when streaming is done
+          triggerChatCompleteHaptic();
           return;
         }
 

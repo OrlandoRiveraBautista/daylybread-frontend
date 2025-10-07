@@ -36,6 +36,12 @@ export const useHaptic = () => {
     }
   };
 
+  const triggerChatCompleteHaptic = async () => {
+    if (isAvailable) {
+      await hapticService.triggerChatCompleteHaptic();
+    }
+  };
+
   const triggerSlideHaptic = async () => {
     if (isAvailable) {
       await hapticService.triggerSlideHaptic();
@@ -64,6 +70,7 @@ export const useHaptic = () => {
     isAvailable,
     isPWA,
     triggerChatHaptic,
+    triggerChatCompleteHaptic,
     triggerSlideHaptic,
     triggerNavigationHaptic,
     triggerSuccessHaptic,
