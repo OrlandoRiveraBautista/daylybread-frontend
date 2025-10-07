@@ -70,7 +70,7 @@ const TextViewer = forwardRef<TextViewerRefType, ITextViewer>(
       useState<number>(0.25);
 
     const { mediaTimestamps } = useBibleMedia();
-    const { triggerSuccessHaptic, triggerNavigationHaptic } = useHaptic();
+    const { triggerSuccessHaptic } = useHaptic();
 
     useEffect(() => {
       const chapterViewerWrapper = document.getElementById("chapter-viewer");
