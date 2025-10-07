@@ -59,6 +59,7 @@ import { useSetStatusBarColor } from "./utils/statusBarUtils";
 import useAddToHomescreenPrompt from "./utils/addToHomeScreen";
 import { generateUUID } from "./utils/polyfills";
 import { PushNotificationService } from "./services/pushNotificationService";
+import useGlobalModalHaptics from "./hooks/useGlobalModalHaptics";
 
 setupIonicReact({ mode: "md" });
 
@@ -69,6 +70,7 @@ const App: React.FC = () => {
   const [localStorage, setLocalStorage] = useState<Database>();
   const [splashScreen, setSplashScreen] = useState<boolean>(true);
   const { startTour } = useTour();
+  useGlobalModalHaptics();
 
   /** Hooks declaration */
   const { getMe, data: userData } = useMe();
@@ -147,7 +149,14 @@ const App: React.FC = () => {
    */
   useEffect(() => {
     const getLocalStorage = async () => {
-      setLocalStorage(await StorageService.getInstance());
+      const storage = await StorageService.getInstance();
+      setLocalStorage(storage);
+
+      // Immediately try to get session and set device ID
+      const session = await storage.get("session");
+      if (session?.deviceId) {
+        setDevice({ id: session.deviceId });
+      }
     };
 
     const splashScreenTimer = setTimeout(() => {

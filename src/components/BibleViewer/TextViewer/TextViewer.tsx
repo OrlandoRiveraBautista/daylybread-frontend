@@ -15,6 +15,7 @@ import { getVerseClass } from "../../../utils/support";
 
 /* Context */
 import { useAppContext } from "../../../context/context";
+import { useHaptic } from "../../../hooks/useHaptic";
 
 /* Types & Interfaces*/
 import { BbVerse } from "../../../__generated__/graphql";
@@ -69,6 +70,7 @@ const TextViewer = forwardRef<TextViewerRefType, ITextViewer>(
       useState<number>(0.25);
 
     const { mediaTimestamps } = useBibleMedia();
+    const { triggerSuccessHaptic } = useHaptic();
 
     useEffect(() => {
       const chapterViewerWrapper = document.getElementById("chapter-viewer");
@@ -103,6 +105,7 @@ const TextViewer = forwardRef<TextViewerRefType, ITextViewer>(
         addVerseToList(verseObj);
         setSelectedElement([verseNumber]);
         setOpenSelectedVersesModal(true);
+        triggerSuccessHaptic();
         return;
       }
 
@@ -118,7 +121,7 @@ const TextViewer = forwardRef<TextViewerRefType, ITextViewer>(
         if (tempValue.length === 0) {
           setOpenSelectedVersesModal(false);
         }
-
+        triggerSuccessHaptic();
         return;
       }
 
@@ -128,6 +131,7 @@ const TextViewer = forwardRef<TextViewerRefType, ITextViewer>(
       setOpenSelectedVersesModal(true);
 
       addVerseToList(verseObj!);
+      triggerSuccessHaptic();
       return;
     };
 

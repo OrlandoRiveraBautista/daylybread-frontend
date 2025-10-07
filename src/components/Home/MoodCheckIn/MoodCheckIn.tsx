@@ -8,11 +8,12 @@ import {
   IonLoading,
   IonToast,
 } from "@ionic/react";
-import { useMoodCheckIn } from "./hooks/useMoodCheckIn";
+import { MoodOption, useMoodCheckIn } from "./hooks/useMoodCheckIn";
 import MoodCheckInHeader from "./components/MoodCheckInHeader";
 import MoodSelector from "./components/MoodSelector";
 import VerseResponse from "./components/VerseResponse";
 import { MOOD_OPTIONS } from "./constants/moodOptions";
+import { useHaptic } from "../../../hooks/useHaptic";
 
 /* Styles */
 import "./MoodCheckIn.scss";
@@ -32,6 +33,17 @@ const MoodCheckIn: React.FC = () => {
     getUserPreferredBibleVersion,
     getBibleHistoryContext,
   } = useMoodCheckIn();
+  const { triggerSuccessHaptic, triggerErrorHaptic } = useHaptic();
+
+  const handleMoodSelectWithHaptic = (mood: MoodOption) => {
+    triggerSuccessHaptic();
+    handleMoodSelect(mood);
+  };
+
+  const handleNewCheckInWithHaptic = () => {
+    triggerSuccessHaptic();
+    handleNewCheckIn();
+  };
 
   if (!selectedMood || !currentResponse) {
     return (
@@ -48,7 +60,7 @@ const MoodCheckIn: React.FC = () => {
 
                 <MoodSelector
                   moodOptions={MOOD_OPTIONS}
-                  onMoodSelect={handleMoodSelect}
+                  onMoodSelect={handleMoodSelectWithHaptic}
                   isLoading={verseLoading}
                   disabled={verseLoading}
                 />
@@ -82,7 +94,7 @@ const MoodCheckIn: React.FC = () => {
             response={currentResponse}
             bibleVersion={getUserPreferredBibleVersion()}
             nextRequestAllowed={nextRequestAllowed}
-            onNewCheckIn={handleNewCheckIn}
+            onNewCheckIn={handleNewCheckInWithHaptic}
           />
         </IonCol>
       </IonRow>
@@ -97,7 +109,10 @@ const MoodCheckIn: React.FC = () => {
       {/* Error toast */}
       <IonToast
         isOpen={showErrorToast}
-        onDidDismiss={handleErrorToastDismiss}
+        onDidDismiss={() => {
+          triggerErrorHaptic();
+          handleErrorToastDismiss();
+        }}
         message={
           verseError || moodsError || "Something went wrong. Please try again."
         }

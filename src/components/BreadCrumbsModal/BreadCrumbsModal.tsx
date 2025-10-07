@@ -26,6 +26,9 @@ import {
   useOpenAIResponseStream,
 } from "../../hooks/OpenAIHooks";
 
+/* Hooks */
+import { useHaptic } from "../../hooks/useHaptic";
+
 /* Styles */
 import "../BibleNavModal/BibleNavModal.scss";
 import "./BreadCrumbsModal.scss";
@@ -56,8 +59,9 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
   const { selectedVersesCitation, deviceInfo } = useAppContext();
   const { getChatGpt, data } = useLazyOpenAI();
   const { streamBuffer: openAIReponseStream } = useOpenAIResponseStream(
-    deviceInfo!.id
+    deviceInfo?.id || ""
   );
+  const { triggerSuccessHaptic } = useHaptic();
 
   // useEffect(() => {
   //   console.log("getting messages", JSON.stringify(messages));
@@ -126,6 +130,9 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
       sender: "You",
     };
     setMessages((prevMessage) => [...prevMessage, messageObject]);
+
+    // Trigger haptic feedback when user submits a message
+    triggerSuccessHaptic();
 
     getChatGpt({
       variables: {

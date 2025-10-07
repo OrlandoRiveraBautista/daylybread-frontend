@@ -20,8 +20,9 @@ export class PushNotificationService {
     }
 
     try {
-      // Register service worker
-      await navigator.serviceWorker.register("/sw.js");
+      // Use the existing CRA service worker registration; do not register a second SW
+      // Wait until the current service worker is ready
+      await navigator.serviceWorker.ready;
 
       // Request permission
       const permission = await Notification.requestPermission();
@@ -90,7 +91,13 @@ export class PushNotificationService {
     userId: string
   ): Promise<boolean> {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}`, {
+      // Ensure we hit the GraphQL endpoint in production, e.g. https://api.dev.../graphql
+      const baseUrl = process.env.REACT_APP_API_URL || "";
+      const graphqlUrl = baseUrl.endsWith("/graphql")
+        ? baseUrl
+        : `${baseUrl.replace(/\/$/, "")}/graphql`;
+
+      const response = await fetch(graphqlUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
