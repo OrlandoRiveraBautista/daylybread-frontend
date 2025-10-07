@@ -147,7 +147,14 @@ const App: React.FC = () => {
    */
   useEffect(() => {
     const getLocalStorage = async () => {
-      setLocalStorage(await StorageService.getInstance());
+      const storage = await StorageService.getInstance();
+      setLocalStorage(storage);
+
+      // Immediately try to get session and set device ID
+      const session = await storage.get("session");
+      if (session?.deviceId) {
+        setDevice({ id: session.deviceId });
+      }
     };
 
     const splashScreenTimer = setTimeout(() => {
