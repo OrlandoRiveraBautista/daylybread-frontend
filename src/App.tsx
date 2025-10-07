@@ -59,7 +59,7 @@ import { useSetStatusBarColor } from "./utils/statusBarUtils";
 import useAddToHomescreenPrompt from "./utils/addToHomeScreen";
 import { generateUUID } from "./utils/polyfills";
 import { PushNotificationService } from "./services/pushNotificationService";
-import { useHaptic } from "./hooks/useHaptic";
+import useGlobalModalHaptics from "./hooks/useGlobalModalHaptics";
 
 setupIonicReact({ mode: "md" });
 
@@ -70,7 +70,7 @@ const App: React.FC = () => {
   const [localStorage, setLocalStorage] = useState<Database>();
   const [splashScreen, setSplashScreen] = useState<boolean>(true);
   const { startTour } = useTour();
-  const { triggerNavigationHaptic } = useHaptic();
+  useGlobalModalHaptics();
 
   /** Hooks declaration */
   const { getMe, data: userData } = useMe();
@@ -87,32 +87,6 @@ const App: React.FC = () => {
       });
     }
   }, []);
-
-  // Global minimal haptics for all IonModal open/close
-  useEffect(() => {
-    const handleDidPresent = () => triggerNavigationHaptic();
-    const handleDidDismiss = () => triggerNavigationHaptic();
-
-    document.addEventListener(
-      "ionModalDidPresent",
-      handleDidPresent as EventListener
-    );
-    document.addEventListener(
-      "ionModalDidDismiss",
-      handleDidDismiss as EventListener
-    );
-
-    return () => {
-      document.removeEventListener(
-        "ionModalDidPresent",
-        handleDidPresent as EventListener
-      );
-      document.removeEventListener(
-        "ionModalDidDismiss",
-        handleDidDismiss as EventListener
-      );
-    };
-  }, [triggerNavigationHaptic]);
 
   // Add push notification initialization
   useEffect(() => {
