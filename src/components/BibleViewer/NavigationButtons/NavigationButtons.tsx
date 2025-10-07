@@ -13,7 +13,6 @@ import "./NavigationButtons.scss";
 
 /* Images */
 import BreadCrumbsIcon from "../../../assets/icons/BreadCrumbs-icon.svg";
-import { useHaptic } from "../../../hooks/useHaptic";
 
 /* Types */
 import { Swiper as SwiperType } from "swiper/types";
@@ -30,8 +29,6 @@ const NavigationButtons: React.FC<INavigationButtons> = ({
   // const { setIsProgrammaticSlide } = useAppContext();
 
   // const { nextChapter, backChapter } = useBibleNavigator();
-
-  const { triggerNavigationHaptic } = useHaptic();
 
   return (
     <>
@@ -55,10 +52,7 @@ const NavigationButtons: React.FC<INavigationButtons> = ({
           color="light"
           size="small"
           className="bread-crumbs-button"
-          onClick={() => {
-            triggerNavigationHaptic();
-            handleOpenBreadCrumbsModal();
-          }}
+          onClick={handleOpenBreadCrumbsModal}
           id="bread-crumbs-modal"
         >
           <IonIcon

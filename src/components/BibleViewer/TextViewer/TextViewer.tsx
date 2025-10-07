@@ -140,7 +140,6 @@ const TextViewer = forwardRef<TextViewerRefType, ITextViewer>(
 
       setOpenSelectedVersesModal(!openSelectedVersesModal);
       setInitialModalBreakpoint(0.75);
-      triggerNavigationHaptic();
     };
 
     // Pass the ref to the useImperativeHandle hook
