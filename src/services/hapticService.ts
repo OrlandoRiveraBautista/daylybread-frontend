@@ -93,8 +93,8 @@ export class HapticService {
         // Use Capacitor Haptics for native platforms
         await Haptics.impact({ style: ImpactStyle.Light });
       } else {
-        // Use Web Vibration API for PWA - single vibration
-        navigator.vibrate(50);
+        // Use Web Vibration API for PWA - minimal
+        navigator.vibrate(25);
       }
     } catch (error) {
       console.warn("Failed to trigger slide haptic:", error);
@@ -110,10 +110,10 @@ export class HapticService {
     try {
       if (Capacitor.isNativePlatform()) {
         // Use Capacitor Haptics for native platforms
-        await Haptics.impact({ style: ImpactStyle.Heavy });
+        await Haptics.impact({ style: ImpactStyle.Light });
       } else {
-        // Use Web Vibration API for PWA
-        navigator.vibrate([150, 75, 150]);
+        // Use Web Vibration API for PWA - minimal
+        navigator.vibrate(30);
       }
     } catch (error) {
       console.warn("Failed to trigger navigation haptic:", error);

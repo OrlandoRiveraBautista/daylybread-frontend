@@ -13,6 +13,7 @@ import { useAppContext } from "../../context/context";
 
 /* Icons */
 import { pause, play, playSkipBack, playSkipForward } from "ionicons/icons";
+import { useHaptic } from "../../hooks/useHaptic";
 
 /* Styles */
 import "./Player.scss";
@@ -31,6 +32,7 @@ const Player: React.FC<IPlayer> = ({ src, type }: IPlayer) => {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const { setCurrentMediaTimestamp } = useAppContext();
+  const { triggerSuccessHaptic } = useHaptic();
 
   useEffect(() => {
     const audio = audioRef?.current;
@@ -61,11 +63,13 @@ const Player: React.FC<IPlayer> = ({ src, type }: IPlayer) => {
     if (playAudio) {
       audioRef.current?.pause();
       setPlayAudio(false);
+      triggerSuccessHaptic();
       return;
     }
 
     audioRef.current?.play();
     setPlayAudio(true);
+    triggerSuccessHaptic();
     return;
   };
 
