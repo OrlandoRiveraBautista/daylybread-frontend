@@ -14,6 +14,7 @@ import MoodSelector from "./components/MoodSelector";
 import VerseResponse from "./components/VerseResponse";
 import { MOOD_OPTIONS } from "./constants/moodOptions";
 import { useHaptic } from "../../../hooks/useHaptic";
+import { SignInModal } from "../../Modals";
 
 /* Styles */
 import "./MoodCheckIn.scss";
@@ -24,12 +25,14 @@ const MoodCheckIn: React.FC = () => {
     currentResponse,
     nextRequestAllowed,
     showErrorToast,
+    showSignInModal,
     verseLoading,
     verseError,
     moodsError,
     handleMoodSelect,
     handleNewCheckIn,
     handleErrorToastDismiss,
+    handleSignInModalDismiss,
     getUserPreferredBibleVersion,
     getBibleHistoryContext,
   } = useMoodCheckIn();
@@ -82,6 +85,12 @@ const MoodCheckIn: React.FC = () => {
           color="danger"
           position="top"
         />
+
+        {/* Sign-in modal */}
+        <SignInModal
+          isOpen={showSignInModal}
+          onDismiss={handleSignInModalDismiss}
+        />
       </IonGrid>
     );
   }
@@ -119,6 +128,12 @@ const MoodCheckIn: React.FC = () => {
         duration={4000}
         color="danger"
         position="top"
+      />
+
+      {/* Sign-in modal */}
+      <SignInModal
+        isOpen={showSignInModal}
+        onDismiss={handleSignInModalDismiss}
       />
     </IonGrid>
   );
