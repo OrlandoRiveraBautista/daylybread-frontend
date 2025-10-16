@@ -25,9 +25,10 @@ export const useMoodCheckIn = () => {
     null
   );
   const [showErrorToast, setShowErrorToast] = useState(false);
+  const [showSignInModal, setShowSignInModal] = useState(false);
 
   // Get user's current Bible translation from global context
-  const { chosenTranslation } = useAppContext();
+  const { chosenTranslation, userInfo } = useAppContext();
 
   // Get user's Bible history to use their most recently read Bible translation
   const { data: userBibleHistoryData } = useUserBibleHistory();
@@ -101,6 +102,12 @@ export const useMoodCheckIn = () => {
   };
 
   const handleMoodSelect = async (mood: MoodOption) => {
+    // Check if user is authenticated
+    if (!userInfo) {
+      setShowSignInModal(true);
+      return;
+    }
+
     setSelectedMood(mood.tag);
     setCurrentResponse(null); // Clear previous response
 
@@ -164,6 +171,10 @@ export const useMoodCheckIn = () => {
     setShowErrorToast(false);
   };
 
+  const handleSignInModalDismiss = () => {
+    setShowSignInModal(false);
+  };
+
   // Show error toast when there's an API error
   useEffect(() => {
     if (verseError || moodsError) {
@@ -195,6 +206,7 @@ export const useMoodCheckIn = () => {
     currentResponse,
     nextRequestAllowed,
     showErrorToast,
+    showSignInModal,
     verseLoading,
     verseError,
     moodsError,
@@ -204,6 +216,7 @@ export const useMoodCheckIn = () => {
     handleMoodSelect,
     handleNewCheckIn,
     handleErrorToastDismiss,
+    handleSignInModalDismiss,
     getUserPreferredBibleVersion,
     getBibleHistoryContext,
   };

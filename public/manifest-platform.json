@@ -1,0 +1,55 @@
+{
+  "short_name": "Platform Daylybread",
+  "name": "Platform Daylybread",
+  "description": "Administrative and platform tools for Daylybread.",
+  "categories": ["productivity", "utilities", "tools"],
+  "lang": "en",
+  "dir": "ltr",
+  "orientation": "portrait-primary",
+  "theme_color": "#faf9fd",
+  "background_color": "#faf9fd",
+  "scope": "/",
+  "start_url": "/",
+  "display": "standalone",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "assets/icon/Daylybread Icon-small.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon/Daylybread Icon-small-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon/Daylybread Icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon/Daylybread Icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "Open the platform dashboard",
+      "url": "/",
+      "icons": [
+        {
+          "src": "assets/icon/Daylybread Icon-small.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}
