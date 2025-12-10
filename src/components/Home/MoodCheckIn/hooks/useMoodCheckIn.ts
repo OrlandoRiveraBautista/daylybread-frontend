@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import { useMoodApi, MoodRequestInput } from "../../../../hooks/useMoodApi";
 import { useAppContext } from "../../../../context/context";
-import { useUserBibleHistory, useCreateBookmarks } from "../../../../hooks/UserHooks";
+import {
+  useUserBibleHistory,
+  useCreateBookmarks,
+} from "../../../../hooks/UserHooks";
 
 export interface MoodOption {
   emoji: string;
@@ -26,13 +29,15 @@ export const useMoodCheckIn = () => {
   );
   const [showErrorToast, setShowErrorToast] = useState(false);
   const [showSignInModal, setShowSignInModal] = useState(false);
-  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const [saveStatus, setSaveStatus] = useState<
+    "idle" | "saving" | "saved" | "error"
+  >("idle");
 
   // Get user's current Bible translation from global context
   const { chosenTranslation, userInfo } = useAppContext();
 
   // Bookmark mutation
-  const { setBookmarks, loading: bookmarkLoading, data: bookmarkData, error: bookmarkError } = useCreateBookmarks();
+  const { setBookmarks, loading: bookmarkLoading } = useCreateBookmarks();
 
   // Get user's Bible history to use their most recently read Bible translation
   const { data: userBibleHistoryData } = useUserBibleHistory();
@@ -169,7 +174,7 @@ export const useMoodCheckIn = () => {
     setNextRequestAllowed(null); // Reset the timer
     resetVerse(); // Reset the verse data
     setShowErrorToast(false);
-    setSaveStatus('idle'); // Reset save status
+    setSaveStatus("idle"); // Reset save status
   };
 
   const handleErrorToastDismiss = () => {
@@ -184,11 +189,13 @@ export const useMoodCheckIn = () => {
    * Parses a Bible reference string like "John 3:16" or "1 Corinthians 13:4-7"
    * Returns parsed book name, chapter, and verse information
    */
-  const parseReference = (reference: string): { 
-    bookName: string; 
-    chapter: number; 
-    verseStart: number; 
-    verseEnd?: number 
+  const parseReference = (
+    reference: string
+  ): {
+    bookName: string;
+    chapter: number;
+    verseStart: number;
+    verseEnd?: number;
   } | null => {
     try {
       // Match patterns like "John 3:16", "1 John 4:8", "Song of Solomon 2:4", "Romans 8:28-30"
@@ -218,7 +225,7 @@ export const useMoodCheckIn = () => {
       return;
     }
 
-    setSaveStatus('saving');
+    setSaveStatus("saving");
 
     try {
       const bibleVersion = getUserPreferredBibleVersion();
@@ -227,7 +234,8 @@ export const useMoodCheckIn = () => {
       // Create a verse object that matches the BbVerse structure
       const verseObject = {
         bookName: parsed?.bookName || currentResponse.reference,
-        bookId: parsed?.bookName?.toUpperCase().replace(/\s+/g, '') || undefined,
+        bookId:
+          parsed?.bookName?.toUpperCase().replace(/\s+/g, "") || undefined,
         chapter: parsed?.chapter,
         verseStart: parsed?.verseStart,
         verseEnd: parsed?.verseEnd || parsed?.verseStart,
@@ -247,15 +255,15 @@ export const useMoodCheckIn = () => {
         },
       });
 
-      setSaveStatus('saved');
-      
+      setSaveStatus("saved");
+
       // Reset status after a delay
       setTimeout(() => {
-        setSaveStatus('idle');
+        setSaveStatus("idle");
       }, 3000);
     } catch (err) {
       console.error("Error saving mood verse to bookmarks:", err);
-      setSaveStatus('error');
+      setSaveStatus("error");
       setShowErrorToast(true);
     }
   };
