@@ -88,10 +88,14 @@ const NFC: React.FC = () => {
       label: "Share",
       value: "share",
       onClick: () => {
+        const shareUrl = nfcConfig?.mainButton.url || window.location.href;
+        const shareTitle = nfcConfig?.title || "Check this out!";
+        const shareDescription = nfcConfig?.description || "";
+
         Share.share({
-          title: "Share with everyone!",
-          // text: "Shar",
-          url: nfcConfig?.mainButton.url,
+          title: shareTitle,
+          text: `${shareTitle}\n\n${shareDescription}\n\n🔗 ${shareUrl}`,
+          url: shareUrl,
         });
       },
     });

@@ -50,6 +50,17 @@ const BibleChapterViewer: React.FC = () => {
   const { currentVersesLoading } = useBible();
   const { triggerSlideHaptic } = useHaptic();
 
+  /**
+   * Scrolls the IonContent to the top of the page
+   * Called after sliding to a new chapter
+   */
+  const scrollToTop = () => {
+    const ionContent = document.querySelector("ion-content");
+    if (ionContent) {
+      (ionContent as HTMLIonContentElement).scrollToTop(100);
+    }
+  };
+
   /* Side Effects */
   useEffect(() => {
     if (
@@ -116,6 +127,12 @@ const BibleChapterViewer: React.FC = () => {
               // Trigger haptic feedback for slide change
               triggerSlideHaptic();
               backChapter();
+            }}
+            onSlideChangeTransitionEnd={() => {
+              // Scroll to top of the page after sliding to a new chapter
+              if (!isProgrammaticSlide.value) {
+                scrollToTop();
+              }
             }}
             slidesPerView={1}
             spaceBetween={30}

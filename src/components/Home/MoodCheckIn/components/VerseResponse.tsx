@@ -5,15 +5,18 @@ import {
   IonText,
   IonButton,
   IonIcon,
+  IonSpinner,
 } from "@ionic/react";
 import {
   share,
   // chatbubble,
-  bookmark,
+  bookmarkOutline,
+  checkmarkCircle,
   arrowBack,
 } from "ionicons/icons";
 import { VerseResponse as VerseResponseType } from "../hooks/useMoodCheckIn";
 import NextMoodTimer from "./NextMoodTimer";
+import { getBibleUrl } from "../../../../utils/support";
 import "./VerseResponse.scss";
 
 interface VerseResponseProps {
@@ -24,6 +27,8 @@ interface VerseResponseProps {
   onSave?: () => void;
   onShare?: () => void;
   onTalkToGod?: () => void;
+  saveStatus?: "idle" | "saving" | "saved" | "error";
+  isSaving?: boolean;
 }
 
 const VerseResponse: React.FC<VerseResponseProps> = ({
@@ -34,8 +39,11 @@ const VerseResponse: React.FC<VerseResponseProps> = ({
   onSave,
   onShare,
   // onTalkToGod,
+  saveStatus = "idle",
+  isSaving = false,
 }) => {
   const handleSave = () => {
+    if (saveStatus === "saved" || isSaving) return; // Prevent double-saving
     if (onSave) {
       onSave();
     } else {
@@ -43,14 +51,45 @@ const VerseResponse: React.FC<VerseResponseProps> = ({
     }
   };
 
+  const getSaveButtonContent = () => {
+    if (isSaving || saveStatus === "saving") {
+      return (
+        <>
+          <IonSpinner
+            name="crescent"
+            style={{ width: "16px", height: "16px", marginRight: "8px" }}
+          />
+          Saving...
+        </>
+      );
+    }
+    if (saveStatus === "saved") {
+      return (
+        <>
+          <IonIcon icon={checkmarkCircle} slot="start" />
+          Saved!
+        </>
+      );
+    }
+    return (
+      <>
+        <IonIcon icon={bookmarkOutline} slot="start" />
+        Save
+      </>
+    );
+  };
+
   const handleShare = () => {
+    const appUrl = getBibleUrl();
+    const shareText = `"${response.verse}"\n\n— ${response.reference} (${bibleVersion})\n\n💭 ${response.reflection}\n\n✨ Discover personalized verses for your mood:\n${appUrl}\n\n📖 Shared via Daylybread`;
+
     if (onShare) {
       onShare();
     } else if (navigator.share) {
       navigator.share({
-        title: "Daily Scripture from Daylybread",
-        text: `"${response.verse}" - ${response.reference}\n\n${response.reflection}\n\nShared from Daylybread - Your smart Bible companion with AI assistance.\n\n✨ Get personalized verses for your mood at bible.daylybread.com`,
-        url: `https://bible.daylybread.com/`,
+        title: "A verse for your heart - Daylybread",
+        text: shareText,
+        url: appUrl,
       });
     }
   };
@@ -112,13 +151,14 @@ const VerseResponse: React.FC<VerseResponseProps> = ({
 
         <div className="action-buttons">
           <IonButton
-            fill="outline"
+            fill={saveStatus === "saved" ? "solid" : "outline"}
             size="small"
             onClick={handleSave}
-            className="action-btn"
+            className={`action-btn ${saveStatus === "saved" ? "saved" : ""}`}
+            disabled={isSaving || saveStatus === "saving"}
+            color={saveStatus === "saved" ? "success" : undefined}
           >
-            <IonIcon icon={bookmark} slot="start" />
-            Save
+            {getSaveButtonContent()}
           </IonButton>
           <IonButton
             fill="outline"
