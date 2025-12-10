@@ -29,10 +29,13 @@ const MoodCheckIn: React.FC = () => {
     verseLoading,
     verseError,
     moodsError,
+    saveStatus,
+    bookmarkLoading,
     handleMoodSelect,
     handleNewCheckIn,
     handleErrorToastDismiss,
     handleSignInModalDismiss,
+    handleSaveMoodVerse,
     getUserPreferredBibleVersion,
     getBibleHistoryContext,
   } = useMoodCheckIn();
@@ -46,6 +49,11 @@ const MoodCheckIn: React.FC = () => {
   const handleNewCheckInWithHaptic = () => {
     triggerSuccessHaptic();
     handleNewCheckIn();
+  };
+
+  const handleSaveWithHaptic = async () => {
+    await handleSaveMoodVerse();
+    triggerSuccessHaptic();
   };
 
   if (!selectedMood || !currentResponse) {
@@ -104,6 +112,9 @@ const MoodCheckIn: React.FC = () => {
             bibleVersion={getUserPreferredBibleVersion()}
             nextRequestAllowed={nextRequestAllowed}
             onNewCheckIn={handleNewCheckInWithHaptic}
+            onSave={handleSaveWithHaptic}
+            saveStatus={saveStatus}
+            isSaving={bookmarkLoading}
           />
         </IonCol>
       </IonRow>

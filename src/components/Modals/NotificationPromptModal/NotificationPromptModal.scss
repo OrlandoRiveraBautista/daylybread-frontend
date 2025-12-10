@@ -1,0 +1,187 @@
+@import "../../../theme/variables.scss";
+
+.notification-icon-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-top: 8px;
+
+  .icon-background {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(
+      135deg,
+      $color-primary 0%,
+      $color-tertiary 100%
+    );
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 8px 24px rgba($color-primary, 0.35);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  .notification-icon {
+    font-size: 40px;
+    color: white;
+  }
+
+  .sparkle-icon {
+    position: absolute;
+    font-size: 20px;
+    color: $color-warning;
+    animation: sparkle 1.5s ease-in-out infinite;
+
+    &.sparkle-1 {
+      top: 0;
+      right: calc(50% - 55px);
+      animation-delay: 0s;
+    }
+
+    &.sparkle-2 {
+      bottom: 10px;
+      left: calc(50% - 55px);
+      animation-delay: 0.5s;
+    }
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes sparkle {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(0.8) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1) rotate(15deg);
+  }
+}
+
+.modal-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  padding: 0;
+}
+
+.notification-text {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+}
+
+.main-text {
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 0;
+  text-align: center;
+  color: var(--ion-text-color);
+  opacity: 0.85;
+}
+
+.benefits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+  padding: 16px;
+  background: var(--ion-surface-container);
+  border-radius: var(--ion-border-radius);
+
+  .benefit-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .benefit-emoji {
+      font-size: 20px;
+    }
+
+    .benefit-text {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ion-text-color);
+    }
+  }
+}
+
+.notification-actions {
+  padding-top: 16px;
+
+  ion-button {
+    width: 100%;
+    margin: 4px 0;
+    --box-shadow: none;
+    text-transform: none;
+    font-weight: 600;
+  }
+
+  .enable-button {
+    --background: linear-gradient(
+      135deg,
+      $color-primary 0%,
+      $color-tertiary 100%
+    );
+    --box-shadow: 0 4px 16px rgba($color-primary, 0.3);
+    height: 48px;
+    font-size: 16px;
+  }
+
+  .dismiss-button {
+    height: 40px;
+    font-size: 14px;
+  }
+}
+
+.dont-ask-row {
+  margin-top: 8px;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.dont-ask-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.dont-ask-checkbox {
+  --size: 18px;
+  --border-radius: 4px;
+}
+
+.dont-ask-text {
+  font-size: 13px;
+  cursor: pointer;
+}
+
+// Dark mode adjustments
+@media (prefers-color-scheme: dark) {
+  .notification-icon-container {
+    .icon-background {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+  }
+
+  .benefits-list {
+    background: var(--ion-surface-container);
+  }
+
+  .enable-button {
+    --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  }
+}
