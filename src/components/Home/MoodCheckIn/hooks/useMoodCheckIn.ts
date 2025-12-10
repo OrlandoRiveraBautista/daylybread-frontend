@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useMoodApi, MoodRequestInput } from "../../../../hooks/useMoodApi";
 import { useAppContext } from "../../../../context/context";
-import { useUserBibleHistory } from "../../../../hooks/UserHooks";
+import { useUserBibleHistory, useCreateBookmarks } from "../../../../hooks/UserHooks";
 
 export interface MoodOption {
   emoji: string;
@@ -26,9 +26,13 @@ export const useMoodCheckIn = () => {
   );
   const [showErrorToast, setShowErrorToast] = useState(false);
   const [showSignInModal, setShowSignInModal] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
 
   // Get user's current Bible translation from global context
   const { chosenTranslation, userInfo } = useAppContext();
+
+  // Bookmark mutation
+  const { setBookmarks, loading: bookmarkLoading, data: bookmarkData, error: bookmarkError } = useCreateBookmarks();
 
   // Get user's Bible history to use their most recently read Bible translation
   const { data: userBibleHistoryData } = useUserBibleHistory();
@@ -165,6 +169,7 @@ export const useMoodCheckIn = () => {
     setNextRequestAllowed(null); // Reset the timer
     resetVerse(); // Reset the verse data
     setShowErrorToast(false);
+    setSaveStatus('idle'); // Reset save status
   };
 
   const handleErrorToastDismiss = () => {
@@ -173,6 +178,86 @@ export const useMoodCheckIn = () => {
 
   const handleSignInModalDismiss = () => {
     setShowSignInModal(false);
+  };
+
+  /**
+   * Parses a Bible reference string like "John 3:16" or "1 Corinthians 13:4-7"
+   * Returns parsed book name, chapter, and verse information
+   */
+  const parseReference = (reference: string): { 
+    bookName: string; 
+    chapter: number; 
+    verseStart: number; 
+    verseEnd?: number 
+  } | null => {
+    try {
+      // Match patterns like "John 3:16", "1 John 4:8", "Song of Solomon 2:4", "Romans 8:28-30"
+      const match = reference.match(/^(.+?)\s+(\d+):(\d+)(?:-(\d+))?$/);
+      if (!match) return null;
+
+      const [, bookName, chapter, verseStart, verseEnd] = match;
+      return {
+        bookName: bookName.trim(),
+        chapter: parseInt(chapter, 10),
+        verseStart: parseInt(verseStart, 10),
+        verseEnd: verseEnd ? parseInt(verseEnd, 10) : undefined,
+      };
+    } catch {
+      return null;
+    }
+  };
+
+  /**
+   * Saves the current mood verse to bookmarks
+   */
+  const handleSaveMoodVerse = async () => {
+    if (!currentResponse || !userInfo) {
+      if (!userInfo) {
+        setShowSignInModal(true);
+      }
+      return;
+    }
+
+    setSaveStatus('saving');
+
+    try {
+      const bibleVersion = getUserPreferredBibleVersion();
+      const parsed = parseReference(currentResponse.reference);
+
+      // Create a verse object that matches the BbVerse structure
+      const verseObject = {
+        bookName: parsed?.bookName || currentResponse.reference,
+        bookId: parsed?.bookName?.toUpperCase().replace(/\s+/g, '') || undefined,
+        chapter: parsed?.chapter,
+        verseStart: parsed?.verseStart,
+        verseEnd: parsed?.verseEnd || parsed?.verseStart,
+        verseText: currentResponse.verse,
+      };
+
+      // Create a note that includes the reflection (verse is already saved in verseText)
+      const noteText = `💭 Reflection:\n${currentResponse.reflection}\n\n🙏 Mood check-in verse`;
+
+      await setBookmarks({
+        variables: {
+          options: {
+            bibleId: bibleVersion,
+            verses: [JSON.stringify(verseObject)],
+            note: noteText,
+          },
+        },
+      });
+
+      setSaveStatus('saved');
+      
+      // Reset status after a delay
+      setTimeout(() => {
+        setSaveStatus('idle');
+      }, 3000);
+    } catch (err) {
+      console.error("Error saving mood verse to bookmarks:", err);
+      setSaveStatus('error');
+      setShowErrorToast(true);
+    }
   };
 
   // Show error toast when there's an API error
@@ -211,12 +296,15 @@ export const useMoodCheckIn = () => {
     verseError,
     moodsError,
     moods,
+    saveStatus,
+    bookmarkLoading,
 
     // Functions
     handleMoodSelect,
     handleNewCheckIn,
     handleErrorToastDismiss,
     handleSignInModalDismiss,
+    handleSaveMoodVerse,
     getUserPreferredBibleVersion,
     getBibleHistoryContext,
   };

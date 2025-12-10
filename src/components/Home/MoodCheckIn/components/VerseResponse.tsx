@@ -5,11 +5,13 @@ import {
   IonText,
   IonButton,
   IonIcon,
+  IonSpinner,
 } from "@ionic/react";
 import {
   share,
   // chatbubble,
-  bookmark,
+  bookmarkOutline,
+  checkmarkCircle,
   arrowBack,
 } from "ionicons/icons";
 import { VerseResponse as VerseResponseType } from "../hooks/useMoodCheckIn";
@@ -24,6 +26,8 @@ interface VerseResponseProps {
   onSave?: () => void;
   onShare?: () => void;
   onTalkToGod?: () => void;
+  saveStatus?: 'idle' | 'saving' | 'saved' | 'error';
+  isSaving?: boolean;
 }
 
 const VerseResponse: React.FC<VerseResponseProps> = ({
@@ -34,13 +38,41 @@ const VerseResponse: React.FC<VerseResponseProps> = ({
   onSave,
   onShare,
   // onTalkToGod,
+  saveStatus = 'idle',
+  isSaving = false,
 }) => {
   const handleSave = () => {
+    if (saveStatus === 'saved' || isSaving) return; // Prevent double-saving
     if (onSave) {
       onSave();
     } else {
       console.log("Saving verse to bookmarks...");
     }
+  };
+
+  const getSaveButtonContent = () => {
+    if (isSaving || saveStatus === 'saving') {
+      return (
+        <>
+          <IonSpinner name="crescent" style={{ width: '16px', height: '16px', marginRight: '8px' }} />
+          Saving...
+        </>
+      );
+    }
+    if (saveStatus === 'saved') {
+      return (
+        <>
+          <IonIcon icon={checkmarkCircle} slot="start" />
+          Saved!
+        </>
+      );
+    }
+    return (
+      <>
+        <IonIcon icon={bookmarkOutline} slot="start" />
+        Save
+      </>
+    );
   };
 
   const handleShare = () => {
@@ -112,13 +144,14 @@ const VerseResponse: React.FC<VerseResponseProps> = ({
 
         <div className="action-buttons">
           <IonButton
-            fill="outline"
+            fill={saveStatus === 'saved' ? 'solid' : 'outline'}
             size="small"
             onClick={handleSave}
-            className="action-btn"
+            className={`action-btn ${saveStatus === 'saved' ? 'saved' : ''}`}
+            disabled={isSaving || saveStatus === 'saving'}
+            color={saveStatus === 'saved' ? 'success' : undefined}
           >
-            <IonIcon icon={bookmark} slot="start" />
-            Save
+            {getSaveButtonContent()}
           </IonButton>
           <IonButton
             fill="outline"
