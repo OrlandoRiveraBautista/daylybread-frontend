@@ -1,27 +1,33 @@
 import React, { useState } from "react";
 import { IonChip } from "@ionic/react";
 import { Share } from "@capacitor/share";
-import { useLocation } from "react-router-dom";
 
 /* Context */
 import { useAppContext } from "../../../context/context";
 
 /* Utils */
-import { getSelectedText } from "../../../utils/support";
+import {
+  getSelectedText,
+  generateVerseDeepLink,
+  generateShareText,
+} from "../../../utils/support";
 
 /* Components */
 import { BookmarkModal } from "../../Modals";
 
 const SendTextQuickActions: React.FC = () => {
   //global state
-  const { selectedVerseList, chosenBible, chosenBook, chosenChapterNumber } =
-    useAppContext();
+  const {
+    selectedVerseList,
+    chosenBible,
+    chosenBook,
+    chosenChapterNumber,
+    chosenLanguage,
+  } = useAppContext();
 
   // local state
   const [bookMarkModalIsOpen, setBookMarkModalIsOpen] =
     useState<boolean>(false);
-
-  const location = useLocation();
 
   /**
    * Quick actions object for selected text
@@ -44,8 +50,6 @@ const SendTextQuickActions: React.FC = () => {
     },
     // share quick action
     share: async () => {
-      const currentUrl = window.location.origin + location.pathname;
-
       const text = getSelectedText(
         selectedVerseList,
         chosenBible!,
@@ -57,11 +61,26 @@ const SendTextQuickActions: React.FC = () => {
         return;
       }
 
+      // Generate deep link to the specific Bible passage
+      const deepLink = generateVerseDeepLink(
+        chosenLanguage?.id,
+        chosenBible?.abbr || undefined,
+        chosenBook?.bookId || undefined,
+        chosenChapterNumber
+      );
+
+      // Generate share text with the deep link included
+      const shareText = generateShareText(
+        selectedVerseList.map((v) => v.verseText).join(" "),
+        text.split(" ").slice(-2).join(" "), // Get the citation part (e.g., "John 3:16 NIV")
+        deepLink
+      );
+
       await Share.share({
-        title: "Share a text with someone",
-        text: text,
-        url: currentUrl,
-        dialogTitle: "Share with everyone!",
+        title: "Share a verse from Daylybread",
+        text: shareText,
+        url: deepLink,
+        dialogTitle: "Share this verse!",
       });
     },
     // bookmarking quick action

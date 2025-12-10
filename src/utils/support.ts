@@ -280,6 +280,44 @@ const getBibleUrl = () => {
   return `https://bible.${currentDomain}`;
 };
 
+/**
+ * Generates a deep link URL to a specific Bible passage
+ * @param languageId - The numeric language ID (e.g., 17045)
+ * @param bibleId - The Bible translation ID (e.g., "ENGKJV")
+ * @param bookId - The book ID (e.g., "DEU" for Deuteronomy)
+ * @param chapter - The chapter number
+ * @returns A full URL to the specific passage
+ */
+const generateVerseDeepLink = (
+  languageId?: number,
+  bibleId?: string,
+  bookId?: string,
+  chapter?: number
+): string => {
+  const baseUrl = getBibleUrl();
+
+  if (!languageId || !bibleId || !bookId || !chapter) {
+    return baseUrl;
+  }
+
+  return `${baseUrl}/read/${languageId}/${bibleId}/${bookId}/${chapter}`;
+};
+
+/**
+ * Generates share text with a deep link for Bible verses
+ * @param verseText - The verse text content
+ * @param reference - The citation (e.g., "John 3:16 NIV")
+ * @param deepLink - The deep link URL to the passage
+ * @returns Formatted share text with link
+ */
+const generateShareText = (
+  verseText: string,
+  reference: string,
+  deepLink: string
+): string => {
+  return `"${verseText}"\n\n— ${reference}\n\nRead more at: ${deepLink}\n\n📖 Shared via Daylybread`;
+};
+
 export {
   zeroPad,
   clusterNumbers,
@@ -291,4 +329,6 @@ export {
   displayBibleAbbr,
   getVerseClass,
   getBibleUrl,
+  generateVerseDeepLink,
+  generateShareText,
 };
