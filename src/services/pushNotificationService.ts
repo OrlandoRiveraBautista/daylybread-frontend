@@ -1,6 +1,12 @@
 // Frontend service for managing push notifications
 // Use this in your React/Vue/Angular frontend
 
+export type NotificationPermissionStatus =
+  | "granted"
+  | "denied"
+  | "default"
+  | "unsupported";
+
 export class PushNotificationService {
   private vapidPublicKey: string;
 
@@ -11,6 +17,27 @@ export class PushNotificationService {
   // Check if push notifications are supported
   isSupported(): boolean {
     return "serviceWorker" in navigator && "PushManager" in window;
+  }
+
+  // Get current notification permission status
+  getPermissionStatus(): NotificationPermissionStatus {
+    if (!this.isSupported() || !("Notification" in window)) {
+      return "unsupported";
+    }
+    return Notification.permission as NotificationPermissionStatus;
+  }
+
+  // Check if we should prompt for notification permission
+  shouldPromptForPermission(): boolean {
+    const status = this.getPermissionStatus();
+    // Only prompt if permission is "default" (not yet asked) or we want to re-ask
+    // Don't prompt if already granted or explicitly denied
+    return status === "default";
+  }
+
+  // Check if notifications are enabled
+  hasPermission(): boolean {
+    return this.getPermissionStatus() === "granted";
   }
 
   // Register service worker and request permission

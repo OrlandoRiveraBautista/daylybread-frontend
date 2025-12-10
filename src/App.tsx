@@ -60,6 +60,10 @@ import useAddToHomescreenPrompt from "./utils/addToHomeScreen";
 import { generateUUID } from "./utils/polyfills";
 import { PushNotificationService } from "./services/pushNotificationService";
 import useGlobalModalHaptics from "./hooks/useGlobalModalHaptics";
+import useNotificationPrompt from "./hooks/useNotificationPrompt";
+
+/* Modals */
+import { NotificationPromptModal } from "./components/Modals";
 
 setupIonicReact({ mode: "md" });
 
@@ -77,6 +81,13 @@ const App: React.FC = () => {
   useSetStatusBarColor(); // hook to set the status bar color
   const { prompt, promptToInstall } = useAddToHomescreenPrompt();
   useBibleHistoryLoader(); // hook to load bible history on startup
+
+  // Notification prompt hook - asks users periodically to enable notifications
+  const {
+    shouldShowPrompt: showNotificationPrompt,
+    requestPermission: requestNotificationPermission,
+    dismissPrompt: dismissNotificationPrompt,
+  } = useNotificationPrompt(localStorage, hasSession, userData?.me?.user?._id);
 
   // Add version check effect
   useEffect(() => {
@@ -277,6 +288,13 @@ const App: React.FC = () => {
         layout="stacked"
         isOpen={!!prompt && !firstTimeFlag}
       ></IonToast>
+
+      {/* Notification Permission Prompt Modal */}
+      <NotificationPromptModal
+        isOpen={showNotificationPrompt}
+        onDismiss={dismissNotificationPrompt}
+        onRequestPermission={requestNotificationPermission}
+      />
 
       <IonReactRouter>
         {/* Smart detection: localhost = main app, subdomains = routing */}
