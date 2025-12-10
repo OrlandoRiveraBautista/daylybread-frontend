@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import {
   IonRow,
   IonCol,
@@ -18,6 +18,38 @@ import { useAppContext } from "../../context/context";
 /* Types */
 import { BbBook } from "../../__generated__/graphql";
 
+/**
+ * Custom hook to scroll an element into view on mount and provide a manual scroll function
+ * @param selectedId - The ID of the currently selected element (scrolls to this on mount)
+ * @param prefix - The prefix for the element ID (e.g., 'book' or 'chapter')
+ * @returns A function to scroll any element into view by its ID
+ */
+const useScrollIntoView = (
+  selectedId: string | number | undefined,
+  prefix: string
+) => {
+  const scrollToElement = useCallback(
+    (id: string | number) => {
+      const element = document.getElementById(`${prefix}-${id}`);
+      element?.scrollIntoView({ behavior: "smooth", block: "center" });
+    },
+    [prefix]
+  );
+
+  useEffect(() => {
+    if (selectedId === undefined) return;
+    // Use double requestAnimationFrame to ensure DOM is painted before scrolling
+    const rafId = requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        scrollToElement(selectedId);
+      });
+    });
+    return () => cancelAnimationFrame(rafId);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return scrollToElement;
+};
+
 export const BooksPicker: React.FC = () => {
   /* Context and state */
   const {
@@ -30,19 +62,10 @@ export const BooksPicker: React.FC = () => {
     setIsProgrammaticSlide,
   } = useAppContext();
 
-  /**
-   *  Function to scroll chosen selection into view
-   */
-  const scrollBookSelectionIntoView = (book: BbBook) => {
-    const element = document.getElementById(book.bookId!);
-
-    element?.scrollIntoView({ behavior: "smooth", block: "center" });
-  };
-
-  useEffect(() => {
-    if (!chosenBook?.bookId) return;
-    scrollBookSelectionIntoView(chosenBook);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const scrollToBook = useScrollIntoView(
+    chosenBook?.bookId ?? undefined,
+    "book"
+  );
 
   /**
    * Function to render loading skeleton animation
@@ -73,7 +96,7 @@ export const BooksPicker: React.FC = () => {
       setLocalChapters([]);
       setChapterNumber(1); // set the chapter to 1
     }
-    scrollBookSelectionIntoView(book);
+    scrollToBook(book.bookId!);
     setIsProgrammaticSlide({ value: true }); // set the flag for programmically changing the slides
   };
 
@@ -92,7 +115,7 @@ export const BooksPicker: React.FC = () => {
               {/* options rendering */}
               <IonCol size="6" size-md="4" size-lg="4" key={book.bookId}>
                 <IonCard
-                  id={book.bookId!}
+                  id={`book-${book.bookId}`}
                   button
                   className={`outlined-card ${
                     book.bookId === chosenBook?.bookId ? "selected" : ""
@@ -125,14 +148,7 @@ export const ChapterPicker: React.FC = () => {
     setIsProgrammaticSlide,
   } = useAppContext();
 
-  /**
-   *  Function to scroll chosen selection into view
-   */
-  const scrollBookSelectionIntoView = (chapter: number) => {
-    const element = document.getElementById(chapter.toString());
-
-    element?.scrollIntoView({ behavior: "smooth", block: "center" });
-  };
+  const scrollToChapter = useScrollIntoView(chosenChapterNumber, "chapter");
 
   /**
    * Function to render loading skeleton animation
@@ -158,9 +174,9 @@ export const ChapterPicker: React.FC = () => {
     // Check if the chapter number to be set does not equal to the chosen chapter
     if (chapter !== chosenChapterNumber) {
       setLocalChapters([]);
-      setChapterNumber(chapter); // set the chapter to 1
+      setChapterNumber(chapter);
     }
-    scrollBookSelectionIntoView(chapter);
+    scrollToChapter(chapter);
     setIsProgrammaticSlide({ value: true }); // set the flag for programmically changing the slides
   };
 
@@ -175,7 +191,7 @@ export const ChapterPicker: React.FC = () => {
                 {/* options rendering */}
                 <IonCol size="6" size-md="4" size-lg="4" key={chapter}>
                   <IonCard
-                    id={chapter.toString()}
+                    id={`chapter-${chapter}`}
                     button
                     className={`outlined-card ${
                       chosenChapterNumber === chapter ? "selected" : ""
