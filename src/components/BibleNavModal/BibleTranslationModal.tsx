@@ -15,6 +15,7 @@ import { useParams, useHistory } from "react-router";
 
 /* Components */
 import BibleSearchLanguages from "./BibleSearchLanguages";
+import Skeleton from "../Loading/Skeleton";
 
 /* Icons */
 import { text, play } from "ionicons/icons";
@@ -75,7 +76,11 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
   // lazy api call to search languages
   const { searchListOfLanguages, data: languageData } =
     useLazySearchListOfLanguages();
-  const { getListOfBibles, data: biblesData } = useLazyGetListOfBibles();
+  const {
+    getListOfBibles,
+    data: biblesData,
+    loading: biblesLoading,
+  } = useLazyGetListOfBibles();
   const { getListOfBooksFromBible, data: booksData } =
     useLazyGetListOfBooksFromBible();
 
@@ -291,8 +296,29 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
     setStartFromBeginning(!startFromBeginning);
   };
 
+  /**
+   * Function to render loading skeleton animation for bible list
+   * @returns JSX.Element[]
+   */
+  const renderBiblesSkeleton = () => {
+    const items = [];
+    for (let i = 0; i < 8; i++) {
+      items.push(
+        <div key={i} style={{ marginBottom: "12px" }}>
+          <Skeleton height="64px" width="100%" shape="square" />
+        </div>
+      );
+    }
+    return items;
+  };
+
   // function to render modal options
   const renderModalOptions = () => {
+    // Show loading skeleton when fetching bibles
+    if (biblesLoading) {
+      return <div className="ion-padding">{renderBiblesSkeleton()}</div>;
+    }
+
     return biblesData ? (
       <IonList className="tour-step-5">
         {/* Start from Beginning Toggle */}
