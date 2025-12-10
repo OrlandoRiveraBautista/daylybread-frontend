@@ -13,8 +13,12 @@ import {
   SearchbarInputEventDetail,
 } from "@ionic/core";
 
+/* Icons */
+import { searchOutline, globeOutline } from "ionicons/icons";
+
 /* Components */
 import Skeleton from "../Loading/Skeleton";
+import EmptyState from "../EmptyState/EmptyState";
 
 /* Context */
 import { useAppContext } from "../../context/context";
@@ -98,6 +102,49 @@ const BibleSearchLanguages: React.FC = () => {
     return items;
   };
 
+  /**
+   * Function to render content based on state
+   * @returns JSX.Element
+   */
+  const renderContent = () => {
+    // Loading state
+    if (loading) {
+      return <div className="flex-column gap-4">{renderSkeleton()}</div>;
+    }
+
+    // No data yet (initial state)
+    if (!data) {
+      return (
+        <EmptyState
+          icon={globeOutline}
+          title="Search for a Language"
+          description="Type in the search bar above to find Bible translations in your preferred language"
+        />
+      );
+    }
+
+    // Data exists but no results
+    if (data.searchListOfLanguages.data.length === 0) {
+      return (
+        <EmptyState
+          icon={searchOutline}
+          title="No Languages Found"
+          description="Try searching with a different term or check your spelling"
+        />
+      );
+    }
+
+    // Data with results
+    return data.searchListOfLanguages.data.map((lang, index) => (
+      <IonItem button key={index} onClick={() => handleSettingLanguage(lang)}>
+        <IonLabel>
+          <h2>{lang.name}</h2>
+          <p>Bibles: {lang.bibles}</p>
+        </IonLabel>
+      </IonItem>
+    ));
+  };
+
   return (
     <IonModal
       initialBreakpoint={0.75}
@@ -116,24 +163,7 @@ const BibleSearchLanguages: React.FC = () => {
         </div>
       </IonHeader>
       <IonContent className="ion-padding tour-step-4">
-        {loading ? (
-          <div className="flex-column gap-4">{renderSkeleton()}</div>
-        ) : (
-          data?.searchListOfLanguages.data.map((lang, index) => {
-            return (
-              <IonItem
-                button
-                key={index}
-                onClick={() => handleSettingLanguage(lang)}
-              >
-                <IonLabel>
-                  <h2>{lang.name}</h2>
-                  <p>Bibles: {lang.bibles}</p>
-                </IonLabel>
-              </IonItem>
-            );
-          })
-        )}
+        {renderContent()}
       </IonContent>
     </IonModal>
   );

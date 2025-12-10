@@ -16,9 +16,10 @@ import { useParams, useHistory } from "react-router";
 /* Components */
 import BibleSearchLanguages from "./BibleSearchLanguages";
 import Skeleton from "../Loading/Skeleton";
+import EmptyState from "../EmptyState/EmptyState";
 
 /* Icons */
-import { text, play } from "ionicons/icons";
+import { text, play, languageOutline, bookOutline } from "ionicons/icons";
 
 /* Context */
 import { useAppContext } from "../../context/context";
@@ -319,7 +320,38 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
       return <div className="ion-padding">{renderBiblesSkeleton()}</div>;
     }
 
-    return biblesData ? (
+    // No data yet (no language selected)
+    if (!biblesData) {
+      return (
+        <EmptyState
+          icon={languageOutline}
+          title="Select a Language"
+          description='Tap the "Language" button above to choose your preferred language and discover available Bible translations'
+        />
+      );
+    }
+
+    // Filter bibles that have text filesets
+    const filteredBibles = biblesData.getListOFBibles.data.filter(
+      (bible) =>
+        bible.filesets["dbp-prod"] &&
+        bible.filesets["dbp-prod"].some((fileset: any) =>
+          fileset.type.startsWith("text_")
+        )
+    );
+
+    // No bibles available after filtering
+    if (filteredBibles.length === 0) {
+      return (
+        <EmptyState
+          icon={bookOutline}
+          title="No Bibles Available"
+          description="No Bible translations found for this language. Try selecting a different language."
+        />
+      );
+    }
+
+    return (
       <IonList className="tour-step-5">
         {/* Start from Beginning Toggle */}
         <IonItem className="start-beginning-toggle">
@@ -335,36 +367,22 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
           />
         </IonItem>
 
-        {biblesData.getListOFBibles.data
-          .filter(
-            (bible) =>
-              bible.filesets["dbp-prod"] &&
-              bible.filesets["dbp-prod"].some((fileset: any) =>
-                fileset.type.startsWith("text_")
-              )
-          )
-          .map((bible, index) => (
-            <IonItem
-              button
-              key={index}
-              onClick={() => handleSettingBible(bible)}
-            >
-              <IonLabel>
-                <h2>{bible.vname ? bible.vname : bible.name}</h2>
-                <p>
-                  <IonIcon icon={text} />
-                  {bible.filesets["dbp-prod"].some((fileset: any) =>
-                    fileset.type.startsWith("audio")
-                  ) ? (
-                    <IonIcon icon={play} />
-                  ) : null}
-                </p>
-              </IonLabel>
-            </IonItem>
-          ))}
+        {filteredBibles.map((bible, index) => (
+          <IonItem button key={index} onClick={() => handleSettingBible(bible)}>
+            <IonLabel>
+              <h2>{bible.vname ? bible.vname : bible.name}</h2>
+              <p>
+                <IonIcon icon={text} />
+                {bible.filesets["dbp-prod"].some((fileset: any) =>
+                  fileset.type.startsWith("audio")
+                ) ? (
+                  <IonIcon icon={play} />
+                ) : null}
+              </p>
+            </IonLabel>
+          </IonItem>
+        ))}
       </IonList>
-    ) : (
-      <div className="ion-text-center">Please select a language</div>
     );
   };
 
