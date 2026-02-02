@@ -1,0 +1,317 @@
+@import "../../../theme/variables.scss";
+
+.sermons-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.sermons-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+  gap: 16px;
+
+  h1 {
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--ion-text-color);
+    margin: 0 0 8px 0;
+  }
+
+  p {
+    font-size: 16px;
+    color: var(--ion-color-medium);
+    margin: 0;
+  }
+}
+
+.sermons-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sermon-card {
+  --background: var(--ion-surface-container);
+  border-radius: 16px;
+  box-shadow: none;
+  margin: 0;
+
+  .sermon-card-content {
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+  }
+
+  .sermon-main {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .sermon-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    gap: 16px;
+
+    .sermon-info {
+      flex: 1;
+      min-width: 0;
+
+      h3 {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--ion-text-color);
+        margin: 0 0 8px 0;
+      }
+
+      ion-chip {
+        margin: 0;
+      }
+    }
+
+    ion-badge {
+      text-transform: capitalize;
+    }
+  }
+
+  .sermon-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 12px;
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--ion-color-medium);
+      font-size: 14px;
+
+      ion-icon {
+        font-size: 16px;
+      }
+    }
+  }
+
+  .scripture {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 14px;
+
+    strong {
+      color: var(--ion-text-color);
+    }
+  }
+
+  .description {
+    display: block;
+    margin-bottom: 16px;
+
+    p {
+      margin: 0;
+      line-height: 1.6;
+    }
+  }
+
+  .sermon-media {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    ion-chip {
+      margin: 0;
+    }
+  }
+
+  .sermon-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+}
+
+.sermon-form {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0;
+
+  .form-section {
+    margin-bottom: 32px;
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--ion-text-color);
+      margin-bottom: 16px;
+    }
+
+    .section-description {
+      font-size: 14px;
+      color: var(--ion-color-medium);
+      margin: 4px 0 16px 0;
+    }
+  }
+
+  ion-item {
+    --background: transparent;
+    --border-color: var(--ion-color-medium);
+    --border-width: 1px;
+    --border-radius: 8px;
+    --padding-start: 16px;
+    --padding-end: 16px;
+    margin-bottom: 16px;
+
+    ion-label {
+      color: var(--ion-color-medium);
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    ion-input,
+    ion-textarea,
+    ion-select {
+      --padding-start: 0;
+      --padding-end: 0;
+      --placeholder-color: var(--ion-color-medium);
+      --placeholder-opacity: 0.5;
+    }
+  }
+
+  .save-button {
+    --border-radius: 12px;
+    --padding-top: 16px;
+    --padding-bottom: 16px;
+    margin: 32px 0 0;
+    width: 100%;
+    height: 48px;
+    --box-shadow: none;
+    text-transform: capitalize;
+  }
+}
+
+.empty-state-card {
+  --background: var(--ion-surface-container);
+  border-radius: 16px;
+  box-shadow: none;
+
+  .empty-state {
+    text-align: center;
+    padding: 48px 24px;
+
+    .empty-state-icon {
+      font-size: 80px;
+      color: var(--ion-color-medium);
+      opacity: 0.3;
+      margin-bottom: 24px;
+    }
+
+    h2 {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--ion-text-color);
+      margin: 0 0 12px 0;
+    }
+
+    p {
+      font-size: 16px;
+      color: var(--ion-color-medium);
+      margin: 0 0 24px 0;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+}
+
+.delete-confirmation {
+  text-align: center;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  ion-title {
+    margin-bottom: 24px;
+  }
+
+  .warning-icon {
+    font-size: 64px;
+    color: var(--ion-color-danger);
+    margin: 24px 0;
+  }
+
+  h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ion-text-color);
+    margin: 0 0 12px 0;
+  }
+
+  p {
+    font-size: 16px;
+    color: var(--ion-color-medium);
+    margin: 0 0 24px 0;
+    line-height: 1.5;
+  }
+
+  .button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: auto;
+    padding-top: 24px;
+
+    ion-button {
+      width: 100%;
+      margin: 0;
+      --box-shadow: none;
+      text-transform: capitalize;
+    }
+  }
+}
+
+// Bottom sheet handles modal sizing
+
+@media (max-width: 768px) {
+  .sermons-header {
+    flex-direction: column;
+    align-items: flex-start;
+
+    h1 {
+      font-size: 24px;
+    }
+
+    p {
+      font-size: 14px;
+    }
+
+    ion-button {
+      width: 100%;
+    }
+  }
+
+  .sermon-card {
+    .sermon-card-content {
+      flex-direction: column;
+    }
+
+    .sermon-actions {
+      flex-direction: row;
+
+      ion-button {
+        flex: 1;
+      }
+    }
+  }
+
+  .delete-confirmation {
+    .button-group {
+      flex-direction: column;
+    }
+  }
+}

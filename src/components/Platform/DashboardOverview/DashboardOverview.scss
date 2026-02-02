@@ -1,0 +1,158 @@
+@import "../../../theme/variables.scss";
+
+.dashboard-overview-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.dashboard-welcome {
+  margin-bottom: 32px;
+
+  h1 {
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--ion-text-color);
+    margin: 0 0 8px 0;
+  }
+
+  p {
+    font-size: 16px;
+    color: var(--ion-color-medium);
+    margin: 0;
+  }
+}
+
+.stat-card {
+  --background: var(--ion-surface-container);
+  border-radius: 16px;
+  box-shadow: none;
+  margin: 0;
+  height: 100%;
+
+  .stat-card-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    ion-icon {
+      font-size: 24px;
+      color: white;
+    }
+
+    &.stat-icon-primary {
+      background: var(--ion-color-primary);
+    }
+
+    &.stat-icon-secondary {
+      background: var(--ion-color-secondary);
+    }
+
+    &.stat-icon-tertiary {
+      background: var(--ion-color-tertiary);
+    }
+
+    &.stat-icon-success {
+      background: var(--ion-color-success);
+    }
+  }
+
+  .stat-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .stat-title {
+    font-size: 14px;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .stat-value {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--ion-text-color);
+  }
+}
+
+.quick-actions-card {
+  --background: var(--ion-surface-container);
+  border-radius: 16px;
+  box-shadow: none;
+  margin-top: 24px;
+
+  ion-card-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--ion-text-color);
+  }
+}
+
+.quick-actions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.quick-action-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background: var(--ion-background-color);
+  border-radius: 12px;
+  gap: 16px;
+
+  .quick-action-text {
+    flex: 1;
+    min-width: 0;
+
+    h3 {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--ion-text-color);
+      margin: 0 0 4px 0;
+    }
+
+    p {
+      font-size: 14px;
+      color: var(--ion-color-medium);
+      margin: 0;
+    }
+  }
+
+  ion-button {
+    flex-shrink: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-welcome {
+    h1 {
+      font-size: 24px;
+    }
+
+    p {
+      font-size: 14px;
+    }
+  }
+
+  .quick-action-item {
+    flex-direction: column;
+    align-items: flex-start;
+
+    ion-button {
+      width: 100%;
+    }
+  }
+}

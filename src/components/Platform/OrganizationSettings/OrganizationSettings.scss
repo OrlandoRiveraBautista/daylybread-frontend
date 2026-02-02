@@ -1,16 +1,30 @@
 @import "../../../theme/variables.scss";
 
-.platform-content-container {
-  max-width: 600px;
+.organization-settings-container {
+  max-width: 800px;
   margin: 0 auto;
   padding: 24px 16px;
 }
 
-.platform-form-container {
-  width: 100%;
+.settings-card {
+  --background: var(--ion-surface-container);
+  border-radius: 16px;
+  box-shadow: none;
+  margin-bottom: 24px;
+
+  ion-card-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--ion-text-color);
+  }
+
+  p {
+    font-size: 14px;
+    margin: 4px 0 0 0;
+  }
 }
 
-.platform-form {
+.settings-form {
   ion-item {
     --background: transparent;
     --border-color: var(--ion-color-medium);
@@ -33,45 +47,15 @@
       --padding-end: 0;
       --placeholder-color: var(--ion-color-medium);
       --placeholder-opacity: 0.5;
-      --background: transparent;
     }
   }
 }
 
-.platform-save-button {
+.save-button {
   --border-radius: 12px;
   --padding-top: 16px;
   --padding-bottom: 16px;
-  margin: 32px 0 0;
-  width: 100%;
+  margin: 32px auto 0;
+  max-width: 400px;
   height: 48px;
-  --box-shadow: none;
-  text-transform: capitalize;
-}
-
-.platform-loading {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  width: 100vw;
-  background: var(--ion-background-color);
-  gap: 16px;
-  padding: 16px;
-
-  ion-spinner {
-    width: 48px;
-    height: 48px;
-    --color: var(--ion-color-primary);
-  }
-
-  ion-button {
-    width: 100%;
-    --box-shadow: none;
-    text-transform: capitalize;
-    u {
-      color: $color-primary;
-    }
-  }
 }
