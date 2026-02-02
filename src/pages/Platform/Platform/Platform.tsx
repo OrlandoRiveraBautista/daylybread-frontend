@@ -30,9 +30,8 @@ const Platform: React.FC = () => {
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [organizationName, setOrganizationName] = useState<string>(
-    "My Organization"
-  );
+  const [organizationName, setOrganizationName] =
+    useState<string>("My Organization");
 
   // Mock data for demonstration - replace with real API calls
   const [nfcDevices, setNfcDevices] = useState<any[]>([]);
@@ -82,7 +81,10 @@ const Platform: React.FC = () => {
     }, 1500);
   }, [userInfo]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleNFCDeviceSave = async (deviceId: string | null, formData: any) => {
+  const handleNFCDeviceSave = async (
+    deviceId: string | null,
+    formData: any,
+  ) => {
     try {
       if (!userInfo?._id) {
         throw new Error("User not authenticated");
@@ -104,7 +106,7 @@ const Platform: React.FC = () => {
     } catch (error) {
       console.error("Error saving NFC device:", error);
       show(
-        error instanceof Error ? error.message : "Failed to save NFC device"
+        error instanceof Error ? error.message : "Failed to save NFC device",
       );
     }
   };
@@ -187,7 +189,6 @@ const Platform: React.FC = () => {
         ...results,
         id: results._id, // NFC config document id (not owner id)
         status: "active" as const,
-        createdAt: new Date().toISOString(),
         tapCount: 0,
       },
     ];

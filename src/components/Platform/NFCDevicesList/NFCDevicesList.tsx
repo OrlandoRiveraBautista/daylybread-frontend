@@ -17,7 +17,7 @@ import {
   IonChip,
 } from "@ionic/react";
 import {
-  add,
+  // add, // used by Add Device - commented out for now
   create,
   trash,
   qrCode,
@@ -80,10 +80,11 @@ export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
     null,
   );
 
-  const handleAddDevice = () => {
-    setEditingDevice(null);
-    setShowModal(true);
-  };
+  // Add Device - commented out for now
+  // const handleAddDevice = () => {
+  //   setEditingDevice(null);
+  //   setShowModal(true);
+  // };
 
   const handleEditDevice = (device: NFCDevice) => {
     setEditingDevice(device);
@@ -122,10 +123,12 @@ export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
           <h1>NFC Devices</h1>
           <p>Manage your organization's NFC devices and configurations</p>
         </div>
+        {/* Add Device - commented out for now
         <IonButton size="large" onClick={handleAddDevice}>
           <IonIcon slot="start" icon={add} />
           Add Device
         </IonButton>
+        */}
       </div>
 
       {devices.length === 0 ? (
@@ -138,10 +141,12 @@ export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
                 Create your first NFC device configuration to get started with
                 contactless engagement
               </p>
+              {/* Add Device - commented out for now
               <IonButton size="large" onClick={handleAddDevice}>
                 <IonIcon slot="start" icon={add} />
                 Create First Device
               </IonButton>
+              */}
             </div>
           </IonCardContent>
         </IonCard>
@@ -197,7 +202,11 @@ export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
                   <div className="stat-item">
                     <IonText color="medium">Created</IonText>
                     <strong>
-                      {new Date(device.createdAt).toLocaleDateString()}
+                      {device.createdAt
+                        ? new Date(
+                            Number(device.createdAt),
+                          ).toLocaleDateString()
+                        : "—"}
                     </strong>
                   </div>
                 </div>
