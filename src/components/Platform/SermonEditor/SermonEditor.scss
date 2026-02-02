@@ -69,7 +69,8 @@
   }
 
   @keyframes pulse {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 1;
     }
     50% {
@@ -141,13 +142,75 @@
   }
 }
 
+/* Animated gradient border - same as Bible reader breadcrumbs button */
+@keyframes ai-bar-gradient-border {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 .ai-breadcrumbs-bar {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 12px;
+  /* Bible reader breadcrumbs button style: light inner + animated gradient border */
+  position: relative;
+  /* Don't use background property - it paints above ::before. Use ::after instead. */
+  border-radius: 14px;
   padding: 16px;
   margin-bottom: 24px;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+  box-shadow:
+    0px 4px 8px 3px rgba(0, 0, 0, 0.08),
+    0px 1px 3px rgba(0, 0, 0, 0.12);
   transition: all 0.3s ease;
+
+  /* Animated gradient border - same as Bible reader breadcrumbs button */
+  &::before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(
+      45deg,
+      var(--ion-color-primary),
+      var(--ion-color-secondary),
+      var(--ion-color-tertiary),
+      var(--ion-color-primary)
+    );
+    background-size: 300% 300%;
+    border-radius: 16px;
+    animation: ai-bar-gradient-border 3s ease-in-out infinite;
+    opacity: 0.85;
+  }
+
+  /* Inner background layer - sits above gradient border but below content */
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--ion-color-light);
+    border-radius: 14px;
+    z-index: 0;
+  }
+
+  /* Ensure all content is above the background layer */
+  > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  &.generating::before {
+    animation-duration: 1.5s;
+    opacity: 1;
+  }
 
   &.collapsed {
     .ai-bar-content {
@@ -160,7 +223,7 @@
     align-items: center;
     justify-content: space-between;
     cursor: pointer;
-    color: white;
+    color: var(--ion-text-color);
     padding: 4px 0;
     user-select: none;
 
@@ -170,15 +233,18 @@
       gap: 10px;
       font-size: 16px;
       font-weight: 600;
+      color: var(--ion-text-color);
 
       ion-icon {
         font-size: 22px;
+        color: var(--ion-color-primary);
       }
     }
 
     .toggle-icon {
       font-size: 20px;
       transition: transform 0.3s ease;
+      color: var(--ion-color-medium);
     }
 
     &:hover {
@@ -195,7 +261,7 @@
   }
 
   .ai-spinner {
-    --color: white;
+    --color: var(--ion-color-primary);
     width: 20px;
     height: 20px;
   }
@@ -203,13 +269,14 @@
   .generating-text {
     font-size: 14px;
     opacity: 0.9;
+    color: var(--ion-text-color);
     animation: pulse 1.5s ease-in-out infinite;
   }
 
   .stop-button {
-    --color: white;
-    --background: rgba(255, 255, 255, 0.2);
-    --background-hover: rgba(255, 255, 255, 0.3);
+    --color: var(--ion-color-danger);
+    --background: rgba(var(--ion-color-danger-rgb), 0.12);
+    --background-hover: rgba(var(--ion-color-danger-rgb), 0.2);
     --border-radius: 20px;
     --padding-start: 12px;
     --padding-end: 12px;
@@ -223,25 +290,11 @@
     }
   }
 
-  &.generating {
-    animation: glowPulse 2s ease-in-out infinite;
-  }
-
-  @keyframes glowPulse {
-    0%, 100% {
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
-    }
-    50% {
-      box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
-    }
-  }
-
   .custom-prompt-section {
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
+    background: rgba(var(--ion-color-primary-rgb), 0.06);
     border-radius: 10px;
     padding: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(var(--ion-color-primary-rgb), 0.15);
 
     .custom-prompt-input {
       display: flex;
@@ -250,9 +303,9 @@
 
       .prompt-textarea {
         flex: 1;
-        --background: rgba(255, 255, 255, 0.95);
-        --color: #333;
-        --placeholder-color: #888;
+        --background: var(--ion-background-color, #fff);
+        --color: var(--ion-text-color);
+        --placeholder-color: var(--ion-color-medium);
         --padding-start: 12px;
         --padding-end: 12px;
         --padding-top: 10px;
@@ -260,7 +313,7 @@
         border-radius: 8px;
         font-size: 14px;
         min-height: 60px;
-        
+
         &::part(native) {
           border-radius: 8px;
         }
@@ -268,7 +321,7 @@
 
       .send-button {
         --background: white;
-        --color: #667eea;
+        --color: var(--ion-color-primary);
         --padding-start: 12px;
         --padding-end: 12px;
         height: 44px;
@@ -291,14 +344,15 @@
       gap: 8px;
       margin-top: 10px;
       padding: 8px 12px;
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(var(--ion-color-primary-rgb), 0.08);
       border-radius: 6px;
       font-size: 12px;
-      color: rgba(255, 255, 255, 0.9);
+      color: var(--ion-text-color);
 
       ion-icon {
         font-size: 16px;
         flex-shrink: 0;
+        color: var(--ion-color-primary);
       }
 
       span {
@@ -310,7 +364,7 @@
   }
 
   .quick-suggestions-label {
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--ion-color-medium);
     font-size: 12px;
     font-weight: 500;
     text-transform: uppercase;
@@ -319,17 +373,16 @@
   }
 
   .ai-category {
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
+    background: rgba(var(--ion-color-primary-rgb), 0.05);
     border-radius: 10px;
     padding: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(var(--ion-color-primary-rgb), 0.12);
 
     .category-header {
       display: flex;
       align-items: center;
       gap: 8px;
-      color: white;
+      color: var(--ion-text-color);
       font-weight: 600;
       font-size: 14px;
       margin-bottom: 10px;
@@ -338,6 +391,7 @@
 
       ion-icon {
         font-size: 18px;
+        color: var(--ion-color-primary);
       }
     }
 
@@ -347,19 +401,19 @@
       gap: 8px;
 
       .suggestion-chip {
-        --background: rgba(255, 255, 255, 0.95);
-        --color: #5a67d8;
+        --background: var(--ion-background-color, #fff);
+        --color: var(--ion-color-primary);
         font-size: 13px;
         font-weight: 500;
         height: 32px;
         cursor: pointer;
         transition: all 0.2s ease;
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        border: 1px solid rgba(var(--ion-color-primary-rgb), 0.25);
 
         &:hover:not(.disabled) {
-          --background: white;
+          --background: rgba(var(--ion-color-primary-rgb), 0.08);
           transform: translateY(-2px);
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 4px 8px rgba(var(--ion-color-primary-rgb), 0.15);
         }
 
         &:active:not(.disabled) {
@@ -618,7 +672,12 @@
 
   ion-header {
     ion-toolbar {
-      --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --background: linear-gradient(
+        135deg,
+        var(--ion-color-primary) 0%,
+        var(--ion-color-secondary) 50%,
+        var(--ion-color-tertiary) 100%
+      );
       --color: white;
 
       ion-title {
@@ -685,13 +744,18 @@
       gap: 10px;
 
       .insert-button {
-        --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --background: linear-gradient(
+          135deg,
+          var(--ion-color-primary) 0%,
+          var(--ion-color-secondary) 50%,
+          var(--ion-color-tertiary) 100%
+        );
         font-weight: 600;
       }
 
       .copy-button {
-        --border-color: #667eea;
-        --color: #667eea;
+        --border-color: var(--ion-color-primary);
+        --color: var(--ion-color-primary);
         font-weight: 500;
       }
     }
@@ -716,60 +780,146 @@
   }
 }
 
-/* Dark mode support */
+/* Dark mode support – uses theme variables (body gets them in variables.scss) */
 @media (prefers-color-scheme: dark) {
   .sermon-editor-page {
-    --background: var(--ion-background-color, #1a1a1a);
+    --background: var(--ion-background-color);
+  }
+
+  .sermon-editor-content {
+    --background: var(--ion-background-color);
   }
 
   .editor-container {
-    background: var(--ion-background-color, #1a1a1a);
+    background: var(--ion-background-color);
+  }
+
+  .title-input-container .title-input {
+    color: var(--ion-text-color);
+
+    &::placeholder {
+      color: var(--ion-color-medium);
+    }
   }
 
   .menu-bar {
-    background: var(--ion-background-color, #1a1a1a);
+    background: var(--ion-background-color);
 
     button {
+      color: var(--ion-text-color);
+
       &:hover {
-        background: var(--ion-color-dark-shade, #2a2a2a);
+        background: var(--ion-color-light-shade);
       }
     }
   }
 
+  /* AI bar: same breadcrumbs style, dark inner + gradient border */
   .ai-breadcrumbs-bar {
-    background: linear-gradient(135deg, #5568d3 0%, #6a4a9b 100%);
-    box-shadow: 0 4px 12px rgba(85, 104, 211, 0.25);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+
+    /* Gradient border - increase opacity in dark mode for visibility */
+    &::before {
+      opacity: 0.95;
+    }
+
+    &.generating::before {
+      opacity: 1;
+      animation-duration: 1.5s;
+    }
+
+    /* Inner background (::after) uses var(--ion-color-light) which is dark in dark mode */
+
+    .ai-bar-header {
+      color: var(--ion-text-color);
+
+      .ai-bar-title {
+        color: var(--ion-text-color);
+
+        ion-icon {
+          color: var(--ion-color-primary);
+        }
+      }
+
+      .toggle-icon {
+        color: var(--ion-color-medium);
+      }
+    }
+
+    .ai-spinner {
+      --color: var(--ion-color-primary);
+    }
+
+    .generating-text {
+      color: var(--ion-text-color);
+    }
+
+    .stop-button {
+      --color: var(--ion-color-danger);
+      --background: rgba(var(--ion-color-danger-rgb), 0.2);
+      --background-hover: rgba(var(--ion-color-danger-rgb), 0.3);
+    }
+
+    .custom-prompt-section {
+      background: rgba(var(--ion-color-primary-rgb), 0.1);
+      border-color: rgba(var(--ion-color-primary-rgb), 0.2);
+
+      .custom-prompt-input .prompt-textarea {
+        --background: var(--ion-color-light-shade);
+        --color: var(--ion-text-color);
+        --placeholder-color: var(--ion-color-medium);
+      }
+
+      .send-button {
+        --background: var(--ion-color-light-tint);
+        --color: var(--ion-color-primary);
+      }
+    }
+
+    .quick-suggestions-label {
+      color: var(--ion-color-medium);
+    }
 
     .ai-category {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(var(--ion-color-primary-rgb), 0.08);
+      border-color: rgba(var(--ion-color-primary-rgb), 0.15);
 
-      .category-suggestions {
-        .suggestion-chip {
-          --background: rgba(255, 255, 255, 0.9);
-          --color: #4c51bf;
+      .category-header {
+        color: var(--ion-text-color);
+
+        ion-icon {
+          color: var(--ion-color-primary);
+        }
+      }
+
+      .category-suggestions .suggestion-chip {
+        --background: var(--ion-color-light-shade);
+        --color: var(--ion-color-primary);
+        border-color: rgba(var(--ion-color-primary-rgb), 0.25);
+
+        &:hover:not(.disabled) {
+          --background: var(--ion-color-light-tint);
         }
       }
     }
 
-    .custom-prompt-section {
-      .custom-prompt-input {
-        .prompt-textarea {
-          --background: rgba(255, 255, 255, 0.9);
-        }
+    .highlighted-text-indicator {
+      background: rgba(var(--ion-color-primary-rgb), 0.15);
+      color: var(--ion-text-color);
+
+      ion-icon {
+        color: var(--ion-color-primary);
       }
     }
   }
 
   .ai-response-modal {
     .ai-modal-content {
-      --background: var(--ion-background-color, #1a1a1a);
+      --background: var(--ion-background-color);
     }
 
-    .ai-response-container {
-      .response-content {
-        background: var(--ion-color-dark-shade, #2a2a2a);
-      }
+    .ai-response-container .response-content {
+      background: var(--ion-color-light);
     }
   }
 }
