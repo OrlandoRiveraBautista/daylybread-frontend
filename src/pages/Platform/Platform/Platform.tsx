@@ -19,6 +19,7 @@ import {
 import { DashboardOverview } from "../../../components/Platform/DashboardOverview";
 import { NFCDevicesList } from "../../../components/Platform/NFCDevicesList";
 import { SermonsManagement } from "../../../components/Platform/SermonsManagement";
+import { SermonEditorPage } from "../../../components/Platform/SermonEditor";
 import { CalendarManagement } from "../../../components/Platform/CalendarManagement";
 import { OrganizationSettings } from "../../../components/Platform/OrganizationSettings";
 import { AnalyticsDashboard } from "../../../components/Platform/AnalyticsDashboard";
@@ -35,7 +36,6 @@ const Platform: React.FC = () => {
 
   // Mock data for demonstration - replace with real API calls
   const [nfcDevices, setNfcDevices] = useState<any[]>([]);
-  const [sermons, setSermons] = useState<any[]>([]);
   const [events, setEvents] = useState<any[]>([]);
 
   const { showToast, toastMessage, toastOptions, show, hide } = useToast();
@@ -115,27 +115,6 @@ const Platform: React.FC = () => {
     // Implement delete functionality
     console.log("Delete device:", deviceId);
     show("Device deleted successfully");
-  };
-
-  const handleSermonSave = async (sermonId: string | null, formData: any) => {
-    try {
-      // Implement sermon save logic here
-      console.log("Save sermon:", formData);
-      if (sermonId) {
-        show("Sermon updated successfully");
-      } else {
-        show("Sermon created successfully");
-      }
-    } catch (error) {
-      console.error("Error saving sermon:", error);
-      show(error instanceof Error ? error.message : "Failed to save sermon");
-    }
-  };
-
-  const handleSermonDelete = (sermonId: string) => {
-    // Implement sermon delete logic
-    console.log("Delete sermon:", sermonId);
-    show("Sermon deleted successfully");
   };
 
   const handleEventSave = async (eventId: string | null, formData: any) => {
@@ -226,13 +205,16 @@ const Platform: React.FC = () => {
             />
           </Route>
 
-          <Route path="/sermons">
-            <SermonsManagement
-              sermons={sermons}
-              onSave={handleSermonSave}
-              onDelete={handleSermonDelete}
-              isSaving={false}
-            />
+          <Route exact path="/sermons">
+            <SermonsManagement />
+          </Route>
+
+          <Route exact path="/sermons/new">
+            <SermonEditorPage />
+          </Route>
+
+          <Route exact path="/sermons/:id">
+            <SermonEditorPage />
           </Route>
 
           {/* Coming in future releases */}

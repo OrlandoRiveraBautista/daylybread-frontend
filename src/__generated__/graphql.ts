@@ -521,10 +521,13 @@ export type Mutation = {
   createInteraction: BibleInteractionResponse;
   createMedia: MediaResponse;
   createNFCConfig: NfcConfigResponse;
+  createSermon: SermonResponse;
   deleteBookmarks: Scalars['Boolean'];
   deleteInteraction: Scalars['Boolean'];
   deleteMedia: MediaResponse;
   deleteNFCConfig: NfcConfigResponse;
+  deleteSermon: SermonResponse;
+  generateSermonContent: SermonAiResponse;
   getGetSignedUrl: GetSignedUrlResponse;
   getPostSignedUrl: PostSignedUrlResponse;
   invalidateTokens: Scalars['Boolean'];
@@ -539,6 +542,7 @@ export type Mutation = {
   updateMedia: MediaResponse;
   updateNFCConfig: NfcConfigResponse;
   updateNotificationSettings: NotificationSettingsResponse;
+  updateSermon: SermonResponse;
   updateUser: UserResponse;
 };
 
@@ -568,6 +572,11 @@ export type MutationCreateNfcConfigArgs = {
 };
 
 
+export type MutationCreateSermonArgs = {
+  options: SermonInput;
+};
+
+
 export type MutationDeleteBookmarksArgs = {
   ids: Array<Scalars['String']>;
 };
@@ -585,6 +594,16 @@ export type MutationDeleteMediaArgs = {
 
 export type MutationDeleteNfcConfigArgs = {
   id: Scalars['String'];
+};
+
+
+export type MutationDeleteSermonArgs = {
+  id: Scalars['String'];
+};
+
+
+export type MutationGenerateSermonContentArgs = {
+  input: SermonAiInput;
 };
 
 
@@ -650,6 +669,12 @@ export type MutationUpdateNfcConfigArgs = {
 
 export type MutationUpdateNotificationSettingsArgs = {
   input: NotificationSettingsInput;
+};
+
+
+export type MutationUpdateSermonArgs = {
+  id: Scalars['String'];
+  options: SermonInput;
 };
 
 
@@ -776,6 +801,9 @@ export type Query = {
   getNFCConfigByOwner: NfcConfigResponse;
   getNextMoodRequestTime?: Maybe<Scalars['DateTime']>;
   getOpen: Scalars['String'];
+  getSermon: SermonResponse;
+  getSermonAIPromptTypes: Array<SermonAiPromptInfo>;
+  getSermons: SermonsResponse;
   getSupportedMoods: Array<Scalars['String']>;
   getTestData: Array<Test>;
   getTranslationByAbbreviation?: Maybe<Translation>;
@@ -915,6 +943,11 @@ export type QueryGetOpenArgs = {
 };
 
 
+export type QueryGetSermonArgs = {
+  id: Scalars['String'];
+};
+
+
 export type QueryGetTranslationByAbbreviationArgs = {
   abbreviation: Scalars['String'];
 };
@@ -982,6 +1015,100 @@ export type ScheduleNotificationResponse = {
 export type SearchLanguageArgs = {
   mediaInclude?: InputMaybe<Scalars['String']>;
   search?: InputMaybe<Scalars['String']>;
+};
+
+export type Sermon = {
+  __typename?: 'Sermon';
+  _id: Scalars['ID'];
+  author: User;
+  content: Scalars['String'];
+  createdAt: Scalars['String'];
+  status: SermonStatus;
+  title: Scalars['String'];
+  updatedAt: Scalars['String'];
+};
+
+export type SermonAiContent = {
+  __typename?: 'SermonAIContent';
+  content: Scalars['String'];
+  promptType: Scalars['String'];
+  relatedVerses?: Maybe<Array<Scalars['String']>>;
+  suggestions?: Maybe<Scalars['String']>;
+};
+
+export type SermonAiInput = {
+  additionalContext?: InputMaybe<Scalars['String']>;
+  customPrompt?: InputMaybe<Scalars['String']>;
+  highlightedText?: InputMaybe<Scalars['String']>;
+  language?: InputMaybe<Scalars['String']>;
+  promptType: SermonAiPromptType;
+  sermonContent?: InputMaybe<Scalars['String']>;
+  sermonTitle?: InputMaybe<Scalars['String']>;
+};
+
+export type SermonAiPromptInfo = {
+  __typename?: 'SermonAIPromptInfo';
+  category: Scalars['String'];
+  description: Scalars['String'];
+  label: Scalars['String'];
+  type: SermonAiPromptType;
+};
+
+/** Types of AI assistance available for sermon writing */
+export enum SermonAiPromptType {
+  ActionableSteps = 'ACTIONABLE_STEPS',
+  AddressChallenges = 'ADDRESS_CHALLENGES',
+  AddDepth = 'ADD_DEPTH',
+  CallToAction = 'CALL_TO_ACTION',
+  CrossReferences = 'CROSS_REFERENCES',
+  CurrentEvents = 'CURRENT_EVENTS',
+  Custom = 'CUSTOM',
+  DailyLifeAnalogy = 'DAILY_LIFE_ANALOGY',
+  ExpandContent = 'EXPAND_CONTENT',
+  HistoricalContext = 'HISTORICAL_CONTEXT',
+  ImproveClarity = 'IMPROVE_CLARITY',
+  MainPoints = 'MAIN_POINTS',
+  ModernExample = 'MODERN_EXAMPLE',
+  OpeningStory = 'OPENING_STORY',
+  PersonalTestimony = 'PERSONAL_TESTIMONY',
+  PracticalApplication = 'PRACTICAL_APPLICATION',
+  ReflectionQuestions = 'REFLECTION_QUESTIONS',
+  RelevantVerses = 'RELEVANT_VERSES',
+  SermonOutline = 'SERMON_OUTLINE',
+  Summarize = 'SUMMARIZE',
+  TestamentConnection = 'TESTAMENT_CONNECTION',
+  Transitions = 'TRANSITIONS',
+  VerseExplanation = 'VERSE_EXPLANATION'
+}
+
+export type SermonAiResponse = {
+  __typename?: 'SermonAIResponse';
+  errors?: Maybe<Array<FieldError>>;
+  result?: Maybe<SermonAiContent>;
+};
+
+export type SermonInput = {
+  content: Scalars['String'];
+  status?: InputMaybe<SermonStatus>;
+  title: Scalars['String'];
+};
+
+export type SermonResponse = {
+  __typename?: 'SermonResponse';
+  errors?: Maybe<Array<FieldError>>;
+  results?: Maybe<Sermon>;
+};
+
+/** The status of a sermon */
+export enum SermonStatus {
+  Draft = 'DRAFT',
+  Published = 'PUBLISHED'
+}
+
+export type SermonsResponse = {
+  __typename?: 'SermonsResponse';
+  errors?: Maybe<Array<FieldError>>;
+  results?: Maybe<Array<Sermon>>;
 };
 
 export type SignedUrlInput = {
@@ -1370,6 +1497,52 @@ export type SubscriptionSubscriptionVariables = Exact<{
 
 export type SubscriptionSubscription = { __typename?: 'Subscription', aiChatReponseUpdated: string };
 
+export type GetSermonsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetSermonsQuery = { __typename?: 'Query', getSermons: { __typename?: 'SermonsResponse', results?: Array<{ __typename?: 'Sermon', _id: string, title: string, content: string, status: SermonStatus, createdAt: string, updatedAt: string, author: { __typename?: 'User', _id: string, firstName?: string | null, lastName?: string | null } }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+
+export type GetSermonQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetSermonQuery = { __typename?: 'Query', getSermon: { __typename?: 'SermonResponse', results?: { __typename?: 'Sermon', _id: string, title: string, content: string, status: SermonStatus, createdAt: string, updatedAt: string, author: { __typename?: 'User', _id: string, firstName?: string | null, lastName?: string | null } } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+
+export type CreateSermonMutationVariables = Exact<{
+  options: SermonInput;
+}>;
+
+
+export type CreateSermonMutation = { __typename?: 'Mutation', createSermon: { __typename?: 'SermonResponse', results?: { __typename?: 'Sermon', _id: string, title: string, content: string, status: SermonStatus, createdAt: string, updatedAt: string, author: { __typename?: 'User', _id: string, firstName?: string | null, lastName?: string | null } } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+
+export type UpdateSermonMutationVariables = Exact<{
+  id: Scalars['String'];
+  options: SermonInput;
+}>;
+
+
+export type UpdateSermonMutation = { __typename?: 'Mutation', updateSermon: { __typename?: 'SermonResponse', results?: { __typename?: 'Sermon', _id: string, title: string, content: string, status: SermonStatus, createdAt: string, updatedAt: string, author: { __typename?: 'User', _id: string, firstName?: string | null, lastName?: string | null } } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+
+export type DeleteSermonMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type DeleteSermonMutation = { __typename?: 'Mutation', deleteSermon: { __typename?: 'SermonResponse', results?: { __typename?: 'Sermon', _id: string, title: string } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+
+export type GenerateSermonContentMutationVariables = Exact<{
+  input: SermonAiInput;
+}>;
+
+
+export type GenerateSermonContentMutation = { __typename?: 'Mutation', generateSermonContent: { __typename?: 'SermonAIResponse', result?: { __typename?: 'SermonAIContent', content: string, suggestions?: string | null, relatedVerses?: Array<string> | null, promptType: string } | null, errors?: Array<{ __typename?: 'FieldError', message: string }> | null } };
+
+export type GetSermonAiPromptTypesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetSermonAiPromptTypesQuery = { __typename?: 'Query', getSermonAIPromptTypes: Array<{ __typename?: 'SermonAIPromptInfo', type: SermonAiPromptType, category: string, label: string, description: string }> };
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1535,6 +1708,13 @@ export const UpdateNfcConfigDocument = {"kind":"Document","definitions":[{"kind"
 export const DeleteNfcConfigDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteNFCConfig"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteNFCConfig"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"nfcIds"}},{"kind":"Field","name":{"kind":"Name","value":"mainButton"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"text"}}]}},{"kind":"Field","name":{"kind":"Name","value":"socialMedia"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"facebook"}},{"kind":"Field","name":{"kind":"Name","value":"instagram"}},{"kind":"Field","name":{"kind":"Name","value":"twitter"}}]}},{"kind":"Field","name":{"kind":"Name","value":"givingLink"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"isVisible"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"memberRegistrationLink"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"isVisible"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"eventsLink"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"isVisible"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"mediaId"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<DeleteNfcConfigMutation, DeleteNfcConfigMutationVariables>;
 export const OpenAiDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"OpenAi"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"options"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"GptArgs"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getOpen"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"options"},"value":{"kind":"Variable","name":{"kind":"Name","value":"options"}}}]}]}}]} as unknown as DocumentNode<OpenAiQuery, OpenAiQueryVariables>;
 export const SubscriptionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"Subscription"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"deviceId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"aiChatReponseUpdated"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"deviceId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"deviceId"}}}]}]}}]} as unknown as DocumentNode<SubscriptionSubscription, SubscriptionSubscriptionVariables>;
+export const GetSermonsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetSermons"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getSermons"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"author"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<GetSermonsQuery, GetSermonsQueryVariables>;
+export const GetSermonDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetSermon"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getSermon"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"author"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<GetSermonQuery, GetSermonQueryVariables>;
+export const CreateSermonDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateSermon"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"options"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SermonInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createSermon"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"options"},"value":{"kind":"Variable","name":{"kind":"Name","value":"options"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"author"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<CreateSermonMutation, CreateSermonMutationVariables>;
+export const UpdateSermonDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateSermon"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"options"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SermonInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateSermon"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"options"},"value":{"kind":"Variable","name":{"kind":"Name","value":"options"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"author"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateSermonMutation, UpdateSermonMutationVariables>;
+export const DeleteSermonDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteSermon"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteSermon"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<DeleteSermonMutation, DeleteSermonMutationVariables>;
+export const GenerateSermonContentDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"GenerateSermonContent"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SermonAIInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"generateSermonContent"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"result"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"suggestions"}},{"kind":"Field","name":{"kind":"Name","value":"relatedVerses"}},{"kind":"Field","name":{"kind":"Name","value":"promptType"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<GenerateSermonContentMutation, GenerateSermonContentMutationVariables>;
+export const GetSermonAiPromptTypesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetSermonAIPromptTypes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getSermonAIPromptTypes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"category"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"description"}}]}}]}}]} as unknown as DocumentNode<GetSermonAiPromptTypesQuery, GetSermonAiPromptTypesQueryVariables>;
 export const MeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"churchName"}},{"kind":"Field","name":{"kind":"Name","value":"bioText"}},{"kind":"Field","name":{"kind":"Name","value":"dob"}},{"kind":"Field","name":{"kind":"Name","value":"count"}}]}}]}}]}}]} as unknown as DocumentNode<MeQuery, MeQueryVariables>;
 export const UserBibleHistoryQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"UserBibleHistoryQuery"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bibleHistory"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"history"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"bibleAbbr"}},{"kind":"Field","name":{"kind":"Name","value":"bookId"}},{"kind":"Field","name":{"kind":"Name","value":"chapterNumber"}},{"kind":"Field","name":{"kind":"Name","value":"viewedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"current"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]}}]}}]} as unknown as DocumentNode<UserBibleHistoryQueryQuery, UserBibleHistoryQueryQueryVariables>;
 export const GetBookmarksDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getBookmarks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getMyBookmarks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"author"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"bibleId"}},{"kind":"Field","name":{"kind":"Name","value":"newVerses"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bookId"}},{"kind":"Field","name":{"kind":"Name","value":"bookName"}},{"kind":"Field","name":{"kind":"Name","value":"bookNameAlt"}},{"kind":"Field","name":{"kind":"Name","value":"chapter"}},{"kind":"Field","name":{"kind":"Name","value":"chapterAlt"}},{"kind":"Field","name":{"kind":"Name","value":"verseStart"}},{"kind":"Field","name":{"kind":"Name","value":"verseStartAlt"}},{"kind":"Field","name":{"kind":"Name","value":"verseEnd"}},{"kind":"Field","name":{"kind":"Name","value":"verseEndAlt"}},{"kind":"Field","name":{"kind":"Name","value":"verseText"}}]}},{"kind":"Field","name":{"kind":"Name","value":"verses"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"translation"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"abbreviation"}}]}},{"kind":"Field","name":{"kind":"Name","value":"bookName"}},{"kind":"Field","name":{"kind":"Name","value":"chapterNumber"}},{"kind":"Field","name":{"kind":"Name","value":"verse"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"bibleId"}}]}},{"kind":"Field","name":{"kind":"Name","value":"note"}}]}}]}}]}}]} as unknown as DocumentNode<GetBookmarksQuery, GetBookmarksQueryVariables>;
