@@ -10,31 +10,39 @@ import {
   IonCol,
   IonText,
   IonButton,
+  IonSpinner,
 } from "@ionic/react";
 import { card, document } from "ionicons/icons";
 import { DashboardSection } from "../DashboardLayout";
+import { useGetSermons } from "../../../hooks/SermonHooks";
 import "./DashboardOverview.scss";
 
 interface DashboardOverviewProps {
   organizationName?: string;
   onNavigate: (section: DashboardSection) => void;
+  nfcDeviceCount?: number;
 }
 
 export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   organizationName,
   onNavigate,
+  nfcDeviceCount = 0,
 }) => {
+  // Fetch sermons to get the real count
+  const { data: sermonsData, loading: sermonsLoading } = useGetSermons();
+  const sermonCount = sermonsData?.getSermons?.results?.length || 0;
+
   const stats = [
     {
       title: "Active NFC Devices",
-      value: "1",
+      value: nfcDeviceCount.toString(),
       icon: card,
       color: "primary",
       section: "nfc" as DashboardSection,
     },
     {
       title: "Total Sermons",
-      value: "0",
+      value: sermonsLoading ? "..." : sermonCount.toString(),
       icon: document,
       color: "secondary",
       section: "sermons" as DashboardSection,

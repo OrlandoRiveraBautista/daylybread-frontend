@@ -193,6 +193,7 @@ const Platform: React.FC = () => {
             <DashboardOverview
               organizationName={organizationName}
               onNavigate={handleSectionChange}
+              nfcDeviceCount={getDevices().length}
             />
           </Route>
 
