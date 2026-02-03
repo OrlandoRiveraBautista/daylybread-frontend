@@ -6,6 +6,7 @@ import reportWebVitals from "./reportWebVitals";
 import { ContextProvider } from "./context/context";
 import { TourProvider } from "./context/TourContext";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import logrocketService from "./services/logrocketService";
 
 /* GraphQL Imports */
 import {
@@ -46,6 +47,9 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
   link: splitLink,
 });
+
+// Initialize LogRocket for session replay and error tracking
+logrocketService.init();
 
 const container = document.getElementById("root");
 const root = createRoot(container!);

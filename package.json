@@ -36,6 +36,7 @@
     "graphql-ws": "^5.14.2",
     "history": "^4.9.0",
     "ionicons": "^6.0.3",
+    "logrocket": "^12.0.0",
     "marked": "^17.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

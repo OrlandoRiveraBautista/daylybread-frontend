@@ -3,13 +3,17 @@
 .mood-response-card {
   margin: 0 0 12px 0;
   border-radius: 12px;
-  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.12), 0px 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow:
+    0px 1px 3px rgba(0, 0, 0, 0.12),
+    0px 1px 2px rgba(0, 0, 0, 0.24);
   transition: all 0.2s ease;
-  animation: fadeInUp 0.5s ease-out;
+  animation: fadeInUpResponse 0.5s ease-out;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15), 0px 2px 4px rgba(0, 0, 0, 0.12);
+    box-shadow:
+      0px 4px 8px rgba(0, 0, 0, 0.15),
+      0px 2px 4px rgba(0, 0, 0, 0.12);
   }
 
   ion-card-content {
@@ -125,7 +129,7 @@
 }
 
 // Animation
-@keyframes fadeInUp {
+@keyframes fadeInUpResponse {
   from {
     opacity: 0;
     transform: translateY(20px);
