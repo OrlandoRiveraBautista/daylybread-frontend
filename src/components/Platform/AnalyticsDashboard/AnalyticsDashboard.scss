@@ -1,0 +1,132 @@
+@import "../../../theme/variables.scss";
+
+.analytics-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.analytics-header {
+  margin-bottom: 32px;
+
+  h1 {
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--ion-text-color);
+    margin: 0 0 8px 0;
+  }
+
+  p {
+    font-size: 16px;
+    color: var(--ion-color-medium);
+    margin: 0;
+  }
+}
+
+.metric-card {
+  --background: var(--ion-surface-container);
+  border-radius: 16px;
+  box-shadow: none;
+  margin: 0;
+  height: 100%;
+
+  .metric-card-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .metric-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    ion-icon {
+      font-size: 24px;
+      color: white;
+    }
+
+    &.metric-icon-primary {
+      background: var(--ion-color-primary);
+    }
+
+    &.metric-icon-secondary {
+      background: var(--ion-color-secondary);
+    }
+
+    &.metric-icon-tertiary {
+      background: var(--ion-color-tertiary);
+    }
+
+    &.metric-icon-success {
+      background: var(--ion-color-success);
+    }
+  }
+
+  .metric-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .metric-title {
+    font-size: 14px;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .metric-value {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--ion-text-color);
+  }
+
+  .metric-change {
+    font-size: 14px;
+    color: var(--ion-color-success);
+    margin-top: 4px;
+  }
+}
+
+.coming-soon-card {
+  --background: var(--ion-surface-container);
+  border-radius: 16px;
+  box-shadow: none;
+  margin-top: 24px;
+
+  ion-card-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--ion-text-color);
+  }
+
+  p {
+    margin: 16px 0;
+    line-height: 1.6;
+  }
+
+  ul {
+    margin: 16px 0;
+    padding-left: 20px;
+
+    li {
+      margin-bottom: 8px;
+      line-height: 1.6;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .analytics-header {
+    h1 {
+      font-size: 24px;
+    }
+
+    p {
+      font-size: 14px;
+    }
+  }
+}

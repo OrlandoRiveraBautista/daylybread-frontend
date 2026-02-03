@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  IonCard,
-  IonCardContent,
-  IonTitle,
   IonItem,
   IonLabel,
   IonInput,
@@ -13,8 +10,8 @@ import {
   IonSpinner,
   IonCheckbox,
 } from "@ionic/react";
-import { MediaUploader } from "../MediaUploader/MediaUploader";
-import { MediaPurpose } from "../../__generated__/graphql";
+import { MediaUploader } from "../../MediaUploader/MediaUploader";
+import { MediaPurpose } from "../../../__generated__/graphql";
 
 interface SocialMediaSettings {
   facebook?: boolean;
@@ -148,10 +145,8 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
   };
 
   return (
-    <IonCard className="platform-card">
-      <IonCardContent>
-        <IonTitle className="platform-title">Church Tap</IonTitle>
-        <div className="platform-form">
+    <div className="platform-form-container">
+      <div className="platform-form">
           <IonItem>
             <IonLabel position="stacked">Content Type</IonLabel>
             <IonSelect
@@ -361,6 +356,7 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
           <IonButton
             expand="block"
             size="large"
+            shape="round"
             onClick={handleSave}
             className="platform-save-button"
           >
@@ -368,7 +364,6 @@ export const NFCConfigForm: React.FC<NFCConfigFormProps> = ({
             {isUpdating ? "Update NFC Content" : "Save NFC Content"}
           </IonButton>
         </div>
-      </IonCardContent>
-    </IonCard>
+    </div>
   );
 };
