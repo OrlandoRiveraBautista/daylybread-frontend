@@ -16,14 +16,9 @@ import {
 } from "@ionic/react";
 import { useHistory } from "react-router";
 import {
-  statsChart,
-  settings,
-  people,
-  newspaper,
   card,
   home,
   document,
-  calendar,
 } from "ionicons/icons";
 import SmallWordLogo from "../../../assets/images/small-word-logo.svg";
 import SmallWordLogoDark from "../../../assets/images/small-word-logo-dark.svg";

@@ -3,7 +3,6 @@ import { useParams, useHistory } from "react-router-dom";
 import { IonSpinner } from "@ionic/react";
 import { SermonEditor } from "./SermonEditor";
 import {
-  useGetSermon,
   useLazyGetSermon,
   useCreateSermon,
   useUpdateSermon,
@@ -26,7 +25,7 @@ export const SermonEditorPage: React.FC<SermonEditorPageProps> = () => {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   // API hooks
-  const [getSermon, { loading: loadingSermon }] = useLazyGetSermon();
+  const [getSermon] = useLazyGetSermon();
   const [createSermon, { loading: isCreating }] = useCreateSermon();
   const [updateSermon, { loading: isUpdating }] = useUpdateSermon();
 

@@ -20,10 +20,6 @@ import { DashboardOverview } from "../../../components/Platform/DashboardOvervie
 import { NFCDevicesList } from "../../../components/Platform/NFCDevicesList";
 import { SermonsManagement } from "../../../components/Platform/SermonsManagement";
 import { SermonEditorPage } from "../../../components/Platform/SermonEditor";
-import { CalendarManagement } from "../../../components/Platform/CalendarManagement";
-import { OrganizationSettings } from "../../../components/Platform/OrganizationSettings";
-import { AnalyticsDashboard } from "../../../components/Platform/AnalyticsDashboard";
-import { MembersManagement } from "../../../components/Platform/MembersManagement";
 
 const Platform: React.FC = () => {
   const { userInfo } = useAppContext();
@@ -31,15 +27,10 @@ const Platform: React.FC = () => {
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [organizationName, setOrganizationName] =
-    useState<string>("My Organization");
-
-  // Mock data for demonstration - replace with real API calls
-  const [nfcDevices, setNfcDevices] = useState<any[]>([]);
-  const [events, setEvents] = useState<any[]>([]);
+  const organizationName = "My Organization";
 
   const { showToast, toastMessage, toastOptions, show, hide } = useToast();
-  const { nfcConfigData, isSaving, isUpdating, fetchConfig, saveConfig } =
+  const { nfcConfigData, isSaving, fetchConfig, saveConfig } =
     useNFCConfig(userInfo?._id!);
 
   // Get active section from URL
@@ -115,33 +106,6 @@ const Platform: React.FC = () => {
     // Implement delete functionality
     console.log("Delete device:", deviceId);
     show("Device deleted successfully");
-  };
-
-  const handleEventSave = async (eventId: string | null, formData: any) => {
-    try {
-      // Implement event save logic here
-      console.log("Save event:", formData);
-      if (eventId) {
-        show("Event updated successfully");
-      } else {
-        show("Event created successfully");
-      }
-    } catch (error) {
-      console.error("Error saving event:", error);
-      show(error instanceof Error ? error.message : "Failed to save event");
-    }
-  };
-
-  const handleEventDelete = (eventId: string) => {
-    // Implement event delete logic
-    console.log("Delete event:", eventId);
-    show("Event deleted successfully");
-  };
-
-  const handleOrganizationSave = (data: any) => {
-    console.log("Organization data:", data);
-    setOrganizationName(data.name);
-    show("Organization settings saved successfully");
   };
 
   const handleSectionChange = (section: DashboardSection) => {

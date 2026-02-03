@@ -7,9 +7,7 @@ import {
   IonButton,
   IonIcon,
   IonText,
-  IonItem,
   IonLabel,
-  IonList,
   IonModal,
   IonTitle,
   IonContent,
@@ -19,7 +17,6 @@ import {
 import {
   // add, // used by Add Device - commented out for now
   create,
-  trash,
   qrCode,
   link,
   checkmarkCircle,
