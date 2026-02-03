@@ -61,6 +61,7 @@ import { generateUUID } from "./utils/polyfills";
 import { PushNotificationService } from "./services/pushNotificationService";
 import useGlobalModalHaptics from "./hooks/useGlobalModalHaptics";
 import useNotificationPrompt from "./hooks/useNotificationPrompt";
+import logrocketService from "./services/logrocketService";
 
 /* Modals */
 import { NotificationPromptModal } from "./components/Modals";
@@ -146,10 +147,17 @@ const App: React.FC = () => {
 
   /**
    * Calls to set the user data into the global context
+   * Also identifies the user in LogRocket for session tracking
    */
   useEffect(() => {
-    if (!userData?.me?.user) return;
+    if (!userData?.me?.user) {
+      // Clear user identification if user logs out
+      logrocketService.clearUser();
+      return;
+    }
     setUser(userData.me.user);
+    // Identify user in LogRocket for session replay and error tracking
+    logrocketService.identifyUser(userData.me.user);
   }, [userData]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /**
