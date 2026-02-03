@@ -1,11 +1,77 @@
 @import "../../../theme/variables.scss";
 
+// Keyframe animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// Menu Container Glassmorphism
+.dashboard-menu {
+  --background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border-right: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+  .dashboard-menu {
+    --background: rgba(20, 20, 20, 0.85);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
+  }
+}
+
+.dashboard-menu-header-container {
+  background: transparent;
+}
+
+.dashboard-menu-toolbar {
+  --background: transparent;
+  --border-color: transparent;
+}
+
+.dashboard-menu-content {
+  --background: transparent;
+}
+
 .dashboard-menu-header {
   padding: 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
+  animation: fadeIn 0.4s ease-out;
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-radius: 20px;
+  margin: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  .dashboard-menu-header {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
 }
 
 .dashboard-menu-logo {
@@ -25,18 +91,33 @@
 
   ion-item {
     --background: transparent;
-    --border-radius: 8px;
+    --border-radius: 16px;
+    border-radius: 16px;
     --padding-start: 16px;
     margin-bottom: 8px;
     font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
 
-    ion-icon {
+    > ion-icon {
       margin-right: 16px;
       font-size: 20px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     &.dashboard-menu-item-active {
-      --background: var(--ion-color-primary);
+      background: linear-gradient(
+        135deg,
+        rgba(var(--ion-color-primary-rgb), 0.9),
+        rgba(var(--ion-color-primary-rgb), 0.7)
+      );
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 8px 32px rgba(var(--ion-color-primary-rgb), 0.3);
       --color: white;
 
       ion-icon {
@@ -49,7 +130,82 @@
     }
 
     &:hover:not(.dashboard-menu-item-active) {
-      --background: var(--ion-color-light);
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transform: translateX(4px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+
+      > ion-icon {
+        transform: scale(1.1);
+      }
+    }
+
+    &:active {
+      transform: translateX(2px);
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .dashboard-menu-list ion-item {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    &:hover:not(.dashboard-menu-item-active) {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+  }
+}
+
+// Dashboard Header & Toolbar Glassmorphism
+.dashboard-header {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+
+  .dashboard-toolbar {
+    --background: transparent;
+    --border-color: transparent;
+
+    ion-title {
+      font-weight: 600;
+      font-size: 20px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    ion-button {
+      --background: rgba(255, 255, 255, 0.3);
+      --background-hover: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 12px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+  }
+}
+
+.dashboard-content {
+  --background: var(--ion-background-color);
+}
+
+@media (prefers-color-scheme: dark) {
+  .dashboard-header {
+    background: rgba(30, 30, 30, 0.7);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+
+    .dashboard-toolbar ion-button {
+      --background: rgba(255, 255, 255, 0.1);
+      --background-hover: rgba(255, 255, 255, 0.2);
     }
   }
 }

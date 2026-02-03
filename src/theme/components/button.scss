@@ -9,6 +9,10 @@ ion-button {
   text-transform: none;
   --border-radius: 64px;
 
+  &:hover:not(:disabled) {
+    border-radius: 64px;
+  }
+
   &.translation-button {
     font-size: 14px;
     background-color: var(--ion-background-variant);

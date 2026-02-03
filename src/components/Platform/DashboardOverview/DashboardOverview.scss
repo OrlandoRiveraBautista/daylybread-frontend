@@ -1,34 +1,153 @@
 @import "../../../theme/variables.scss";
 
+// Keyframe animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
 .dashboard-overview-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 24px 16px;
+  animation: fadeIn 0.3s ease-out;
 }
 
 .dashboard-welcome {
   margin-bottom: 32px;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  animation: fadeIn 0.4s ease-out;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(
+      circle,
+      rgba(var(--ion-color-primary-rgb), 0.1) 0%,
+      transparent 70%
+    );
+    animation: pulse 8s ease-in-out infinite;
+  }
 
   h1 {
     font-size: 32px;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--ion-text-color);
     margin: 0 0 8px 0;
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   }
 
   p {
     font-size: 16px;
     color: var(--ion-color-medium);
     margin: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  > ion-button {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    z-index: 1;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(var(--ion-color-primary-rgb), 0.3);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .dashboard-welcome {
+    background: rgba(30, 30, 30, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.15);
   }
 }
 
 .stat-card {
-  --background: var(--ion-surface-container);
-  border-radius: 16px;
-  box-shadow: none;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   margin: 0;
   height: 100%;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fadeIn 0.5s ease-out both;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--ion-color-primary),
+      transparent
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  // Stagger animation for each stat card
+  @for $i from 1 through 6 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 0.08}s;
+    }
+  }
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+
+    &::before {
+      opacity: 1;
+    }
+  }
+
+  &:active {
+    transform: translateY(-4px);
+    transition-duration: 0.1s;
+  }
 
   .stat-card-content {
     display: flex;
@@ -37,33 +156,88 @@
   }
 
   .stat-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
+    width: 56px;
+    height: 56px;
+    border-radius: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+      );
+      transform: rotate(45deg);
+      transition: all 0.6s ease;
+    }
 
     ion-icon {
-      font-size: 24px;
+      font-size: 28px;
       color: white;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      z-index: 1;
     }
 
     &.stat-icon-primary {
-      background: var(--ion-color-primary);
+      background: linear-gradient(
+        135deg,
+        var(--ion-color-primary),
+        rgba(var(--ion-color-primary-rgb), 0.7)
+      );
+      box-shadow: 0 8px 16px rgba(var(--ion-color-primary-rgb), 0.3);
     }
 
     &.stat-icon-secondary {
-      background: var(--ion-color-secondary);
+      background: linear-gradient(
+        135deg,
+        var(--ion-color-secondary),
+        rgba(var(--ion-color-secondary-rgb), 0.7)
+      );
+      box-shadow: 0 8px 16px rgba(var(--ion-color-secondary-rgb), 0.3);
     }
 
     &.stat-icon-tertiary {
-      background: var(--ion-color-tertiary);
+      background: linear-gradient(
+        135deg,
+        var(--ion-color-tertiary),
+        rgba(var(--ion-color-tertiary-rgb), 0.7)
+      );
+      box-shadow: 0 8px 16px rgba(var(--ion-color-tertiary-rgb), 0.3);
     }
 
     &.stat-icon-success {
-      background: var(--ion-color-success);
+      background: linear-gradient(
+        135deg,
+        var(--ion-color-success),
+        rgba(var(--ion-color-success-rgb), 0.7)
+      );
+      box-shadow: 0 8px 16px rgba(var(--ion-color-success-rgb), 0.3);
+    }
+  }
+
+  &:hover .stat-icon {
+    transform: scale(1.15) rotate(8deg);
+
+    &::before {
+      left: 100%;
+    }
+
+    ion-icon {
+      transform: scale(1.1);
     }
   }
 
@@ -76,25 +250,47 @@
     font-size: 14px;
     display: block;
     margin-bottom: 4px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .stat-value {
-    font-size: 24px;
-    font-weight: 600;
+    font-size: 28px;
+    font-weight: 700;
     color: var(--ion-text-color);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  &:hover .stat-value {
+    transform: scale(1.08);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .stat-card {
+    background: rgba(30, 30, 30, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+
+    &:hover {
+      background: rgba(40, 40, 40, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
   }
 }
 
 .quick-actions-card {
-  --background: var(--ion-surface-container);
-  border-radius: 16px;
-  box-shadow: none;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   margin-top: 24px;
+  animation: fadeIn 0.5s ease-out 0.3s both;
 
   ion-card-title {
-    font-size: 20px;
-    font-weight: 600;
+    font-size: 22px;
+    font-weight: 700;
     color: var(--ion-text-color);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   }
 }
 
@@ -108,20 +304,54 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px;
-  background: var(--ion-background-color);
-  border-radius: 12px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 20px;
   gap: 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--ion-color-primary),
+      transparent
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    border-radius: 24px;
+
+    &::before {
+      opacity: 1;
+    }
+  }
 
   .quick-action-text {
     flex: 1;
     min-width: 0;
 
     h3 {
-      font-size: 16px;
-      font-weight: 500;
+      font-size: 17px;
+      font-weight: 600;
       color: var(--ion-text-color);
       margin: 0 0 4px 0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     p {
@@ -131,8 +361,41 @@
     }
   }
 
+  &:hover .quick-action-text h3 {
+    color: var(--ion-color-primary);
+    transform: translateX(4px);
+  }
+
   ion-button {
     flex-shrink: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+      transform: scale(1.08);
+      box-shadow: 0 4px 12px rgba(var(--ion-color-primary-rgb), 0.3);
+      border-radius: 24px;
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .quick-actions-card {
+    background: rgba(30, 30, 30, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .quick-action-item {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
   }
 }
 

@@ -179,13 +179,13 @@ export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
                     >
                       <IonIcon slot="icon-only" icon={create} />
                     </IonButton>
-                    <IonButton
+                    {/* <IonButton
                       fill="clear"
                       color="danger"
                       onClick={() => setShowDeleteConfirm(device._id)}
                     >
                       <IonIcon slot="icon-only" icon={trash} />
-                    </IonButton>
+                    </IonButton> */}
                   </div>
                 </div>
               </IonCardHeader>

@@ -106,9 +106,13 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 
   return (
     <>
-      <IonMenu contentId="main-content" type="overlay">
-        <IonHeader className="ion-no-border">
-          <IonToolbar style={{ "--background": "var(--ion-background-color)" }}>
+      <IonMenu
+        contentId="main-content"
+        type="overlay"
+        className="dashboard-menu"
+      >
+        <IonHeader className="ion-no-border dashboard-menu-header-container">
+          <IonToolbar className="dashboard-menu-toolbar">
             <div className="dashboard-menu-header">
               <IonImg
                 src={
@@ -125,7 +129,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
             </div>
           </IonToolbar>
         </IonHeader>
-        <IonContent>
+        <IonContent className="dashboard-menu-content">
           <IonList className="dashboard-menu-list">
             {menuItems.map((item) => (
               <IonMenuToggle key={item.section} autoHide={false}>
@@ -149,8 +153,8 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       </IonMenu>
 
       <div className="ion-page" id="main-content">
-        <IonHeader className="ion-no-border">
-          <IonToolbar style={{ "--background": "var(--ion-background-color)" }}>
+        <IonHeader className="ion-no-border dashboard-header">
+          <IonToolbar className="dashboard-toolbar">
             <IonButtons slot="start">
               <IonMenuButton />
             </IonButtons>
@@ -159,10 +163,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
             </IonTitle>
           </IonToolbar>
         </IonHeader>
-        <IonContent
-          className="ion-padding"
-          style={{ "--background": "var(--ion-background-color)" }}
-        >
+        <IonContent className="ion-padding dashboard-content">
           {children}
         </IonContent>
       </div>

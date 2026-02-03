@@ -183,6 +183,8 @@ export enum SermonAIPromptType {
   IMPROVE_CLARITY = "IMPROVE_CLARITY",
   ADD_DEPTH = "ADD_DEPTH",
   CUSTOM = "CUSTOM",
+  // Inline editing
+  INLINE_EDIT = "INLINE_EDIT",
 }
 
 export interface SermonAIInput {
