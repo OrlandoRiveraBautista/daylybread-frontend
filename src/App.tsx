@@ -336,6 +336,14 @@ const App: React.FC = () => {
                       <Route path="/signupupdateuser">
                         <Auth />
                       </Route>
+                      {/* Platform Routes for localhost development */}
+                      <Route path="/platform">
+                        <Platform />
+                      </Route>
+                      {/* NFC Routes */}
+                      <Route path="/nfc">
+                        <NFC />
+                      </Route>
                     </Switch>
                   </IonRouterOutlet>
                   <IonTabBar slot="bottom">

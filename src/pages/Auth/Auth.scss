@@ -82,8 +82,16 @@
     margin-top: 24px;
     ion-button {
       width: 100%;
-      --box-shadow: none;
+      --border-radius: 64px;
+      --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
       text-transform: capitalize;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+      }
+
       u {
         color: $color-primary;
       }

@@ -1,3 +1,12 @@
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .tabs-container {
   display: flex;
   flex-direction: row;
@@ -9,6 +18,7 @@
   left: 0;
   right: 0;
   z-index: 1000;
+  animation: fadeIn 0.4s ease-out;
 
   .tabs-segment {
     display: flex;
@@ -30,17 +40,24 @@
       align-items: center;
       height: 100%;
       gap: 4px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
       ion-icon {
         font-size: 16px;
         padding: 0;
         margin: 0;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
       ion-label {
         font-size: 12px;
         padding: 0;
         margin: 0;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      &:hover ion-icon {
+        transform: scale(1.1);
       }
     }
   }
