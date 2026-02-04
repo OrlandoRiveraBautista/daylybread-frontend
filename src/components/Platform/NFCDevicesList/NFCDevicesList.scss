@@ -53,10 +53,10 @@
 }
 
 .empty-state-card {
-  background: rgba(255, 255, 255, 0.6);
+  background: $glass-background-light;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid $glass-border-lighter;
   border-radius: 20px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   animation: fadeIn 0.5s ease-out;
@@ -105,8 +105,8 @@
 
 @media (prefers-color-scheme: dark) {
   .empty-state-card {
-    background: rgba(30, 30, 30, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: $glass-background-dark;
+    border: 1px solid $glass-border-dark;
   }
 }
 
@@ -118,10 +118,10 @@
 }
 
 .device-card {
-  background: rgba(255, 255, 255, 0.6);
+  background: $glass-background-light;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid $glass-border-lighter;
   border-radius: 20px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   margin: 0;
@@ -237,10 +237,8 @@
     gap: 24px;
     margin-bottom: 16px;
     padding: 16px;
-    background: rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: $glass-background-medium;
+    border: 1px solid $glass-border-lighter;
     border-radius: 12px;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
@@ -264,8 +262,8 @@
   }
 
   &:hover .device-stats {
-    background: rgba(255, 255, 255, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: $glass-background-hover;
+    border: 1px solid $glass-border-light;
   }
 
   &:hover .device-stats .stat-item strong {
@@ -307,8 +305,8 @@
 
 @media (prefers-color-scheme: dark) {
   .device-card {
-    background: rgba(30, 30, 30, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: $glass-background-dark;
+    border: 1px solid $glass-border-dark;
 
     &:hover {
       background: rgba(40, 40, 40, 0.7);
@@ -316,13 +314,13 @@
     }
 
     .device-stats {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: $glass-background-dark;
+      border: 1px solid $glass-border-dark;
     }
 
     &:hover .device-stats {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: $glass-background-dark-hover;
+      border: 1px solid $glass-border-dark-hover;
     }
   }
 }

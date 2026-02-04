@@ -58,19 +58,17 @@
   align-items: center;
   gap: 12px;
   animation: fadeIn 0.4s ease-out;
-  background: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
+  background: $glass-background-light;
   border-radius: 20px;
   margin: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid $glass-border-lighter;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
 }
 
 @media (prefers-color-scheme: dark) {
   .dashboard-menu-header {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: $glass-background-dark-hover;
+    border: 1px solid $glass-border-dark-hover;
   }
 }
 
@@ -97,10 +95,8 @@
     margin-bottom: 8px;
     font-weight: 500;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: $glass-background-dark;
+    border: 1px solid $glass-border-dark;
 
     > ion-icon {
       margin-right: 16px;
@@ -111,12 +107,10 @@
     &.dashboard-menu-item-active {
       background: linear-gradient(
         135deg,
-        rgba(var(--ion-color-primary-rgb), 0.9),
-        rgba(var(--ion-color-primary-rgb), 0.7)
+        rgba(var(--ion-color-primary-rgb), 1),
+        rgba(var(--ion-color-primary-rgb), 0.85)
       );
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.35);
       box-shadow: 0 8px 32px rgba(var(--ion-color-primary-rgb), 0.3);
       --color: white;
 
@@ -130,10 +124,8 @@
     }
 
     &:hover:not(.dashboard-menu-item-active) {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: $glass-background-dark-hover;
+      border: 1px solid $glass-border-dark-hover;
       transform: translateX(4px);
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 
@@ -150,11 +142,11 @@
 
 @media (prefers-color-scheme: dark) {
   .dashboard-menu-list ion-item {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: $glass-background-dark-hover;
+    border: 1px solid $glass-border-dark-hover;
 
     &:hover:not(.dashboard-menu-item-active) {
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.18);
       border: 1px solid rgba(255, 255, 255, 0.25);
     }
   }
@@ -179,10 +171,8 @@
     }
 
     ion-button {
-      --background: rgba(255, 255, 255, 0.3);
-      --background-hover: rgba(255, 255, 255, 0.5);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      --background: rgba(255, 255, 255, 0.4);
+      --background-hover: rgba(255, 255, 255, 0.6);
       border-radius: 12px;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
@@ -204,8 +194,8 @@
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
 
     .dashboard-toolbar ion-button {
-      --background: rgba(255, 255, 255, 0.1);
-      --background-hover: rgba(255, 255, 255, 0.2);
+      --background: rgba(255, 255, 255, 0.15);
+      --background-hover: rgba(255, 255, 255, 0.25);
     }
   }
 }

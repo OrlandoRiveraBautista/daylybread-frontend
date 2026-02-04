@@ -83,6 +83,20 @@ $surface-container: #eeedf1;
 /** Spacing and padding */
 $padding: 16px;
 
+/** Glassmorphism effects - Light Mode */
+$glass-background-light: rgba(255, 255, 255, 0.6);
+// Using Material You surface-variant color with transparency
+$glass-background-medium: rgba(223, 226, 235, 0.5); // $surface-variant with 0.5 opacity
+$glass-background-hover: rgba(238, 237, 241, 0.6); // $surface-container with 0.6 opacity
+$glass-border-light: rgba(195, 198, 207, 0.4); // $outline-variant-color with 0.4 opacity
+$glass-border-lighter: rgba(195, 198, 207, 0.3); // $outline-variant-color with 0.3 opacity
+
+/** Glassmorphism effects - Dark Mode */
+$glass-background-dark: rgba(255, 255, 255, 0.08);
+$glass-background-dark-hover: rgba(255, 255, 255, 0.12);
+$glass-border-dark: rgba(255, 255, 255, 0.12);
+$glass-border-dark-hover: rgba(255, 255, 255, 0.18);
+
 /* Ionic Variables and Theming. For more info, please see:
 http://ionicframework.com/docs/theming/ */
 
