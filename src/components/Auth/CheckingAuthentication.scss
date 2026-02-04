@@ -1,0 +1,449 @@
+@import "../../theme/variables.scss";
+
+// Animations for auth checking screen
+@keyframes authCardAppear {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes logoSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes loaderFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes actionsFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes footerSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spinnerPulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(0.95);
+  }
+}
+
+@keyframes statusPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes orbGlow1 {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.8;
+  }
+  33% {
+    transform: translate(30px, -20px) scale(1.2);
+    opacity: 0.6;
+  }
+  66% {
+    transform: translate(-20px, 30px) scale(0.9);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.8;
+  }
+}
+
+@keyframes orbGlow2 {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.7;
+  }
+  33% {
+    transform: translate(-40px, -30px) scale(1.3);
+    opacity: 0.5;
+  }
+  66% {
+    transform: translate(20px, -20px) scale(0.85);
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.7;
+  }
+}
+
+@keyframes orbGlow3 {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.7;
+  }
+  25% {
+    transform: translate(-50%, -50%) scale(1.15);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(0.9);
+    opacity: 0.8;
+  }
+  75% {
+    transform: translate(-50%, -50%) scale(1.25);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.7;
+  }
+}
+
+.auth-checking-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+  background: var(--ion-background-color);
+  overflow: hidden;
+  padding: 20px;
+}
+
+// Background gradient orbs
+.auth-checking-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  z-index: 0;
+
+  .gradient-orb {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    will-change: transform, opacity;
+
+    &.gradient-orb-1 {
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(
+        circle,
+        rgba($color-primary, 0.6) 0%,
+        rgba($color-primary, 0.3) 40%,
+        transparent 70%
+      );
+      top: -100px;
+      left: -100px;
+      opacity: 0.8;
+      animation: orbGlow1 12s ease-in-out infinite;
+    }
+
+    &.gradient-orb-2 {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(
+        circle,
+        rgba($color-secondary, 0.5) 0%,
+        rgba($color-secondary, 0.25) 40%,
+        transparent 70%
+      );
+      bottom: -100px;
+      right: -100px;
+      opacity: 0.7;
+      animation: orbGlow2 15s ease-in-out infinite;
+    }
+
+    &.gradient-orb-3 {
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(
+        circle,
+        rgba($color-tertiary, 0.45) 0%,
+        rgba($color-tertiary, 0.2) 40%,
+        transparent 70%
+      );
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0.7;
+      animation: orbGlow3 18s ease-in-out infinite;
+    }
+  }
+}
+
+// Main content card
+.auth-checking-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 440px;
+  background: $glass-background-light;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid $glass-border-lighter;
+  border-radius: 24px;
+  padding: 40px 32px;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.08),
+    0 4px 16px rgba(0, 0, 0, 0.04);
+  animation: authCardAppear 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  @media (max-width: 576px) {
+    padding: 32px 24px;
+  }
+}
+
+// Logo section
+.auth-checking-logo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 24px;
+  animation: logoSlideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.2s backwards;
+}
+
+.auth-checking-logo {
+  width: auto;
+  height: 28px;
+  margin-bottom: 16px;
+  filter: drop-shadow(0 2px 8px rgba($color-primary, 0.2));
+}
+
+.auth-checking-subtitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ion-color-medium);
+  margin: 0;
+  text-align: center;
+  letter-spacing: 0.2px;
+}
+
+// Loading indicator
+.auth-checking-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding: 20px 0;
+  animation: loaderFadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.3s backwards;
+}
+
+.auth-checking-spinner {
+  width: 40px;
+  height: 40px;
+  --color: var(--ion-color-primary);
+  animation: spinnerPulse 1.5s ease-in-out infinite;
+}
+
+.auth-checking-status {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ion-color-medium);
+  animation: statusPulse 2s ease-in-out infinite;
+  text-align: center;
+}
+
+// Quick actions
+.auth-checking-actions {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 12px;
+  margin-bottom: 20px;
+  animation: actionsFadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.4s backwards;
+}
+
+.auth-checking-help-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ion-color-medium);
+  text-align: center;
+  margin: 0 0 4px 0;
+}
+
+.auth-action-button {
+  --border-radius: 64px;
+  height: 48px;
+  font-size: 15px;
+  font-weight: 600;
+  text-transform: none;
+  margin: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &.auth-action-primary {
+    --background: var(--ion-color-primary);
+    --background-hover: var(--ion-color-primary-shade);
+    --box-shadow: 0 4px 12px rgba(var(--ion-color-primary-rgb), 0.25);
+
+    &:hover {
+      --box-shadow: 0 6px 20px rgba(var(--ion-color-primary-rgb), 0.3);
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  &.auth-action-secondary {
+    --color: var(--ion-color-primary);
+    --background: transparent;
+    --background-hover: rgba(var(--ion-color-primary-rgb), 0.08);
+    font-weight: 600;
+
+    &:hover {
+      --background: rgba(var(--ion-color-primary-rgb), 0.12);
+    }
+  }
+}
+
+// Footer
+.auth-checking-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding-top: 20px;
+  border-top: 1px solid $outline-variant-color;
+  animation: footerSlideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.5s backwards;
+}
+
+.auth-checking-footer-text {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ion-color-medium);
+  opacity: 0.7;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+
+  &::before {
+    content: "🔒";
+    font-size: 13px;
+  }
+}
+
+// Dark mode styles
+@media (prefers-color-scheme: dark) {
+  .auth-checking-content {
+    background: $glass-background-dark;
+    border: 1px solid $glass-border-dark;
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.4),
+      0 4px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  .auth-checking-logo {
+    filter: drop-shadow(0 2px 8px rgba($color-primary, 0.3));
+  }
+
+  .auth-checking-background {
+    .gradient-orb {
+      &.gradient-orb-1 {
+        background: radial-gradient(
+          circle,
+          rgba($color-primary, 0.7) 0%,
+          rgba($color-primary, 0.4) 40%,
+          transparent 70%
+        );
+        opacity: 0.6;
+      }
+
+      &.gradient-orb-2 {
+        background: radial-gradient(
+          circle,
+          rgba($color-secondary, 0.6) 0%,
+          rgba($color-secondary, 0.35) 40%,
+          transparent 70%
+        );
+        opacity: 0.5;
+      }
+
+      &.gradient-orb-3 {
+        background: radial-gradient(
+          circle,
+          rgba($color-tertiary, 0.55) 0%,
+          rgba($color-tertiary, 0.3) 40%,
+          transparent 70%
+        );
+        opacity: 0.5;
+      }
+    }
+  }
+
+  .auth-checking-footer {
+    border-top-color: $glass-border-dark;
+  }
+
+  .auth-action-button.auth-action-secondary {
+    &:hover {
+      --background: rgba(var(--ion-color-primary-rgb), 0.15);
+    }
+  }
+}
+
+// Responsive adjustments
+@media (min-width: 768px) {
+  .auth-checking-content {
+    padding: 48px 40px;
+  }
+
+  .auth-checking-logo {
+    height: 32px;
+  }
+}

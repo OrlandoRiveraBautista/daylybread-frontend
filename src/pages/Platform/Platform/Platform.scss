@@ -23,8 +23,8 @@
 
 .platform-form {
   ion-item {
-    background: rgba(255, 255, 255, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: $glass-background-light;
+    border: 1px solid $glass-border-lighter;
     --border-radius: 16px;
     border-radius: 16px;
     --padding-start: 16px;
@@ -34,14 +34,14 @@
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
 
     &:hover {
-      background: rgba(255, 255, 255, 1);
+      background: $glass-background-hover;
       border: 1px solid rgba(var(--ion-color-primary-rgb), 0.4);
       transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
     }
 
     &:focus-within {
-      background: rgba(255, 255, 255, 1);
+      background: $glass-background-hover;
       // border: 2px solid rgba(var(--ion-color-primary-rgb), 0.6);
       box-shadow: 0 8px 24px rgba(var(--ion-color-primary-rgb), 0.15);
     }
@@ -67,16 +67,16 @@
 
 @media (prefers-color-scheme: dark) {
   .platform-form ion-item {
-    background: rgba(30, 30, 30, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: $glass-background-dark;
+    border: 1px solid $glass-border-dark;
 
     &:hover {
-      background: rgba(40, 40, 40, 1);
+      background: $glass-background-dark-hover;
       border: 1px solid rgba(var(--ion-color-primary-rgb), 0.5);
     }
 
     &:focus-within {
-      background: rgba(40, 40, 40, 1);
+      background: $glass-background-dark-hover;
       border: 2px solid rgba(var(--ion-color-primary-rgb), 0.6);
     }
   }

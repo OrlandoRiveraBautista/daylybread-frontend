@@ -66,10 +66,8 @@
   margin-bottom: 24px;
 
   ion-searchbar {
-    --background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    --background: $glass-background-light;
+    border: 1px solid $glass-border-lighter;
     --border-radius: 16px;
     --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
     --padding-start: 8px;
@@ -79,8 +77,8 @@
 
 @media (prefers-color-scheme: dark) {
   .sermons-search ion-searchbar {
-    --background: rgba(30, 30, 30, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    --background: $glass-background-dark;
+    border: 1px solid $glass-border-dark;
   }
 }
 
@@ -140,10 +138,8 @@
 }
 
 .sermon-card {
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: $glass-background-light;
+  border: 1px solid $glass-border-lighter;
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
   margin: 0;
@@ -151,6 +147,7 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  display: flex;
 
   &::before {
     content: "";
@@ -190,6 +187,7 @@
     display: flex;
     flex-direction: column;
     min-height: 160px;
+    height: 100%;
   }
 
   .sermon-card-header {
@@ -273,15 +271,11 @@
 
   &.new-sermon-card {
     border: 2px dashed rgba(var(--ion-color-medium-rgb), 0.5);
-    background: rgba(255, 255, 255, 0.4);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
+    background: $glass-background-light;
 
     &:hover {
       border-color: var(--ion-color-primary);
       background: rgba(var(--ion-color-primary-rgb), 0.15);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
     }
 
     ion-card-content {
@@ -322,16 +316,16 @@
 
 @media (prefers-color-scheme: dark) {
   .sermon-card {
-    background: rgba(30, 30, 30, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: $glass-background-dark;
+    border: 1px solid $glass-border-dark;
 
     &:hover {
-      background: rgba(40, 40, 40, 0.7);
+      background: $glass-background-dark-hover;
       border: 1px solid rgba(var(--ion-color-primary-rgb), 0.5);
     }
 
     &.new-sermon-card {
-      background: rgba(30, 30, 30, 0.4);
+      background: $glass-background-dark;
 
       &:hover {
         background: rgba(var(--ion-color-primary-rgb), 0.2);
@@ -349,10 +343,10 @@
 }
 
 .empty-state-card {
-  background: rgba(255, 255, 255, 0.6);
+  background: $glass-background-light;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid $glass-border-lighter;
   border-radius: 20px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   max-width: 500px;
