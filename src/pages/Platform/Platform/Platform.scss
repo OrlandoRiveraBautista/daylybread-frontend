@@ -1,7 +1,7 @@
 @import "../../../theme/variables.scss";
 
 // Keyframe animations
-@keyframes fadeIn {
+@keyframes platformPageFadeIn {
   from {
     opacity: 0;
   }
@@ -14,7 +14,7 @@
   max-width: 600px;
   margin: 0 auto;
   padding: 24px 16px;
-  animation: fadeIn 0.3s ease-out;
+  animation: platformPageFadeIn 0.3s ease-out;
 }
 
 .platform-form-container {
@@ -141,7 +141,7 @@
   background: var(--ion-background-color);
   gap: 16px;
   padding: 16px;
-  animation: fadeIn 0.3s ease-out;
+  animation: platformPageFadeIn 0.3s ease-out;
 
   ion-spinner {
     width: 48px;

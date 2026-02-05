@@ -1,7 +1,7 @@
 @import "../../../theme/variables.scss";
 
 // Keyframe animations
-@keyframes fadeIn {
+@keyframes dashboardOverviewFadeIn {
   from {
     opacity: 0;
   }
@@ -10,7 +10,7 @@
   }
 }
 
-@keyframes pulse {
+@keyframes dashboardOverviewPulse {
   0%,
   100% {
     transform: scale(1);
@@ -24,7 +24,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 24px 16px;
-  animation: fadeIn 0.3s ease-out;
+  animation: dashboardOverviewFadeIn 0.3s ease-out;
 }
 
 .dashboard-welcome {
@@ -36,7 +36,7 @@
   border: 1px solid $glass-border-lighter;
   border-radius: 24px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-  animation: fadeIn 0.4s ease-out;
+  animation: dashboardOverviewFadeIn 0.4s ease-out;
   position: relative;
   overflow: hidden;
 
@@ -105,7 +105,7 @@
   height: 100%;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  animation: fadeIn 0.5s ease-out both;
+  animation: dashboardOverviewFadeIn 0.5s ease-out both;
   position: relative;
   overflow: hidden;
 
@@ -284,7 +284,7 @@
   border-radius: 24px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   margin-top: 24px;
-  animation: fadeIn 0.5s ease-out 0.3s both;
+  animation: dashboardOverviewFadeIn 0.5s ease-out 0.3s both;
 
   ion-card-title {
     font-size: 22px;

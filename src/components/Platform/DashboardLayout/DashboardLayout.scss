@@ -1,7 +1,7 @@
 @import "../../../theme/variables.scss";
 
 // Keyframe animations
-@keyframes fadeIn {
+@keyframes dashboardLayoutFadeIn {
   from {
     opacity: 0;
   }
@@ -57,7 +57,7 @@
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  animation: fadeIn 0.4s ease-out;
+  animation: dashboardLayoutFadeIn 0.4s ease-out;
   background: $glass-background-light;
   border-radius: 20px;
   margin: 12px;

@@ -1,0 +1,451 @@
+// HomeScreenEditor Styles
+@import "../../../theme/variables.scss";
+
+// Editor Modal
+.homescreen-editor-modal {
+  --width: 100%;
+  --height: 100%;
+  --border-radius: 0;
+  
+  @media (min-width: 768px) {
+    --width: 90%;
+    --max-width: 900px;
+    --height: 95vh;
+    --max-height: 1000px;
+    --border-radius: 20px;
+  }
+  
+  @media (min-width: 1200px) {
+    --max-width: 1000px;
+  }
+}
+
+.homescreen-editor {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--ion-background-color);
+}
+
+// Header
+.editor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--ion-border-color);
+  background: var(--ion-toolbar-background);
+  
+  h2 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 600;
+  }
+  
+  ion-button {
+    --padding-start: 12px;
+    --padding-end: 12px;
+  }
+}
+
+// Toolbar
+.editor-toolbar {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--ion-border-color);
+  background: var(--ion-card-background);
+  
+  ion-button {
+    --border-radius: 8px;
+    font-size: 13px;
+  }
+}
+
+// Wallpaper Picker
+.wallpaper-picker {
+  padding: 12px 16px;
+  background: var(--ion-card-background);
+  border-bottom: 1px solid var(--ion-border-color);
+  
+  .picker-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ion-color-medium);
+    margin-bottom: 8px;
+    
+    ion-icon {
+      font-size: 16px;
+    }
+  }
+  
+  .wallpaper-options {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+  
+  .wallpaper-option {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    
+    &:hover {
+      transform: scale(1.05);
+    }
+    
+    &.active {
+      border-color: var(--ion-color-primary);
+      box-shadow: 0 0 0 2px rgba(var(--ion-color-primary-rgb), 0.3);
+    }
+  }
+}
+
+// Phone Preview Container
+.phone-preview-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 20px;
+  overflow: auto;
+  background: var(--ion-background-color);
+  
+  @media (prefers-color-scheme: dark) {
+    background: #1a1a1a;
+  }
+  
+  @media (max-width: 767px) {
+    padding: 0;
+    align-items: stretch;
+  }
+}
+
+// Phone Frame
+.phone-frame {
+  // iPhone 14 Pro dimensions (393x852 at scale, but we'll use standard 375x812)
+  width: 375px;
+  height: 812px;
+  background: #000;
+  border-radius: 44px;
+  padding: 12px;
+  position: relative;
+  flex-shrink: 0;
+  box-shadow: 
+    0 25px 80px rgba(0, 0, 0, 0.4),
+    inset 0 0 0 3px #333;
+  
+  .phone-notch {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px;
+    height: 30px;
+    background: #000;
+    border-radius: 0 0 20px 20px;
+    z-index: 10;
+  }
+  
+  .iphone-homescreen {
+    border-radius: 36px;
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+    position: relative;
+  }
+  
+  .phone-home-indicator {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 134px;
+    height: 5px;
+    background: white;
+    border-radius: 3px;
+    z-index: 10;
+  }
+  
+  @media (max-width: 767px) {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+    
+    .phone-notch,
+    .phone-home-indicator {
+      display: none;
+    }
+    
+    .iphone-homescreen {
+      border-radius: 0;
+    }
+  }
+}
+
+// Instructions
+.editor-instructions {
+  padding: 12px 16px;
+  text-align: center;
+  background: var(--ion-card-background);
+  border-top: 1px solid var(--ion-border-color);
+  
+  p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--ion-color-medium);
+  }
+}
+
+// Tile Library Modal
+.tile-library-modal {
+  .tile-library-content {
+    --background: var(--ion-background-color);
+  }
+}
+
+.tile-library {
+  padding: 16px;
+  
+  .category-section {
+    margin-bottom: 24px;
+  }
+  
+  .category-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ion-color-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0 0 12px 4px;
+  }
+  
+  .presets-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .preset-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: var(--ion-card-background);
+    border: 1px solid var(--ion-border-color);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    width: 100%;
+    
+    &:hover {
+      background: var(--ion-color-light);
+      transform: translateX(4px);
+    }
+    
+    &:active {
+      transform: scale(0.98);
+    }
+    
+    .preset-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+      
+      ion-icon {
+        font-size: 22px;
+        color: white;
+      }
+    }
+    
+    .preset-info {
+      flex: 1;
+      min-width: 0;
+      
+      .preset-label {
+        display: block;
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--ion-text-color);
+      }
+      
+      .preset-description {
+        display: block;
+        font-size: 13px;
+        color: var(--ion-color-medium);
+        margin-top: 2px;
+      }
+    }
+    
+    .preset-action {
+      color: var(--ion-color-primary);
+      
+      ion-icon {
+        font-size: 24px;
+      }
+    }
+  }
+}
+
+// Tile Config Modal
+.tile-config-modal {
+  .tile-config-content {
+    --background: var(--ion-background-color);
+  }
+}
+
+.tile-config {
+  padding: 16px;
+  
+  .tile-preview {
+    display: flex;
+    justify-content: center;
+    padding: 24px;
+    background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+    border-radius: 16px;
+    margin-bottom: 24px;
+    
+    .preview-tile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 16px;
+      border-radius: 16px;
+      
+      &.preview-small {
+        width: 70px;
+        padding: 0;
+        
+        .preview-icon {
+          width: 60px;
+          height: 60px;
+          border-radius: 14px;
+        }
+        
+        .preview-label {
+          font-size: 11px;
+        }
+      }
+      
+      &.preview-medium {
+        width: 160px;
+        flex-direction: row;
+        
+        .preview-icon {
+          width: 40px;
+          height: 40px;
+          border-radius: 10px;
+        }
+        
+        .preview-label {
+          font-size: 15px;
+        }
+      }
+      
+      &.preview-large {
+        width: 160px;
+        min-height: 160px;
+        align-items: flex-start;
+        
+        .preview-icon {
+          width: 44px;
+          height: 44px;
+          border-radius: 12px;
+        }
+        
+        .preview-label {
+          font-size: 17px;
+        }
+      }
+      
+      .preview-icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.2);
+        
+        ion-icon {
+          font-size: 24px;
+          color: white;
+        }
+      }
+      
+      .preview-label {
+        color: white;
+        font-weight: 600;
+        text-align: center;
+      }
+    }
+  }
+  
+  .config-form {
+    ion-item {
+      --background: var(--ion-card-background);
+      --border-radius: 12px;
+      margin-bottom: 12px;
+      
+      ion-label[position="stacked"] {
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+    }
+  }
+  
+  .color-section {
+    padding: 16px;
+    background: var(--ion-card-background);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    
+    ion-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+    }
+    
+    .color-option {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        transform: scale(1.1);
+      }
+      
+      &.active {
+        border-color: var(--ion-text-color);
+        box-shadow: 0 0 0 2px var(--ion-card-background);
+      }
+    }
+  }
+}

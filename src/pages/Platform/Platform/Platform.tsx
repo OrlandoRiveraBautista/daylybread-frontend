@@ -9,6 +9,7 @@ import { useAppContext } from "../../../context/context";
 /* Hooks */
 import { useToast } from "../../../hooks/useToast";
 import { useNFCConfig } from "../../../hooks/useNFCConfig";
+import { useUpdateNFCTiles } from "../../../hooks/NFCConfigHooks";
 
 /* Components */
 import CheckingAuthentication from "../../../components/Auth/CheckingAuthentication";
@@ -20,6 +21,7 @@ import { DashboardOverview } from "../../../components/Platform/DashboardOvervie
 import { NFCDevicesList } from "../../../components/Platform/NFCDevicesList";
 import { SermonsManagement } from "../../../components/Platform/SermonsManagement";
 import { SermonEditorPage } from "../../../components/Platform/SermonEditor";
+import { TileConfig } from "../../../components/NFC/iPhoneHomeScreen/types";
 
 const Platform: React.FC = () => {
   const { userInfo } = useAppContext();
@@ -30,8 +32,8 @@ const Platform: React.FC = () => {
   const organizationName = "My Organization";
 
   const { showToast, toastMessage, toastOptions, show, hide } = useToast();
-  const { nfcConfigData, isSaving, fetchConfig, saveConfig } =
-    useNFCConfig(userInfo?._id!);
+  const { nfcConfigData, fetchConfig } = useNFCConfig(userInfo?._id!);
+  const [updateTiles, { loading: isSavingTiles }] = useUpdateNFCTiles();
 
   // Get active section from URL
   const getActiveSection = (): DashboardSection => {
@@ -72,40 +74,49 @@ const Platform: React.FC = () => {
     }, 1500);
   }, [userInfo]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleNFCDeviceSave = async (
-    deviceId: string | null,
-    formData: any,
-  ) => {
-    try {
-      if (!userInfo?._id) {
-        throw new Error("User not authenticated");
-      }
-
-      // If editing existing device, update it
-      if (deviceId) {
-        // Update existing device
-        await saveConfig(formData);
-        show("NFC device updated successfully");
-      } else {
-        // Create new device
-        await saveConfig(formData);
-        show("NFC device created successfully");
-      }
-
-      // Refresh the config data
-      fetchConfig();
-    } catch (error) {
-      console.error("Error saving NFC device:", error);
-      show(
-        error instanceof Error ? error.message : "Failed to save NFC device",
-      );
-    }
+  const handleNFCDeviceDelete = (deviceId: string) => {
+    // Handle delete if needed
+    console.log("Delete device:", deviceId);
   };
 
-  const handleNFCDeviceDelete = (deviceId: string) => {
-    // Implement delete functionality
-    console.log("Delete device:", deviceId);
-    show("Device deleted successfully");
+  const handleSaveTiles = async (
+    deviceId: string,
+    tiles: TileConfig[],
+    wallpaper?: string,
+  ) => {
+    try {
+      await updateTiles({
+        variables: {
+          id: deviceId,
+          tiles: tiles.map((tile) => ({
+            id: tile.id,
+            type: tile.type,
+            label: tile.label,
+            icon: tile.icon,
+            url: tile.url,
+            size: tile.size,
+            position: {
+              x: tile.position.x,
+              y: tile.position.y,
+            },
+            color: tile.color,
+            subtitle: tile.subtitle,
+            isInDock: tile.isInDock,
+          })),
+          wallpaper: wallpaper || null,
+        },
+      });
+      
+      show("Home screen updated successfully");
+      fetchConfig();
+    } catch (error) {
+      console.error("Error saving tiles:", error);
+      show(
+        error instanceof Error
+          ? error.message
+          : "Failed to update home screen",
+      );
+    }
   };
 
   const handleSectionChange = (section: DashboardSection) => {
@@ -164,9 +175,9 @@ const Platform: React.FC = () => {
           <Route path="/nfc">
             <NFCDevicesList
               devices={getDevices()}
-              onSave={handleNFCDeviceSave}
+              onSaveTiles={handleSaveTiles}
               onDelete={handleNFCDeviceDelete}
-              isSaving={isSaving}
+              isSaving={isSavingTiles}
             />
           </Route>
 

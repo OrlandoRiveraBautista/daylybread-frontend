@@ -8,21 +8,17 @@ import {
   IonIcon,
   IonText,
   IonLabel,
-  IonModal,
-  IonTitle,
-  IonContent,
   IonBadge,
   IonChip,
 } from "@ionic/react";
 import {
-  // add, // used by Add Device - commented out for now
   create,
   qrCode,
   link,
   checkmarkCircle,
-  alertCircle,
 } from "ionicons/icons";
-import { NFCConfigForm } from "../NFCConfigForm";
+import { HomeScreenEditor } from "../HomeScreenEditor";
+import { TileConfig } from "../../NFC/iPhoneHomeScreen/types";
 import "./NFCDevicesList.scss";
 
 interface NFCDevice {
@@ -56,51 +52,42 @@ interface NFCDevice {
   status: "active" | "inactive";
   createdAt: string;
   tapCount?: number;
+  tiles?: TileConfig[];
+  wallpaper?: string;
 }
 
 interface NFCDevicesListProps {
   devices?: NFCDevice[];
-  onSave: (deviceId: string | null, data: any) => Promise<void>;
+  onSaveTiles: (deviceId: string, tiles: TileConfig[], wallpaper?: string) => Promise<void>;
   onDelete: (deviceId: string) => void;
   isSaving: boolean;
 }
 
 export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
   devices = [],
-  onSave,
+  onSaveTiles,
   onDelete,
   isSaving,
 }) => {
-  const [showModal, setShowModal] = useState(false);
+  const [showHomeScreenEditor, setShowHomeScreenEditor] = useState(false);
   const [editingDevice, setEditingDevice] = useState<NFCDevice | null>(null);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(
-    null,
-  );
 
-  // Add Device - commented out for now
-  // const handleAddDevice = () => {
-  //   setEditingDevice(null);
-  //   setShowModal(true);
-  // };
-
+  // Open home screen editor modal
   const handleEditDevice = (device: NFCDevice) => {
     setEditingDevice(device);
-    setShowModal(true);
+    setShowHomeScreenEditor(true);
   };
 
-  const handleSaveDevice = async (formData: any) => {
-    await onSave(editingDevice?._id ?? editingDevice?.id ?? null, formData);
-    setShowModal(false);
+  const handleSaveTiles = async (tiles: TileConfig[], wallpaper?: string) => {
+    const deviceId = editingDevice?._id ?? editingDevice?.id;
+    if (deviceId) {
+      await onSaveTiles(deviceId, tiles, wallpaper);
+    }
+    setShowHomeScreenEditor(false);
     setEditingDevice(null);
   };
 
-  const handleDeleteDevice = (deviceId: string) => {
-    onDelete(deviceId);
-    setShowDeleteConfirm(null);
-  };
-
   const getDeviceUrl = (device: NFCDevice) => {
-    console.log(device);
     const configId = device.id;
     const { hostname, protocol, port } = window.location;
     if (hostname === "localhost" || hostname === "127.0.0.1") {
@@ -120,12 +107,6 @@ export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
           <h1>NFC Devices</h1>
           <p>Manage your organization's NFC devices and configurations</p>
         </div>
-        {/* Add Device - commented out for now
-        <IonButton size="large" onClick={handleAddDevice}>
-          <IonIcon slot="start" icon={add} />
-          Add Device
-        </IonButton>
-        */}
       </div>
 
       {devices.length === 0 ? (
@@ -138,12 +119,6 @@ export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
                 Create your first NFC device configuration to get started with
                 contactless engagement
               </p>
-              {/* Add Device - commented out for now
-              <IonButton size="large" onClick={handleAddDevice}>
-                <IonIcon slot="start" icon={add} />
-                Create First Device
-              </IonButton>
-              */}
             </div>
           </IonCardContent>
         </IonCard>
@@ -157,9 +132,7 @@ export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
                     <IonCardTitle>{device.name || device.title}</IonCardTitle>
                     <div className="device-meta">
                       <IonBadge
-                        color={
-                          device.status === "active" ? "success" : "medium"
-                        }
+                        color={device.status === "active" ? "success" : "medium"}
                       >
                         {device.status}
                       </IonBadge>
@@ -176,13 +149,6 @@ export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
                     >
                       <IonIcon slot="icon-only" icon={create} />
                     </IonButton>
-                    {/* <IonButton
-                      fill="clear"
-                      color="danger"
-                      onClick={() => setShowDeleteConfirm(device._id)}
-                    >
-                      <IonIcon slot="icon-only" icon={trash} />
-                    </IonButton> */}
                   </div>
                 </div>
               </IonCardHeader>
@@ -200,9 +166,7 @@ export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
                     <IonText color="medium">Created</IonText>
                     <strong>
                       {device.createdAt
-                        ? new Date(
-                            Number(device.createdAt),
-                          ).toLocaleDateString()
+                        ? new Date(Number(device.createdAt)).toLocaleDateString()
                         : "—"}
                     </strong>
                   </div>
@@ -244,63 +208,19 @@ export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
         </div>
       )}
 
-      {/* Edit/Create Modal - Bottom Sheet */}
-      <IonModal
-        isOpen={showModal}
-        onDidDismiss={() => setShowModal(false)}
-        breakpoints={[0, 0.75, 1]}
-        initialBreakpoint={0.75}
-      >
-        <IonContent className="ion-padding">
-          <IonTitle className="ion-text-center">
-            {editingDevice ? "Edit Device" : "Add New Device"}
-          </IonTitle>
-          <NFCConfigForm
-            initialData={editingDevice || undefined}
-            onSave={handleSaveDevice}
-            isSaving={isSaving}
-            isUpdating={!!editingDevice}
-          />
-        </IonContent>
-      </IonModal>
-
-      {/* Delete Confirmation Modal - Bottom Sheet */}
-      <IonModal
-        isOpen={!!showDeleteConfirm}
-        onDidDismiss={() => setShowDeleteConfirm(null)}
-        breakpoints={[0, 1]}
-        initialBreakpoint={1}
-      >
-        <IonContent className="ion-padding">
-          <div className="delete-confirmation">
-            <IonTitle className="ion-text-center">Confirm Delete</IonTitle>
-            <IonIcon icon={alertCircle} className="warning-icon" />
-            <h2>Delete NFC Device?</h2>
-            <p>
-              Are you sure you want to delete this device? This action cannot be
-              undone.
-            </p>
-            <div className="button-group">
-              <IonButton
-                shape="round"
-                expand="block"
-                fill="outline"
-                onClick={() => setShowDeleteConfirm(null)}
-              >
-                Cancel
-              </IonButton>
-              <IonButton
-                shape="round"
-                expand="block"
-                color="danger"
-                onClick={() => handleDeleteDevice(showDeleteConfirm!)}
-              >
-                Delete
-              </IonButton>
-            </div>
-          </div>
-        </IonContent>
-      </IonModal>
+      {/* Home Screen Editor Modal */}
+      <HomeScreenEditor
+        tiles={editingDevice?.tiles || []}
+        wallpaper={editingDevice?.wallpaper}
+        title={editingDevice?.title}
+        isOpen={showHomeScreenEditor}
+        isSaving={isSaving}
+        onClose={() => {
+          setShowHomeScreenEditor(false);
+          setEditingDevice(null);
+        }}
+        onSave={handleSaveTiles}
+      />
     </div>
   );
 };

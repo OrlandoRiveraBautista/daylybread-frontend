@@ -1,4 +1,4 @@
-@keyframes fadeIn {
+@keyframes tabsFadeIn {
   from {
     opacity: 0;
   }
@@ -18,7 +18,7 @@
   left: 0;
   right: 0;
   z-index: 1000;
-  animation: fadeIn 0.4s ease-out;
+  animation: tabsFadeIn 0.4s ease-out;
 
   .tabs-segment {
     display: flex;
