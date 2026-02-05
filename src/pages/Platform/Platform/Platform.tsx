@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { IonPage, IonToast } from "@ionic/react";
 import { Redirect, Route, Switch, useHistory, useLocation } from "react-router";
 import "./Platform.scss";
@@ -8,8 +8,8 @@ import { useAppContext } from "../../../context/context";
 
 /* Hooks */
 import { useToast } from "../../../hooks/useToast";
-import { useNFCConfig } from "../../../hooks/useNFCConfig";
-import { useUpdateNFCTiles } from "../../../hooks/NFCConfigHooks";
+import { usePlatformAuth } from "../../../hooks/usePlatformAuth";
+import { usePlatformNFCDevices } from "../../../hooks/usePlatformNFCDevices";
 
 /* Components */
 import CheckingAuthentication from "../../../components/Auth/CheckingAuthentication";
@@ -21,19 +21,29 @@ import { DashboardOverview } from "../../../components/Platform/DashboardOvervie
 import { NFCDevicesList } from "../../../components/Platform/NFCDevicesList";
 import { SermonsManagement } from "../../../components/Platform/SermonsManagement";
 import { SermonEditorPage } from "../../../components/Platform/SermonEditor";
-import { TileConfig, TileType, TileSize } from "../../../components/NFC/iPhoneHomeScreen/types";
 
 const Platform: React.FC = () => {
   const { userInfo } = useAppContext();
   const history = useHistory();
   const location = useLocation();
-  const [isLoading, setIsLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const organizationName = "My Organization";
 
+  // Authentication
+  const { isLoading, isAuthenticated } = usePlatformAuth(userInfo);
+
+  // Toast notifications
   const { showToast, toastMessage, toastOptions, show, hide } = useToast();
-  const { nfcConfigData, fetchConfig } = useNFCConfig(userInfo?._id!);
-  const [updateTiles, { loading: isSavingTiles }] = useUpdateNFCTiles();
+
+  // NFC Devices management
+  const { devices, isSavingTiles, saveTiles, deleteDevice, fetchConfig } =
+    usePlatformNFCDevices(userInfo?._id!);
+
+  // Fetch NFC config when user is authenticated
+  useEffect(() => {
+    if (isAuthenticated && userInfo) {
+      fetchConfig();
+    }
+  }, [isAuthenticated, userInfo]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Get active section from URL
   const getActiveSection = (): DashboardSection => {
@@ -47,89 +57,8 @@ const Platform: React.FC = () => {
     return "overview";
   };
 
-  useEffect(() => {
-    let tries = 0;
-    const checkAuth = () => {
-      const hasUserInfo = !!userInfo;
-
-      if (tries > 3) {
-        setIsAuthenticated(hasUserInfo);
-        setIsLoading(false);
-        return;
-      }
-
-      if (hasUserInfo) {
-        setIsAuthenticated(true);
-        setIsLoading(false);
-        console.log("userInfo", userInfo);
-        fetchConfig();
-        return;
-      }
-
-      tries++;
-    };
-
-    setTimeout(() => {
-      checkAuth();
-    }, 1500);
-  }, [userInfo]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const handleNFCDeviceDelete = (deviceId: string) => {
-    // Handle delete if needed
-    console.log("Delete device:", deviceId);
-  };
-
-  const handleSaveTiles = async (
-    deviceId: string,
-    tiles: TileConfig[],
-    wallpaper?: string,
-  ) => {
-    try {
-      const result = await updateTiles({
-        variables: {
-          id: deviceId,
-          tiles: tiles.map((tile) => ({
-            id: tile.id,
-            type: tile.type,
-            label: tile.label,
-            icon: tile.icon,
-            url: tile.url,
-            size: tile.size,
-            position: {
-              x: tile.position.x,
-              y: tile.position.y,
-            },
-            color: tile.color,
-            subtitle: tile.subtitle,
-            isInDock: tile.isInDock,
-          })),
-          wallpaper: wallpaper || null,
-        },
-      });
-      
-      // Check for errors in the response
-      const errors = result.data?.updateNFCTiles?.errors;
-      if (errors && errors.length > 0) {
-        const errorMessage = errors.map((e: any) => e.message).join(", ");
-        console.error("Error saving tiles:", errorMessage);
-        show(`Failed to update home screen: ${errorMessage}`);
-        return;
-      }
-      
-      show("Home screen updated successfully");
-      await fetchConfig();
-    } catch (error) {
-      console.error("Error saving tiles:", error);
-      show(
-        error instanceof Error
-          ? error.message
-          : "Failed to update home screen",
-      );
-    }
-  };
-
+  // Navigate to different dashboard sections
   const handleSectionChange = (section: DashboardSection) => {
-    // Navigate to the appropriate route
     const routes: Record<DashboardSection, string> = {
       overview: "/",
       nfc: "/nfc",
@@ -142,39 +71,23 @@ const Platform: React.FC = () => {
     history.push(routes[section]);
   };
 
-  // Convert single config to array format for the list view
-  const getDevices = () => {
-    const results = nfcConfigData?.getNFCConfigByOwner?.results;
-    if (!results) return [];
-    
-    // Transform tiles to match TileConfig type (cast string types to union types and null to undefined)
-    const transformedTiles: TileConfig[] | undefined = results.tiles
-      ? results.tiles.map((tile) => ({
-          id: tile.id,
-          type: tile.type as TileType,
-          label: tile.label,
-          icon: tile.icon,
-          url: tile.url,
-          size: tile.size as TileSize,
-          position: tile.position,
-          color: tile.color ?? undefined,
-          subtitle: tile.subtitle ?? undefined,
-          isInDock: tile.isInDock ?? undefined,
-        }))
-      : undefined;
-    
-    return [
-      {
-        name: "Primary NFC Device",
-        ...results,
-        id: results._id, // NFC config document id (not owner id)
-        status: "active" as const,
-        tapCount: 0,
-        // Use transformed tiles to match NFCDevice interface
-        tiles: transformedTiles,
-        wallpaper: results.wallpaper ?? undefined,
-      },
-    ];
+  // Handle tile save with toast feedback
+  const handleSaveTiles = async (
+    deviceId: string,
+    tiles: any[],
+    wallpaper?: string,
+  ) => {
+    try {
+      await saveTiles(deviceId, tiles, wallpaper);
+      show("Home screen updated successfully");
+    } catch (error) {
+      console.error("Error saving tiles:", error);
+      show(
+        error instanceof Error
+          ? `Failed to update home screen: ${error.message}`
+          : "Failed to update home screen",
+      );
+    }
   };
 
   if (isLoading) {
@@ -197,15 +110,15 @@ const Platform: React.FC = () => {
             <DashboardOverview
               organizationName={organizationName}
               onNavigate={handleSectionChange}
-              nfcDeviceCount={getDevices().length}
+              nfcDeviceCount={devices.length}
             />
           </Route>
 
           <Route path="/nfc">
             <NFCDevicesList
-              devices={getDevices()}
+              devices={devices}
               onSaveTiles={handleSaveTiles}
-              onDelete={handleNFCDeviceDelete}
+              onDelete={deleteDevice}
               isSaving={isSavingTiles}
             />
           </Route>

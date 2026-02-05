@@ -19,42 +19,8 @@ import {
 } from "ionicons/icons";
 import { HomeScreenEditor } from "../HomeScreenEditor";
 import { TileConfig } from "../../NFC/iPhoneHomeScreen/types";
+import { NFCDevice } from "../../../types/nfc.types";
 import "./NFCDevicesList.scss";
-
-interface NFCDevice {
-  id?: string;
-  _id: string;
-  name: string;
-  title: string;
-  description: string;
-  type: string;
-  mainButton: {
-    url: string;
-    text: string;
-  };
-  socialMedia?: {
-    facebook?: boolean;
-    instagram?: boolean;
-    twitter?: boolean;
-  };
-  givingLink?: {
-    isVisible: boolean;
-    url: string;
-  } | null;
-  memberRegistrationLink?: {
-    isVisible: boolean;
-    url: string;
-  } | null;
-  eventsLink?: {
-    isVisible: boolean;
-    url: string;
-  } | null;
-  status: "active" | "inactive";
-  createdAt: string;
-  tapCount?: number;
-  tiles?: TileConfig[];
-  wallpaper?: string;
-}
 
 interface NFCDevicesListProps {
   devices?: NFCDevice[];
