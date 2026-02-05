@@ -241,7 +241,7 @@ export const IPhoneHomeScreen: React.FC<IPhoneHomeScreenProps> = ({
       }
     }
     return zones;
-  }, []);
+  }, [GRID_COLUMNS, GRID_ROWS]);
 
   // Background style
   const backgroundStyle: React.CSSProperties = wallpaper

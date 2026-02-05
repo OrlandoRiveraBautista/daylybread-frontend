@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   IonCard,
   IonCardContent,
@@ -72,6 +72,21 @@ export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
   const [showHomeScreenEditor, setShowHomeScreenEditor] = useState(false);
   const [editingDevice, setEditingDevice] = useState<NFCDevice | null>(null);
 
+  // Sync editingDevice with devices prop when it updates (after save)
+  useEffect(() => {
+    if (editingDevice && devices.length > 0) {
+      const deviceId = editingDevice._id || editingDevice.id;
+      const updatedDevice = devices.find(
+        (d) => d._id === deviceId || d.id === deviceId
+      );
+      if (updatedDevice && updatedDevice.tiles) {
+        // Only update if tiles exist (meaning data was fetched from server)
+        setEditingDevice(updatedDevice);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [devices]);
+
   // Open home screen editor modal
   const handleEditDevice = (device: NFCDevice) => {
     setEditingDevice(device);
@@ -80,11 +95,21 @@ export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
 
   const handleSaveTiles = async (tiles: TileConfig[], wallpaper?: string) => {
     const deviceId = editingDevice?._id ?? editingDevice?.id;
+    
     if (deviceId) {
       await onSaveTiles(deviceId, tiles, wallpaper);
+      
+      // Update editingDevice with saved data immediately
+      // This ensures if modal is reopened immediately, it shows the saved data
+      if (editingDevice) {
+        setEditingDevice({
+          ...editingDevice,
+          tiles,
+          wallpaper,
+        });
+      }
     }
     setShowHomeScreenEditor(false);
-    setEditingDevice(null);
   };
 
   const getDeviceUrl = (device: NFCDevice) => {
@@ -217,7 +242,10 @@ export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
         isSaving={isSaving}
         onClose={() => {
           setShowHomeScreenEditor(false);
-          setEditingDevice(null);
+          // Clear editingDevice when modal closes
+          setTimeout(() => {
+            setEditingDevice(null);
+          }, 300); // Small delay to allow modal close animation
         }}
         onSave={handleSaveTiles}
       />

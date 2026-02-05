@@ -36,6 +36,22 @@ const GetNFCConfig = gql(`
           isVisible
           url
         }
+        tiles {
+          id
+          type
+          label
+          icon
+          url
+          size
+          position {
+            x
+            y
+          }
+          color
+          subtitle
+          isInDock
+        }
+        wallpaper
         mediaId
         createdAt
         updatedAt
@@ -81,6 +97,22 @@ const GetNFCConfigByOwner = gql(`
           isVisible
           url
         }
+        tiles {
+          id
+          type
+          label
+          icon
+          url
+          size
+          position {
+            x
+            y
+          }
+          color
+          subtitle
+          isInDock
+        }
+        wallpaper
         mediaId
         createdAt
         updatedAt

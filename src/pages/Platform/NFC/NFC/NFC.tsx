@@ -6,6 +6,8 @@ import { save, close, create } from "ionicons/icons";
 import { IPhoneHomeScreen } from "../../../../components/NFC/iPhoneHomeScreen";
 import {
   TileConfig,
+  TileType,
+  TileSize,
   getDefaultTiles,
 } from "../../../../components/NFC/iPhoneHomeScreen/types";
 
@@ -64,9 +66,20 @@ const NFC: React.FC = () => {
 
   // Convert legacy NFC config to tiles if tiles don't exist
   const tiles = useMemo((): TileConfig[] => {
-    // If tiles exist, use them
+    // If tiles exist, use them - transform to match TileConfig type
     if (nfcConfig?.tiles && nfcConfig.tiles.length > 0) {
-      return nfcConfig.tiles as TileConfig[];
+      return nfcConfig.tiles.map((tile) => ({
+        id: tile.id,
+        type: tile.type as TileType,
+        label: tile.label,
+        icon: tile.icon,
+        url: tile.url,
+        size: tile.size as TileSize,
+        position: tile.position,
+        color: tile.color ?? undefined,
+        subtitle: tile.subtitle ?? undefined,
+        isInDock: tile.isInDock ?? undefined,
+      }));
     }
 
     // Otherwise, generate tiles from legacy config
@@ -208,7 +221,7 @@ const NFC: React.FC = () => {
     if (!id) return;
     
     try {
-      await updateTiles({
+      const result = await updateTiles({
         variables: {
           id,
           tiles: currentTiles.map((tile) => ({
@@ -229,6 +242,27 @@ const NFC: React.FC = () => {
           wallpaper: currentWallpaper || null,
         },
       });
+      
+      // Check for errors in the response
+      const errors = result.data?.updateNFCTiles?.errors;
+      if (errors && errors.length > 0) {
+        const errorMessage = errors.map((e: any) => e.message).join(", ");
+        console.error("Error saving tiles:", errorMessage);
+        setToastMessage(`Failed to save: ${errorMessage}`);
+        setShowToast(true);
+        return;
+      }
+      
+      // Update local state with the saved data from the response
+      const savedData = result.data?.updateNFCTiles?.results;
+      if (savedData) {
+        if (savedData.tiles) {
+          setCurrentTiles(savedData.tiles as TileConfig[]);
+        }
+        if (savedData.wallpaper !== undefined) {
+          setCurrentWallpaper(savedData.wallpaper || undefined);
+        }
+      }
       
       setToastMessage("Changes saved successfully!");
       setShowToast(true);

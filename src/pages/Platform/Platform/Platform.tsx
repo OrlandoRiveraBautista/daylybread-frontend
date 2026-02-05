@@ -21,7 +21,7 @@ import { DashboardOverview } from "../../../components/Platform/DashboardOvervie
 import { NFCDevicesList } from "../../../components/Platform/NFCDevicesList";
 import { SermonsManagement } from "../../../components/Platform/SermonsManagement";
 import { SermonEditorPage } from "../../../components/Platform/SermonEditor";
-import { TileConfig } from "../../../components/NFC/iPhoneHomeScreen/types";
+import { TileConfig, TileType, TileSize } from "../../../components/NFC/iPhoneHomeScreen/types";
 
 const Platform: React.FC = () => {
   const { userInfo } = useAppContext();
@@ -85,7 +85,7 @@ const Platform: React.FC = () => {
     wallpaper?: string,
   ) => {
     try {
-      await updateTiles({
+      const result = await updateTiles({
         variables: {
           id: deviceId,
           tiles: tiles.map((tile) => ({
@@ -107,8 +107,17 @@ const Platform: React.FC = () => {
         },
       });
       
+      // Check for errors in the response
+      const errors = result.data?.updateNFCTiles?.errors;
+      if (errors && errors.length > 0) {
+        const errorMessage = errors.map((e: any) => e.message).join(", ");
+        console.error("Error saving tiles:", errorMessage);
+        show(`Failed to update home screen: ${errorMessage}`);
+        return;
+      }
+      
       show("Home screen updated successfully");
-      fetchConfig();
+      await fetchConfig();
     } catch (error) {
       console.error("Error saving tiles:", error);
       show(
@@ -137,6 +146,23 @@ const Platform: React.FC = () => {
   const getDevices = () => {
     const results = nfcConfigData?.getNFCConfigByOwner?.results;
     if (!results) return [];
+    
+    // Transform tiles to match TileConfig type (cast string types to union types and null to undefined)
+    const transformedTiles: TileConfig[] | undefined = results.tiles
+      ? results.tiles.map((tile) => ({
+          id: tile.id,
+          type: tile.type as TileType,
+          label: tile.label,
+          icon: tile.icon,
+          url: tile.url,
+          size: tile.size as TileSize,
+          position: tile.position,
+          color: tile.color ?? undefined,
+          subtitle: tile.subtitle ?? undefined,
+          isInDock: tile.isInDock ?? undefined,
+        }))
+      : undefined;
+    
     return [
       {
         name: "Primary NFC Device",
@@ -144,6 +170,9 @@ const Platform: React.FC = () => {
         id: results._id, // NFC config document id (not owner id)
         status: "active" as const,
         tapCount: 0,
+        // Use transformed tiles to match NFCDevice interface
+        tiles: transformedTiles,
+        wallpaper: results.wallpaper ?? undefined,
       },
     ];
   };

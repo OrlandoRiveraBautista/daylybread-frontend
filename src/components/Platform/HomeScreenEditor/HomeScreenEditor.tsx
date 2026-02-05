@@ -54,16 +54,23 @@ export const HomeScreenEditor: React.FC<HomeScreenEditorProps> = ({
   const [showTileLibrary, setShowTileLibrary] = useState(false);
   const [editingTile, setEditingTile] = useState<TileConfig | null>(null);
   const [hasChanges, setHasChanges] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  // Reset state when modal opens
+  // Reset state when modal opens - but only once per open
   React.useEffect(() => {
-    if (isOpen) {
-      setTiles(initialTiles?.length > 0 ? initialTiles : getDefaultTiles());
+    if (isOpen && !isInitialized) {
+      const tilesToSet = initialTiles?.length > 0 ? initialTiles : getDefaultTiles();
+      
+      setTiles(tilesToSet);
       setWallpaper(initialWallpaper || "");
       setIsEditMode(true);
       setHasChanges(false);
+      setIsInitialized(true);
+    } else if (!isOpen) {
+      // Reset initialization flag when modal closes
+      setIsInitialized(false);
     }
-  }, [isOpen, initialTiles, initialWallpaper]);
+  }, [isOpen, initialTiles, initialWallpaper, isInitialized]);
 
   // Handle tile deletion
   const handleDeleteTile = useCallback((tile: TileConfig) => {
@@ -169,8 +176,13 @@ export const HomeScreenEditor: React.FC<HomeScreenEditorProps> = ({
 
   // Save changes
   const handleSave = async () => {
-    await onSave(tiles, wallpaper);
-    setHasChanges(false);
+    try {
+      await onSave(tiles, wallpaper);
+      setHasChanges(false);
+    } catch (error) {
+      console.error("Error saving tiles:", error);
+      // Don't reset hasChanges if save failed
+    }
   };
 
   // Cancel and close

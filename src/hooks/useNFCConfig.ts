@@ -42,10 +42,11 @@ export const useNFCConfig = (userId: string) => {
   const [createNFCConfig] = useCreateNFCConfig();
   const [updateNFCConfig] = useUpdateNFCConfig();
 
-  const fetchConfig = () => {
+  const fetchConfig = async () => {
     if (userId) {
-      getNFCConfigByOwner({ variables: { ownerId: userId } });
+      return getNFCConfigByOwner({ variables: { ownerId: userId } });
     }
+    return Promise.resolve();
   };
 
   const saveConfig = async (formData: NFCConfigFormData) => {
