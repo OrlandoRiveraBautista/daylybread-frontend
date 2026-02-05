@@ -134,7 +134,12 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
                   <h3>{action.title}</h3>
                   <p>{action.description}</p>
                 </div>
-                <IonButton fill="outline" onClick={action.action}>
+                <IonButton
+                  fill="outline"
+                  onClick={action.action}
+                  shape="round"
+                  color="primary"
+                >
                   Go
                 </IonButton>
               </div>

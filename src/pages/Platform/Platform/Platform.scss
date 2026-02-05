@@ -10,6 +10,22 @@
   }
 }
 
+#platform-page {
+  ion-button {
+    flex-shrink: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+      transform: scale(1.08);
+      box-shadow: 0 4px 12px rgba(var(--ion-color-base-rgb), 0.3);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}
+
 .platform-content-container {
   max-width: 600px;
   margin: 0 auto;

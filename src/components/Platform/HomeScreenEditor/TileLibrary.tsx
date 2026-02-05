@@ -4,12 +4,12 @@ import {
   IonHeader,
   IonToolbar,
   IonTitle,
-  IonButtons,
-  IonButton,
   IonContent,
   IonIcon,
+  IonText,
+  IonLabel,
 } from "@ionic/react";
-import { close, add } from "ionicons/icons";
+import { add } from "ionicons/icons";
 import * as IonIcons from "ionicons/icons";
 import { TILE_PRESETS, TilePreset } from "../../NFC/iPhoneHomeScreen/types";
 
@@ -37,15 +37,15 @@ export const TileLibrary: React.FC<TileLibraryProps> = ({
   // Group presets by category
   const categories = {
     "Church Essentials": TILE_PRESETS.filter((p) =>
-      ["website", "give", "newmember", "events"].includes(p.type)
+      ["website", "give", "newmember", "events"].includes(p.type),
     ),
-    "Engagement": TILE_PRESETS.filter((p) =>
-      ["sermons", "prayer", "groups", "contact"].includes(p.type)
+    Engagement: TILE_PRESETS.filter((p) =>
+      ["sermons", "prayer", "groups", "contact"].includes(p.type),
     ),
     "Social Media": TILE_PRESETS.filter((p) =>
-      ["facebook", "instagram", "twitter", "youtube"].includes(p.type)
+      ["facebook", "instagram", "twitter", "youtube"].includes(p.type),
     ),
-    "Custom": TILE_PRESETS.filter((p) => p.type === "custom"),
+    Custom: TILE_PRESETS.filter((p) => p.type === "custom"),
   };
 
   return (
@@ -59,11 +59,6 @@ export const TileLibrary: React.FC<TileLibraryProps> = ({
       <IonHeader>
         <IonToolbar>
           <IonTitle>Add Tile</IonTitle>
-          <IonButtons slot="end">
-            <IonButton onClick={onClose}>
-              <IonIcon slot="icon-only" icon={close} />
-            </IonButton>
-          </IonButtons>
         </IonToolbar>
       </IonHeader>
 
@@ -71,27 +66,33 @@ export const TileLibrary: React.FC<TileLibraryProps> = ({
         <div className="tile-library">
           {Object.entries(categories).map(([category, presets]) => (
             <div key={category} className="category-section">
-              <h3 className="category-title">{category}</h3>
+              <IonText color="dark">
+                <h3 className="category-title">{category}</h3>
+              </IonText>
               <div className="presets-grid">
                 {presets.map((preset) => (
                   <button
                     key={preset.type}
                     className="preset-card"
                     onClick={() => onSelectPreset(preset)}
+                    aria-label={`Add ${preset.label} tile`}
                   >
                     <div
                       className="preset-icon"
                       style={{ backgroundColor: preset.color }}
+                      aria-hidden="true"
                     >
                       <IonIcon icon={getIcon(preset.icon)} />
                     </div>
                     <div className="preset-info">
-                      <span className="preset-label">{preset.label}</span>
-                      <span className="preset-description">
-                        {preset.description}
-                      </span>
+                      <IonLabel className="preset-label">
+                        {preset.label}
+                      </IonLabel>
+                      <IonText color="medium" className="preset-description">
+                        <small>{preset.description}</small>
+                      </IonText>
                     </div>
-                    <div className="preset-action">
+                    <div className="preset-action" aria-hidden="true">
                       <IonIcon icon={add} />
                     </div>
                   </button>

@@ -77,6 +77,7 @@ const NFC: React.FC = () => {
             <div className="nfc-edit-controls">
               <IonButton 
                 fill="solid" 
+                shape="round"
                 color="primary" 
                 onClick={saveTiles}
                 disabled={isSaving}
@@ -86,6 +87,7 @@ const NFC: React.FC = () => {
               </IonButton>
               <IonButton 
                 fill="outline" 
+                shape="round"
                 color="medium" 
                 onClick={exitEditMode}
                 disabled={isSaving}
@@ -101,6 +103,7 @@ const NFC: React.FC = () => {
             <div className="nfc-owner-controls">
               <IonButton 
                 fill="solid" 
+                shape="round"
                 color="primary" 
                 onClick={enterEditMode}
                 size="small"

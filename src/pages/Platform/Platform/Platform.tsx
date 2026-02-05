@@ -99,7 +99,7 @@ const Platform: React.FC = () => {
   }
 
   return (
-    <IonPage>
+    <IonPage id="platform-page">
       <DashboardLayout
         activeSection={getActiveSection()}
         onSectionChange={handleSectionChange}

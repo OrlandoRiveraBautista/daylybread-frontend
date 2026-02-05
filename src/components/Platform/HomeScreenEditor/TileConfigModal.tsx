@@ -17,7 +17,8 @@ import {
 } from "@ionic/react";
 import { close, checkmark } from "ionicons/icons";
 import * as IonIcons from "ionicons/icons";
-import { TileConfig, TileSize, TILE_PRESETS } from "../../NFC/iPhoneHomeScreen/types";
+import { TileConfig, TileSize } from "../../NFC/iPhoneHomeScreen/types";
+import "../../../pages/Platform/Platform/Platform.scss";
 
 interface TileConfigModalProps {
   tile: TileConfig;
@@ -96,18 +97,7 @@ export const TileConfigModal: React.FC<TileConfigModalProps> = ({
     >
       <IonHeader>
         <IonToolbar>
-          <IonButtons slot="start">
-            <IonButton onClick={onClose}>
-              <IonIcon slot="icon-only" icon={close} />
-            </IonButton>
-          </IonButtons>
           <IonTitle>Edit Tile</IonTitle>
-          <IonButtons slot="end">
-            <IonButton onClick={handleSave} strong>
-              <IonIcon slot="start" icon={checkmark} />
-              Save
-            </IonButton>
-          </IonButtons>
         </IonToolbar>
       </IonHeader>
 
@@ -129,50 +119,63 @@ export const TileConfigModal: React.FC<TileConfigModalProps> = ({
           </div>
 
           {/* Form */}
-          <div className="config-form">
-            <IonItem>
-              <IonLabel position="stacked">Label</IonLabel>
-              <IonInput
-                value={label}
-                placeholder="Enter tile label"
-                onIonChange={(e) => setLabel(e.detail.value || "")}
-              />
-            </IonItem>
-
-            <IonItem>
-              <IonLabel position="stacked">URL</IonLabel>
-              <IonInput
-                type="url"
-                value={url}
-                placeholder="https://example.com"
-                onIonChange={(e) => setUrl(e.detail.value || "")}
-              />
-            </IonItem>
-
-            {(size === "medium" || size === "large") && (
+          <div className="platform-form-container">
+            <div className="platform-form">
               <IonItem>
-                <IonLabel position="stacked">Subtitle (optional)</IonLabel>
+                <IonLabel position="stacked">Label</IonLabel>
                 <IonInput
-                  value={subtitle}
-                  placeholder="Brief description"
-                  onIonChange={(e) => setSubtitle(e.detail.value || "")}
+                  value={label}
+                  placeholder="Enter tile label"
+                  onIonChange={(e) => setLabel(e.detail.value || "")}
                 />
               </IonItem>
-            )}
 
-            <IonItem>
-              <IonLabel position="stacked">Size</IonLabel>
-              <IonSelect
-                value={size}
-                onIonChange={(e) => setSize(e.detail.value)}
-              >
-                <IonSelectOption value="small">Small (1x1)</IonSelectOption>
-                <IonSelectOption value="medium">Medium (2x1)</IonSelectOption>
-                <IonSelectOption value="large">Large (2x2)</IonSelectOption>
-              </IonSelect>
-            </IonItem>
+              <IonItem>
+                <IonLabel position="stacked">URL</IonLabel>
+                <IonInput
+                  type="url"
+                  value={url}
+                  placeholder="https://example.com"
+                  onIonChange={(e) => setUrl(e.detail.value || "")}
+                />
+              </IonItem>
 
-            <div className="color-section">
+              {(size === "medium" || size === "large") && (
+                <IonItem>
+                  <IonLabel position="stacked">Subtitle (optional)</IonLabel>
+                  <IonInput
+                    value={subtitle}
+                    placeholder="Brief description"
+                    onIonChange={(e) => setSubtitle(e.detail.value || "")}
+                  />
+                </IonItem>
+              )}
+
+              <IonItem>
+                <IonLabel position="stacked">Size</IonLabel>
+                <IonSelect
+                  value={size}
+                  onIonChange={(e) => setSize(e.detail.value)}
+                >
+                  <IonSelectOption value="small">Small (1x1)</IonSelectOption>
+                  <IonSelectOption value="medium">Medium (2x1)</IonSelectOption>
+                  <IonSelectOption value="large">Large (2x2)</IonSelectOption>
+                </IonSelect>
+              </IonItem>
+
+              <IonItem>
+                <IonLabel>Show in Dock</IonLabel>
+                <IonToggle
+                  checked={isInDock}
+                  onIonChange={(e) => setIsInDock(e.detail.checked)}
+                />
+              </IonItem>
+            </div>
+          </div>
+
+          {/* Color Picker */}
+          <div className="color-section">
+            <div className="color-picker-wrapper">
               <IonLabel>Color</IonLabel>
               <div className="color-grid">
                 {COLOR_PRESETS.map((c) => (
@@ -181,19 +184,23 @@ export const TileConfigModal: React.FC<TileConfigModalProps> = ({
                     className={`color-option ${color === c ? "active" : ""}`}
                     style={{ backgroundColor: c }}
                     onClick={() => setColor(c)}
+                    aria-label={`Select color ${c}`}
                   />
                 ))}
               </div>
             </div>
-
-            <IonItem>
-              <IonLabel>Show in Dock</IonLabel>
-              <IonToggle
-                checked={isInDock}
-                onIonChange={(e) => setIsInDock(e.detail.checked)}
-              />
-            </IonItem>
           </div>
+
+          <IonButton
+            expand="block"
+            size="large"
+            shape="round"
+            onClick={handleSave}
+            className="platform-save-button"
+          >
+            <IonIcon slot="start" icon={checkmark} />
+            Save
+          </IonButton>
         </div>
       </IonContent>
     </IonModal>

@@ -37,19 +37,6 @@
     color: var(--ion-color-medium);
     margin: 0;
   }
-
-  > ion-button {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(var(--ion-color-primary-rgb), 0.3);
-    }
-
-    &:active {
-      transform: translateY(0);
-    }
-  }
 }
 
 .empty-state-card {
@@ -79,28 +66,15 @@
       margin: 0 0 12px 0;
     }
 
-    p {
-      font-size: 16px;
-      color: var(--ion-color-medium);
-      margin: 0 0 24px 0;
-      max-width: 500px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    ion-button {
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-      &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(var(--ion-color-primary-rgb), 0.3);
-      }
-
-      &:active {
-        transform: translateY(0);
+      p {
+        font-size: 16px;
+        color: var(--ion-color-medium);
+        margin: 0 0 24px 0;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
       }
     }
-  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -288,33 +262,6 @@
       }
     }
   }
-
-  .device-actions-row {
-    display: flex;
-    gap: 12px;
-    
-    ion-button {
-      flex: 1;
-    }
-    
-    @media (max-width: 480px) {
-      flex-direction: column;
-      gap: 8px;
-    }
-  }
-
-  ion-button[expand="block"] {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(var(--ion-color-primary-rgb), 0.2);
-    }
-
-    &:active {
-      transform: translateY(0);
-    }
-  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -335,64 +282,6 @@
     &:hover .device-stats {
       background: $glass-background-dark-hover;
       border: 1px solid $glass-border-dark-hover;
-    }
-  }
-}
-
-.delete-confirmation {
-  text-align: center;
-  min-height: 300px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  animation: nfcDevicesListFadeIn 0.4s ease-out;
-
-  ion-title {
-    margin-bottom: 24px;
-  }
-
-  .warning-icon {
-    font-size: 64px;
-    color: var(--ion-color-danger);
-    margin: 24px 0;
-  }
-
-  h2 {
-    font-size: 22px;
-    font-weight: 600;
-    color: var(--ion-text-color);
-    margin: 0 0 12px 0;
-  }
-
-  p {
-    font-size: 16px;
-    color: var(--ion-color-medium);
-    margin: 0 0 24px 0;
-    line-height: 1.5;
-  }
-
-  .button-group {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: auto;
-    padding-top: 24px;
-
-    ion-button {
-      width: 100%;
-      margin: 0;
-      --box-shadow: none;
-      text-transform: capitalize;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-      &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      }
-
-      &:active {
-        transform: translateY(0);
-      }
     }
   }
 }
@@ -421,12 +310,6 @@
 
   .device-card {
     .device-actions {
-      flex-direction: column;
-    }
-  }
-
-  .delete-confirmation {
-    .button-group {
       flex-direction: column;
     }
   }

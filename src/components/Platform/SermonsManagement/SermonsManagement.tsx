@@ -37,6 +37,7 @@ export const SermonsManagement: React.FC = () => {
     null,
   );
   const [searchQuery, setSearchQuery] = useState("");
+  const [deletingSermonId, setDeletingSermonId] = useState<string | null>(null);
 
   // API hooks
   const { data, loading, error, refetch } = useGetSermons();
@@ -44,10 +45,12 @@ export const SermonsManagement: React.FC = () => {
 
   const sermons: SermonData[] = data?.getSermons?.results || [];
 
-  // Filter sermons based on search
-  const filteredSermons = sermons.filter((sermon) =>
-    sermon.title.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  // Filter sermons based on search, but keep deleting sermon visible for animation
+  const filteredSermons = sermons.filter((sermon) => {
+    const matchesSearch = sermon.title.toLowerCase().includes(searchQuery.toLowerCase());
+    const isDeleting = deletingSermonId === sermon._id;
+    return matchesSearch || isDeleting;
+  });
 
   const handleCreateNew = () => {
     history.push("/sermons/new");
@@ -59,12 +62,24 @@ export const SermonsManagement: React.FC = () => {
 
   const handleDeleteSermon = async (sermonId: string) => {
     try {
-      await deleteSermon({
-        variables: { id: sermonId },
-      });
+      setDeletingSermonId(sermonId);
       setShowDeleteConfirm(null);
+      
+      // Wait for animation to complete before actually deleting
+      setTimeout(async () => {
+        try {
+          await deleteSermon({
+            variables: { id: sermonId },
+          });
+          // Refetch to update the list after deletion
+          await refetch();
+        } finally {
+          setDeletingSermonId(null);
+        }
+      }, 300); // Match animation duration
     } catch (err) {
       console.error("Error deleting sermon:", err);
+      setDeletingSermonId(null);
     }
   };
 
@@ -118,7 +133,7 @@ export const SermonsManagement: React.FC = () => {
         <IonCard className="error-card">
           <IonCardContent>
             <p>Error loading sermons. Please try again.</p>
-            <IonButton onClick={() => refetch()}>Retry</IonButton>
+            <IonButton onClick={() => refetch()} shape="round" color="primary">Retry</IonButton>
           </IonCardContent>
         </IonCard>
       )}
@@ -170,12 +185,14 @@ export const SermonsManagement: React.FC = () => {
           </IonCard>
 
           {/* Existing Sermons */}
-          {filteredSermons.map((sermon) => (
+          {filteredSermons.map((sermon) => {
+            const isDeleting = deletingSermonId === sermon._id;
+            return (
             <IonCard
               key={sermon._id}
-              className="sermon-card"
-              onClick={() => handleEditSermon(sermon)}
-              button
+              className={`sermon-card ${isDeleting ? 'deleting' : ''}`}
+              onClick={() => !isDeleting && handleEditSermon(sermon)}
+              button={!isDeleting}
             >
               <IonCardContent>
                 <div className="sermon-card-header">
@@ -202,6 +219,9 @@ export const SermonsManagement: React.FC = () => {
                   <IonButton
                     fill="clear"
                     size="small"
+                    shape="round"
+                    color="primary"
+                    disabled={isDeleting}
                     onClick={(e) => {
                       e.stopPropagation();
                       handleEditSermon(sermon);
@@ -212,7 +232,9 @@ export const SermonsManagement: React.FC = () => {
                   <IonButton
                     fill="clear"
                     size="small"
+                    shape="round"
                     color="danger"
+                    disabled={isDeleting}
                     onClick={(e) => {
                       e.stopPropagation();
                       setShowDeleteConfirm(sermon._id);
@@ -223,7 +245,8 @@ export const SermonsManagement: React.FC = () => {
                 </div>
               </IonCardContent>
             </IonCard>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -248,6 +271,7 @@ export const SermonsManagement: React.FC = () => {
                 shape="round"
                 expand="block"
                 fill="outline"
+                color="primary"
                 onClick={() => setShowDeleteConfirm(null)}
               >
                 Cancel

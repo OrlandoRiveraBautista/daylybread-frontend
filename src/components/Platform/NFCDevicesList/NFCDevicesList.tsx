@@ -11,12 +11,7 @@ import {
   IonBadge,
   IonChip,
 } from "@ionic/react";
-import {
-  create,
-  qrCode,
-  link,
-  checkmarkCircle,
-} from "ionicons/icons";
+import { create, qrCode, link, checkmarkCircle } from "ionicons/icons";
 import { HomeScreenEditor } from "../HomeScreenEditor";
 import { TileConfig } from "../../NFC/iPhoneHomeScreen/types";
 import { NFCDevice } from "../../../types/nfc.types";
@@ -24,7 +19,11 @@ import "./NFCDevicesList.scss";
 
 interface NFCDevicesListProps {
   devices?: NFCDevice[];
-  onSaveTiles: (deviceId: string, tiles: TileConfig[], wallpaper?: string) => Promise<void>;
+  onSaveTiles: (
+    deviceId: string,
+    tiles: TileConfig[],
+    wallpaper?: string,
+  ) => Promise<void>;
   onDelete: (deviceId: string) => void;
   isSaving: boolean;
 }
@@ -43,7 +42,7 @@ export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
     if (editingDevice && devices.length > 0) {
       const deviceId = editingDevice._id || editingDevice.id;
       const updatedDevice = devices.find(
-        (d) => d._id === deviceId || d.id === deviceId
+        (d) => d._id === deviceId || d.id === deviceId,
       );
       if (updatedDevice && updatedDevice.tiles) {
         // Only update if tiles exist (meaning data was fetched from server)
@@ -61,10 +60,10 @@ export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
 
   const handleSaveTiles = async (tiles: TileConfig[], wallpaper?: string) => {
     const deviceId = editingDevice?._id ?? editingDevice?.id;
-    
+
     if (deviceId) {
       await onSaveTiles(deviceId, tiles, wallpaper);
-      
+
       // Update editingDevice with saved data immediately
       // This ensures if modal is reopened immediately, it shows the saved data
       if (editingDevice) {
@@ -123,7 +122,9 @@ export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
                     <IonCardTitle>{device.name || device.title}</IonCardTitle>
                     <div className="device-meta">
                       <IonBadge
-                        color={device.status === "active" ? "success" : "medium"}
+                        color={
+                          device.status === "active" ? "success" : "medium"
+                        }
                       >
                         {device.status}
                       </IonBadge>
@@ -136,6 +137,8 @@ export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
                   <div className="device-actions">
                     <IonButton
                       fill="clear"
+                      shape="round"
+                      color="primary"
                       onClick={() => handleEditDevice(device)}
                     >
                       <IonIcon slot="icon-only" icon={create} />
@@ -157,7 +160,9 @@ export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
                     <IonText color="medium">Created</IonText>
                     <strong>
                       {device.createdAt
-                        ? new Date(Number(device.createdAt)).toLocaleDateString()
+                        ? new Date(
+                            Number(device.createdAt),
+                          ).toLocaleDateString()
                         : "—"}
                     </strong>
                   </div>
@@ -187,6 +192,8 @@ export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
                 <IonButton
                   expand="block"
                   fill="outline"
+                  shape="round"
+                  color="primary"
                   href={getDeviceUrl(device)}
                   target="_blank"
                 >

@@ -38,6 +38,8 @@ export const AIBreadcrumbsBar: React.FC<AIBreadcrumbsBarProps> = ({
           <IonButton
             fill="clear"
             size="small"
+            shape="round"
+            color="danger"
             onClick={(e) => {
               e.stopPropagation();
               onStopGeneration();

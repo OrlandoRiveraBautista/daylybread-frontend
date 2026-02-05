@@ -72,21 +72,6 @@
     position: relative;
     z-index: 1;
   }
-
-  > ion-button {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    z-index: 1;
-
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(var(--ion-color-primary-rgb), 0.3);
-    }
-
-    &:active {
-      transform: translateY(0);
-    }
-  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -364,21 +349,6 @@
   &:hover .quick-action-text h3 {
     color: var(--ion-color-primary);
     transform: translateX(4px);
-  }
-
-  ion-button {
-    flex-shrink: 0;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-    &:hover {
-      transform: scale(1.08);
-      box-shadow: 0 4px 12px rgba(var(--ion-color-primary-rgb), 0.3);
-      border-radius: 24px;
-    }
-
-    &:active {
-      transform: scale(0.98);
-    }
   }
 }
 
