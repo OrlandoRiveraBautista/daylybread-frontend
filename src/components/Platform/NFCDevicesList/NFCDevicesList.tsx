@@ -11,7 +11,7 @@ import {
   IonBadge,
   IonChip,
 } from "@ionic/react";
-import { create, qrCode, link, checkmarkCircle } from "ionicons/icons";
+import { create, qrCode, card } from "ionicons/icons";
 import { HomeScreenEditor } from "../HomeScreenEditor";
 import { TileConfig } from "../../NFC/iPhoneHomeScreen/types";
 import { NFCDevice } from "../../../types/nfc.types";
@@ -119,19 +119,26 @@ export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
               <IonCardHeader>
                 <div className="device-card-header">
                   <div className="device-info">
-                    <IonCardTitle>{device.name || device.title}</IonCardTitle>
+                    <IonCardTitle>
+                      {device.name || `NFC Device ${device.id.slice(-6)}`}
+                    </IonCardTitle>
                     <div className="device-meta">
                       <IonBadge
                         color={
                           device.status === "active" ? "success" : "medium"
                         }
                       >
-                        {device.status}
+                        {device.status || "active"}
                       </IonBadge>
-                      <IonChip>
-                        <IonIcon icon={link} />
-                        <IonLabel>{device.type}</IonLabel>
-                      </IonChip>
+                      {device.nfcIds.length > 0 && (
+                        <IonChip>
+                          <IonIcon icon={card} />
+                          <IonLabel>
+                            {device.nfcIds.length} NFC ID
+                            {device.nfcIds.length !== 1 ? "s" : ""}
+                          </IonLabel>
+                        </IonChip>
+                      )}
                     </div>
                   </div>
                   <div className="device-actions">
@@ -147,10 +154,6 @@ export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
                 </div>
               </IonCardHeader>
               <IonCardContent>
-                <IonText color="medium" className="device-description">
-                  <p>{device.description}</p>
-                </IonText>
-
                 <div className="device-stats">
                   <div className="stat-item">
                     <IonText color="medium">Taps</IonText>
@@ -166,27 +169,10 @@ export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
                         : "—"}
                     </strong>
                   </div>
-                </div>
-
-                <div className="device-features">
-                  {device.givingLink?.isVisible && (
-                    <IonChip color="success">
-                      <IonIcon icon={checkmarkCircle} />
-                      <IonLabel>Giving Link</IonLabel>
-                    </IonChip>
-                  )}
-                  {device.memberRegistrationLink?.isVisible && (
-                    <IonChip color="primary">
-                      <IonIcon icon={checkmarkCircle} />
-                      <IonLabel>Registration</IonLabel>
-                    </IonChip>
-                  )}
-                  {device.eventsLink?.isVisible && (
-                    <IonChip color="secondary">
-                      <IonIcon icon={checkmarkCircle} />
-                      <IonLabel>Events</IonLabel>
-                    </IonChip>
-                  )}
+                  <div className="stat-item">
+                    <IonText color="medium">Tiles</IonText>
+                    <strong>{device.tiles?.length || 0}</strong>
+                  </div>
                 </div>
 
                 <IonButton
@@ -210,7 +196,7 @@ export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
       <HomeScreenEditor
         tiles={editingDevice?.tiles || []}
         wallpaper={editingDevice?.wallpaper}
-        title={editingDevice?.title}
+        title={editingDevice?.name}
         isOpen={showHomeScreenEditor}
         isSaving={isSaving}
         onClose={() => {

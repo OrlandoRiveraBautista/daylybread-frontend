@@ -8,34 +8,10 @@ const GetNFCConfig = gql(`
     getNFCConfig(id: $id) {
       results {
         _id
-        type
-        title
-        description
         owner {
           _id
         }
         nfcIds
-        mainButton {
-          url
-          text
-        }
-        socialMedia {
-          facebook
-          instagram
-          twitter
-        }
-        givingLink {
-          isVisible
-          url
-        }
-        memberRegistrationLink {
-          isVisible
-          url
-        }
-        eventsLink {
-          isVisible
-          url
-        }
         tiles {
           id
           type
@@ -52,7 +28,6 @@ const GetNFCConfig = gql(`
           isInDock
         }
         wallpaper
-        mediaId
         createdAt
         updatedAt
       }
@@ -69,34 +44,10 @@ const GetNFCConfigByOwner = gql(`
     getNFCConfigByOwner(ownerId: $ownerId) {
       results {
         _id
-        type
-        title
-        description
         owner {
           _id
         }
         nfcIds
-        mainButton {
-          url
-          text
-        }
-        socialMedia {
-          facebook
-          instagram
-          twitter
-        }
-        givingLink {
-          isVisible
-          url
-        }
-        memberRegistrationLink {
-          isVisible
-          url
-        }
-        eventsLink {
-          isVisible
-          url
-        }
         tiles {
           id
           type
@@ -113,7 +64,6 @@ const GetNFCConfigByOwner = gql(`
           isInDock
         }
         wallpaper
-        mediaId
         createdAt
         updatedAt
       }
@@ -131,35 +81,26 @@ const CreateNFCConfig = gql(`
     createNFCConfig(options: $options) {
       results {
         _id
-        type
-        title
-        description
         owner {
           _id
         }
         nfcIds
-        mainButton {
+        tiles {
+          id
+          type
+          label
+          icon
           url
-          text
+          size
+          position {
+            x
+            y
+          }
+          color
+          subtitle
+          isInDock
         }
-        socialMedia {
-          facebook
-          instagram
-          twitter
-        }
-        givingLink {
-          isVisible
-          url
-        }
-        memberRegistrationLink {
-          isVisible
-          url
-        }
-        eventsLink {
-          isVisible
-          url
-        }
-        mediaId
+        wallpaper
         createdAt
         updatedAt
       }
@@ -176,35 +117,26 @@ const UpdateNFCConfig = gql(`
     updateNFCConfig(id: $id, options: $options) {
       results {
         _id
-        type
-        title
-        description
         owner {
           _id
         }
         nfcIds
-        mainButton {
+        tiles {
+          id
+          type
+          label
+          icon
           url
-          text
+          size
+          position {
+            x
+            y
+          }
+          color
+          subtitle
+          isInDock
         }
-        socialMedia {
-          facebook
-          instagram
-          twitter
-        }
-        givingLink {
-          isVisible
-          url
-        }
-        memberRegistrationLink {
-          isVisible
-          url
-        }
-        eventsLink {
-          isVisible
-          url
-        }
-        mediaId
+        wallpaper
         createdAt
         updatedAt
       }
@@ -253,35 +185,10 @@ const DeleteNFCConfig = gql(`
     deleteNFCConfig(id: $id) {
       results {
         _id
-        type
-        title
-        description
         owner {
           _id
         }
         nfcIds
-        mainButton {
-          url
-          text
-        }
-        socialMedia {
-          facebook
-          instagram
-          twitter
-        }
-        givingLink {
-          isVisible
-          url
-        }
-        memberRegistrationLink {
-          isVisible
-          url
-        }
-        eventsLink {
-          isVisible
-          url
-        }
-        mediaId
         createdAt
         updatedAt
       }

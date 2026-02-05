@@ -117,7 +117,6 @@ const NFC: React.FC = () => {
           <IPhoneHomeScreen
             tiles={currentTiles}
             wallpaper={currentWallpaper}
-            title={nfcConfig?.title}
             isEditMode={isEditMode}
             onTileClick={handleTileClick}
             onTilesChange={setCurrentTiles}
