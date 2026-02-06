@@ -1,7 +1,7 @@
 @import "../../../theme/variables.scss";
 
 // Keyframe animations
-@keyframes fadeIn {
+@keyframes nfcDevicesListFadeIn {
   from {
     opacity: 0;
   }
@@ -14,7 +14,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 24px 16px;
-  animation: fadeIn 0.3s ease-out;
+  animation: nfcDevicesListFadeIn 0.3s ease-out;
 }
 
 .devices-header {
@@ -23,7 +23,7 @@
   align-items: flex-start;
   margin-bottom: 32px;
   gap: 16px;
-  animation: fadeIn 0.4s ease-out;
+  animation: nfcDevicesListFadeIn 0.4s ease-out;
 
   h1 {
     font-size: 32px;
@@ -37,19 +37,6 @@
     color: var(--ion-color-medium);
     margin: 0;
   }
-
-  > ion-button {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(var(--ion-color-primary-rgb), 0.3);
-    }
-
-    &:active {
-      transform: translateY(0);
-    }
-  }
 }
 
 .empty-state-card {
@@ -59,7 +46,7 @@
   border: 1px solid $glass-border-lighter;
   border-radius: 20px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  animation: fadeIn 0.5s ease-out;
+  animation: nfcDevicesListFadeIn 0.5s ease-out;
 
   .empty-state {
     text-align: center;
@@ -79,28 +66,15 @@
       margin: 0 0 12px 0;
     }
 
-    p {
-      font-size: 16px;
-      color: var(--ion-color-medium);
-      margin: 0 0 24px 0;
-      max-width: 500px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    ion-button {
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-      &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(var(--ion-color-primary-rgb), 0.3);
-      }
-
-      &:active {
-        transform: translateY(0);
+      p {
+        font-size: 16px;
+        color: var(--ion-color-medium);
+        margin: 0 0 24px 0;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
       }
     }
-  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -114,7 +88,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 24px;
-  animation: fadeIn 0.4s ease-out;
+  animation: nfcDevicesListFadeIn 0.4s ease-out;
 }
 
 .device-card {
@@ -288,19 +262,6 @@
       }
     }
   }
-
-  ion-button[expand="block"] {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(var(--ion-color-primary-rgb), 0.2);
-    }
-
-    &:active {
-      transform: translateY(0);
-    }
-  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -321,64 +282,6 @@
     &:hover .device-stats {
       background: $glass-background-dark-hover;
       border: 1px solid $glass-border-dark-hover;
-    }
-  }
-}
-
-.delete-confirmation {
-  text-align: center;
-  min-height: 300px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  animation: fadeIn 0.4s ease-out;
-
-  ion-title {
-    margin-bottom: 24px;
-  }
-
-  .warning-icon {
-    font-size: 64px;
-    color: var(--ion-color-danger);
-    margin: 24px 0;
-  }
-
-  h2 {
-    font-size: 22px;
-    font-weight: 600;
-    color: var(--ion-text-color);
-    margin: 0 0 12px 0;
-  }
-
-  p {
-    font-size: 16px;
-    color: var(--ion-color-medium);
-    margin: 0 0 24px 0;
-    line-height: 1.5;
-  }
-
-  .button-group {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: auto;
-    padding-top: 24px;
-
-    ion-button {
-      width: 100%;
-      margin: 0;
-      --box-shadow: none;
-      text-transform: capitalize;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-      &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      }
-
-      &:active {
-        transform: translateY(0);
-      }
     }
   }
 }
@@ -407,12 +310,6 @@
 
   .device-card {
     .device-actions {
-      flex-direction: column;
-    }
-  }
-
-  .delete-confirmation {
-    .button-group {
       flex-direction: column;
     }
   }

@@ -1,3 +1,16 @@
 ion-modal {
   --border-radius: 28px 28px 0 0;
+
+  // Center all modal headers globally
+  ion-header {
+    ion-toolbar {
+      ion-title {
+        text-align: center;
+        padding-inline-start: 0;
+        padding-inline-end: 0;
+        padding: 16px 0;
+        margin-top: 8px;
+      }
+    }
+  }
 }

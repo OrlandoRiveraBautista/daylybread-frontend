@@ -1,0 +1,643 @@
+// iPhone Home Screen Styles
+// Mobile-first design targeting 375px width (iPhone SE/Mini)
+
+@import "../../../theme/variables.scss";
+
+// iOS System Colors
+$ios-blue: #007aff;
+$ios-green: #34c759;
+$ios-orange: #ff9500;
+$ios-red: #ff3b30;
+$ios-purple: #af52de;
+$ios-pink: #ff2d55;
+$ios-gray: #8e8e93;
+$ios-dark: #1c1c1e;
+$ios-light: #f2f2f7;
+
+// iOS Dimensions
+$status-bar-height: 47px;
+$dock-height: 96px;
+$tile-size: 60px;
+$tile-gap: 20px;
+$tile-radius: 14px;
+$widget-radius: 22px;
+$dock-padding: 16px;
+$grid-padding: 24px;
+
+// Jiggle Animation for Edit Mode
+@keyframes jiggle {
+  0% {
+    transform: rotate(-1deg);
+  }
+  25% {
+    transform: rotate(1deg);
+  }
+  50% {
+    transform: rotate(-1deg);
+  }
+  75% {
+    transform: rotate(1deg);
+  }
+  100% {
+    transform: rotate(-1deg);
+  }
+}
+
+@keyframes homeScreenFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes homeScreenPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+// Main Container
+.iphone-homescreen {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+    "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  -webkit-user-select: none;
+
+  // When in full-page mode (not in a container)
+  &:not(.phone-frame *) {
+    min-height: 100vh;
+    min-height: 100dvh; // Dynamic viewport height for mobile
+  }
+
+  &.edit-mode {
+    .grid-cell {
+      animation: jiggle 0.4s ease-in-out infinite;
+
+      // Stagger animation
+      @for $i from 1 through 20 {
+        &:nth-child(#{$i}) {
+          animation-delay: #{$i * 0.02}s;
+        }
+      }
+    }
+  }
+}
+
+// Override when inside a phone frame (modal/editor)
+.phone-frame {
+  .iphone-homescreen {
+    min-height: 0;
+    height: 100%;
+  }
+}
+
+// Status Bar
+.status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px 8px;
+  height: $status-bar-height;
+  color: white;
+  position: relative;
+  z-index: 10;
+  flex-shrink: 0;
+
+  .status-left {
+    flex: 1;
+
+    .time {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+    }
+  }
+
+  .status-notch {
+    flex: 1;
+    text-align: center;
+
+    .title {
+      font-size: 12px;
+      font-weight: 500;
+      opacity: 0.8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  .status-right {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 6px;
+
+    ion-icon {
+      font-size: 16px;
+    }
+  }
+}
+
+// Main Grid - Fixed 4x6 layout
+.homescreen-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  gap: $tile-gap;
+  padding: $grid-padding;
+  padding-bottom: 16px;
+  position: relative;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  min-height: 0; // Important for proper flexbox behavior
+
+  // Hide scrollbar but keep functionality
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  // Ensure grid cells are properly sized
+  > * {
+    min-width: 0;
+    min-height: 0;
+  }
+}
+
+// Grid Cell
+.grid-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: homeScreenFadeIn 0.3s ease-out;
+  width: 100%;
+  height: 100%;
+  min-width: 0; // Prevent overflow
+  min-height: 0; // Prevent overflow
+
+  &.edit-mode {
+    cursor: grab;
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
+}
+
+// Draggable and droppable cells
+.draggable-tile,
+.drop-zone-cell {
+  min-width: 0;
+  min-height: 0;
+
+  &.dragging {
+    opacity: 0.5;
+  }
+
+  &.drop-zone-active {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+  }
+}
+
+// App Tile (Small 1x1)
+.app-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s ease;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+
+  &:active {
+    transform: scale(0.92);
+  }
+
+  &.edit-mode {
+    .delete-badge {
+      display: flex;
+    }
+  }
+
+  .delete-badge {
+    display: none;
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.6);
+    border: none;
+    color: white;
+    justify-content: center;
+    align-items: center;
+    z-index: 5;
+    cursor: pointer;
+
+    ion-icon {
+      font-size: 14px;
+    }
+  }
+
+  .app-icon {
+    width: $tile-size;
+    height: $tile-size;
+    max-width: 100%;
+    max-height: calc(100% - 20px); // Leave room for label
+    aspect-ratio: 1;
+    border-radius: $tile-radius;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: $ios-blue;
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    flex-shrink: 0;
+
+    ion-icon {
+      font-size: 28px;
+      color: white;
+    }
+  }
+
+  .app-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: white;
+    text-align: center;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+}
+
+// Widget Tile (Medium 2x1 and Large 2x2)
+.widget-tile {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: $widget-radius;
+  padding: 14px;
+  box-sizing: border-box;
+  cursor: pointer;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+
+  &:active {
+    transform: scale(0.97);
+  }
+
+  &.edit-mode {
+    .delete-badge {
+      display: flex;
+    }
+  }
+
+  .delete-badge {
+    display: none;
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.7);
+    border: none;
+    color: white;
+    justify-content: center;
+    align-items: center;
+    z-index: 5;
+    cursor: pointer;
+
+    ion-icon {
+      font-size: 16px;
+    }
+  }
+
+  .widget-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .widget-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .widget-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    ion-icon {
+      font-size: 18px;
+      color: white;
+    }
+  }
+
+  .widget-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: white;
+    flex: 1;
+  }
+
+  .widget-subtitle {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  .widget-cta {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+
+    ion-icon {
+      font-size: 14px;
+    }
+  }
+
+  // Medium widget (2x1)
+  &.widget-medium {
+    min-height: 80px;
+  }
+
+  // Large widget (2x2)
+  &.widget-large {
+    min-height: 170px;
+
+    .widget-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+
+      ion-icon {
+        font-size: 22px;
+      }
+    }
+
+    .widget-label {
+      font-size: 17px;
+    }
+
+    .widget-subtitle {
+      font-size: 14px;
+    }
+  }
+}
+
+// Page Dots
+.page-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 0;
+  flex-shrink: 0;
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+
+    &.active {
+      background: white;
+    }
+  }
+}
+
+// Dock
+.iphone-dock {
+  flex-shrink: 0;
+  padding: 12px $dock-padding 34px;
+
+  &.edit-mode {
+    .dock-tile {
+      animation: jiggle 0.4s ease-in-out infinite;
+
+      @for $i from 1 through 4 {
+        &:nth-child(#{$i}) {
+          animation-delay: #{$i * 0.02}s;
+        }
+      }
+    }
+  }
+
+  .dock-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border-radius: 32px;
+    padding: 12px 20px;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+
+  .dock-tile {
+    position: relative;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.15s ease;
+
+    &:active {
+      transform: scale(0.92);
+    }
+
+    &.edit-mode {
+      .delete-badge {
+        display: flex;
+      }
+    }
+
+    .delete-badge {
+      display: none;
+      position: absolute;
+      top: -6px;
+      left: -6px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.6);
+      border: none;
+      color: white;
+      justify-content: center;
+      align-items: center;
+      z-index: 5;
+      cursor: pointer;
+
+      ion-icon {
+        font-size: 12px;
+      }
+    }
+
+    .dock-icon {
+      width: 54px;
+      height: 54px;
+      border-radius: 13px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+
+      ion-icon {
+        font-size: 26px;
+        color: white;
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media (min-width: 414px) {
+  .app-tile {
+    .app-icon {
+      width: 64px;
+      height: 64px;
+
+      ion-icon {
+        font-size: 30px;
+      }
+    }
+
+    .app-label {
+      font-size: 12px;
+    }
+  }
+
+  .iphone-dock .dock-tile .dock-icon {
+    width: 58px;
+    height: 58px;
+  }
+}
+
+@media (min-width: 768px) {
+  // Tablet/Desktop - center the home screen
+  .iphone-homescreen {
+    max-width: 430px;
+    margin: 0 auto;
+    border-radius: 40px;
+    height: calc(100vh - 48px);
+    min-height: auto;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
+  }
+}
+
+// Drag and Drop Styles
+.draggable-tile {
+  transition: opacity 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.dragging {
+    cursor: grabbing !important;
+
+    .grid-cell {
+      animation: none !important;
+    }
+
+    .app-tile,
+    .widget-tile {
+      animation: none !important;
+    }
+  }
+
+  &:not(.dragging) {
+    &:active {
+      cursor: grabbing;
+    }
+  }
+}
+
+.drop-zone-cell {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .drop-zone {
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    background: transparent;
+    transition: all 0.15s ease;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &.drop-zone-active {
+    z-index: 5;
+
+    .drop-zone {
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px dashed rgba(255, 255, 255, 0.5);
+      pointer-events: none;
+      box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+// Dark mode adjustments
+@media (prefers-color-scheme: dark) {
+  .iphone-homescreen {
+    background: linear-gradient(180deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
+  }
+}

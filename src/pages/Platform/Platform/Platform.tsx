@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { IonPage, IonToast } from "@ionic/react";
 import { Redirect, Route, Switch, useHistory, useLocation } from "react-router";
 import "./Platform.scss";
@@ -8,7 +8,8 @@ import { useAppContext } from "../../../context/context";
 
 /* Hooks */
 import { useToast } from "../../../hooks/useToast";
-import { useNFCConfig } from "../../../hooks/useNFCConfig";
+import { usePlatformAuth } from "../../../hooks/usePlatformAuth";
+import { usePlatformNFCDevices } from "../../../hooks/usePlatformNFCDevices";
 
 /* Components */
 import CheckingAuthentication from "../../../components/Auth/CheckingAuthentication";
@@ -25,13 +26,24 @@ const Platform: React.FC = () => {
   const { userInfo } = useAppContext();
   const history = useHistory();
   const location = useLocation();
-  const [isLoading, setIsLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const organizationName = "My Organization";
 
+  // Authentication
+  const { isLoading, isAuthenticated } = usePlatformAuth(userInfo);
+
+  // Toast notifications
   const { showToast, toastMessage, toastOptions, show, hide } = useToast();
-  const { nfcConfigData, isSaving, fetchConfig, saveConfig } =
-    useNFCConfig(userInfo?._id!);
+
+  // NFC Devices management
+  const { devices, isSavingTiles, saveTiles, deleteDevice, fetchConfig } =
+    usePlatformNFCDevices(userInfo?._id!);
+
+  // Fetch NFC config when user is authenticated
+  useEffect(() => {
+    if (isAuthenticated && userInfo) {
+      fetchConfig();
+    }
+  }, [isAuthenticated, userInfo]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Get active section from URL
   const getActiveSection = (): DashboardSection => {
@@ -45,71 +57,8 @@ const Platform: React.FC = () => {
     return "overview";
   };
 
-  useEffect(() => {
-    let tries = 0;
-    const checkAuth = () => {
-      const hasUserInfo = !!userInfo;
-
-      if (tries > 3) {
-        setIsAuthenticated(hasUserInfo);
-        setIsLoading(false);
-        return;
-      }
-
-      if (hasUserInfo) {
-        setIsAuthenticated(true);
-        setIsLoading(false);
-        console.log("userInfo", userInfo);
-        fetchConfig();
-        return;
-      }
-
-      tries++;
-    };
-
-    setTimeout(() => {
-      checkAuth();
-    }, 1500);
-  }, [userInfo]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const handleNFCDeviceSave = async (
-    deviceId: string | null,
-    formData: any,
-  ) => {
-    try {
-      if (!userInfo?._id) {
-        throw new Error("User not authenticated");
-      }
-
-      // If editing existing device, update it
-      if (deviceId) {
-        // Update existing device
-        await saveConfig(formData);
-        show("NFC device updated successfully");
-      } else {
-        // Create new device
-        await saveConfig(formData);
-        show("NFC device created successfully");
-      }
-
-      // Refresh the config data
-      fetchConfig();
-    } catch (error) {
-      console.error("Error saving NFC device:", error);
-      show(
-        error instanceof Error ? error.message : "Failed to save NFC device",
-      );
-    }
-  };
-
-  const handleNFCDeviceDelete = (deviceId: string) => {
-    // Implement delete functionality
-    console.log("Delete device:", deviceId);
-    show("Device deleted successfully");
-  };
-
+  // Navigate to different dashboard sections
   const handleSectionChange = (section: DashboardSection) => {
-    // Navigate to the appropriate route
     const routes: Record<DashboardSection, string> = {
       overview: "/",
       nfc: "/nfc",
@@ -122,19 +71,23 @@ const Platform: React.FC = () => {
     history.push(routes[section]);
   };
 
-  // Convert single config to array format for the list view
-  const getDevices = () => {
-    const results = nfcConfigData?.getNFCConfigByOwner?.results;
-    if (!results) return [];
-    return [
-      {
-        name: "Primary NFC Device",
-        ...results,
-        id: results._id, // NFC config document id (not owner id)
-        status: "active" as const,
-        tapCount: 0,
-      },
-    ];
+  // Handle tile save with toast feedback
+  const handleSaveTiles = async (
+    deviceId: string,
+    tiles: any[],
+    wallpaper?: string,
+  ) => {
+    try {
+      await saveTiles(deviceId, tiles, wallpaper);
+      show("Home screen updated successfully");
+    } catch (error) {
+      console.error("Error saving tiles:", error);
+      show(
+        error instanceof Error
+          ? `Failed to update home screen: ${error.message}`
+          : "Failed to update home screen",
+      );
+    }
   };
 
   if (isLoading) {
@@ -146,7 +99,7 @@ const Platform: React.FC = () => {
   }
 
   return (
-    <IonPage>
+    <IonPage id="platform-page">
       <DashboardLayout
         activeSection={getActiveSection()}
         onSectionChange={handleSectionChange}
@@ -157,16 +110,16 @@ const Platform: React.FC = () => {
             <DashboardOverview
               organizationName={organizationName}
               onNavigate={handleSectionChange}
-              nfcDeviceCount={getDevices().length}
+              nfcDeviceCount={devices.length}
             />
           </Route>
 
           <Route path="/nfc">
             <NFCDevicesList
-              devices={getDevices()}
-              onSave={handleNFCDeviceSave}
-              onDelete={handleNFCDeviceDelete}
-              isSaving={isSaving}
+              devices={devices}
+              onSaveTiles={handleSaveTiles}
+              onDelete={deleteDevice}
+              isSaving={isSavingTiles}
             />
           </Route>
 

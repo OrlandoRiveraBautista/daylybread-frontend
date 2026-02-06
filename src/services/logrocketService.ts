@@ -35,6 +35,12 @@ class LogRocketService {
         process.env.REACT_APP_LOGROCKET_ENABLED === "true" ||
         process.env.NODE_ENV === "production";
 
+      // Only initialize LogRocket if explicitly enabled or in production
+      if (!isEnabled) {
+        console.log("LogRocket is disabled in this environment.");
+        return;
+      }
+
       LogRocket.init(appId, {
         // Console logging configuration
         console: {

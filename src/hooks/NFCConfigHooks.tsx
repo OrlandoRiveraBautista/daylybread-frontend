@@ -1,4 +1,5 @@
 import { gql } from "../__generated__/gql";
+import { gql as gqlTag } from "@apollo/client";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 
 /* Queries */
@@ -7,35 +8,26 @@ const GetNFCConfig = gql(`
     getNFCConfig(id: $id) {
       results {
         _id
-        type
-        title
-        description
         owner {
           _id
         }
         nfcIds
-        mainButton {
+        tiles {
+          id
+          type
+          label
+          icon
           url
-          text
+          size
+          position {
+            x
+            y
+          }
+          color
+          subtitle
+          isInDock
         }
-        socialMedia {
-          facebook
-          instagram
-          twitter
-        }
-        givingLink {
-          isVisible
-          url
-        }
-        memberRegistrationLink {
-          isVisible
-          url
-        }
-        eventsLink {
-          isVisible
-          url
-        }
-        mediaId
+        wallpaper
         createdAt
         updatedAt
       }
@@ -52,35 +44,26 @@ const GetNFCConfigByOwner = gql(`
     getNFCConfigByOwner(ownerId: $ownerId) {
       results {
         _id
-        type
-        title
-        description
         owner {
           _id
         }
         nfcIds
-        mainButton {
+        tiles {
+          id
+          type
+          label
+          icon
           url
-          text
+          size
+          position {
+            x
+            y
+          }
+          color
+          subtitle
+          isInDock
         }
-        socialMedia {
-          facebook
-          instagram
-          twitter
-        }
-        givingLink {
-          isVisible
-          url
-        }
-        memberRegistrationLink {
-          isVisible
-          url
-        }
-        eventsLink {
-          isVisible
-          url
-        }
-        mediaId
+        wallpaper
         createdAt
         updatedAt
       }
@@ -98,35 +81,26 @@ const CreateNFCConfig = gql(`
     createNFCConfig(options: $options) {
       results {
         _id
-        type
-        title
-        description
         owner {
           _id
         }
         nfcIds
-        mainButton {
+        tiles {
+          id
+          type
+          label
+          icon
           url
-          text
+          size
+          position {
+            x
+            y
+          }
+          color
+          subtitle
+          isInDock
         }
-        socialMedia {
-          facebook
-          instagram
-          twitter
-        }
-        givingLink {
-          isVisible
-          url
-        }
-        memberRegistrationLink {
-          isVisible
-          url
-        }
-        eventsLink {
-          isVisible
-          url
-        }
-        mediaId
+        wallpaper
         createdAt
         updatedAt
       }
@@ -143,35 +117,26 @@ const UpdateNFCConfig = gql(`
     updateNFCConfig(id: $id, options: $options) {
       results {
         _id
-        type
-        title
-        description
         owner {
           _id
         }
         nfcIds
-        mainButton {
+        tiles {
+          id
+          type
+          label
+          icon
           url
-          text
+          size
+          position {
+            x
+            y
+          }
+          color
+          subtitle
+          isInDock
         }
-        socialMedia {
-          facebook
-          instagram
-          twitter
-        }
-        givingLink {
-          isVisible
-          url
-        }
-        memberRegistrationLink {
-          isVisible
-          url
-        }
-        eventsLink {
-          isVisible
-          url
-        }
-        mediaId
+        wallpaper
         createdAt
         updatedAt
       }
@@ -183,40 +148,47 @@ const UpdateNFCConfig = gql(`
   }
 `);
 
+// Note: This mutation uses raw gql tag because the types haven't been regenerated yet.
+// Run `npm run compile` after starting the backend to generate proper types.
+const UpdateNFCTiles = gqlTag`
+  mutation UpdateNFCTiles($id: String!, $tiles: [TileConfigInput!]!, $wallpaper: String) {
+    updateNFCTiles(id: $id, tiles: $tiles, wallpaper: $wallpaper) {
+      results {
+        _id
+        tiles {
+          id
+          type
+          label
+          icon
+          url
+          size
+          position {
+            x
+            y
+          }
+          color
+          subtitle
+          isInDock
+        }
+        wallpaper
+      }
+      errors {
+        field
+        message
+      }
+    }
+  }
+`;
+
 const DeleteNFCConfig = gql(`
   mutation DeleteNFCConfig($id: String!) {
     deleteNFCConfig(id: $id) {
       results {
         _id
-        type
-        title
-        description
         owner {
           _id
         }
         nfcIds
-        mainButton {
-          url
-          text
-        }
-        socialMedia {
-          facebook
-          instagram
-          twitter
-        }
-        givingLink {
-          isVisible
-          url
-        }
-        memberRegistrationLink {
-          isVisible
-          url
-        }
-        eventsLink {
-          isVisible
-          url
-        }
-        mediaId
         createdAt
         updatedAt
       }
@@ -250,6 +222,10 @@ export const useCreateNFCConfig = () => {
 
 export const useUpdateNFCConfig = () => {
   return useMutation(UpdateNFCConfig);
+};
+
+export const useUpdateNFCTiles = () => {
+  return useMutation(UpdateNFCTiles);
 };
 
 export const useDeleteNFCConfig = () => {

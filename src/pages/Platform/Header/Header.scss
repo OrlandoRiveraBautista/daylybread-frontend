@@ -1,4 +1,4 @@
-@keyframes fadeIn {
+@keyframes headerFadeIn {
   from {
     opacity: 0;
   }
@@ -8,7 +8,7 @@
 }
 
 #platform-header {
-  animation: fadeIn 0.4s ease-out;
+  animation: headerFadeIn 0.4s ease-out;
 
   .header-container {
     display: flex;

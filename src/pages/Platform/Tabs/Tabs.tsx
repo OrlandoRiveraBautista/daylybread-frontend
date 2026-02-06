@@ -19,6 +19,7 @@ const Tabs: React.FC<ITabsProps> = ({ tabs }: ITabsProps) => {
         className="tabs-segment"
         key={tab.value}
         onClick={tab.onClick}
+        shape="round"
         color="light"
       >
         <div className="tabs-segment-icon">
