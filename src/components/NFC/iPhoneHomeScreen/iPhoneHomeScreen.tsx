@@ -262,9 +262,6 @@ export const IPhoneHomeScreen: React.FC<IPhoneHomeScreenProps> = ({
           <div className="status-left">
             <span className="time">{currentTime}</span>
           </div>
-          <div className="status-notch">
-            {title && <span className="title">{title}</span>}
-          </div>
           <div className="status-right">
             <IonIcon icon={cellularOutline} />
             <IonIcon icon={wifiOutline} />
