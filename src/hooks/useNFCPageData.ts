@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo } from "react";
 import { useGetNFCConfig } from "./NFCConfigHooks";
 import {
   TileConfig,
@@ -26,10 +26,16 @@ export interface UseNFCPageDataResult {
  * Custom hook to fetch and transform NFC page data
  */
 export const useNFCPageData = (configId: string): UseNFCPageDataResult => {
-  const { data: nfcConfigResults, loading, refetch } = useGetNFCConfig(configId);
+  const {
+    data: nfcConfigResults,
+    loading,
+    refetch,
+  } = useGetNFCConfig(configId);
 
   const nfcConfig = useMemo(() => {
-    return nfcConfigResults?.getNFCConfig?.results as NFCConfigExtended | undefined;
+    return nfcConfigResults?.getNFCConfig?.results as
+      | NFCConfigExtended
+      | undefined;
   }, [nfcConfigResults]);
 
   // Get tiles from NFC config or use defaults

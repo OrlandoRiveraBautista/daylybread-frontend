@@ -4,7 +4,6 @@ import {
   IonHeader,
   IonToolbar,
   IonTitle,
-  IonButtons,
   IonButton,
   IonContent,
   IonItem,
@@ -15,7 +14,7 @@ import {
   IonIcon,
   IonToggle,
 } from "@ionic/react";
-import { close, checkmark } from "ionicons/icons";
+import { checkmark } from "ionicons/icons";
 import * as IonIcons from "ionicons/icons";
 import { TileConfig, TileSize } from "../../NFC/iPhoneHomeScreen/types";
 import "../../../pages/Platform/Platform/Platform.scss";
