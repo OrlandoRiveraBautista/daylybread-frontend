@@ -21,6 +21,7 @@ import { DashboardOverview } from "../../../components/Platform/DashboardOvervie
 import { NFCAndHomeScreensPage } from "../../../components/Platform/NFCAndHomeScreensPage";
 import { SermonsManagement } from "../../../components/Platform/SermonsManagement";
 import { SermonEditorPage } from "../../../components/Platform/SermonEditor";
+import { SudoAdminManager, SUDO_ADMIN_USER_ID } from "../../../components/Platform/SudoAdminManager";
 
 const Platform: React.FC = () => {
   const { userInfo } = useAppContext();
@@ -35,8 +36,16 @@ const Platform: React.FC = () => {
   const { showToast, toastMessage, toastOptions, show, hide } = useToast();
 
   // NFC Devices management
-  const { devices, isSavingTiles, saveTiles, createHomeScreen, deleteDevice, fetchConfig } =
-    usePlatformNFCDevices(userInfo?._id!);
+  const { 
+    devices, 
+    nfcDevices,
+    isSavingTiles, 
+    saveTiles, 
+    createHomeScreen, 
+    deleteDevice,
+    deleteNFCDevice,
+    fetchConfig 
+  } = usePlatformNFCDevices(userInfo?._id!);
 
   // Fetch NFC config when user is authenticated
   useEffect(() => {
@@ -45,9 +54,13 @@ const Platform: React.FC = () => {
     }
   }, [isAuthenticated, userInfo]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Check if user is sudo admin
+  const isSudoAdmin = userInfo?._id === SUDO_ADMIN_USER_ID;
+
   // Get active section from URL
   const getActiveSection = (): DashboardSection => {
     const path = location.pathname;
+    if (path.includes("/sudo-admin")) return "sudo-admin";
     if (path.includes("/nfc")) return "nfc";
     if (path.includes("/sermons")) return "sermons";
     if (path.includes("/calendar")) return "calendar";
@@ -67,6 +80,7 @@ const Platform: React.FC = () => {
       organization: "/organization",
       analytics: "/analytics",
       members: "/members",
+      "sudo-admin": "/sudo-admin",
     };
     history.push(routes[section]);
   };
@@ -126,6 +140,22 @@ const Platform: React.FC = () => {
     }
   };
 
+  // Handle NFC device delete with toast feedback
+  const handleDeleteNFC = async (deviceId: string) => {
+    try {
+      await deleteNFCDevice(deviceId);
+      show("NFC device deleted successfully");
+    } catch (error) {
+      console.error("Error deleting NFC device:", error);
+      show(
+        error instanceof Error
+          ? `Failed to delete NFC device: ${error.message}`
+          : "Failed to delete NFC device",
+      );
+      throw error;
+    }
+  };
+
   if (isLoading) {
     return <CheckingAuthentication />;
   }
@@ -140,6 +170,7 @@ const Platform: React.FC = () => {
         activeSection={getActiveSection()}
         onSectionChange={handleSectionChange}
         organizationName={organizationName}
+        isSudoAdmin={isSudoAdmin}
       >
         <Switch>
           <Route exact path="/">
@@ -153,9 +184,11 @@ const Platform: React.FC = () => {
           <Route path="/nfc">
             <NFCAndHomeScreensPage
               devices={devices}
+              nfcDevices={nfcDevices}
               onSaveTiles={handleSaveTiles}
               onCreateHomeScreen={handleCreateHomeScreen}
               onDeleteHomeScreen={handleDelete}
+              onDeleteNFC={handleDeleteNFC}
               isSaving={isSavingTiles}
             />
           </Route>
@@ -171,6 +204,13 @@ const Platform: React.FC = () => {
           <Route exact path="/sermons/:id">
             <SermonEditorPage />
           </Route>
+
+          {/* Sudo Admin Manager - restricted to specific user */}
+          {isSudoAdmin && (
+            <Route path="/sudo-admin">
+              <SudoAdminManager />
+            </Route>
+          )}
 
           {/* Coming in future releases */}
           {/* <Route path="/calendar">

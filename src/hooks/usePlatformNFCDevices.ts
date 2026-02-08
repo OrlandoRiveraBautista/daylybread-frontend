@@ -1,5 +1,6 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useHomeScreens } from "./useHomeScreens";
+import { useGetNFCConfigsByOwner, useDeleteNFCConfig } from "./NFCConfigHooks";
 import {
   TileConfig,
   TileType,
@@ -9,6 +10,7 @@ import { NFCDevice } from "../types/nfc.types";
 
 export interface UsePlatformNFCDevicesResult {
   devices: NFCDevice[];
+  nfcDevices: any[];
   isSavingTiles: boolean;
   saveTiles: (
     deviceId: string,
@@ -22,6 +24,7 @@ export interface UsePlatformNFCDevicesResult {
     wallpaper?: string,
   ) => Promise<void>;
   deleteDevice: (deviceId: string) => void;
+  deleteNFCDevice: (id: string) => Promise<void>;
   fetchConfig: () => Promise<any>;
 }
 
@@ -41,11 +44,22 @@ export const usePlatformNFCDevices = (
     fetchHomeScreens,
   } = useHomeScreens(userId);
 
+  const [nfcDevices, setNFCDevices] = useState<any[]>([]);
+  const [getNFCConfigsByOwner] = useGetNFCConfigsByOwner();
+  const [deleteNFCConfigMutation] = useDeleteNFCConfig();
+
   // Fetch on mount
   useEffect(() => {
     fetchHomeScreens();
+    if (userId) {
+      getNFCConfigsByOwner({ variables: { ownerId: userId } }).then(({ data }) => {
+        if (data?.getNFCConfigsByOwner?.results) {
+          setNFCDevices(data.getNFCConfigsByOwner.results);
+        }
+      });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [userId]);
 
   /**
    * Transform HomeScreens into device array format for backward compatibility
@@ -187,12 +201,48 @@ export const usePlatformNFCDevices = (
     [deleteHomeScreen, fetchHomeScreens],
   );
 
+  /**
+   * Delete an NFC device
+   */
+  const deleteNFCDevice = useCallback(
+    async (deviceId: string) => {
+      try {
+        await deleteNFCConfigMutation({ variables: { id: deviceId } });
+        if (userId) {
+          const { data } = await getNFCConfigsByOwner({ variables: { ownerId: userId } });
+          if (data?.getNFCConfigsByOwner?.results) {
+            setNFCDevices(data.getNFCConfigsByOwner.results);
+          }
+        }
+      } catch (error) {
+        console.error("Delete NFC device error:", error);
+        throw error;
+      }
+    },
+    [deleteNFCConfigMutation, getNFCConfigsByOwner, userId]
+  );
+
+  /**
+   * Refetch both home screens and NFC devices
+   */
+  const fetchConfig = useCallback(async () => {
+    await fetchHomeScreens();
+    if (userId) {
+      const { data } = await getNFCConfigsByOwner({ variables: { ownerId: userId } });
+      if (data?.getNFCConfigsByOwner?.results) {
+        setNFCDevices(data.getNFCConfigsByOwner.results);
+      }
+    }
+  }, [fetchHomeScreens, getNFCConfigsByOwner, userId]);
+
   return {
     devices: getDevices(),
+    nfcDevices,
     isSavingTiles: isSaving,
     saveTiles,
     createHomeScreen: createNewHomeScreen,
     deleteDevice,
-    fetchConfig: fetchHomeScreens,
+    deleteNFCDevice,
+    fetchConfig,
   };
 };

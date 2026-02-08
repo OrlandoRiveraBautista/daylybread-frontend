@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { IonSegment, IonSegmentButton, IonLabel } from "@ionic/react";
 import { HomeScreensList } from "../HomeScreensList";
-import { NFCDevicesManagement } from "../NFCDevicesManagement";
+import { NFCDevicesManagement, NFCDeviceConfig } from "../NFCDevicesManagement";
 import { NFCProducts } from "../NFCProducts";
 import { TileConfig } from "../../NFC/iPhoneHomeScreen/types";
 import { NFCDevice } from "../../../types/nfc.types";
@@ -27,9 +27,10 @@ interface NFCAndHomeScreensPageProps {
   isSaving: boolean;
 
   // NFC Devices props
+  nfcDevices?: NFCDeviceConfig[];
   onAssignNFCToHomeScreen?: (nfcId: string, homeScreenId: string) => Promise<void>;
-  onUnassignNFC?: (nfcId: string) => Promise<void>;
-  onDeleteNFC?: (nfcId: string) => Promise<void>;
+  onUnassignNFC?: (deviceId: string) => Promise<void>;
+  onDeleteNFC?: (deviceId: string) => Promise<void>;
 }
 
 export const NFCAndHomeScreensPage: React.FC<NFCAndHomeScreensPageProps> = ({
@@ -38,6 +39,7 @@ export const NFCAndHomeScreensPage: React.FC<NFCAndHomeScreensPageProps> = ({
   onCreateHomeScreen,
   onDeleteHomeScreen,
   isSaving,
+  nfcDevices,
   onAssignNFCToHomeScreen,
   onUnassignNFC,
   onDeleteNFC,
@@ -90,8 +92,7 @@ export const NFCAndHomeScreensPage: React.FC<NFCAndHomeScreensPageProps> = ({
 
         {activeTab === "nfc-devices" && (
           <NFCDevicesManagement
-            devices={devices}
-            homeScreens={devices}
+            nfcDevices={nfcDevices}
             onAssignToHomeScreen={onAssignNFCToHomeScreen}
             onUnassign={onUnassignNFC}
             onDelete={onDeleteNFC}
