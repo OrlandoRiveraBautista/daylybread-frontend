@@ -1,24 +1,10 @@
 // HomeScreenEditor Styles
 @import "../../../theme/variables.scss";
+@import "../platform-modal";
 
 // Editor Modal
 .homescreen-editor-modal {
-  --width: 100%;
-  --height: 100%;
-  --border-radius: 0;
-  --background: var(--ion-background-color);
-
-  @media (min-width: 768px) {
-    --width: 90%;
-    --max-width: 900px;
-    --height: 95vh;
-    --max-height: 1000px;
-    --border-radius: 20px;
-  }
-
-  @media (min-width: 1200px) {
-    --max-width: 1000px;
-  }
+  @include platform-modal-medium;
 }
 
 .homescreen-editor {
@@ -27,13 +13,7 @@
   height: 100%;
 }
 
-// Header
-.editor-header {
-  ion-title {
-    font-weight: 600;
-    text-align: center;
-  }
-}
+// Header styles are handled by PlatformModalHeader component
 
 // Controls Wrapper (Accordion)
 .editor-controls-wrapper {

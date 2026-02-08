@@ -2,7 +2,6 @@ import React, { useState, useCallback } from "react";
 import {
   IonButton,
   IonIcon,
-  IonSpinner,
   IonModal,
   IonAccordion,
   IonAccordionGroup,
@@ -10,15 +9,11 @@ import {
   IonLabel,
   IonText,
   IonAlert,
-  IonToolbar,
-  IonButtons,
-  IonTitle,
   IonContent,
   IonFooter,
+  IonToolbar,
 } from "@ionic/react";
 import {
-  checkmark,
-  close,
   add,
   colorPalette,
   refresh,
@@ -27,6 +22,7 @@ import {
 import { IPhoneHomeScreen } from "../../NFC/iPhoneHomeScreen";
 import { TileLibrary } from "./TileLibrary";
 import { TileConfigModal } from "./TileConfigModal";
+import { PlatformModalHeader } from "../PlatformModalHeader";
 import {
   TileConfig,
   generateTileId,
@@ -225,40 +221,15 @@ export const HomeScreenEditor: React.FC<HomeScreenEditorProps> = ({
     >
       <div className="homescreen-editor">
         {/* Header */}
-        <IonToolbar className="editor-header">
-          <IonButtons slot="start">
-            <IonButton
-              fill="clear"
-              onClick={handleCancel}
-              disabled={isSaving}
-              shape="round"
-              color="dark"
-            >
-              <IonIcon icon={close} />
-            </IonButton>
-          </IonButtons>
-
-          <IonTitle>Edit Home Screen</IonTitle>
-
-          <IonButtons slot="end">
-            <IonButton
-              fill="solid"
-              onClick={handleSave}
-              disabled={isSaving || !hasChanges}
-              shape="round"
-              color="primary"
-            >
-              {isSaving ? (
-                <IonSpinner name="crescent" />
-              ) : (
-                <>
-                  <IonIcon slot="start" icon={checkmark} />
-                  Done
-                </>
-              )}
-            </IonButton>
-          </IonButtons>
-        </IonToolbar>
+        <PlatformModalHeader
+          title="Edit Home Screen"
+          onClose={handleCancel}
+          onSave={handleSave}
+          saveLabel="Done"
+          isSaving={isSaving}
+          canSave={hasChanges}
+          showSaveButton={true}
+        />
 
         {/* Collapsible Controls Section */}
         <IonAccordionGroup className="editor-controls-wrapper">

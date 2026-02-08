@@ -382,6 +382,38 @@ export type HistoryResponse = {
   results?: Maybe<Scalars['Boolean']>;
 };
 
+export type HomeScreen = {
+  __typename?: 'HomeScreen';
+  _id: Scalars['ID'];
+  createdAt: Scalars['String'];
+  lastViewedAt?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  owner: User;
+  shareableLink: Scalars['String'];
+  tiles?: Maybe<Array<TileConfig>>;
+  updatedAt: Scalars['String'];
+  views: Scalars['Float'];
+  wallpaper?: Maybe<Scalars['String']>;
+};
+
+export type HomeScreenInput = {
+  name: Scalars['String'];
+  tiles?: InputMaybe<Array<TileConfigInput>>;
+  wallpaper?: InputMaybe<Scalars['String']>;
+};
+
+export type HomeScreenResponse = {
+  __typename?: 'HomeScreenResponse';
+  errors?: Maybe<Array<FieldError>>;
+  results?: Maybe<HomeScreen>;
+};
+
+export type HomeScreensResponse = {
+  __typename?: 'HomeScreensResponse';
+  errors?: Maybe<Array<FieldError>>;
+  results?: Maybe<Array<HomeScreen>>;
+};
+
 /** Type of interaction with a Bible verse */
 export enum InteractionType {
   Bookmark = 'BOOKMARK',
@@ -500,13 +532,16 @@ export type MoodResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  assignHomeScreenToNFCConfig: NfcConfigResponse;
   cancelNotification: Scalars['Boolean'];
   createBookmark: BookmarkResponse;
+  createHomeScreen: HomeScreenResponse;
   createInteraction: BibleInteractionResponse;
   createMedia: MediaResponse;
   createNFCConfig: NfcConfigResponse;
   createSermon: SermonResponse;
   deleteBookmarks: Scalars['Boolean'];
+  deleteHomeScreen: HomeScreenResponse;
   deleteInteraction: Scalars['Boolean'];
   deleteMedia: MediaResponse;
   deleteNFCConfig: NfcConfigResponse;
@@ -514,6 +549,8 @@ export type Mutation = {
   generateSermonContent: SermonAiResponse;
   getGetSignedUrl: GetSignedUrlResponse;
   getPostSignedUrl: PostSignedUrlResponse;
+  incrementHomeScreenViews: HomeScreenResponse;
+  incrementNFCConfigViews: NfcConfigResponse;
   invalidateTokens: Scalars['Boolean'];
   loginWithGoogle: UserResponse;
   refreshMediaCache: MediaResponse;
@@ -523,13 +560,19 @@ export type Mutation = {
   streamSermonContent: Scalars['Boolean'];
   testPushNotification: Scalars['Boolean'];
   updateBookmark: BookmarkResponse;
+  updateHomeScreen: HomeScreenResponse;
   updateInteraction: BibleInteractionResponse;
   updateMedia: MediaResponse;
   updateNFCConfig: NfcConfigResponse;
-  updateNFCTiles: NfcConfigResponse;
   updateNotificationSettings: NotificationSettingsResponse;
   updateSermon: SermonResponse;
   updateUser: UserResponse;
+};
+
+
+export type MutationAssignHomeScreenToNfcConfigArgs = {
+  homeScreenId?: InputMaybe<Scalars['String']>;
+  id: Scalars['String'];
 };
 
 
@@ -540,6 +583,11 @@ export type MutationCancelNotificationArgs = {
 
 export type MutationCreateBookmarkArgs = {
   options: BookmarkOptions;
+};
+
+
+export type MutationCreateHomeScreenArgs = {
+  options: HomeScreenInput;
 };
 
 
@@ -565,6 +613,11 @@ export type MutationCreateSermonArgs = {
 
 export type MutationDeleteBookmarksArgs = {
   ids: Array<Scalars['String']>;
+};
+
+
+export type MutationDeleteHomeScreenArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -600,6 +653,16 @@ export type MutationGetGetSignedUrlArgs = {
 
 export type MutationGetPostSignedUrlArgs = {
   options: SignedUrlInput;
+};
+
+
+export type MutationIncrementHomeScreenViewsArgs = {
+  id: Scalars['String'];
+};
+
+
+export type MutationIncrementNfcConfigViewsArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -640,6 +703,12 @@ export type MutationUpdateBookmarkArgs = {
 };
 
 
+export type MutationUpdateHomeScreenArgs = {
+  id: Scalars['String'];
+  options: HomeScreenInput;
+};
+
+
 export type MutationUpdateInteractionArgs = {
   id: Scalars['String'];
   options: BibleInteractionInput;
@@ -655,13 +724,6 @@ export type MutationUpdateMediaArgs = {
 export type MutationUpdateNfcConfigArgs = {
   id: Scalars['String'];
   options: NfcConfigInput;
-};
-
-
-export type MutationUpdateNfcTilesArgs = {
-  id: Scalars['String'];
-  tiles: Array<TileConfigInput>;
-  wallpaper?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -684,23 +746,33 @@ export type NfcConfig = {
   __typename?: 'NFCConfig';
   _id: Scalars['ID'];
   createdAt: Scalars['String'];
-  nfcIds: Array<Scalars['String']>;
+  deviceType?: Maybe<Scalars['String']>;
+  homeScreen?: Maybe<HomeScreen>;
+  lastScannedAt?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  nfcId: Scalars['String'];
   owner: User;
-  tiles?: Maybe<Array<TileConfig>>;
   updatedAt: Scalars['String'];
-  wallpaper?: Maybe<Scalars['String']>;
+  views: Scalars['Float'];
 };
 
 export type NfcConfigInput = {
-  nfcIds?: InputMaybe<Array<Scalars['String']>>;
-  tiles?: InputMaybe<Array<TileConfigInput>>;
-  wallpaper?: InputMaybe<Scalars['String']>;
+  deviceType?: InputMaybe<Scalars['String']>;
+  homeScreenId?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
+  nfcId: Scalars['String'];
 };
 
 export type NfcConfigResponse = {
   __typename?: 'NFCConfigResponse';
   errors?: Maybe<Array<FieldError>>;
   results?: Maybe<NfcConfig>;
+};
+
+export type NfcConfigsResponse = {
+  __typename?: 'NFCConfigsResponse';
+  errors?: Maybe<Array<FieldError>>;
+  results?: Maybe<Array<NfcConfig>>;
 };
 
 export type Notification = {
@@ -768,6 +840,9 @@ export type Query = {
   getChapter: Chapter;
   getChapterListByBookBibleId: Array<BookChapter>;
   getCopyRightByBibleId: CopyrightResponse;
+  getHomeScreen: HomeScreenResponse;
+  getHomeScreenByLink: HomeScreenResponse;
+  getHomeScreensByOwner: HomeScreensResponse;
   getInteraction: BibleInteractionResponse;
   getListOFBibles: BibleReponse;
   getListOfBooksForBible: BookResponse;
@@ -782,7 +857,8 @@ export type Query = {
   getMyBookmarks: GetBookmarkResponse;
   getMyInteractions: GetBibleInteractionsResponse;
   getNFCConfig: NfcConfigResponse;
-  getNFCConfigByOwner: NfcConfigResponse;
+  getNFCConfigByNfcId: NfcConfigResponse;
+  getNFCConfigsByOwner: NfcConfigsResponse;
   getNextMoodRequestTime?: Maybe<Scalars['DateTime']>;
   getOpen: Scalars['String'];
   getSermon: SermonResponse;
@@ -844,6 +920,21 @@ export type QueryGetChapterListByBookBibleIdArgs = {
 
 export type QueryGetCopyRightByBibleIdArgs = {
   options: CopyrightArgs;
+};
+
+
+export type QueryGetHomeScreenArgs = {
+  id: Scalars['String'];
+};
+
+
+export type QueryGetHomeScreenByLinkArgs = {
+  shareableLink: Scalars['String'];
+};
+
+
+export type QueryGetHomeScreensByOwnerArgs = {
+  ownerId: Scalars['String'];
 };
 
 
@@ -912,7 +1003,12 @@ export type QueryGetNfcConfigArgs = {
 };
 
 
-export type QueryGetNfcConfigByOwnerArgs = {
+export type QueryGetNfcConfigByNfcIdArgs = {
+  nfcId: Scalars['String'];
+};
+
+
+export type QueryGetNfcConfigsByOwnerArgs = {
   ownerId: Scalars['String'];
 };
 
@@ -1463,21 +1559,21 @@ export type GetNfcConfigQueryVariables = Exact<{
 }>;
 
 
-export type GetNfcConfigQuery = { __typename?: 'Query', getNFCConfig: { __typename?: 'NFCConfigResponse', results?: { __typename?: 'NFCConfig', _id: string, nfcIds: Array<string>, wallpaper?: string | null, createdAt: string, updatedAt: string, owner: { __typename?: 'User', _id: string }, tiles?: Array<{ __typename?: 'TileConfig', id: string, type: string, label: string, icon: string, url: string, size: string, color?: string | null, subtitle?: string | null, isInDock?: boolean | null, position: { __typename?: 'TilePosition', x: number, y: number } }> | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type GetNfcConfigQuery = { __typename?: 'Query', getNFCConfig: { __typename?: 'NFCConfigResponse', results?: { __typename?: 'NFCConfig', _id: string, nfcId: string, name: string, deviceType?: string | null, views: number, lastScannedAt?: string | null, createdAt: string, updatedAt: string, owner: { __typename?: 'User', _id: string }, homeScreen?: { __typename?: 'HomeScreen', _id: string, name: string, shareableLink: string } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
-export type GetNfcConfigByOwnerQueryVariables = Exact<{
+export type GetNfcConfigsByOwnerQueryVariables = Exact<{
   ownerId: Scalars['String'];
 }>;
 
 
-export type GetNfcConfigByOwnerQuery = { __typename?: 'Query', getNFCConfigByOwner: { __typename?: 'NFCConfigResponse', results?: { __typename?: 'NFCConfig', _id: string, nfcIds: Array<string>, wallpaper?: string | null, createdAt: string, updatedAt: string, owner: { __typename?: 'User', _id: string }, tiles?: Array<{ __typename?: 'TileConfig', id: string, type: string, label: string, icon: string, url: string, size: string, color?: string | null, subtitle?: string | null, isInDock?: boolean | null, position: { __typename?: 'TilePosition', x: number, y: number } }> | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type GetNfcConfigsByOwnerQuery = { __typename?: 'Query', getNFCConfigsByOwner: { __typename?: 'NFCConfigsResponse', results?: Array<{ __typename?: 'NFCConfig', _id: string, nfcId: string, name: string, deviceType?: string | null, views: number, lastScannedAt?: string | null, createdAt: string, updatedAt: string, owner: { __typename?: 'User', _id: string }, homeScreen?: { __typename?: 'HomeScreen', _id: string, name: string, shareableLink: string } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type CreateNfcConfigMutationVariables = Exact<{
   options: NfcConfigInput;
 }>;
 
 
-export type CreateNfcConfigMutation = { __typename?: 'Mutation', createNFCConfig: { __typename?: 'NFCConfigResponse', results?: { __typename?: 'NFCConfig', _id: string, nfcIds: Array<string>, wallpaper?: string | null, createdAt: string, updatedAt: string, owner: { __typename?: 'User', _id: string }, tiles?: Array<{ __typename?: 'TileConfig', id: string, type: string, label: string, icon: string, url: string, size: string, color?: string | null, subtitle?: string | null, isInDock?: boolean | null, position: { __typename?: 'TilePosition', x: number, y: number } }> | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type CreateNfcConfigMutation = { __typename?: 'Mutation', createNFCConfig: { __typename?: 'NFCConfigResponse', results?: { __typename?: 'NFCConfig', _id: string, nfcId: string, name: string, deviceType?: string | null, views: number, lastScannedAt?: string | null, createdAt: string, updatedAt: string, owner: { __typename?: 'User', _id: string }, homeScreen?: { __typename?: 'HomeScreen', _id: string, name: string, shareableLink: string } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type UpdateNfcConfigMutationVariables = Exact<{
   id: Scalars['String'];
@@ -1485,23 +1581,14 @@ export type UpdateNfcConfigMutationVariables = Exact<{
 }>;
 
 
-export type UpdateNfcConfigMutation = { __typename?: 'Mutation', updateNFCConfig: { __typename?: 'NFCConfigResponse', results?: { __typename?: 'NFCConfig', _id: string, nfcIds: Array<string>, wallpaper?: string | null, createdAt: string, updatedAt: string, owner: { __typename?: 'User', _id: string }, tiles?: Array<{ __typename?: 'TileConfig', id: string, type: string, label: string, icon: string, url: string, size: string, color?: string | null, subtitle?: string | null, isInDock?: boolean | null, position: { __typename?: 'TilePosition', x: number, y: number } }> | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
-
-export type UpdateNfcTilesMutationVariables = Exact<{
-  id: Scalars['String'];
-  tiles: Array<TileConfigInput> | TileConfigInput;
-  wallpaper?: InputMaybe<Scalars['String']>;
-}>;
-
-
-export type UpdateNfcTilesMutation = { __typename?: 'Mutation', updateNFCTiles: { __typename?: 'NFCConfigResponse', results?: { __typename?: 'NFCConfig', _id: string, wallpaper?: string | null, tiles?: Array<{ __typename?: 'TileConfig', id: string, type: string, label: string, icon: string, url: string, size: string, color?: string | null, subtitle?: string | null, isInDock?: boolean | null, position: { __typename?: 'TilePosition', x: number, y: number } }> | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type UpdateNfcConfigMutation = { __typename?: 'Mutation', updateNFCConfig: { __typename?: 'NFCConfigResponse', results?: { __typename?: 'NFCConfig', _id: string, nfcId: string, name: string, deviceType?: string | null, views: number, lastScannedAt?: string | null, createdAt: string, updatedAt: string, owner: { __typename?: 'User', _id: string }, homeScreen?: { __typename?: 'HomeScreen', _id: string, name: string, shareableLink: string } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type DeleteNfcConfigMutationVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type DeleteNfcConfigMutation = { __typename?: 'Mutation', deleteNFCConfig: { __typename?: 'NFCConfigResponse', results?: { __typename?: 'NFCConfig', _id: string, nfcIds: Array<string>, createdAt: string, updatedAt: string, owner: { __typename?: 'User', _id: string } } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type DeleteNfcConfigMutation = { __typename?: 'Mutation', deleteNFCConfig: { __typename?: 'NFCConfigResponse', results?: { __typename?: 'NFCConfig', _id: string, nfcId: string, name: string } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type OpenAiQueryVariables = Exact<{
   options: GptArgs;
@@ -1735,12 +1822,11 @@ export const GetPostSignedUrlDocument = {"kind":"Document","definitions":[{"kind
 export const CreateMediaDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateMedia"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"options"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"MediaInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createMedia"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"options"},"value":{"kind":"Variable","name":{"kind":"Name","value":"options"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"fileKey"}},{"kind":"Field","name":{"kind":"Name","value":"filename"}},{"kind":"Field","name":{"kind":"Name","value":"mimeType"}},{"kind":"Field","name":{"kind":"Name","value":"size"}},{"kind":"Field","name":{"kind":"Name","value":"purpose"}},{"kind":"Field","name":{"kind":"Name","value":"isPublic"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"cache"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"expiresAt"}},{"kind":"Field","name":{"kind":"Name","value":"duration"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<CreateMediaMutation, CreateMediaMutationVariables>;
 export const UpdateMediaDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateMedia"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"options"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"MediaInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateMedia"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"options"},"value":{"kind":"Variable","name":{"kind":"Name","value":"options"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"fileKey"}},{"kind":"Field","name":{"kind":"Name","value":"filename"}},{"kind":"Field","name":{"kind":"Name","value":"mimeType"}},{"kind":"Field","name":{"kind":"Name","value":"size"}},{"kind":"Field","name":{"kind":"Name","value":"purpose"}},{"kind":"Field","name":{"kind":"Name","value":"isPublic"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"cache"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"expiresAt"}},{"kind":"Field","name":{"kind":"Name","value":"duration"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateMediaMutation, UpdateMediaMutationVariables>;
 export const DeleteMediaDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteMedia"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteMedia"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"fileKey"}},{"kind":"Field","name":{"kind":"Name","value":"filename"}},{"kind":"Field","name":{"kind":"Name","value":"mimeType"}},{"kind":"Field","name":{"kind":"Name","value":"size"}},{"kind":"Field","name":{"kind":"Name","value":"purpose"}},{"kind":"Field","name":{"kind":"Name","value":"isPublic"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"cache"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"expiresAt"}},{"kind":"Field","name":{"kind":"Name","value":"duration"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<DeleteMediaMutation, DeleteMediaMutationVariables>;
-export const GetNfcConfigDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetNFCConfig"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getNFCConfig"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"nfcIds"}},{"kind":"Field","name":{"kind":"Name","value":"tiles"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"icon"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"size"}},{"kind":"Field","name":{"kind":"Name","value":"position"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"x"}},{"kind":"Field","name":{"kind":"Name","value":"y"}}]}},{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"subtitle"}},{"kind":"Field","name":{"kind":"Name","value":"isInDock"}}]}},{"kind":"Field","name":{"kind":"Name","value":"wallpaper"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<GetNfcConfigQuery, GetNfcConfigQueryVariables>;
-export const GetNfcConfigByOwnerDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetNFCConfigByOwner"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ownerId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getNFCConfigByOwner"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ownerId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ownerId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"nfcIds"}},{"kind":"Field","name":{"kind":"Name","value":"tiles"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"icon"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"size"}},{"kind":"Field","name":{"kind":"Name","value":"position"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"x"}},{"kind":"Field","name":{"kind":"Name","value":"y"}}]}},{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"subtitle"}},{"kind":"Field","name":{"kind":"Name","value":"isInDock"}}]}},{"kind":"Field","name":{"kind":"Name","value":"wallpaper"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<GetNfcConfigByOwnerQuery, GetNfcConfigByOwnerQueryVariables>;
-export const CreateNfcConfigDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateNFCConfig"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"options"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"NFCConfigInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createNFCConfig"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"options"},"value":{"kind":"Variable","name":{"kind":"Name","value":"options"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"nfcIds"}},{"kind":"Field","name":{"kind":"Name","value":"tiles"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"icon"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"size"}},{"kind":"Field","name":{"kind":"Name","value":"position"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"x"}},{"kind":"Field","name":{"kind":"Name","value":"y"}}]}},{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"subtitle"}},{"kind":"Field","name":{"kind":"Name","value":"isInDock"}}]}},{"kind":"Field","name":{"kind":"Name","value":"wallpaper"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<CreateNfcConfigMutation, CreateNfcConfigMutationVariables>;
-export const UpdateNfcConfigDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateNFCConfig"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"options"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"NFCConfigInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateNFCConfig"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"options"},"value":{"kind":"Variable","name":{"kind":"Name","value":"options"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"nfcIds"}},{"kind":"Field","name":{"kind":"Name","value":"tiles"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"icon"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"size"}},{"kind":"Field","name":{"kind":"Name","value":"position"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"x"}},{"kind":"Field","name":{"kind":"Name","value":"y"}}]}},{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"subtitle"}},{"kind":"Field","name":{"kind":"Name","value":"isInDock"}}]}},{"kind":"Field","name":{"kind":"Name","value":"wallpaper"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateNfcConfigMutation, UpdateNfcConfigMutationVariables>;
-export const UpdateNfcTilesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateNFCTiles"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tiles"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"TileConfigInput"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"wallpaper"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateNFCTiles"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"tiles"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tiles"}}},{"kind":"Argument","name":{"kind":"Name","value":"wallpaper"},"value":{"kind":"Variable","name":{"kind":"Name","value":"wallpaper"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"tiles"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"icon"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"size"}},{"kind":"Field","name":{"kind":"Name","value":"position"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"x"}},{"kind":"Field","name":{"kind":"Name","value":"y"}}]}},{"kind":"Field","name":{"kind":"Name","value":"color"}},{"kind":"Field","name":{"kind":"Name","value":"subtitle"}},{"kind":"Field","name":{"kind":"Name","value":"isInDock"}}]}},{"kind":"Field","name":{"kind":"Name","value":"wallpaper"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateNfcTilesMutation, UpdateNfcTilesMutationVariables>;
-export const DeleteNfcConfigDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteNFCConfig"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteNFCConfig"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"nfcIds"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<DeleteNfcConfigMutation, DeleteNfcConfigMutationVariables>;
+export const GetNfcConfigDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetNFCConfig"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getNFCConfig"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"nfcId"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"deviceType"}},{"kind":"Field","name":{"kind":"Name","value":"homeScreen"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"shareableLink"}}]}},{"kind":"Field","name":{"kind":"Name","value":"views"}},{"kind":"Field","name":{"kind":"Name","value":"lastScannedAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<GetNfcConfigQuery, GetNfcConfigQueryVariables>;
+export const GetNfcConfigsByOwnerDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetNFCConfigsByOwner"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ownerId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getNFCConfigsByOwner"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ownerId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ownerId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"nfcId"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"deviceType"}},{"kind":"Field","name":{"kind":"Name","value":"homeScreen"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"shareableLink"}}]}},{"kind":"Field","name":{"kind":"Name","value":"views"}},{"kind":"Field","name":{"kind":"Name","value":"lastScannedAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<GetNfcConfigsByOwnerQuery, GetNfcConfigsByOwnerQueryVariables>;
+export const CreateNfcConfigDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateNFCConfig"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"options"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"NFCConfigInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createNFCConfig"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"options"},"value":{"kind":"Variable","name":{"kind":"Name","value":"options"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"nfcId"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"deviceType"}},{"kind":"Field","name":{"kind":"Name","value":"homeScreen"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"shareableLink"}}]}},{"kind":"Field","name":{"kind":"Name","value":"views"}},{"kind":"Field","name":{"kind":"Name","value":"lastScannedAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<CreateNfcConfigMutation, CreateNfcConfigMutationVariables>;
+export const UpdateNfcConfigDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateNFCConfig"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"options"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"NFCConfigInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateNFCConfig"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"options"},"value":{"kind":"Variable","name":{"kind":"Name","value":"options"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"owner"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"nfcId"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"deviceType"}},{"kind":"Field","name":{"kind":"Name","value":"homeScreen"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"shareableLink"}}]}},{"kind":"Field","name":{"kind":"Name","value":"views"}},{"kind":"Field","name":{"kind":"Name","value":"lastScannedAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateNfcConfigMutation, UpdateNfcConfigMutationVariables>;
+export const DeleteNfcConfigDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteNFCConfig"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteNFCConfig"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"nfcId"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<DeleteNfcConfigMutation, DeleteNfcConfigMutationVariables>;
 export const OpenAiDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"OpenAi"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"options"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"GptArgs"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getOpen"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"options"},"value":{"kind":"Variable","name":{"kind":"Name","value":"options"}}}]}]}}]} as unknown as DocumentNode<OpenAiQuery, OpenAiQueryVariables>;
 export const SubscriptionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"Subscription"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"deviceId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"aiChatReponseUpdated"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"deviceId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"deviceId"}}}]}]}}]} as unknown as DocumentNode<SubscriptionSubscription, SubscriptionSubscriptionVariables>;
 export const GetSermonsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetSermons"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getSermons"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"author"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"field"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<GetSermonsQuery, GetSermonsQueryVariables>;

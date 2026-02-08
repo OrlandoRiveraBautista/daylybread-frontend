@@ -1,0 +1,6 @@
+@import "../../../theme/variables.scss";
+@import "../platform-modal";
+
+.platform-modal-header {
+  @include platform-modal-header;
+}

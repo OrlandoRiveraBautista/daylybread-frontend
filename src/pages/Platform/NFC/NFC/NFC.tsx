@@ -27,7 +27,7 @@ const NFC: React.FC = () => {
   const [toastMessage, setToastMessage] = useState("");
 
   // Fetch and transform NFC data
-  const { nfcConfig, tiles, loading, refetch } = useNFCPageData(id);
+  const { nfcConfig, tiles, wallpaper, loading, refetch } = useNFCPageData(id);
 
   // Edit mode management
   const {
@@ -41,9 +41,9 @@ const NFC: React.FC = () => {
     enterEditMode,
     exitEditMode,
   } = useNFCEditMode({
-    configId: id,
+    homeScreenId: nfcConfig?.homeScreen?._id,
     initialTiles: tiles,
-    initialWallpaper: nfcConfig?.wallpaper,
+    initialWallpaper: wallpaper,
     ownerId: nfcConfig?.owner?._id,
     currentUserId: userInfo?._id,
     onSaveSuccess: async () => {

@@ -15,11 +15,7 @@ import {
   IonImg,
 } from "@ionic/react";
 import { useHistory } from "react-router";
-import {
-  card,
-  home,
-  document,
-} from "ionicons/icons";
+import { card, home, document } from "ionicons/icons";
 import SmallWordLogo from "../../../assets/images/small-word-logo.svg";
 import SmallWordLogoDark from "../../../assets/images/small-word-logo-dark.svg";
 import "./DashboardLayout.scss";
@@ -58,7 +54,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     {
       section: "nfc" as DashboardSection,
       icon: card,
-      label: "NFC Devices",
+      label: "Home Screens & NFC",
       path: "/nfc",
     },
     {

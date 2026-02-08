@@ -1,120 +1,136 @@
-import { useCallback } from "react";
-import { useNFCConfig } from "./useNFCConfig";
-import { useUpdateNFCTiles } from "./NFCConfigHooks";
-import { TileConfig, TileType, TileSize } from "../components/NFC/iPhoneHomeScreen/types";
+import { useCallback, useEffect } from "react";
+import { useHomeScreens } from "./useHomeScreens";
+import {
+  TileConfig,
+  TileType,
+  TileSize,
+} from "../components/NFC/iPhoneHomeScreen/types";
 import { NFCDevice } from "../types/nfc.types";
 
 export interface UsePlatformNFCDevicesResult {
   devices: NFCDevice[];
   isSavingTiles: boolean;
-  saveTiles: (deviceId: string, tiles: TileConfig[], wallpaper?: string) => Promise<void>;
+  saveTiles: (
+    deviceId: string,
+    tiles: TileConfig[],
+    wallpaper?: string,
+  ) => Promise<void>;
   deleteDevice: (deviceId: string) => void;
   fetchConfig: () => Promise<any>;
 }
 
 /**
- * Custom hook to manage NFC devices in the platform.
- * Centralizes all NFC device and tiles logic.
+ * Custom hook to manage NFC devices (HomeScreens) in the platform.
+ * Now uses the new HomeScreen architecture where HomeScreens are separate entities.
  */
-export const usePlatformNFCDevices = (userId: string): UsePlatformNFCDevicesResult => {
-  const { nfcConfigData, fetchConfig } = useNFCConfig(userId);
-  const [updateTiles, { loading: isSavingTiles }] = useUpdateNFCTiles();
+export const usePlatformNFCDevices = (
+  userId: string,
+): UsePlatformNFCDevicesResult => {
+  const {
+    homeScreens,
+    isSaving,
+    updateHomeScreen,
+    deleteHomeScreen,
+    fetchHomeScreens,
+  } = useHomeScreens(userId);
+
+  // Fetch on mount
+  useEffect(() => {
+    fetchHomeScreens();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   /**
-   * Transform NFC config data into device array format
+   * Transform HomeScreens into device array format for backward compatibility
    */
   const getDevices = useCallback((): NFCDevice[] => {
-    const results = nfcConfigData?.getNFCConfigByOwner?.results;
-    if (!results) return [];
+    if (!homeScreens || homeScreens.length === 0) return [];
 
-    // Transform tiles to match TileConfig type
-    const transformedTiles: TileConfig[] | undefined = results.tiles
-      ? results.tiles.map((tile) => ({
-          id: tile.id,
-          type: tile.type as TileType,
-          label: tile.label,
-          icon: tile.icon,
-          url: tile.url,
-          size: tile.size as TileSize,
-          position: tile.position,
-          color: tile.color ?? undefined,
-          subtitle: tile.subtitle ?? undefined,
-          isInDock: tile.isInDock ?? undefined,
-        }))
-      : undefined;
+    return homeScreens.map((homeScreen: any) => {
+      // Transform tiles to match TileConfig type
+      const transformedTiles: TileConfig[] | undefined = homeScreen.tiles
+        ? homeScreen.tiles.map((tile: any) => ({
+            id: tile.id,
+            type: tile.type as TileType,
+            label: tile.label,
+            icon: tile.icon,
+            url: tile.url,
+            size: tile.size as TileSize,
+            position: tile.position,
+            color: tile.color ?? undefined,
+            subtitle: tile.subtitle ?? undefined,
+            isInDock: tile.isInDock ?? undefined,
+          }))
+        : undefined;
 
-    return [
-      {
-        id: results._id,
-        _id: results._id,
-        name: "Primary NFC Device",
-        nfcIds: results.nfcIds || [],
+      return {
+        id: homeScreen._id,
+        _id: homeScreen._id,
+        name: homeScreen.name || "Home Screen",
+        nfcIds: [], // NFC devices are now separate entities
         status: "active" as const,
-        createdAt: results.createdAt,
-        tapCount: 0,
+        createdAt: homeScreen.createdAt,
+        tapCount: homeScreen.views || 0,
         tiles: transformedTiles,
-        wallpaper: results.wallpaper ?? undefined,
-      },
-    ];
-  }, [nfcConfigData]);
+        wallpaper: homeScreen.wallpaper ?? undefined,
+      };
+    });
+  }, [homeScreens]);
 
   /**
-   * Save tiles configuration for a device
+   * Save tiles configuration for a HomeScreen
    */
   const saveTiles = useCallback(
-    async (deviceId: string, tiles: TileConfig[], wallpaper?: string): Promise<void> => {
+    async (
+      homeScreenId: string,
+      tiles: TileConfig[],
+      wallpaper?: string,
+    ): Promise<void> => {
       try {
-        const result = await updateTiles({
-          variables: {
-            id: deviceId,
-            tiles: tiles.map((tile) => ({
-              id: tile.id,
-              type: tile.type,
-              label: tile.label,
-              icon: tile.icon,
-              url: tile.url,
-              size: tile.size,
-              position: {
-                x: tile.position.x,
-                y: tile.position.y,
-              },
-              color: tile.color,
-              subtitle: tile.subtitle,
-              isInDock: tile.isInDock,
-            })),
-            wallpaper: wallpaper || null,
-          },
-        });
-
-        // Check for errors in the response
-        const errors = result.data?.updateNFCTiles?.errors;
-        if (errors && errors.length > 0) {
-          const errorMessage = errors.map((e: any) => e.message).join(", ");
-          throw new Error(errorMessage);
+        // Find the home screen to get its name
+        const homeScreen = homeScreens.find(
+          (hs: any) => hs._id === homeScreenId,
+        );
+        if (!homeScreen) {
+          throw new Error("Home screen not found");
         }
 
-        // Refresh config after successful save
-        await fetchConfig();
+        await updateHomeScreen(homeScreenId, {
+          name: homeScreen.name || "Home Screen",
+          tiles,
+          wallpaper,
+        });
+
+        // Refresh after successful save
+        await fetchHomeScreens();
       } catch (error) {
         throw error;
       }
     },
-    [updateTiles, fetchConfig]
+    [homeScreens, updateHomeScreen, fetchHomeScreens],
   );
 
   /**
-   * Delete a device (placeholder for future implementation)
+   * Delete a HomeScreen
    */
-  const deleteDevice = useCallback((deviceId: string) => {
-    console.log("Delete device:", deviceId);
-    // TODO: Implement device deletion when needed
-  }, []);
+  const deleteDevice = useCallback(
+    async (homeScreenId: string) => {
+      try {
+        await deleteHomeScreen(homeScreenId);
+        await fetchHomeScreens();
+      } catch (error) {
+        console.error("Delete home screen error:", error);
+        throw error;
+      }
+    },
+    [deleteHomeScreen, fetchHomeScreens],
+  );
 
   return {
     devices: getDevices(),
-    isSavingTiles,
+    isSavingTiles: isSaving,
     saveTiles,
     deleteDevice,
-    fetchConfig,
+    fetchConfig: fetchHomeScreens,
   };
 };
