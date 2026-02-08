@@ -11,6 +11,7 @@ import {
   DragMoveEvent,
   DragStartEvent,
   PointerSensor,
+  TouchSensor,
   useSensor,
   useSensors,
   closestCenter,
@@ -59,11 +60,17 @@ export const IPhoneHomeScreen: React.FC<IPhoneHomeScreenProps> = ({
   const initialDragPosRef = useRef<{ x: number; y: number } | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Configure sensors for drag detection with reduced activation distance
+  // Configure sensors for drag detection with mobile-friendly settings
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
         distance: 5, // 5px movement required to start drag (more responsive)
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 100, // 100ms hold before drag starts (allows tap and hold, but still responsive)
+        tolerance: 8, // 8px movement tolerance to prevent accidental drags
       },
     }),
   );

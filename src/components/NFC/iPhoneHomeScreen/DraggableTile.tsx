@@ -84,6 +84,7 @@ export const DraggableTile: React.FC<DraggableTileProps> = ({
     cursor: !disabled ? "grab" : "default",
     zIndex: 10,
     position: "relative",
+    touchAction: !disabled ? "none" : "auto", // Prevent default touch behaviors when draggable
   };
 
   return (

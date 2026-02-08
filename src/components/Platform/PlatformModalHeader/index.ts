@@ -1,0 +1,1 @@
+export { PlatformModalHeader } from "./PlatformModalHeader";

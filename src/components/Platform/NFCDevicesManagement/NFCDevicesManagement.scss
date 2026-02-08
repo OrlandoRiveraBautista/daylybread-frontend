@@ -1,0 +1,223 @@
+@import "../../../theme/variables.scss";
+
+.nfc-devices-management-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.management-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+  gap: 16px;
+
+  h1 {
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--ion-text-color);
+    margin: 0 0 8px 0;
+  }
+
+  p {
+    font-size: 16px;
+    color: var(--ion-color-medium);
+    margin: 0;
+  }
+}
+
+.empty-state-card {
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+  .empty-state {
+    text-align: center;
+    padding: 48px 24px;
+
+    &-icon {
+      font-size: 64px;
+      color: var(--ion-color-medium);
+      margin-bottom: 16px;
+    }
+
+    h2 {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--ion-text-color);
+      margin: 0 0 12px 0;
+    }
+
+    p {
+      font-size: 16px;
+      color: var(--ion-color-medium);
+      margin: 0 auto 24px;
+      max-width: 500px;
+      line-height: 1.5;
+    }
+  }
+}
+
+.nfc-devices-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.nfc-device-card {
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
+  cursor: default;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  &.new-nfc-device-card {
+    border: 2px dashed var(--ion-color-primary);
+    background: var(--ion-color-primary-tint);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+
+    &:hover {
+      background: var(--ion-color-primary-shade);
+      transform: scale(1.02);
+    }
+
+    .new-nfc-device-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 32px;
+
+      .add-icon {
+        font-size: 48px;
+        color: var(--ion-color-primary);
+      }
+
+      span {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--ion-color-primary);
+      }
+    }
+  }
+}
+
+.nfc-device-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.nfc-device-info {
+  flex: 1;
+
+  ion-card-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+}
+
+.nfc-device-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+
+  ion-badge {
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 12px;
+  }
+
+  ion-chip {
+    height: 28px;
+    font-size: 13px;
+  }
+}
+
+.nfc-device-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.nfc-device-stats {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--ion-color-light);
+  margin-bottom: 16px;
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    ion-text {
+      font-size: 13px;
+    }
+
+    strong {
+      font-size: 16px;
+      color: var(--ion-text-color);
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .management-header {
+    flex-direction: column;
+
+    h1 {
+      font-size: 24px;
+    }
+
+    p {
+      font-size: 14px;
+    }
+  }
+
+  .nfc-devices-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .nfc-device-card {
+    &.new-nfc-device-card {
+      min-height: 150px;
+
+      .new-nfc-device-content {
+        padding: 24px;
+
+        .add-icon {
+          font-size: 36px;
+        }
+
+        span {
+          font-size: 16px;
+        }
+      }
+    }
+  }
+}

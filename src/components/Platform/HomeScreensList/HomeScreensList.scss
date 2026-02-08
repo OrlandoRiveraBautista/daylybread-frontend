@@ -10,14 +10,26 @@
   }
 }
 
-.nfc-devices-container {
+@keyframes newHomeScreenPulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+}
+
+.home-screens-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 24px 16px;
   animation: nfcDevicesListFadeIn 0.3s ease-out;
 }
 
-.devices-header {
+.screens-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -41,8 +53,6 @@
 
 .empty-state-card {
   background: $glass-background-light;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
   border: 1px solid $glass-border-lighter;
   border-radius: 20px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
@@ -66,15 +76,15 @@
       margin: 0 0 12px 0;
     }
 
-      p {
-        font-size: 16px;
-        color: var(--ion-color-medium);
-        margin: 0 0 24px 0;
-        max-width: 500px;
-        margin-left: auto;
-        margin-right: auto;
-      }
+    p {
+      font-size: 16px;
+      color: var(--ion-color-medium);
+      margin: 0 0 24px 0;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
     }
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -93,8 +103,6 @@
 
 .device-card {
   background: $glass-background-light;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
   border: 1px solid $glass-border-lighter;
   border-radius: 20px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
@@ -262,6 +270,53 @@
       }
     }
   }
+
+  &.new-home-screen-card {
+    border: 2px dashed rgba(var(--ion-color-medium-rgb), 0.5);
+    background: $glass-background-light;
+    display: flex;
+    s &:hover {
+      border-color: var(--ion-color-primary);
+      background: rgba(var(--ion-color-primary-rgb), 0.15);
+    }
+
+    ion-card-content {
+      justify-content: center;
+      align-items: center;
+      min-height: 200px;
+      height: 100%;
+      display: flex;
+    }
+
+    .new-home-screen-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--ion-color-medium);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+      .add-icon {
+        font-size: 48px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      span {
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+    }
+
+    &:hover .new-home-screen-content {
+      color: var(--ion-color-primary);
+      transform: scale(1.05);
+
+      .add-icon {
+        animation: newHomeScreenPulse 1s ease-in-out infinite;
+      }
+    }
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -282,6 +337,14 @@
     &:hover .device-stats {
       background: $glass-background-dark-hover;
       border: 1px solid $glass-border-dark-hover;
+    }
+
+    &.new-home-screen-card {
+      background: $glass-background-dark;
+
+      &:hover {
+        background: rgba(var(--ion-color-primary-rgb), 0.2);
+      }
     }
   }
 }

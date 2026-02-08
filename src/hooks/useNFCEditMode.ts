@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { useUpdateNFCTiles } from "./NFCConfigHooks";
+import { useUpdateHomeScreen } from "./HomeScreenHooks";
 import { TileConfig } from "../components/NFC/iPhoneHomeScreen/types";
 
 export interface UseNFCEditModeResult {
@@ -16,7 +16,7 @@ export interface UseNFCEditModeResult {
 }
 
 interface UseNFCEditModeParams {
-  configId: string;
+  homeScreenId: string | undefined;
   initialTiles: TileConfig[];
   initialWallpaper: string | undefined;
   ownerId: string | undefined;
@@ -29,7 +29,7 @@ interface UseNFCEditModeParams {
  * Custom hook to manage NFC page edit mode functionality
  */
 export const useNFCEditMode = ({
-  configId,
+  homeScreenId,
   initialTiles,
   initialWallpaper,
   ownerId,
@@ -40,9 +40,11 @@ export const useNFCEditMode = ({
   const urlParams = new URLSearchParams(window.location.search);
   const isEditModeRequested = urlParams.get("edit") === "true";
 
-  const [updateTiles, { loading: isSaving }] = useUpdateNFCTiles();
+  const [updateHomeScreen, { loading: isSaving }] = useUpdateHomeScreen();
   const [currentTiles, setCurrentTiles] = useState<TileConfig[]>(initialTiles);
-  const [currentWallpaper, setCurrentWallpaper] = useState<string | undefined>(initialWallpaper);
+  const [currentWallpaper, setCurrentWallpaper] = useState<string | undefined>(
+    initialWallpaper,
+  );
 
   // Check if the current user is the owner
   const isOwner = useMemo(() => {
@@ -59,35 +61,37 @@ export const useNFCEditMode = ({
     setCurrentWallpaper(initialWallpaper);
   }, [initialTiles, initialWallpaper]);
 
-  // Save tiles to server
+  // Save tiles and wallpaper to HomeScreen
   const saveTiles = useCallback(async () => {
-    if (!configId) return;
+    if (!homeScreenId) return;
 
     try {
-      const result = await updateTiles({
+      const result = await updateHomeScreen({
         variables: {
-          id: configId,
-          tiles: currentTiles.map((tile) => ({
-            id: tile.id,
-            type: tile.type,
-            label: tile.label,
-            icon: tile.icon,
-            url: tile.url,
-            size: tile.size,
-            position: {
-              x: tile.position.x,
-              y: tile.position.y,
-            },
-            color: tile.color,
-            subtitle: tile.subtitle,
-            isInDock: tile.isInDock,
-          })),
-          wallpaper: currentWallpaper || null,
+          id: homeScreenId,
+          options: {
+            tiles: currentTiles.map((tile) => ({
+              id: tile.id,
+              type: tile.type,
+              label: tile.label,
+              icon: tile.icon,
+              url: tile.url,
+              size: tile.size,
+              position: {
+                x: tile.position.x,
+                y: tile.position.y,
+              },
+              color: tile.color,
+              subtitle: tile.subtitle,
+              isInDock: tile.isInDock,
+            })),
+            wallpaper: currentWallpaper || null,
+          },
         },
       });
 
       // Check for errors in the response
-      const errors = result.data?.updateNFCTiles?.errors;
+      const errors = result.data?.updateHomeScreen?.errors;
       if (errors && errors.length > 0) {
         const errorMessage = errors.map((e: any) => e.message).join(", ");
         onSaveError?.(errorMessage);
@@ -95,7 +99,7 @@ export const useNFCEditMode = ({
       }
 
       // Update local state with the saved data from the response
-      const savedData = result.data?.updateNFCTiles?.results;
+      const savedData = result.data?.updateHomeScreen?.results;
       if (savedData) {
         if (savedData.tiles) {
           setCurrentTiles(savedData.tiles as TileConfig[]);
@@ -108,21 +112,32 @@ export const useNFCEditMode = ({
       onSaveSuccess?.();
     } catch (error) {
       console.error("Error saving tiles:", error);
-      onSaveError?.(error instanceof Error ? error.message : "Failed to save changes");
+      onSaveError?.(
+        error instanceof Error ? error.message : "Failed to save changes",
+      );
     }
-  }, [configId, currentTiles, currentWallpaper, updateTiles, onSaveSuccess, onSaveError]);
+  }, [
+    homeScreenId,
+    currentTiles,
+    currentWallpaper,
+    updateHomeScreen,
+    onSaveSuccess,
+    onSaveError,
+  ]);
 
   // Enter edit mode
   const enterEditMode = useCallback(() => {
     const baseUrl = window.location.href.split("?")[0];
-    window.location.href = `${baseUrl}?id=${configId}&edit=true`;
-  }, [configId]);
+    const id = urlParams.get("id") || "";
+    window.location.href = `${baseUrl}?id=${id}&edit=true`;
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Exit edit mode
   const exitEditMode = useCallback(() => {
     const baseUrl = window.location.href.split("?")[0];
-    window.location.href = `${baseUrl}?id=${configId}`;
-  }, [configId]);
+    const id = urlParams.get("id") || "";
+    window.location.href = `${baseUrl}?id=${id}`;
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return {
     isEditMode,

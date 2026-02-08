@@ -1,0 +1,68 @@
+@import "../../theme/variables.scss";
+
+/**
+ * Reusable modal sizing mixins for platform modals
+ */
+
+// Medium modal (for editor modals)
+@mixin platform-modal-medium {
+  --width: 100%;
+  --height: 100%;
+  --border-radius: 0;
+
+  @media (min-width: 768px) {
+    --width: 90%;
+    --max-width: 800px;
+    --height: 90vh;
+    --max-height: 900px;
+    --border-radius: 20px;
+  }
+
+  @media (min-width: 1200px) {
+    --max-width: 1000px;
+  }
+}
+
+// Large modal (for product showcase, lists)
+@mixin platform-modal-large {
+  --width: 100%;
+  --height: 100%;
+  --border-radius: 0;
+  --background: var(--ion-background-color);
+
+  @media (min-width: 768px) {
+    --width: 90%;
+    --max-width: 1200px;
+    --height: 95vh;
+    --max-height: 1000px;
+    --border-radius: 20px;
+  }
+
+  @media (min-width: 1200px) {
+    --max-width: 1400px;
+  }
+}
+
+/**
+ * Reusable modal header styling
+ * Matches the Edit Home Screen modal header structure
+ */
+@mixin platform-modal-header {
+  --background: var(--ion-background-color);
+  --border-color: rgba(var(--ion-text-color-rgb, 0, 0, 0), 0.1);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0 8px;
+
+  ion-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--ion-text-color);
+    text-align: center;
+  }
+
+  ion-button {
+    --color: var(--ion-text-color);
+    text-transform: none;
+    font-weight: 500;
+  }
+}

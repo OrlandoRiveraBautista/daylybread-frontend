@@ -1,5 +1,11 @@
-import React, { useState } from "react";
-import { IonPage, IonSpinner, IonButton, IonIcon, IonToast } from "@ionic/react";
+import React, { useState, useEffect } from "react";
+import {
+  IonPage,
+  IonSpinner,
+  IonButton,
+  IonIcon,
+  IonToast,
+} from "@ionic/react";
 import { save, close, create } from "ionicons/icons";
 
 /* Components */
@@ -13,21 +19,50 @@ import "./NFC.scss";
 import { useAppContext } from "../../../../context/context";
 import { useNFCPageData } from "../../../../hooks/useNFCPageData";
 import { useNFCEditMode } from "../../../../hooks/useNFCEditMode";
+import { useGetHomeScreenByLink } from "../../../../hooks/HomeScreenHooks";
 
 /**
  * Public NFC page that displays an iPhone-style home screen
- * Accessed via /nfc?id=xxx or nfc.subdomain.com?id=xxx
+ * Accessed via:
+ * - /nfc?id=xxx (NFC config)
+ * - /nfc?hs=xxx (HomeScreen link)
  */
 const NFC: React.FC = () => {
   const urlParams = new URLSearchParams(window.location.search);
-  const id = urlParams.get("id") || "";
-  
+  const nfcId = urlParams.get("id") || "";
+  const homeScreenLink = urlParams.get("hs") || "";
+
   const { userInfo } = useAppContext();
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
 
-  // Fetch and transform NFC data
-  const { nfcConfig, tiles, loading, refetch } = useNFCPageData(id);
+  // NFC Config data
+  const nfcData = useNFCPageData(nfcId);
+
+  // HomeScreen data
+  const [getHomeScreen, { data: hsData, loading: hsLoading }] =
+    useGetHomeScreenByLink();
+
+  useEffect(() => {
+    if (homeScreenLink) {
+      getHomeScreen({ variables: { shareableLink: homeScreenLink } });
+    }
+  }, [homeScreenLink, getHomeScreen]);
+
+  // Determine which data to use
+  const loading = nfcId ? nfcData.loading : hsLoading;
+  const tiles = nfcId
+    ? nfcData.tiles
+    : hsData?.getHomeScreenByLink?.results?.tiles || [];
+  const wallpaper = nfcId
+    ? nfcData.wallpaper
+    : hsData?.getHomeScreenByLink?.results?.wallpaper;
+  const homeScreenId = nfcId
+    ? nfcData.nfcConfig?.homeScreen?._id
+    : hsData?.getHomeScreenByLink?.results?._id;
+  const ownerId = nfcId
+    ? nfcData.nfcConfig?.owner?._id
+    : hsData?.getHomeScreenByLink?.results?.owner?._id;
 
   // Edit mode management
   const {
@@ -41,15 +76,19 @@ const NFC: React.FC = () => {
     enterEditMode,
     exitEditMode,
   } = useNFCEditMode({
-    configId: id,
+    homeScreenId,
     initialTiles: tiles,
-    initialWallpaper: nfcConfig?.wallpaper,
-    ownerId: nfcConfig?.owner?._id,
+    initialWallpaper: wallpaper,
+    ownerId,
     currentUserId: userInfo?._id,
     onSaveSuccess: async () => {
       setToastMessage("Changes saved successfully!");
       setShowToast(true);
-      await refetch();
+      if (nfcId) {
+        await nfcData.refetch();
+      } else {
+        await getHomeScreen({ variables: { shareableLink: homeScreenLink } });
+      }
     },
     onSaveError: (error) => {
       setToastMessage(`Failed to save: ${error}`);
@@ -75,20 +114,20 @@ const NFC: React.FC = () => {
           {/* Edit Mode Controls */}
           {isEditMode && (
             <div className="nfc-edit-controls">
-              <IonButton 
-                fill="solid" 
+              <IonButton
+                fill="solid"
                 shape="round"
-                color="primary" 
+                color="primary"
                 onClick={saveTiles}
                 disabled={isSaving}
               >
                 <IonIcon slot="start" icon={save} />
                 {isSaving ? "Saving..." : "Save Changes"}
               </IonButton>
-              <IonButton 
-                fill="outline" 
+              <IonButton
+                fill="outline"
                 shape="round"
-                color="medium" 
+                color="medium"
                 onClick={exitEditMode}
                 disabled={isSaving}
               >
@@ -97,14 +136,14 @@ const NFC: React.FC = () => {
               </IonButton>
             </div>
           )}
-          
+
           {/* Edit Page Button (when owner is viewing but not editing) */}
           {!isEditMode && isOwner && (
             <div className="nfc-owner-controls">
-              <IonButton 
-                fill="solid" 
+              <IonButton
+                fill="solid"
                 shape="round"
-                color="primary" 
+                color="primary"
                 onClick={enterEditMode}
                 size="small"
               >
@@ -113,7 +152,7 @@ const NFC: React.FC = () => {
               </IonButton>
             </div>
           )}
-          
+
           <IPhoneHomeScreen
             tiles={currentTiles}
             wallpaper={currentWallpaper}
@@ -123,7 +162,7 @@ const NFC: React.FC = () => {
             showStatusBar={true}
             showDock={true}
           />
-          
+
           <IonToast
             isOpen={showToast}
             onDidDismiss={() => setShowToast(false)}
