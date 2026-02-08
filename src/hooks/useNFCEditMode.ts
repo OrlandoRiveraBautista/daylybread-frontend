@@ -130,14 +130,14 @@ export const useNFCEditMode = ({
     const baseUrl = window.location.href.split("?")[0];
     const id = urlParams.get("id") || "";
     window.location.href = `${baseUrl}?id=${id}&edit=true`;
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Exit edit mode
   const exitEditMode = useCallback(() => {
     const baseUrl = window.location.href.split("?")[0];
     const id = urlParams.get("id") || "";
     window.location.href = `${baseUrl}?id=${id}`;
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return {
     isEditMode,
