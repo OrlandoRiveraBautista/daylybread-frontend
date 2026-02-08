@@ -10,6 +10,7 @@ import { useAppContext } from "../../../context/context";
 import { useToast } from "../../../hooks/useToast";
 import { usePlatformAuth } from "../../../hooks/usePlatformAuth";
 import { usePlatformNFCDevices } from "../../../hooks/usePlatformNFCDevices";
+import { useAssignHomeScreenToNFCConfig } from "../../../hooks/NFCConfigHooks";
 
 /* Components */
 import CheckingAuthentication from "../../../components/Auth/CheckingAuthentication";
@@ -46,6 +47,9 @@ const Platform: React.FC = () => {
     deleteNFCDevice,
     fetchConfig 
   } = usePlatformNFCDevices(userInfo?._id!);
+
+  // NFC assignment mutation
+  const [assignHomeScreenToNFCConfig] = useAssignHomeScreenToNFCConfig();
 
   // Fetch NFC config when user is authenticated
   useEffect(() => {
@@ -156,6 +160,60 @@ const Platform: React.FC = () => {
     }
   };
 
+  // Handle NFC device assignment to home screen
+  const handleAssignNFCToHomeScreen = async (nfcDeviceId: string, homeScreenId: string) => {
+    try {
+      const result = await assignHomeScreenToNFCConfig({
+        variables: { id: nfcDeviceId, homeScreenId },
+      });
+      
+      if (result.data?.assignHomeScreenToNFCConfig?.errors) {
+        const errorMsg = result.data.assignHomeScreenToNFCConfig.errors[0]?.message || "Failed to assign NFC device";
+        show(errorMsg);
+        throw new Error(errorMsg);
+      }
+      
+      // Refresh the data
+      await fetchConfig();
+      show("NFC device assigned successfully");
+    } catch (error) {
+      console.error("Error assigning NFC device:", error);
+      show(
+        error instanceof Error
+          ? `Failed to assign NFC device: ${error.message}`
+          : "Failed to assign NFC device",
+      );
+      throw error;
+    }
+  };
+
+  // Handle NFC device unassignment from home screen
+  const handleUnassignNFC = async (nfcDeviceId: string) => {
+    try {
+      const result = await assignHomeScreenToNFCConfig({
+        variables: { id: nfcDeviceId, homeScreenId: null },
+      });
+      
+      if (result.data?.assignHomeScreenToNFCConfig?.errors) {
+        const errorMsg = result.data.assignHomeScreenToNFCConfig.errors[0]?.message || "Failed to unassign NFC device";
+        show(errorMsg);
+        throw new Error(errorMsg);
+      }
+      
+      // Refresh the data
+      await fetchConfig();
+      show("NFC device unassigned successfully");
+    } catch (error) {
+      console.error("Error unassigning NFC device:", error);
+      show(
+        error instanceof Error
+          ? `Failed to unassign NFC device: ${error.message}`
+          : "Failed to unassign NFC device",
+      );
+      throw error;
+    }
+  };
+
   if (isLoading) {
     return <CheckingAuthentication />;
   }
@@ -189,6 +247,8 @@ const Platform: React.FC = () => {
               onCreateHomeScreen={handleCreateHomeScreen}
               onDeleteHomeScreen={handleDelete}
               onDeleteNFC={handleDeleteNFC}
+              onAssignNFCToHomeScreen={handleAssignNFCToHomeScreen}
+              onUnassignNFC={handleUnassignNFC}
               isSaving={isSavingTiles}
             />
           </Route>

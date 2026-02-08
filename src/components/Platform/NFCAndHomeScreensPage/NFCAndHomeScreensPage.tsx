@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { IonSegment, IonSegmentButton, IonLabel } from "@ionic/react";
-import { HomeScreensList } from "../HomeScreensList";
+import { HomeScreensList, AvailableNFCDevice, AssignedNFCDevice } from "../HomeScreensList";
 import { NFCDevicesManagement, NFCDeviceConfig } from "../NFCDevicesManagement";
 import { NFCProducts } from "../NFCProducts";
 import { TileConfig } from "../../NFC/iPhoneHomeScreen/types";
@@ -46,12 +46,33 @@ export const NFCAndHomeScreensPage: React.FC<NFCAndHomeScreensPageProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<TabType>("home-screens");
   const [showNFCProducts, setShowNFCProducts] = useState(false);
-  const [selectedDeviceForNFC, setSelectedDeviceForNFC] = useState<NFCDevice | null>(null);
 
-  const handleManageNFC = (device: NFCDevice) => {
-    setSelectedDeviceForNFC(device);
-    setShowNFCProducts(true);
-  };
+  // Filter available (unassigned) NFC devices
+  const availableNFCDevices: AvailableNFCDevice[] = useMemo(() => {
+    if (!nfcDevices) return [];
+    return nfcDevices
+      .filter((device) => !device.homeScreen)
+      .map((device) => ({
+        _id: device._id,
+        nfcId: device.nfcId,
+        name: device.name,
+        deviceType: device.deviceType,
+      }));
+  }, [nfcDevices]);
+
+  // Get assigned NFC devices with their home screen IDs
+  const assignedNFCDevices: AssignedNFCDevice[] = useMemo(() => {
+    if (!nfcDevices) return [];
+    return nfcDevices
+      .filter((device) => device.homeScreen)
+      .map((device) => ({
+        _id: device._id,
+        nfcId: device.nfcId,
+        name: device.name,
+        deviceType: device.deviceType,
+        homeScreenId: device.homeScreen!._id,
+      }));
+  }, [nfcDevices]);
 
   return (
     <div className="nfc-and-home-screens-page">
@@ -81,12 +102,16 @@ export const NFCAndHomeScreensPage: React.FC<NFCAndHomeScreensPageProps> = ({
       <div className="tab-content">
         {activeTab === "home-screens" && (
           <HomeScreensList
-            devices={devices}
+            homeScreens={devices}
+            availableNFCDevices={availableNFCDevices}
+            assignedNFCDevices={assignedNFCDevices}
             onSaveTiles={onSaveTiles}
             onCreateHomeScreen={onCreateHomeScreen}
             onDelete={onDeleteHomeScreen}
             isSaving={isSaving}
-            onManageNFC={handleManageNFC}
+            onAssignNFC={onAssignNFCToHomeScreen}
+            onUnassignNFC={onUnassignNFC}
+            onShopNFC={() => setShowNFCProducts(true)}
           />
         )}
 
@@ -103,17 +128,9 @@ export const NFCAndHomeScreensPage: React.FC<NFCAndHomeScreensPageProps> = ({
       {/* NFC Products Modal */}
       <NFCProducts
         isOpen={showNFCProducts}
-        onClose={() => {
-          setShowNFCProducts(false);
-          setSelectedDeviceForNFC(null);
-        }}
+        onClose={() => setShowNFCProducts(false)}
         onSelectProduct={(productId) => {
-          console.log(
-            "Selected product:",
-            productId,
-            "for home screen:",
-            selectedDeviceForNFC?.id,
-          );
+          console.log("Selected product:", productId);
           // TODO: Handle product selection and NFC device assignment
         }}
       />

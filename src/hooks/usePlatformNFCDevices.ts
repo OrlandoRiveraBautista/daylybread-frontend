@@ -84,11 +84,17 @@ export const usePlatformNFCDevices = (
           }))
         : undefined;
 
+      // Find all NFC devices assigned to this home screen
+      const assignedNFCIds = nfcDevices
+        .filter((nfcDevice: any) => nfcDevice.homeScreen?._id === homeScreen._id)
+        .map((nfcDevice: any) => nfcDevice._id);
+
       return {
         id: homeScreen._id,
         _id: homeScreen._id,
         name: homeScreen.name || "Home Screen",
-        nfcIds: [], // NFC devices are now separate entities
+        shareableLink: homeScreen.shareableLink,
+        nfcIds: assignedNFCIds,
         status: "active" as const,
         createdAt: homeScreen.createdAt,
         tapCount: homeScreen.views || 0,
@@ -96,7 +102,7 @@ export const usePlatformNFCDevices = (
         wallpaper: homeScreen.wallpaper ?? undefined,
       };
     });
-  }, [homeScreens]);
+  }, [homeScreens, nfcDevices]);
 
   /**
    * Save tiles configuration for a HomeScreen

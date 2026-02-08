@@ -11,15 +11,56 @@ import {
   IonBadge,
   IonChip,
   IonAlert,
+  IonSelect,
+  IonSelectOption,
 } from "@ionic/react";
-import { create, qrCode, card, link, shareSocial, cart, trash, add } from "ionicons/icons";
+import {
+  create,
+  qrCode,
+  card,
+  link,
+  shareSocial,
+  cart,
+  trash,
+  add,
+  close,
+} from "ionicons/icons";
 import { HomeScreenEditor } from "../HomeScreenEditor";
 import { TileConfig } from "../../NFC/iPhoneHomeScreen/types";
-import { NFCDevice } from "../../../types/nfc.types";
 import "./HomeScreensList.scss";
 
+export interface HomeScreen {
+  _id: string;
+  id: string;
+  name?: string;
+  shareableLink: string;
+  status?: "active" | "inactive";
+  createdAt: string;
+  tapCount?: number;
+  tiles?: TileConfig[];
+  wallpaper?: string;
+  nfcIds: string[];
+}
+
+export interface AvailableNFCDevice {
+  _id: string;
+  nfcId: string;
+  name: string;
+  deviceType?: string;
+}
+
+export interface AssignedNFCDevice {
+  _id: string;
+  nfcId: string;
+  name: string;
+  deviceType?: string;
+  homeScreenId: string;
+}
+
 interface HomeScreensListProps {
-  devices?: NFCDevice[];
+  homeScreens?: HomeScreen[];
+  availableNFCDevices?: AvailableNFCDevice[];
+  assignedNFCDevices?: AssignedNFCDevice[];
   onSaveTiles: (
     deviceId: string,
     tiles: TileConfig[],
@@ -33,96 +74,102 @@ interface HomeScreensListProps {
   ) => Promise<void>;
   onDelete: (deviceId: string) => void;
   isSaving: boolean;
-  onManageNFC?: (device: NFCDevice) => void;
+  onAssignNFC?: (nfcDeviceId: string, homeScreenId: string) => Promise<void>;
+  onUnassignNFC?: (nfcDeviceId: string) => Promise<void>;
+  onShopNFC?: () => void;
 }
 
 export const HomeScreensList: React.FC<HomeScreensListProps> = ({
-  devices = [],
+  homeScreens = [],
+  availableNFCDevices = [],
+  assignedNFCDevices = [],
   onSaveTiles,
   onCreateHomeScreen,
   onDelete,
   isSaving,
-  onManageNFC,
+  onAssignNFC,
+  onUnassignNFC,
+  onShopNFC,
 }) => {
   const [showHomeScreenEditor, setShowHomeScreenEditor] = useState(false);
-  const [editingDevice, setEditingDevice] = useState<NFCDevice | null>(null);
-  const [deviceToDelete, setDeviceToDelete] = useState<NFCDevice | null>(null);
+  const [editingHomeScreen, setEditingHomeScreen] = useState<HomeScreen | null>(null);
+  const [homeScreenToDelete, setHomeScreenToDelete] = useState<HomeScreen | null>(null);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
 
-  // Sync editingDevice with devices prop when it updates (after save)
+  // Sync editingHomeScreen with homeScreens prop when it updates (after save)
   useEffect(() => {
-    if (editingDevice && devices.length > 0) {
-      const deviceId = editingDevice._id || editingDevice.id;
-      const updatedDevice = devices.find(
-        (d) => d._id === deviceId || d.id === deviceId,
+    if (editingHomeScreen && homeScreens.length > 0) {
+      const homeScreenId = editingHomeScreen._id || editingHomeScreen.id;
+      const updatedHomeScreen = homeScreens.find(
+        (hs) => hs._id === homeScreenId || hs.id === homeScreenId,
       );
-      if (updatedDevice && updatedDevice.tiles) {
+      if (updatedHomeScreen && updatedHomeScreen.tiles) {
         // Only update if tiles exist (meaning data was fetched from server)
-        setEditingDevice(updatedDevice);
+        setEditingHomeScreen(updatedHomeScreen);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [devices]);
+  }, [homeScreens]);
 
   // Open home screen editor modal
-  const handleEditDevice = (device: NFCDevice) => {
-    setEditingDevice(device);
+  const handleEditHomeScreen = (homeScreen: HomeScreen) => {
+    setEditingHomeScreen(homeScreen);
     setShowHomeScreenEditor(true);
   };
 
-  const handleSaveTiles = async (tiles: TileConfig[], wallpaper?: string, name?: string) => {
-    const deviceId = editingDevice?._id ?? editingDevice?.id;
+  const handleSaveTiles = async (
+    tiles: TileConfig[],
+    wallpaper?: string,
+    name?: string,
+  ) => {
+    const homeScreenId = editingHomeScreen?._id ?? editingHomeScreen?.id;
 
-    if (deviceId) {
+    if (homeScreenId) {
       // Update existing home screen
-      await onSaveTiles(deviceId, tiles, wallpaper, name);
+      await onSaveTiles(homeScreenId, tiles, wallpaper, name);
 
-      // Update editingDevice with saved data immediately
+      // Update editingHomeScreen with saved data immediately
       // This ensures if modal is reopened immediately, it shows the saved data
-      if (editingDevice) {
-        setEditingDevice({
-          ...editingDevice,
+      if (editingHomeScreen) {
+        setEditingHomeScreen({
+          ...editingHomeScreen,
           tiles,
           wallpaper,
-          name: name || editingDevice.name,
+          name: name || editingHomeScreen.name,
         });
       }
     } else {
       // Create new home screen
-      await onCreateHomeScreen(
-        name || "New Home Screen",
-        tiles,
-        wallpaper,
-      );
+      await onCreateHomeScreen(name || "New Home Screen", tiles, wallpaper);
     }
     setShowHomeScreenEditor(false);
   };
 
-  const getDeviceUrl = (device: NFCDevice) => {
-    const configId = device.id;
+  const getHomeScreenUrl = (homeScreen: HomeScreen) => {
+    const shareableLink = homeScreen.shareableLink || homeScreen._id;
     const { hostname, protocol, port } = window.location;
     if (hostname === "localhost" || hostname === "127.0.0.1") {
-      return `${window.location.origin}/nfc?id=${configId}`;
+      return `${window.location.origin}/nfc?hs=${shareableLink}`;
     }
     const parts = hostname.split(".");
     parts[0] = "nfc";
     const nfcHost = parts.join(".");
     const portSuffix = port ? `:${port}` : "";
-    return `${protocol}//${nfcHost}${portSuffix}/?id=${configId}`;
+    return `${protocol}//${nfcHost}${portSuffix}/?hs=${shareableLink}`;
   };
 
-  const handleDeleteClick = (device: NFCDevice) => {
-    setDeviceToDelete(device);
+  const handleDeleteClick = (homeScreen: HomeScreen) => {
+    setHomeScreenToDelete(homeScreen);
     setShowDeleteAlert(true);
   };
 
   const handleConfirmDelete = async () => {
-    if (deviceToDelete) {
-      const deviceId = deviceToDelete._id || deviceToDelete.id;
-      if (deviceId) {
+    if (homeScreenToDelete) {
+      const homeScreenId = homeScreenToDelete._id || homeScreenToDelete.id;
+      if (homeScreenId) {
         try {
-          await onDelete(deviceId);
-          setDeviceToDelete(null);
+          await onDelete(homeScreenId);
+          setHomeScreenToDelete(null);
         } catch (error) {
           console.error("Error deleting home screen:", error);
         }
@@ -143,7 +190,7 @@ export const HomeScreensList: React.FC<HomeScreensListProps> = ({
         </div>
       </div>
 
-      {devices.length === 0 ? (
+      {homeScreens.length === 0 ? (
         <IonCard className="empty-state-card">
           <IonCardContent>
             <div className="empty-state">
@@ -180,7 +227,7 @@ export const HomeScreensList: React.FC<HomeScreensListProps> = ({
           <IonCard
             className="device-card new-home-screen-card"
             onClick={() => {
-              setEditingDevice(null);
+              setEditingHomeScreen(null);
               setShowHomeScreenEditor(true);
             }}
             button
@@ -194,30 +241,30 @@ export const HomeScreensList: React.FC<HomeScreensListProps> = ({
           </IonCard>
 
           {/* Existing Home Screens */}
-          {devices.map((device) => (
-            <IonCard key={device._id} className="device-card">
+          {homeScreens.map((homeScreen) => (
+            <IonCard key={homeScreen._id} className="device-card">
               <IonCardHeader>
                 <div className="device-card-header">
                   <div className="device-info">
-                    <IonCardTitle>{device.name || "Home Screen"}</IonCardTitle>
+                    <IonCardTitle>{homeScreen.name || "Home Screen"}</IonCardTitle>
                     <div className="device-meta">
                       <IonBadge
                         color={
-                          device.status === "active" ? "success" : "medium"
+                          homeScreen.status === "active" ? "success" : "medium"
                         }
                       >
-                        {device.status || "active"}
+                        {homeScreen.status || "active"}
                       </IonBadge>
                       <IonChip color="primary">
                         <IonIcon icon={link} />
                         <IonLabel>Shareable Link</IonLabel>
                       </IonChip>
-                      {device.nfcIds.length > 0 ? (
+                      {homeScreen.nfcIds.length > 0 ? (
                         <IonChip color="secondary">
                           <IonIcon icon={card} />
                           <IonLabel>
-                            {device.nfcIds.length} NFC Tag
-                            {device.nfcIds.length !== 1 ? "s" : ""}
+                            {homeScreen.nfcIds.length} NFC Tag
+                            {homeScreen.nfcIds.length !== 1 ? "s" : ""}
                           </IonLabel>
                         </IonChip>
                       ) : (
@@ -233,7 +280,7 @@ export const HomeScreensList: React.FC<HomeScreensListProps> = ({
                       fill="clear"
                       shape="round"
                       color="primary"
-                      onClick={() => handleEditDevice(device)}
+                      onClick={() => handleEditHomeScreen(homeScreen)}
                     >
                       <IonIcon slot="icon-only" icon={create} />
                     </IonButton>
@@ -241,7 +288,7 @@ export const HomeScreensList: React.FC<HomeScreensListProps> = ({
                       fill="clear"
                       shape="round"
                       color="danger"
-                      onClick={() => handleDeleteClick(device)}
+                      onClick={() => handleDeleteClick(homeScreen)}
                     >
                       <IonIcon slot="icon-only" icon={trash} />
                     </IonButton>
@@ -252,25 +299,25 @@ export const HomeScreensList: React.FC<HomeScreensListProps> = ({
                 <div className="device-stats">
                   <div className="stat-item">
                     <IonText color="medium">Tiles</IonText>
-                    <strong>{device.tiles?.length || 0}</strong>
+                    <strong>{homeScreen.tiles?.length || 0}</strong>
                   </div>
                   <div className="stat-item">
                     <IonText color="medium">Created</IonText>
                     <strong>
-                      {device.createdAt
+                      {homeScreen.createdAt
                         ? new Date(
-                            Number(device.createdAt),
+                            Number(homeScreen.createdAt),
                           ).toLocaleDateString()
                         : "—"}
                     </strong>
                   </div>
                   <div className="stat-item">
                     <IonText color="medium">Taps</IonText>
-                    <strong>{device.tapCount || 0}</strong>
+                    <strong>{homeScreen.tapCount || 0}</strong>
                   </div>
                 </div>
 
-                {device.nfcIds.length === 0 ? (
+                {homeScreen.nfcIds.length === 0 ? (
                   <div
                     style={{
                       background: "var(--ion-color-light)",
@@ -306,8 +353,8 @@ export const HomeScreensList: React.FC<HomeScreensListProps> = ({
                         icon={card}
                         style={{ verticalAlign: "middle", marginRight: "4px" }}
                       />
-                      {device.nfcIds.length} NFC device
-                      {device.nfcIds.length !== 1 ? "s" : ""} connected
+                      {homeScreen.nfcIds.length} NFC device
+                      {homeScreen.nfcIds.length !== 1 ? "s" : ""} connected
                     </IonText>
                   </div>
                 )}
@@ -320,7 +367,7 @@ export const HomeScreensList: React.FC<HomeScreensListProps> = ({
                     fill="solid"
                     shape="round"
                     color="primary"
-                    href={getDeviceUrl(device)}
+                    href={getHomeScreenUrl(homeScreen)}
                     target="_blank"
                     style={{ flex: 1 }}
                   >
@@ -332,7 +379,7 @@ export const HomeScreensList: React.FC<HomeScreensListProps> = ({
                     shape="round"
                     color="primary"
                     onClick={() => {
-                      navigator.clipboard.writeText(getDeviceUrl(device));
+                      navigator.clipboard.writeText(getHomeScreenUrl(homeScreen));
                       // TODO: Show toast notification
                     }}
                   >
@@ -340,23 +387,110 @@ export const HomeScreensList: React.FC<HomeScreensListProps> = ({
                   </IonButton>
                 </div>
 
-                {onManageNFC && (
-                  <IonButton
-                    expand="block"
-                    fill="clear"
-                    shape="round"
-                    color="medium"
-                    size="small"
-                    onClick={() => onManageNFC(device)}
-                  >
-                    <IonIcon
-                      slot="start"
-                      icon={device.nfcIds.length === 0 ? cart : card}
-                    />
-                    {device.nfcIds.length === 0
-                      ? "Shop NFC Tags"
-                      : "Manage NFC Devices"}
-                  </IonButton>
+                {/* Show assigned NFC devices */}
+                {(() => {
+                  const homeScreenId = homeScreen._id || homeScreen.id;
+                  const assignedToThisScreen = assignedNFCDevices.filter(
+                    (nfc) => nfc.homeScreenId === homeScreenId,
+                  );
+
+                  return assignedToThisScreen.length > 0 ? (
+                    <div style={{ marginTop: "8px", marginBottom: "8px" }}>
+                      {assignedToThisScreen.map((nfcDevice) => (
+                        <div
+                          key={nfcDevice._id}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            padding: "8px 12px",
+                            background: "var(--ion-color-light)",
+                            borderRadius: "8px",
+                            marginBottom: "4px",
+                          }}
+                        >
+                          <div style={{ flex: 1 }}>
+                            <IonText
+                              style={{ fontSize: "14px", fontWeight: "500" }}
+                            >
+                              {nfcDevice.name}
+                            </IonText>
+                            <br />
+                            <IonText
+                              color="medium"
+                              style={{ fontSize: "12px" }}
+                            >
+                              {nfcDevice.nfcId.slice(0, 12)}...
+                            </IonText>
+                          </div>
+                          {onUnassignNFC && (
+                            <IonButton
+                              fill="clear"
+                              size="small"
+                              color="medium"
+                              onClick={() => onUnassignNFC(nfcDevice._id)}
+                            >
+                              <IonIcon slot="icon-only" icon={close} />
+                            </IonButton>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : null;
+                })()}
+
+                {/* Show selector for available NFC devices or shop button */}
+                {availableNFCDevices.length > 0 ? (
+                  <div style={{ marginTop: "8px" }}>
+                    <IonSelect
+                      interface="action-sheet"
+                      placeholder="Assign NFC Device"
+                      onIonChange={(e) => {
+                        const nfcDeviceId = e.detail.value;
+                        if (nfcDeviceId && onAssignNFC) {
+                          const homeScreenId = homeScreen._id || homeScreen.id;
+                          if (homeScreenId) {
+                            onAssignNFC(nfcDeviceId, homeScreenId);
+                          }
+                        }
+                      }}
+                      style={{
+                        width: "100%",
+                        padding: "8px 12px",
+                        border: "1px solid var(--ion-color-medium)",
+                        borderRadius: "12px",
+                      }}
+                    >
+                      {availableNFCDevices.map((nfcDevice) => (
+                        <IonSelectOption
+                          key={nfcDevice._id}
+                          value={nfcDevice._id}
+                        >
+                          {nfcDevice.name} ({nfcDevice.nfcId.slice(0, 8)}...)
+                        </IonSelectOption>
+                      ))}
+                    </IonSelect>
+                  </div>
+                ) : (
+                  (() => {
+                    const homeScreenId = homeScreen._id || homeScreen.id;
+                    const assignedToThisScreen = assignedNFCDevices.filter(
+                      (nfc) => nfc.homeScreenId === homeScreenId,
+                    );
+                    return assignedToThisScreen.length === 0 && onShopNFC ? (
+                      <IonButton
+                        expand="block"
+                        fill="clear"
+                        shape="round"
+                        color="medium"
+                        size="small"
+                        onClick={onShopNFC}
+                      >
+                        <IonIcon slot="start" icon={cart} />
+                        Shop NFC Tags
+                      </IonButton>
+                    ) : null;
+                  })()
                 )}
               </IonCardContent>
             </IonCard>
@@ -366,16 +500,16 @@ export const HomeScreensList: React.FC<HomeScreensListProps> = ({
 
       {/* Home Screen Editor Modal */}
       <HomeScreenEditor
-        tiles={editingDevice?.tiles || []}
-        wallpaper={editingDevice?.wallpaper}
-        title={editingDevice?.name}
+        tiles={editingHomeScreen?.tiles || []}
+        wallpaper={editingHomeScreen?.wallpaper}
+        title={editingHomeScreen?.name}
         isOpen={showHomeScreenEditor}
         isSaving={isSaving}
         onClose={() => {
           setShowHomeScreenEditor(false);
-          // Clear editingDevice when modal closes
+          // Clear editingHomeScreen when modal closes
           setTimeout(() => {
-            setEditingDevice(null);
+            setEditingHomeScreen(null);
           }, 300); // Small delay to allow modal close animation
         }}
         onSave={handleSaveTiles}
@@ -386,10 +520,10 @@ export const HomeScreensList: React.FC<HomeScreensListProps> = ({
         isOpen={showDeleteAlert}
         onDidDismiss={() => {
           setShowDeleteAlert(false);
-          setDeviceToDelete(null);
+          setHomeScreenToDelete(null);
         }}
         header="Delete Home Screen"
-        message={`Are you sure you want to delete "${deviceToDelete?.name || "this home screen"}"? This action cannot be undone.`}
+        message={`Are you sure you want to delete "${homeScreenToDelete?.name || "this home screen"}"? This action cannot be undone.`}
         buttons={[
           {
             text: "Cancel",

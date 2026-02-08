@@ -1,4 +1,3 @@
-import { gql } from "../__generated__/gql";
 import { gql as gqlTag } from "@apollo/client";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 
@@ -154,6 +153,27 @@ const DeleteNFCConfig = gqlTag`
   }
 ` as any;
 
+const AssignHomeScreenToNFCConfig = gqlTag`
+  mutation AssignHomeScreenToNFCConfig($id: String!, $homeScreenId: String) {
+    assignHomeScreenToNFCConfig(id: $id, homeScreenId: $homeScreenId) {
+      results {
+        _id
+        nfcId
+        name
+        homeScreen {
+          _id
+          name
+          shareableLink
+        }
+      }
+      errors {
+        field
+        message
+      }
+    }
+  }
+` as any;
+
 /* Hooks */
 export const useGetNFCConfig = (id: string) => {
   return useQuery(GetNFCConfig as any, {
@@ -186,4 +206,8 @@ export const useUpdateNFCConfig = () => {
 
 export const useDeleteNFCConfig = () => {
   return useMutation(DeleteNFCConfig as any);
+};
+
+export const useAssignHomeScreenToNFCConfig = () => {
+  return useMutation(AssignHomeScreenToNFCConfig as any);
 };
