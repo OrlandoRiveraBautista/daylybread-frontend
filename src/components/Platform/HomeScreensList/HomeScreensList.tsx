@@ -10,36 +10,44 @@ import {
   IonLabel,
   IonBadge,
   IonChip,
+  IonAlert,
 } from "@ionic/react";
-import { create, qrCode, card, link, shareSocial, cart } from "ionicons/icons";
+import { create, qrCode, card, link, shareSocial, cart, trash, add } from "ionicons/icons";
 import { HomeScreenEditor } from "../HomeScreenEditor";
-import { NFCProducts } from "../NFCProducts";
 import { TileConfig } from "../../NFC/iPhoneHomeScreen/types";
 import { NFCDevice } from "../../../types/nfc.types";
-import "./NFCDevicesList.scss";
+import "./HomeScreensList.scss";
 
-interface NFCDevicesListProps {
+interface HomeScreensListProps {
   devices?: NFCDevice[];
   onSaveTiles: (
     deviceId: string,
     tiles: TileConfig[],
     wallpaper?: string,
+    name?: string,
+  ) => Promise<void>;
+  onCreateHomeScreen: (
+    name: string,
+    tiles: TileConfig[],
+    wallpaper?: string,
   ) => Promise<void>;
   onDelete: (deviceId: string) => void;
   isSaving: boolean;
+  onManageNFC?: (device: NFCDevice) => void;
 }
 
-export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
+export const HomeScreensList: React.FC<HomeScreensListProps> = ({
   devices = [],
   onSaveTiles,
+  onCreateHomeScreen,
   onDelete,
   isSaving,
+  onManageNFC,
 }) => {
   const [showHomeScreenEditor, setShowHomeScreenEditor] = useState(false);
-  const [showNFCProducts, setShowNFCProducts] = useState(false);
   const [editingDevice, setEditingDevice] = useState<NFCDevice | null>(null);
-  const [selectedDeviceForNFC, setSelectedDeviceForNFC] =
-    useState<NFCDevice | null>(null);
+  const [deviceToDelete, setDeviceToDelete] = useState<NFCDevice | null>(null);
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
 
   // Sync editingDevice with devices prop when it updates (after save)
   useEffect(() => {
@@ -62,11 +70,12 @@ export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
     setShowHomeScreenEditor(true);
   };
 
-  const handleSaveTiles = async (tiles: TileConfig[], wallpaper?: string) => {
+  const handleSaveTiles = async (tiles: TileConfig[], wallpaper?: string, name?: string) => {
     const deviceId = editingDevice?._id ?? editingDevice?.id;
 
     if (deviceId) {
-      await onSaveTiles(deviceId, tiles, wallpaper);
+      // Update existing home screen
+      await onSaveTiles(deviceId, tiles, wallpaper, name);
 
       // Update editingDevice with saved data immediately
       // This ensures if modal is reopened immediately, it shows the saved data
@@ -75,8 +84,16 @@ export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
           ...editingDevice,
           tiles,
           wallpaper,
+          name: name || editingDevice.name,
         });
       }
+    } else {
+      // Create new home screen
+      await onCreateHomeScreen(
+        name || "New Home Screen",
+        tiles,
+        wallpaper,
+      );
     }
     setShowHomeScreenEditor(false);
   };
@@ -94,24 +111,36 @@ export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
     return `${protocol}//${nfcHost}${portSuffix}/?id=${configId}`;
   };
 
+  const handleDeleteClick = (device: NFCDevice) => {
+    setDeviceToDelete(device);
+    setShowDeleteAlert(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (deviceToDelete) {
+      const deviceId = deviceToDelete._id || deviceToDelete.id;
+      if (deviceId) {
+        try {
+          await onDelete(deviceId);
+          setDeviceToDelete(null);
+        } catch (error) {
+          console.error("Error deleting home screen:", error);
+        }
+      }
+    }
+    setShowDeleteAlert(false);
+  };
+
   return (
-    <div className="nfc-devices-container">
-      <div className="devices-header">
+    <div className="home-screens-container">
+      <div className="screens-header">
         <div>
-          <h1>Home Screens & NFC Devices</h1>
+          <h1>Home Screens</h1>
           <p>
-            Create multiple home screens and share them via link. Connect NFC
-            tags for tap-to-access functionality.
+            Create multiple home screens and share them via link instantly.
+            Design custom layouts for different purposes.
           </p>
         </div>
-        <IonButton
-          color="primary"
-          shape="round"
-          onClick={() => setShowHomeScreenEditor(true)}
-        >
-          <IonIcon slot="start" icon={create} />
-          New Home Screen
-        </IonButton>
       </div>
 
       {devices.length === 0 ? (
@@ -141,21 +170,30 @@ export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
                   <IonIcon slot="start" icon={create} />
                   Create Home Screen
                 </IonButton>
-                <IonButton
-                  shape="round"
-                  fill="outline"
-                  color="primary"
-                  onClick={() => setShowNFCProducts(true)}
-                >
-                  <IonIcon slot="start" icon={cart} />
-                  Shop NFC Tags
-                </IonButton>
               </div>
             </div>
           </IonCardContent>
         </IonCard>
       ) : (
         <div className="devices-grid">
+          {/* New Home Screen Card */}
+          <IonCard
+            className="device-card new-home-screen-card"
+            onClick={() => {
+              setEditingDevice(null);
+              setShowHomeScreenEditor(true);
+            }}
+            button
+          >
+            <IonCardContent>
+              <div className="new-home-screen-content">
+                <IonIcon icon={add} className="add-icon" />
+                <span>New Home Screen</span>
+              </div>
+            </IonCardContent>
+          </IonCard>
+
+          {/* Existing Home Screens */}
           {devices.map((device) => (
             <IonCard key={device._id} className="device-card">
               <IonCardHeader>
@@ -198,6 +236,14 @@ export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
                       onClick={() => handleEditDevice(device)}
                     >
                       <IonIcon slot="icon-only" icon={create} />
+                    </IonButton>
+                    <IonButton
+                      fill="clear"
+                      shape="round"
+                      color="danger"
+                      onClick={() => handleDeleteClick(device)}
+                    >
+                      <IonIcon slot="icon-only" icon={trash} />
                     </IonButton>
                   </div>
                 </div>
@@ -294,25 +340,24 @@ export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
                   </IonButton>
                 </div>
 
-                <IonButton
-                  expand="block"
-                  fill="clear"
-                  shape="round"
-                  color="medium"
-                  size="small"
-                  onClick={() => {
-                    setSelectedDeviceForNFC(device);
-                    setShowNFCProducts(true);
-                  }}
-                >
-                  <IonIcon
-                    slot="start"
-                    icon={device.nfcIds.length === 0 ? cart : card}
-                  />
-                  {device.nfcIds.length === 0
-                    ? "Shop NFC Tags"
-                    : "Manage NFC Devices"}
-                </IonButton>
+                {onManageNFC && (
+                  <IonButton
+                    expand="block"
+                    fill="clear"
+                    shape="round"
+                    color="medium"
+                    size="small"
+                    onClick={() => onManageNFC(device)}
+                  >
+                    <IonIcon
+                      slot="start"
+                      icon={device.nfcIds.length === 0 ? cart : card}
+                    />
+                    {device.nfcIds.length === 0
+                      ? "Shop NFC Tags"
+                      : "Manage NFC Devices"}
+                  </IonButton>
+                )}
               </IonCardContent>
             </IonCard>
           ))}
@@ -336,22 +381,26 @@ export const NFCDevicesList: React.FC<NFCDevicesListProps> = ({
         onSave={handleSaveTiles}
       />
 
-      {/* NFC Products Modal */}
-      <NFCProducts
-        isOpen={showNFCProducts}
-        onClose={() => {
-          setShowNFCProducts(false);
-          setSelectedDeviceForNFC(null);
+      {/* Delete Confirmation Alert */}
+      <IonAlert
+        isOpen={showDeleteAlert}
+        onDidDismiss={() => {
+          setShowDeleteAlert(false);
+          setDeviceToDelete(null);
         }}
-        onSelectProduct={(productId) => {
-          console.log(
-            "Selected product:",
-            productId,
-            "for device:",
-            selectedDeviceForNFC?.id,
-          );
-          // TODO: Handle product selection and NFC device assignment
-        }}
+        header="Delete Home Screen"
+        message={`Are you sure you want to delete "${deviceToDelete?.name || "this home screen"}"? This action cannot be undone.`}
+        buttons={[
+          {
+            text: "Cancel",
+            role: "cancel",
+          },
+          {
+            text: "Delete",
+            role: "destructive",
+            handler: handleConfirmDelete,
+          },
+        ]}
       />
     </div>
   );

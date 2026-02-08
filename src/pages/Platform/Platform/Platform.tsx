@@ -18,7 +18,7 @@ import {
   DashboardSection,
 } from "../../../components/Platform/DashboardLayout";
 import { DashboardOverview } from "../../../components/Platform/DashboardOverview";
-import { NFCDevicesList } from "../../../components/Platform/NFCDevicesList";
+import { NFCAndHomeScreensPage } from "../../../components/Platform/NFCAndHomeScreensPage";
 import { SermonsManagement } from "../../../components/Platform/SermonsManagement";
 import { SermonEditorPage } from "../../../components/Platform/SermonEditor";
 
@@ -35,7 +35,7 @@ const Platform: React.FC = () => {
   const { showToast, toastMessage, toastOptions, show, hide } = useToast();
 
   // NFC Devices management
-  const { devices, isSavingTiles, saveTiles, deleteDevice, fetchConfig } =
+  const { devices, isSavingTiles, saveTiles, createHomeScreen, deleteDevice, fetchConfig } =
     usePlatformNFCDevices(userInfo?._id!);
 
   // Fetch NFC config when user is authenticated
@@ -76,9 +76,10 @@ const Platform: React.FC = () => {
     deviceId: string,
     tiles: any[],
     wallpaper?: string,
+    name?: string,
   ) => {
     try {
-      await saveTiles(deviceId, tiles, wallpaper);
+      await saveTiles(deviceId, tiles, wallpaper, name);
       show("Home screen updated successfully");
     } catch (error) {
       console.error("Error saving tiles:", error);
@@ -87,6 +88,41 @@ const Platform: React.FC = () => {
           ? `Failed to update home screen: ${error.message}`
           : "Failed to update home screen",
       );
+    }
+  };
+
+  // Handle create home screen with toast feedback
+  const handleCreateHomeScreen = async (
+    name: string,
+    tiles: any[],
+    wallpaper?: string,
+  ) => {
+    try {
+      await createHomeScreen(name, tiles, wallpaper);
+      show("Home screen created successfully");
+    } catch (error) {
+      console.error("Error creating home screen:", error);
+      show(
+        error instanceof Error
+          ? `Failed to create home screen: ${error.message}`
+          : "Failed to create home screen",
+      );
+    }
+  };
+
+  // Handle delete with toast feedback
+  const handleDelete = async (deviceId: string) => {
+    try {
+      await deleteDevice(deviceId);
+      show("Home screen deleted successfully");
+    } catch (error) {
+      console.error("Error deleting home screen:", error);
+      show(
+        error instanceof Error
+          ? `Failed to delete home screen: ${error.message}`
+          : "Failed to delete home screen",
+      );
+      throw error; // Re-throw to let the component handle it
     }
   };
 
@@ -115,10 +151,11 @@ const Platform: React.FC = () => {
           </Route>
 
           <Route path="/nfc">
-            <NFCDevicesList
+            <NFCAndHomeScreensPage
               devices={devices}
               onSaveTiles={handleSaveTiles}
-              onDelete={deleteDevice}
+              onCreateHomeScreen={handleCreateHomeScreen}
+              onDeleteHomeScreen={handleDelete}
               isSaving={isSavingTiles}
             />
           </Route>

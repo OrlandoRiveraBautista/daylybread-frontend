@@ -12,6 +12,7 @@ import {
   IonContent,
   IonFooter,
   IonToolbar,
+  IonInput,
 } from "@ionic/react";
 import {
   add,
@@ -29,6 +30,7 @@ import {
   getDefaultTiles,
   TilePreset,
 } from "../../NFC/iPhoneHomeScreen/types";
+import "../../../pages/Platform/Platform/Platform.scss";
 import "./HomeScreenEditor.scss";
 
 interface HomeScreenEditorProps {
@@ -38,7 +40,7 @@ interface HomeScreenEditorProps {
   isOpen: boolean;
   isSaving?: boolean;
   onClose: () => void;
-  onSave: (tiles: TileConfig[], wallpaper?: string) => Promise<void>;
+  onSave: (tiles: TileConfig[], wallpaper?: string, name?: string) => Promise<void>;
 }
 
 /**
@@ -58,6 +60,7 @@ export const HomeScreenEditor: React.FC<HomeScreenEditorProps> = ({
     initialTiles?.length > 0 ? initialTiles : getDefaultTiles(),
   );
   const [wallpaper, setWallpaper] = useState(initialWallpaper || "");
+  const [name, setName] = useState(title || "New Home Screen");
   const [isEditMode, setIsEditMode] = useState(false);
   const [showTileLibrary, setShowTileLibrary] = useState(false);
   const [editingTile, setEditingTile] = useState<TileConfig | null>(null);
@@ -73,6 +76,7 @@ export const HomeScreenEditor: React.FC<HomeScreenEditorProps> = ({
 
       setTiles(tilesToSet);
       setWallpaper(initialWallpaper || "");
+      setName(title || "New Home Screen");
       setIsEditMode(false);
       setHasChanges(false);
       setIsInitialized(true);
@@ -80,7 +84,7 @@ export const HomeScreenEditor: React.FC<HomeScreenEditorProps> = ({
       // Reset initialization flag when modal closes
       setIsInitialized(false);
     }
-  }, [isOpen, initialTiles, initialWallpaper, isInitialized]);
+  }, [isOpen, initialTiles, initialWallpaper, title, isInitialized]);
 
   // Handle tile deletion
   const handleDeleteTile = useCallback((tile: TileConfig) => {
@@ -190,7 +194,13 @@ export const HomeScreenEditor: React.FC<HomeScreenEditorProps> = ({
   // Save changes
   const handleSave = async () => {
     try {
-      await onSave(tiles, wallpaper);
+      // Validate name is not empty
+      const trimmedName = name?.trim();
+      const finalName = (trimmedName && trimmedName.length > 0) 
+        ? trimmedName 
+        : (title || "New Home Screen");
+      
+      await onSave(tiles, wallpaper, finalName);
       setHasChanges(false);
     } catch (error) {
       console.error("Error saving tiles:", error);
@@ -240,6 +250,23 @@ export const HomeScreenEditor: React.FC<HomeScreenEditorProps> = ({
             </IonItem>
 
             <div className="controls-content" slot="content">
+              {/* Name Input */}
+              <div className="platform-form-container" style={{ padding: "16px" }}>
+                <div className="platform-form">
+                  <IonItem>
+                    <IonLabel position="stacked">Home Screen Name</IonLabel>
+                    <IonInput
+                      value={name}
+                      placeholder="Enter home screen name"
+                      onIonInput={(e) => {
+                        setName(e.detail.value || "");
+                        setHasChanges(true);
+                      }}
+                    />
+                  </IonItem>
+                </div>
+              </div>
+
               {/* Toolbar */}
               <div className="editor-toolbar">
                 <IonButton

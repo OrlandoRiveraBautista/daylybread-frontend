@@ -14,6 +14,12 @@ export interface UsePlatformNFCDevicesResult {
     deviceId: string,
     tiles: TileConfig[],
     wallpaper?: string,
+    name?: string,
+  ) => Promise<void>;
+  createHomeScreen: (
+    name: string,
+    tiles: TileConfig[],
+    wallpaper?: string,
   ) => Promise<void>;
   deleteDevice: (deviceId: string) => void;
   fetchConfig: () => Promise<any>;
@@ -30,6 +36,7 @@ export const usePlatformNFCDevices = (
     homeScreens,
     isSaving,
     updateHomeScreen,
+    createHomeScreen,
     deleteHomeScreen,
     fetchHomeScreens,
   } = useHomeScreens(userId);
@@ -85,9 +92,10 @@ export const usePlatformNFCDevices = (
       homeScreenId: string,
       tiles: TileConfig[],
       wallpaper?: string,
+      name?: string,
     ): Promise<void> => {
       try {
-        // Find the home screen to get its name
+        // Find the home screen to get its name if not provided
         const homeScreen = homeScreens.find(
           (hs: any) => hs._id === homeScreenId,
         );
@@ -95,11 +103,39 @@ export const usePlatformNFCDevices = (
           throw new Error("Home screen not found");
         }
 
-        await updateHomeScreen(homeScreenId, {
-          name: homeScreen.name || "Home Screen",
-          tiles,
-          wallpaper,
-        });
+        // Ensure name is not empty
+        const finalName = (name && name.trim()) || homeScreen.name || "Home Screen";
+        
+        // Ensure tiles is always an array and properly formatted
+        const finalTiles = tiles ? tiles.map(tile => ({
+          id: tile.id,
+          type: tile.type,
+          label: tile.label,
+          icon: tile.icon,
+          url: tile.url,
+          size: tile.size,
+          position: {
+            x: tile.position.x,
+            y: tile.position.y,
+          },
+          color: tile.color || undefined,
+          subtitle: tile.subtitle || undefined,
+          isInDock: tile.isInDock || undefined,
+        })) : [];
+        
+        console.log('Sending update with:', { name: finalName, tilesCount: finalTiles.length, wallpaper });
+        
+        const updateData: any = {
+          name: finalName,
+          tiles: finalTiles,
+        };
+        
+        // Only include wallpaper if it exists
+        if (wallpaper) {
+          updateData.wallpaper = wallpaper;
+        }
+        
+        await updateHomeScreen(homeScreenId, updateData);
 
         // Refresh after successful save
         await fetchHomeScreens();
@@ -108,6 +144,31 @@ export const usePlatformNFCDevices = (
       }
     },
     [homeScreens, updateHomeScreen, fetchHomeScreens],
+  );
+
+  /**
+   * Create a new HomeScreen
+   */
+  const createNewHomeScreen = useCallback(
+    async (
+      name: string,
+      tiles: TileConfig[],
+      wallpaper?: string,
+    ): Promise<void> => {
+      try {
+        await createHomeScreen({
+          name,
+          tiles,
+          wallpaper,
+        });
+
+        // Refresh after successful create
+        await fetchHomeScreens();
+      } catch (error) {
+        throw error;
+      }
+    },
+    [createHomeScreen, fetchHomeScreens],
   );
 
   /**
@@ -130,6 +191,7 @@ export const usePlatformNFCDevices = (
     devices: getDevices(),
     isSavingTiles: isSaving,
     saveTiles,
+    createHomeScreen: createNewHomeScreen,
     deleteDevice,
     fetchConfig: fetchHomeScreens,
   };
