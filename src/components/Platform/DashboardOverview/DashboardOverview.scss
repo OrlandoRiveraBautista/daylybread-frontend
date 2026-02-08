@@ -1,7 +1,7 @@
 @import "../../../theme/variables.scss";
 
 // Keyframe animations
-@keyframes fadeIn {
+@keyframes dashboardOverviewFadeIn {
   from {
     opacity: 0;
   }
@@ -10,7 +10,7 @@
   }
 }
 
-@keyframes pulse {
+@keyframes dashboardOverviewPulse {
   0%,
   100% {
     transform: scale(1);
@@ -24,19 +24,19 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 24px 16px;
-  animation: fadeIn 0.3s ease-out;
+  animation: dashboardOverviewFadeIn 0.3s ease-out;
 }
 
 .dashboard-welcome {
   margin-bottom: 32px;
   padding: 24px;
-  background: rgba(255, 255, 255, 0.7);
+  background: $glass-background-hover;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid $glass-border-lighter;
   border-radius: 24px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-  animation: fadeIn 0.4s ease-out;
+  animation: dashboardOverviewFadeIn 0.4s ease-out;
   position: relative;
   overflow: hidden;
 
@@ -72,40 +72,25 @@
     position: relative;
     z-index: 1;
   }
-
-  > ion-button {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    z-index: 1;
-
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(var(--ion-color-primary-rgb), 0.3);
-    }
-
-    &:active {
-      transform: translateY(0);
-    }
-  }
 }
 
 @media (prefers-color-scheme: dark) {
   .dashboard-welcome {
-    background: rgba(30, 30, 30, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: $glass-background-dark-hover;
+    border: 1px solid $glass-border-dark;
   }
 }
 
 .stat-card {
-  background: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: $glass-background-hover;
+  border: 1px solid $glass-border-lighter;
   border-radius: 24px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   margin: 0;
   height: 100%;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  animation: fadeIn 0.5s ease-out both;
+  animation: dashboardOverviewFadeIn 0.5s ease-out both;
   position: relative;
   overflow: hidden;
 
@@ -268,23 +253,23 @@
 
 @media (prefers-color-scheme: dark) {
   .stat-card {
-    background: rgba(30, 30, 30, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: $glass-background-dark;
+    border: 1px solid $glass-border-dark;
 
     &:hover {
-      background: rgba(40, 40, 40, 0.95);
-      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: $glass-background-dark-hover;
+      border: 1px solid $glass-border-dark-hover;
     }
   }
 }
 
 .quick-actions-card {
-  background: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: $glass-background-hover;
+  border: 1px solid $glass-border-lighter;
   border-radius: 24px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   margin-top: 24px;
-  animation: fadeIn 0.5s ease-out 0.3s both;
+  animation: dashboardOverviewFadeIn 0.5s ease-out 0.3s both;
 
   ion-card-title {
     font-size: 22px;
@@ -305,8 +290,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 20px;
-  background: rgba(255, 255, 255, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: $glass-background-light;
+  border: 1px solid $glass-border-lighter;
   border-radius: 20px;
   gap: 16px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -365,36 +350,21 @@
     color: var(--ion-color-primary);
     transform: translateX(4px);
   }
-
-  ion-button {
-    flex-shrink: 0;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-    &:hover {
-      transform: scale(1.08);
-      box-shadow: 0 4px 12px rgba(var(--ion-color-primary-rgb), 0.3);
-      border-radius: 24px;
-    }
-
-    &:active {
-      transform: scale(0.98);
-    }
-  }
 }
 
 @media (prefers-color-scheme: dark) {
   .quick-actions-card {
-    background: rgba(30, 30, 30, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: $glass-background-dark;
+    border: 1px solid $glass-border-dark;
   }
 
   .quick-action-item {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: $glass-background-dark;
+    border: 1px solid $glass-border-dark;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: $glass-background-dark-hover;
+      border: 1px solid $glass-border-dark-hover;
     }
   }
 }

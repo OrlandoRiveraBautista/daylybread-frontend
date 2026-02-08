@@ -1,0 +1,299 @@
+@import "../../../theme/variables.scss";
+@import "../platform-modal";
+
+.nfc-products-modal {
+  @include platform-modal-large;
+}
+
+.nfc-products-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.nfc-products-container {
+  max-width: 1200px;
+  margin: 0 auto;
+
+  .products-intro {
+    text-align: center;
+    margin-bottom: 32px;
+
+    h2 {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--ion-text-color);
+      margin: 0 0 12px 0;
+    }
+
+    p {
+      font-size: 16px;
+      color: var(--ion-color-medium);
+      margin: 0;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+
+  .product-card {
+    position: relative;
+    background: $glass-background-light;
+    border: 1px solid $glass-border-lighter;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    margin: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        var(--ion-color-primary),
+        transparent
+      );
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    &.recommended {
+      &::before {
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--ion-color-success),
+          transparent
+        );
+        opacity: 1;
+        height: 3px;
+      }
+    }
+
+    &:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+
+      &::before {
+        opacity: 1;
+      }
+
+      .product-price .price {
+        color: var(--ion-color-primary);
+        transform: scale(1.05);
+      }
+
+      ion-card-title {
+        color: var(--ion-color-primary);
+      }
+    }
+
+    &:active {
+      transform: translateY(-3px);
+      transition-duration: 0.1s;
+    }
+
+    .recommended-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 10;
+      padding: 6px 12px;
+      font-weight: 600;
+      font-size: 12px;
+
+      ion-icon {
+        font-size: 14px;
+        margin-right: 4px;
+        vertical-align: middle;
+      }
+    }
+
+    ion-card-header {
+      padding-bottom: 12px;
+    }
+
+    ion-card-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--ion-text-color);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .product-price {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+
+      .price {
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--ion-color-primary);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .price-per-unit {
+        font-size: 14px;
+        color: var(--ion-color-medium);
+      }
+    }
+
+    .product-description {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--ion-color-medium);
+      margin-bottom: 20px;
+    }
+
+    .product-features {
+      margin-bottom: 20px;
+      background: $glass-background-medium;
+      border: 1px solid $glass-border-lighter;
+      border-radius: 12px;
+      padding: 12px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+      ion-text {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        li {
+          display: flex;
+          align-items: flex-start;
+          gap: 8px;
+          font-size: 14px;
+          line-height: 1.6;
+          margin-bottom: 8px;
+          color: var(--ion-text-color);
+
+          &:last-child {
+            margin-bottom: 0;
+          }
+
+          ion-icon {
+            font-size: 18px;
+            margin-top: 2px;
+            flex-shrink: 0;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          }
+        }
+      }
+    }
+
+    &:hover .product-features {
+      background: $glass-background-hover;
+      border: 1px solid $glass-border-light;
+
+      ul li ion-icon {
+        transform: scale(1.1);
+      }
+    }
+  }
+
+  .info-card {
+    background: $glass-background-medium;
+    border: 1px solid $glass-border-lighter;
+    border-radius: 20px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    margin: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      transform: translateY(-2px);
+    }
+
+    h3 {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 0 0 16px 0;
+      color: var(--ion-text-color);
+    }
+
+    ol {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--ion-text-color);
+
+      li {
+        font-size: 15px;
+        line-height: 1.8;
+        margin-bottom: 8px;
+      }
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .nfc-products-container {
+    .product-card {
+      background: $glass-background-dark;
+      border: 1px solid $glass-border-dark;
+
+      &:hover {
+        background: rgba(40, 40, 40, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+      }
+
+      &.recommended::before {
+        opacity: 1;
+      }
+
+      .product-features {
+        background: $glass-background-dark;
+        border: 1px solid $glass-border-dark;
+      }
+
+      &:hover .product-features {
+        background: $glass-background-dark-hover;
+        border: 1px solid $glass-border-dark-hover;
+      }
+    }
+
+    .info-card {
+      background: $glass-background-dark;
+      border: 1px solid $glass-border-dark;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .nfc-products-container {
+    .products-intro {
+      h2 {
+        font-size: 24px;
+      }
+
+      p {
+        font-size: 14px;
+      }
+    }
+
+    .products-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}

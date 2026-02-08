@@ -1,0 +1,630 @@
+// HomeScreenEditor Styles
+@import "../../../theme/variables.scss";
+@import "../platform-modal";
+
+// Editor Modal
+.homescreen-editor-modal {
+  @include platform-modal-medium;
+}
+
+.homescreen-editor {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+// Header styles are handled by PlatformModalHeader component
+
+// Controls Wrapper (Accordion)
+.editor-controls-wrapper {
+  border-bottom: 1px solid var(--ion-border-color);
+
+  ion-accordion {
+    ion-item[slot="header"] {
+      --background: $glass-background-light;
+      --color: var(--ion-text-color);
+      --border-color: transparent;
+      --min-height: 56px;
+      font-weight: 600;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+      &:hover {
+        --background: $glass-background-hover;
+      }
+
+      ion-icon {
+        font-size: 20px;
+        color: var(--ion-color-primary);
+      }
+
+      ion-label {
+        font-size: 15px;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .controls-content {
+    background: var(--ion-background-color);
+    padding: 0;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .editor-controls-wrapper ion-accordion ion-item[slot="header"] {
+    --background: $glass-background-dark;
+
+    &:hover {
+      --background: $glass-background-dark-hover;
+    }
+  }
+}
+
+// Name Input Section - uses platform-form styling from Platform.scss
+
+// Toolbar
+.editor-toolbar {
+  display: flex;
+  gap: 6px;
+  padding: 16px;
+  background: var(--ion-background-color);
+  flex-wrap: wrap;
+}
+
+// Wallpaper Picker
+.wallpaper-picker {
+  padding: 16px;
+  border-top: 1px solid var(--ion-item-border-color, var(--ion-border-color));
+
+  ion-label.picker-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ion-text-color);
+
+    ion-icon {
+      font-size: 20px;
+      color: var(--ion-color-primary);
+    }
+  }
+
+  .wallpaper-options {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding: 16px 0;
+
+    &::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: var(--ion-color-light);
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: var(--ion-color-medium);
+      border-radius: 4px;
+
+      &:hover {
+        background: var(--ion-color-medium-shade);
+      }
+    }
+  }
+
+  .wallpaper-option {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    // border: 3px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        var(--ion-color-primary),
+        transparent
+      );
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 1;
+    }
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+      // border-color:;
+      border: 3px solid rgba(var(--ion-color-primary-rgb), 0.5);
+
+      &::before {
+        opacity: 1;
+      }
+    }
+
+    &:active {
+      transform: translateY(-2px);
+      transition-duration: 0.1s;
+    }
+
+    &.active {
+      border: 3px solid var(--ion-color-primary);
+      box-shadow: 0 4px 16px rgba(var(--ion-color-primary-rgb), 0.3);
+      transform: translateY(-2px);
+
+      &::before {
+        opacity: 1;
+      }
+
+      &::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 20px;
+        height: 20px;
+        background: var(--ion-color-primary);
+        border-radius: 50%;
+        border: 3px solid white;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        z-index: 2;
+      }
+    }
+  }
+}
+
+// Phone Preview Content
+.phone-preview-content {
+  --background: #f0f0f5;
+
+  @media (prefers-color-scheme: dark) {
+    --background: #1a1a1a;
+  }
+}
+
+// Phone Preview Container
+.phone-preview-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 20px;
+  min-height: 100%;
+
+  @media (max-width: 767px) {
+    padding: 0;
+    align-items: stretch;
+  }
+}
+
+// Phone Frame - Static iPhone representation
+.phone-frame {
+  // iPhone 14 Pro dimensions (393x852 at scale, but we'll use standard 375x812)
+  width: 375px;
+  height: 812px;
+  background: #000;
+  border-radius: 44px;
+  padding: 12px;
+  position: relative;
+  flex-shrink: 0;
+  box-shadow:
+    0 25px 80px rgba(0, 0, 0, 0.4),
+    inset 0 0 0 3px #333;
+
+  .phone-notch {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px;
+    height: 30px;
+    background: #000;
+    border-radius: 0 0 20px 20px;
+    z-index: 10;
+  }
+
+  .iphone-homescreen {
+    border-radius: 36px;
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+    position: relative;
+  }
+
+  .phone-home-indicator {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 134px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+    z-index: 10;
+  }
+
+  @media (max-width: 767px) {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+
+    .phone-notch,
+    .phone-home-indicator {
+      display: none;
+    }
+
+    .iphone-homescreen {
+      border-radius: 0;
+    }
+  }
+}
+
+// Footer
+.editor-footer {
+  ion-toolbar {
+    --padding-start: 0;
+    --padding-end: 0;
+    --min-height: auto;
+  }
+}
+
+// Instructions
+.editor-instructions {
+  padding: 16px 20px;
+  text-align: center;
+
+  ion-text {
+    p {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+  }
+}
+
+// Tile Library Modal (Sheet modal with breakpoints)
+.tile-library-modal {
+  .tile-library-content {
+    --background: var(--ion-background-color);
+  }
+}
+
+.tile-library {
+  padding: 20px;
+
+  .category-section {
+    margin-bottom: 28px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  ion-text h3.category-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0 0 16px 0;
+    opacity: 0.7;
+  }
+
+  .presets-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .preset-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 16px;
+    background: $glass-background-light;
+    border: 1px solid $glass-border-lighter;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-align: left;
+    width: 100%;
+
+    &:hover {
+      background: $glass-background-hover;
+      border-color: var(--ion-color-primary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(var(--ion-color-primary-rgb), 0.2);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    .preset-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+      ion-icon {
+        font-size: 22px;
+        color: white;
+      }
+    }
+
+    .preset-info {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+
+      ion-label.preset-label {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--ion-text-color);
+        line-height: 1.3;
+      }
+
+      ion-text.preset-description {
+        display: block;
+        line-height: 1.4;
+
+        small {
+          font-size: 12px;
+        }
+      }
+    }
+
+    .preset-action {
+      color: var(--ion-color-primary);
+      flex-shrink: 0;
+      opacity: 0.7;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+      ion-icon {
+        font-size: 24px;
+      }
+    }
+
+    &:hover .preset-action {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .tile-library .preset-card {
+    background: $glass-background-dark;
+    border-color: $glass-border-dark;
+
+    &:hover {
+      background: $glass-background-dark-hover;
+    }
+  }
+}
+
+// Tile Config Modal (Sheet modal with breakpoints)
+.tile-config-modal {
+  .tile-config-content {
+    --background: var(--ion-background-color);
+  }
+}
+
+.tile-config {
+  padding: 20px;
+
+  .tile-preview {
+    display: flex;
+    justify-content: center;
+    padding: 32px;
+    background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+    border-radius: 16px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+
+    .preview-tile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 16px;
+      border-radius: 16px;
+
+      &.preview-small {
+        width: 70px;
+        padding: 0;
+
+        .preview-icon {
+          width: 60px;
+          height: 60px;
+          border-radius: 14px;
+        }
+
+        .preview-label {
+          font-size: 11px;
+        }
+      }
+
+      &.preview-medium {
+        width: 160px;
+        flex-direction: row;
+
+        .preview-icon {
+          width: 40px;
+          height: 40px;
+          border-radius: 10px;
+        }
+
+        .preview-label {
+          font-size: 15px;
+        }
+      }
+
+      &.preview-large {
+        width: 160px;
+        min-height: 160px;
+        align-items: flex-start;
+
+        .preview-icon {
+          width: 44px;
+          height: 44px;
+          border-radius: 12px;
+        }
+
+        .preview-label {
+          font-size: 17px;
+        }
+      }
+
+      .preview-icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.2);
+
+        ion-icon {
+          font-size: 24px;
+          color: white;
+        }
+      }
+
+      .preview-label {
+        color: white;
+        font-weight: 600;
+        text-align: center;
+      }
+    }
+  }
+
+  ion-list.config-form {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+
+    ion-item {
+      --background: $glass-background-light;
+      --border-color: $glass-border-lighter;
+      --border-radius: 12px;
+      --color: var(--ion-text-color);
+      --padding-start: 16px;
+      --padding-end: 16px;
+      --inner-padding-end: 8px;
+      margin-bottom: 12px;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+      &:hover {
+        --background: $glass-background-hover;
+      }
+
+      ion-label[position="stacked"] {
+        font-weight: 600;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        opacity: 0.8;
+        margin-bottom: 8px;
+      }
+
+      ion-input,
+      ion-select {
+        --padding-start: 0;
+        --padding-end: 0;
+        font-size: 16px;
+      }
+    }
+  }
+
+  .color-section {
+    margin-top: 20px;
+    padding: 16px;
+    background: $glass-background-light;
+    border: 1px solid $glass-border-lighter;
+    border-radius: 12px;
+
+    .color-picker-wrapper {
+      width: 100%;
+
+      ion-label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        opacity: 0.8;
+        margin-bottom: 12px;
+        color: var(--ion-text-color);
+      }
+
+      .color-grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 12px;
+      }
+
+      .color-option {
+        width: 100%;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        border: 3px solid transparent;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+        &:hover {
+          transform: scale(1.15);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        &.active {
+          border-color: var(--ion-color-primary);
+          box-shadow:
+            0 0 0 3px var(--ion-background-color),
+            0 0 0 5px var(--ion-color-primary),
+            0 4px 12px rgba(var(--ion-color-primary-rgb), 0.3);
+          transform: scale(1.1);
+        }
+      }
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .tile-config {
+    ion-list.config-form ion-item {
+      --background: $glass-background-dark;
+      --border-color: $glass-border-dark;
+
+      &:hover {
+        --background: $glass-background-dark-hover;
+      }
+    }
+
+    .color-section {
+      background: $glass-background-dark;
+      border-color: $glass-border-dark;
+    }
+  }
+}

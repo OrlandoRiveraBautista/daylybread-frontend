@@ -1,7 +1,7 @@
 @import "../../../theme/variables.scss";
 
 // Keyframe animations
-@keyframes fadeIn {
+@keyframes platformPageFadeIn {
   from {
     opacity: 0;
   }
@@ -10,11 +10,27 @@
   }
 }
 
+#platform-page {
+  ion-button {
+    flex-shrink: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+      transform: scale(1.08);
+      box-shadow: 0 4px 12px rgba(var(--ion-color-base-rgb), 0.3);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}
+
 .platform-content-container {
   max-width: 600px;
   margin: 0 auto;
   padding: 24px 16px;
-  animation: fadeIn 0.3s ease-out;
+  animation: platformPageFadeIn 0.3s ease-out;
 }
 
 .platform-form-container {
@@ -23,8 +39,8 @@
 
 .platform-form {
   ion-item {
-    background: rgba(255, 255, 255, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: $glass-background-light;
+    border: 1px solid $glass-border-lighter;
     --border-radius: 16px;
     border-radius: 16px;
     --padding-start: 16px;
@@ -34,14 +50,14 @@
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
 
     &:hover {
-      background: rgba(255, 255, 255, 1);
+      background: $glass-background-hover;
       border: 1px solid rgba(var(--ion-color-primary-rgb), 0.4);
       transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
     }
 
     &:focus-within {
-      background: rgba(255, 255, 255, 1);
+      background: $glass-background-hover;
       // border: 2px solid rgba(var(--ion-color-primary-rgb), 0.6);
       box-shadow: 0 8px 24px rgba(var(--ion-color-primary-rgb), 0.15);
     }
@@ -67,16 +83,16 @@
 
 @media (prefers-color-scheme: dark) {
   .platform-form ion-item {
-    background: rgba(30, 30, 30, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: $glass-background-dark;
+    border: 1px solid $glass-border-dark;
 
     &:hover {
-      background: rgba(40, 40, 40, 1);
+      background: $glass-background-dark-hover;
       border: 1px solid rgba(var(--ion-color-primary-rgb), 0.5);
     }
 
     &:focus-within {
-      background: rgba(40, 40, 40, 1);
+      background: $glass-background-dark-hover;
       border: 2px solid rgba(var(--ion-color-primary-rgb), 0.6);
     }
   }
@@ -141,7 +157,7 @@
   background: var(--ion-background-color);
   gap: 16px;
   padding: 16px;
-  animation: fadeIn 0.3s ease-out;
+  animation: platformPageFadeIn 0.3s ease-out;
 
   ion-spinner {
     width: 48px;

@@ -1,41 +1,41 @@
-import { gql } from "../__generated__/gql";
+import { gql as gqlTag } from "@apollo/client";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 
 /* Queries */
-const GetNFCConfig = gql(`
+const GetNFCConfig = gqlTag`
   query GetNFCConfig($id: String!) {
     getNFCConfig(id: $id) {
       results {
         _id
-        type
-        title
-        description
         owner {
           _id
         }
-        nfcIds
-        mainButton {
-          url
-          text
+        nfcId
+        name
+        deviceType
+        homeScreen {
+          _id
+          name
+          shareableLink
+          tiles {
+            id
+            type
+            label
+            icon
+            url
+            size
+            position {
+              x
+              y
+            }
+            color
+            subtitle
+            isInDock
+          }
+          wallpaper
         }
-        socialMedia {
-          facebook
-          instagram
-          twitter
-        }
-        givingLink {
-          isVisible
-          url
-        }
-        memberRegistrationLink {
-          isVisible
-          url
-        }
-        eventsLink {
-          isVisible
-          url
-        }
-        mediaId
+        views
+        lastScannedAt
         createdAt
         updatedAt
       }
@@ -45,42 +45,28 @@ const GetNFCConfig = gql(`
       }
     }
   }
-`);
+` as any;
 
-const GetNFCConfigByOwner = gql(`
-  query GetNFCConfigByOwner($ownerId: String!) {
-    getNFCConfigByOwner(ownerId: $ownerId) {
+// Note: Using gqlTag because this query hasn't been regenerated yet
+// Run `npm run compile` after backend is running to generate proper types
+const GetNFCConfigsByOwner = gqlTag`
+  query GetNFCConfigsByOwner($ownerId: String!) {
+    getNFCConfigsByOwner(ownerId: $ownerId) {
       results {
         _id
-        type
-        title
-        description
         owner {
           _id
         }
-        nfcIds
-        mainButton {
-          url
-          text
+        nfcId
+        name
+        deviceType
+        homeScreen {
+          _id
+          name
+          shareableLink
         }
-        socialMedia {
-          facebook
-          instagram
-          twitter
-        }
-        givingLink {
-          isVisible
-          url
-        }
-        memberRegistrationLink {
-          isVisible
-          url
-        }
-        eventsLink {
-          isVisible
-          url
-        }
-        mediaId
+        views
+        lastScannedAt
         createdAt
         updatedAt
       }
@@ -90,43 +76,27 @@ const GetNFCConfigByOwner = gql(`
       }
     }
   }
-`);
+` as any;
 
 /* Mutations */
-const CreateNFCConfig = gql(`
+const CreateNFCConfig = gqlTag`
   mutation CreateNFCConfig($options: NFCConfigInput!) {
     createNFCConfig(options: $options) {
       results {
         _id
-        type
-        title
-        description
         owner {
           _id
         }
-        nfcIds
-        mainButton {
-          url
-          text
+        nfcId
+        name
+        deviceType
+        homeScreen {
+          _id
+          name
+          shareableLink
         }
-        socialMedia {
-          facebook
-          instagram
-          twitter
-        }
-        givingLink {
-          isVisible
-          url
-        }
-        memberRegistrationLink {
-          isVisible
-          url
-        }
-        eventsLink {
-          isVisible
-          url
-        }
-        mediaId
+        views
+        lastScannedAt
         createdAt
         updatedAt
       }
@@ -136,42 +106,26 @@ const CreateNFCConfig = gql(`
       }
     }
   }
-`);
+` as any;
 
-const UpdateNFCConfig = gql(`
+const UpdateNFCConfig = gqlTag`
   mutation UpdateNFCConfig($id: String!, $options: NFCConfigInput!) {
     updateNFCConfig(id: $id, options: $options) {
       results {
         _id
-        type
-        title
-        description
         owner {
           _id
         }
-        nfcIds
-        mainButton {
-          url
-          text
+        nfcId
+        name
+        deviceType
+        homeScreen {
+          _id
+          name
+          shareableLink
         }
-        socialMedia {
-          facebook
-          instagram
-          twitter
-        }
-        givingLink {
-          isVisible
-          url
-        }
-        memberRegistrationLink {
-          isVisible
-          url
-        }
-        eventsLink {
-          isVisible
-          url
-        }
-        mediaId
+        views
+        lastScannedAt
         createdAt
         updatedAt
       }
@@ -181,44 +135,15 @@ const UpdateNFCConfig = gql(`
       }
     }
   }
-`);
+` as any;
 
-const DeleteNFCConfig = gql(`
+const DeleteNFCConfig = gqlTag`
   mutation DeleteNFCConfig($id: String!) {
     deleteNFCConfig(id: $id) {
       results {
         _id
-        type
-        title
-        description
-        owner {
-          _id
-        }
-        nfcIds
-        mainButton {
-          url
-          text
-        }
-        socialMedia {
-          facebook
-          instagram
-          twitter
-        }
-        givingLink {
-          isVisible
-          url
-        }
-        memberRegistrationLink {
-          isVisible
-          url
-        }
-        eventsLink {
-          isVisible
-          url
-        }
-        mediaId
-        createdAt
-        updatedAt
+        nfcId
+        name
       }
       errors {
         field
@@ -226,32 +151,63 @@ const DeleteNFCConfig = gql(`
       }
     }
   }
-`);
+` as any;
+
+const AssignHomeScreenToNFCConfig = gqlTag`
+  mutation AssignHomeScreenToNFCConfig($id: String!, $homeScreenId: String) {
+    assignHomeScreenToNFCConfig(id: $id, homeScreenId: $homeScreenId) {
+      results {
+        _id
+        nfcId
+        name
+        homeScreen {
+          _id
+          name
+          shareableLink
+        }
+      }
+      errors {
+        field
+        message
+      }
+    }
+  }
+` as any;
 
 /* Hooks */
 export const useGetNFCConfig = (id: string) => {
-  return useQuery(GetNFCConfig, {
+  return useQuery(GetNFCConfig as any, {
     variables: { id },
     skip: !id,
   });
 };
 
+export const useGetNFCConfigsByOwner = () => {
+  return useLazyQuery(GetNFCConfigsByOwner as any);
+};
+
+// Backward compatibility - deprecated, use useGetNFCConfigsByOwner instead
+// Note: This now returns an array, not a single config
 export const useGetNFCConfigByOwner = () => {
-  return useLazyQuery(GetNFCConfigByOwner);
+  return useLazyQuery(GetNFCConfigsByOwner as any);
 };
 
 export const useLazyGetNFCConfig = () => {
-  return useLazyQuery(GetNFCConfig);
+  return useLazyQuery(GetNFCConfig as any);
 };
 
 export const useCreateNFCConfig = () => {
-  return useMutation(CreateNFCConfig);
+  return useMutation(CreateNFCConfig as any);
 };
 
 export const useUpdateNFCConfig = () => {
-  return useMutation(UpdateNFCConfig);
+  return useMutation(UpdateNFCConfig as any);
 };
 
 export const useDeleteNFCConfig = () => {
-  return useMutation(DeleteNFCConfig);
+  return useMutation(DeleteNFCConfig as any);
+};
+
+export const useAssignHomeScreenToNFCConfig = () => {
+  return useMutation(AssignHomeScreenToNFCConfig as any);
 };

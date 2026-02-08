@@ -15,11 +15,7 @@ import {
   IonImg,
 } from "@ionic/react";
 import { useHistory } from "react-router";
-import {
-  card,
-  home,
-  document,
-} from "ionicons/icons";
+import { card, home, document, shield } from "ionicons/icons";
 import SmallWordLogo from "../../../assets/images/small-word-logo.svg";
 import SmallWordLogoDark from "../../../assets/images/small-word-logo-dark.svg";
 import "./DashboardLayout.scss";
@@ -31,13 +27,15 @@ export type DashboardSection =
   | "calendar"
   | "organization"
   | "analytics"
-  | "members";
+  | "members"
+  | "sudo-admin";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
   activeSection: DashboardSection;
   onSectionChange: (section: DashboardSection) => void;
   organizationName?: string;
+  isSudoAdmin?: boolean;
 }
 
 export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
@@ -45,6 +43,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   activeSection,
   onSectionChange,
   organizationName,
+  isSudoAdmin = false,
 }) => {
   const history = useHistory();
 
@@ -58,7 +57,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     {
       section: "nfc" as DashboardSection,
       icon: card,
-      label: "NFC Devices",
+      label: "Home Screens & NFC",
       path: "/nfc",
     },
     {
@@ -67,6 +66,17 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       label: "Sermons",
       path: "/sermons",
     },
+    // Sudo Admin Manager - only visible to admin users
+    ...(isSudoAdmin
+      ? [
+          {
+            section: "sudo-admin" as DashboardSection,
+            icon: shield,
+            label: "Sudo Admin Manager",
+            path: "/sudo-admin",
+          },
+        ]
+      : []),
     // Coming in future releases
     // {
     //   section: "calendar" as DashboardSection,

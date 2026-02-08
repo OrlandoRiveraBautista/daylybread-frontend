@@ -4,33 +4,12 @@ import {
   useGetNFCConfigByOwner,
   useUpdateNFCConfig,
 } from "./NFCConfigHooks";
-
-interface SocialMediaSettings {
-  facebook?: boolean;
-  instagram?: boolean;
-  twitter?: boolean;
-}
-
-interface LinkSettings {
-  isVisible?: boolean;
-  url?: string;
-}
-
-interface MainButton {
-  url: string;
-  text: string;
-}
+import { TileConfig } from "../components/NFC/iPhoneHomeScreen/types";
 
 interface NFCConfigFormData {
-  type: string;
-  title: string;
-  description: string;
-  mainButton: MainButton;
-  socialMedia?: SocialMediaSettings;
-  givingLink?: LinkSettings;
-  memberRegistrationLink?: LinkSettings;
-  eventsLink?: LinkSettings;
-  mediaId?: string;
+  tiles?: TileConfig[];
+  wallpaper?: string;
+  nfcIds?: string[];
 }
 
 export const useNFCConfig = (userId: string) => {
@@ -42,10 +21,11 @@ export const useNFCConfig = (userId: string) => {
   const [createNFCConfig] = useCreateNFCConfig();
   const [updateNFCConfig] = useUpdateNFCConfig();
 
-  const fetchConfig = () => {
+  const fetchConfig = async () => {
     if (userId) {
-      getNFCConfigByOwner({ variables: { ownerId: userId } });
+      return getNFCConfigByOwner({ variables: { ownerId: userId } });
     }
+    return Promise.resolve();
   };
 
   const saveConfig = async (formData: NFCConfigFormData) => {

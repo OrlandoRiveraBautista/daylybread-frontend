@@ -33,7 +33,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
 
   const stats = [
     {
-      title: "Active NFC Devices",
+      title: "Home Screens",
       value: nfcDeviceCount.toString(),
       icon: card,
       color: "primary",
@@ -65,8 +65,8 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
 
   const quickActions = [
     {
-      title: "Manage NFC Devices",
-      description: "Configure and manage your NFC devices",
+      title: "Home Screens & NFC",
+      description: "Create home screens and manage NFC devices",
       action: () => onNavigate("nfc" as DashboardSection),
     },
     {
@@ -134,7 +134,12 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
                   <h3>{action.title}</h3>
                   <p>{action.description}</p>
                 </div>
-                <IonButton fill="outline" onClick={action.action}>
+                <IonButton
+                  fill="outline"
+                  onClick={action.action}
+                  shape="round"
+                  color="primary"
+                >
                   Go
                 </IonButton>
               </div>

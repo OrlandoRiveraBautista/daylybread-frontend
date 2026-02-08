@@ -1,7 +1,7 @@
 @import "../../../theme/variables.scss";
 
 // Keyframe animations
-@keyframes fadeIn {
+@keyframes sermonsManagementFadeIn {
   from {
     opacity: 0;
   }
@@ -10,13 +10,24 @@
   }
 }
 
-@keyframes pulse {
-  0%,
-  100% {
+@keyframes sermonDelete {
+  0% {
+    opacity: 1;
     transform: scale(1);
+    max-height: 500px;
+    margin-bottom: 16px;
   }
   50% {
-    transform: scale(1.05);
+    opacity: 0.5;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.8) translateY(-20px);
+    max-height: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 }
 
@@ -24,7 +35,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 24px 16px;
-  animation: fadeIn 0.3s ease-out;
+  animation: sermonsManagementFadeIn 0.3s ease-out;
 }
 
 .sermons-header {
@@ -33,7 +44,7 @@
   align-items: flex-start;
   margin-bottom: 24px;
   gap: 16px;
-  animation: fadeIn 0.4s ease-out;
+  animation: sermonsManagementFadeIn 0.4s ease-out;
 
   h1 {
     font-size: 32px;
@@ -47,29 +58,14 @@
     color: var(--ion-color-medium);
     margin: 0;
   }
-
-  > ion-button {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(var(--ion-color-primary-rgb), 0.3);
-    }
-
-    &:active {
-      transform: translateY(0);
-    }
-  }
 }
 
 .sermons-search {
   margin-bottom: 24px;
 
   ion-searchbar {
-    --background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    --background: $glass-background-light;
+    border: 1px solid $glass-border-lighter;
     --border-radius: 16px;
     --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
     --padding-start: 8px;
@@ -79,8 +75,8 @@
 
 @media (prefers-color-scheme: dark) {
   .sermons-search ion-searchbar {
-    --background: rgba(30, 30, 30, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    --background: $glass-background-dark;
+    border: 1px solid $glass-border-dark;
   }
 }
 
@@ -91,7 +87,7 @@
   justify-content: center;
   padding: 64px 24px;
   text-align: center;
-  animation: fadeIn 0.4s ease-out;
+  animation: sermonsManagementFadeIn 0.4s ease-out;
 
   ion-spinner {
     --color: var(--ion-color-primary);
@@ -104,7 +100,7 @@
   p {
     color: var(--ion-color-medium);
     margin: 0;
-    animation: fadeIn 0.6s ease-out 0.2s both;
+    animation: sermonsManagementFadeIn 0.6s ease-out 0.2s both;
   }
 }
 
@@ -121,14 +117,6 @@
       margin-bottom: 16px;
       color: var(--ion-color-danger-shade);
     }
-
-    ion-button {
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-      &:hover {
-        transform: scale(1.05);
-      }
-    }
   }
 }
 
@@ -136,14 +124,12 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 16px;
-  animation: fadeIn 0.4s ease-out;
+  animation: sermonsManagementFadeIn 0.4s ease-out;
 }
 
 .sermon-card {
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: $glass-background-light;
+  border: 1px solid $glass-border-lighter;
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
   margin: 0;
@@ -151,6 +137,7 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  display: flex;
 
   &::before {
     content: "";
@@ -185,11 +172,18 @@
     transition-duration: 0.1s;
   }
 
+  &.deleting {
+    animation: sermonDelete 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
   ion-card-content {
     padding: 16px;
     display: flex;
     flex-direction: column;
     min-height: 160px;
+    height: 100%;
   }
 
   .sermon-card-header {
@@ -273,15 +267,11 @@
 
   &.new-sermon-card {
     border: 2px dashed rgba(var(--ion-color-medium-rgb), 0.5);
-    background: rgba(255, 255, 255, 0.4);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
+    background: $glass-background-light;
 
     &:hover {
       border-color: var(--ion-color-primary);
       background: rgba(var(--ion-color-primary-rgb), 0.15);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
     }
 
     ion-card-content {
@@ -322,16 +312,16 @@
 
 @media (prefers-color-scheme: dark) {
   .sermon-card {
-    background: rgba(30, 30, 30, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: $glass-background-dark;
+    border: 1px solid $glass-border-dark;
 
     &:hover {
-      background: rgba(40, 40, 40, 0.7);
+      background: $glass-background-dark-hover;
       border: 1px solid rgba(var(--ion-color-primary-rgb), 0.5);
     }
 
     &.new-sermon-card {
-      background: rgba(30, 30, 30, 0.4);
+      background: $glass-background-dark;
 
       &:hover {
         background: rgba(var(--ion-color-primary-rgb), 0.2);
@@ -345,19 +335,19 @@
   justify-content: center;
   align-items: center;
   min-height: 400px;
-  animation: fadeIn 0.4s ease-out;
+  animation: sermonsManagementFadeIn 0.4s ease-out;
 }
 
 .empty-state-card {
-  background: rgba(255, 255, 255, 0.6);
+  background: $glass-background-light;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid $glass-border-lighter;
   border-radius: 20px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   max-width: 500px;
   margin: 0 auto;
-  animation: fadeIn 0.5s ease-out;
+  animation: sermonsManagementFadeIn 0.5s ease-out;
 
   .empty-state {
     text-align: center;
@@ -415,16 +405,6 @@
       height: 44px;
       font-size: 15px;
       font-weight: 500;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-      &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(var(--ion-color-primary-rgb), 0.3);
-      }
-
-      &:active {
-        transform: translateY(0);
-      }
     }
   }
 }
@@ -440,7 +420,7 @@
   --border-radius: 16px 16px 0 0;
 
   ion-content {
-    animation: fadeIn 0.3s ease-out;
+    animation: sermonsManagementFadeIn 0.3s ease-out;
   }
 }
 
@@ -450,7 +430,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  animation: fadeIn 0.4s ease-out;
+  animation: sermonsManagementFadeIn 0.4s ease-out;
 
   .warning-icon {
     font-size: 64px;
@@ -482,18 +462,7 @@
       margin: 0;
       --box-shadow: none;
       text-transform: none;
-      height: 44px;
       font-weight: 500;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-      &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      }
-
-      &:active {
-        transform: translateY(0);
-      }
     }
   }
 }

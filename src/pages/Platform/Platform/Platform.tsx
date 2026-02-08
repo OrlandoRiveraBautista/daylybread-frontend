@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { IonPage, IonToast } from "@ionic/react";
 import { Redirect, Route, Switch, useHistory, useLocation } from "react-router";
 import "./Platform.scss";
@@ -8,7 +8,9 @@ import { useAppContext } from "../../../context/context";
 
 /* Hooks */
 import { useToast } from "../../../hooks/useToast";
-import { useNFCConfig } from "../../../hooks/useNFCConfig";
+import { usePlatformAuth } from "../../../hooks/usePlatformAuth";
+import { usePlatformNFCDevices } from "../../../hooks/usePlatformNFCDevices";
+import { useAssignHomeScreenToNFCConfig } from "../../../hooks/NFCConfigHooks";
 
 /* Components */
 import CheckingAuthentication from "../../../components/Auth/CheckingAuthentication";
@@ -17,25 +19,52 @@ import {
   DashboardSection,
 } from "../../../components/Platform/DashboardLayout";
 import { DashboardOverview } from "../../../components/Platform/DashboardOverview";
-import { NFCDevicesList } from "../../../components/Platform/NFCDevicesList";
+import { NFCAndHomeScreensPage } from "../../../components/Platform/NFCAndHomeScreensPage";
 import { SermonsManagement } from "../../../components/Platform/SermonsManagement";
 import { SermonEditorPage } from "../../../components/Platform/SermonEditor";
+import { SudoAdminManager, SUDO_ADMIN_USER_ID } from "../../../components/Platform/SudoAdminManager";
 
 const Platform: React.FC = () => {
   const { userInfo } = useAppContext();
   const history = useHistory();
   const location = useLocation();
-  const [isLoading, setIsLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const organizationName = "My Organization";
 
+  // Authentication
+  const { isLoading, isAuthenticated } = usePlatformAuth(userInfo);
+
+  // Toast notifications
   const { showToast, toastMessage, toastOptions, show, hide } = useToast();
-  const { nfcConfigData, isSaving, fetchConfig, saveConfig } =
-    useNFCConfig(userInfo?._id!);
+
+  // NFC Devices management
+  const { 
+    devices, 
+    nfcDevices,
+    isSavingTiles, 
+    saveTiles, 
+    createHomeScreen, 
+    deleteDevice,
+    deleteNFCDevice,
+    fetchConfig 
+  } = usePlatformNFCDevices(userInfo?._id!);
+
+  // NFC assignment mutation
+  const [assignHomeScreenToNFCConfig] = useAssignHomeScreenToNFCConfig();
+
+  // Fetch NFC config when user is authenticated
+  useEffect(() => {
+    if (isAuthenticated && userInfo) {
+      fetchConfig();
+    }
+  }, [isAuthenticated, userInfo]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Check if user is sudo admin
+  const isSudoAdmin = userInfo?._id === SUDO_ADMIN_USER_ID;
 
   // Get active section from URL
   const getActiveSection = (): DashboardSection => {
     const path = location.pathname;
+    if (path.includes("/sudo-admin")) return "sudo-admin";
     if (path.includes("/nfc")) return "nfc";
     if (path.includes("/sermons")) return "sermons";
     if (path.includes("/calendar")) return "calendar";
@@ -45,71 +74,8 @@ const Platform: React.FC = () => {
     return "overview";
   };
 
-  useEffect(() => {
-    let tries = 0;
-    const checkAuth = () => {
-      const hasUserInfo = !!userInfo;
-
-      if (tries > 3) {
-        setIsAuthenticated(hasUserInfo);
-        setIsLoading(false);
-        return;
-      }
-
-      if (hasUserInfo) {
-        setIsAuthenticated(true);
-        setIsLoading(false);
-        console.log("userInfo", userInfo);
-        fetchConfig();
-        return;
-      }
-
-      tries++;
-    };
-
-    setTimeout(() => {
-      checkAuth();
-    }, 1500);
-  }, [userInfo]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const handleNFCDeviceSave = async (
-    deviceId: string | null,
-    formData: any,
-  ) => {
-    try {
-      if (!userInfo?._id) {
-        throw new Error("User not authenticated");
-      }
-
-      // If editing existing device, update it
-      if (deviceId) {
-        // Update existing device
-        await saveConfig(formData);
-        show("NFC device updated successfully");
-      } else {
-        // Create new device
-        await saveConfig(formData);
-        show("NFC device created successfully");
-      }
-
-      // Refresh the config data
-      fetchConfig();
-    } catch (error) {
-      console.error("Error saving NFC device:", error);
-      show(
-        error instanceof Error ? error.message : "Failed to save NFC device",
-      );
-    }
-  };
-
-  const handleNFCDeviceDelete = (deviceId: string) => {
-    // Implement delete functionality
-    console.log("Delete device:", deviceId);
-    show("Device deleted successfully");
-  };
-
+  // Navigate to different dashboard sections
   const handleSectionChange = (section: DashboardSection) => {
-    // Navigate to the appropriate route
     const routes: Record<DashboardSection, string> = {
       overview: "/",
       nfc: "/nfc",
@@ -118,23 +84,134 @@ const Platform: React.FC = () => {
       organization: "/organization",
       analytics: "/analytics",
       members: "/members",
+      "sudo-admin": "/sudo-admin",
     };
     history.push(routes[section]);
   };
 
-  // Convert single config to array format for the list view
-  const getDevices = () => {
-    const results = nfcConfigData?.getNFCConfigByOwner?.results;
-    if (!results) return [];
-    return [
-      {
-        name: "Primary NFC Device",
-        ...results,
-        id: results._id, // NFC config document id (not owner id)
-        status: "active" as const,
-        tapCount: 0,
-      },
-    ];
+  // Handle tile save with toast feedback
+  const handleSaveTiles = async (
+    deviceId: string,
+    tiles: any[],
+    wallpaper?: string,
+    name?: string,
+  ) => {
+    try {
+      await saveTiles(deviceId, tiles, wallpaper, name);
+      show("Home screen updated successfully");
+    } catch (error) {
+      console.error("Error saving tiles:", error);
+      show(
+        error instanceof Error
+          ? `Failed to update home screen: ${error.message}`
+          : "Failed to update home screen",
+      );
+    }
+  };
+
+  // Handle create home screen with toast feedback
+  const handleCreateHomeScreen = async (
+    name: string,
+    tiles: any[],
+    wallpaper?: string,
+  ) => {
+    try {
+      await createHomeScreen(name, tiles, wallpaper);
+      show("Home screen created successfully");
+    } catch (error) {
+      console.error("Error creating home screen:", error);
+      show(
+        error instanceof Error
+          ? `Failed to create home screen: ${error.message}`
+          : "Failed to create home screen",
+      );
+    }
+  };
+
+  // Handle delete with toast feedback
+  const handleDelete = async (deviceId: string) => {
+    try {
+      await deleteDevice(deviceId);
+      show("Home screen deleted successfully");
+    } catch (error) {
+      console.error("Error deleting home screen:", error);
+      show(
+        error instanceof Error
+          ? `Failed to delete home screen: ${error.message}`
+          : "Failed to delete home screen",
+      );
+      throw error; // Re-throw to let the component handle it
+    }
+  };
+
+  // Handle NFC device delete with toast feedback
+  const handleDeleteNFC = async (deviceId: string) => {
+    try {
+      await deleteNFCDevice(deviceId);
+      show("NFC device deleted successfully");
+    } catch (error) {
+      console.error("Error deleting NFC device:", error);
+      show(
+        error instanceof Error
+          ? `Failed to delete NFC device: ${error.message}`
+          : "Failed to delete NFC device",
+      );
+      throw error;
+    }
+  };
+
+  // Handle NFC device assignment to home screen
+  const handleAssignNFCToHomeScreen = async (nfcDeviceId: string, homeScreenId: string) => {
+    try {
+      const result = await assignHomeScreenToNFCConfig({
+        variables: { id: nfcDeviceId, homeScreenId },
+      });
+      
+      if (result.data?.assignHomeScreenToNFCConfig?.errors) {
+        const errorMsg = result.data.assignHomeScreenToNFCConfig.errors[0]?.message || "Failed to assign NFC device";
+        show(errorMsg);
+        throw new Error(errorMsg);
+      }
+      
+      // Refresh the data
+      await fetchConfig();
+      show("NFC device assigned successfully");
+    } catch (error) {
+      console.error("Error assigning NFC device:", error);
+      show(
+        error instanceof Error
+          ? `Failed to assign NFC device: ${error.message}`
+          : "Failed to assign NFC device",
+      );
+      throw error;
+    }
+  };
+
+  // Handle NFC device unassignment from home screen
+  const handleUnassignNFC = async (nfcDeviceId: string) => {
+    try {
+      const result = await assignHomeScreenToNFCConfig({
+        variables: { id: nfcDeviceId, homeScreenId: null },
+      });
+      
+      if (result.data?.assignHomeScreenToNFCConfig?.errors) {
+        const errorMsg = result.data.assignHomeScreenToNFCConfig.errors[0]?.message || "Failed to unassign NFC device";
+        show(errorMsg);
+        throw new Error(errorMsg);
+      }
+      
+      // Refresh the data
+      await fetchConfig();
+      show("NFC device unassigned successfully");
+    } catch (error) {
+      console.error("Error unassigning NFC device:", error);
+      show(
+        error instanceof Error
+          ? `Failed to unassign NFC device: ${error.message}`
+          : "Failed to unassign NFC device",
+      );
+      throw error;
+    }
   };
 
   if (isLoading) {
@@ -146,27 +223,33 @@ const Platform: React.FC = () => {
   }
 
   return (
-    <IonPage>
+    <IonPage id="platform-page">
       <DashboardLayout
         activeSection={getActiveSection()}
         onSectionChange={handleSectionChange}
         organizationName={organizationName}
+        isSudoAdmin={isSudoAdmin}
       >
         <Switch>
           <Route exact path="/">
             <DashboardOverview
               organizationName={organizationName}
               onNavigate={handleSectionChange}
-              nfcDeviceCount={getDevices().length}
+              nfcDeviceCount={devices.length}
             />
           </Route>
 
           <Route path="/nfc">
-            <NFCDevicesList
-              devices={getDevices()}
-              onSave={handleNFCDeviceSave}
-              onDelete={handleNFCDeviceDelete}
-              isSaving={isSaving}
+            <NFCAndHomeScreensPage
+              devices={devices}
+              nfcDevices={nfcDevices}
+              onSaveTiles={handleSaveTiles}
+              onCreateHomeScreen={handleCreateHomeScreen}
+              onDeleteHomeScreen={handleDelete}
+              onDeleteNFC={handleDeleteNFC}
+              onAssignNFCToHomeScreen={handleAssignNFCToHomeScreen}
+              onUnassignNFC={handleUnassignNFC}
+              isSaving={isSavingTiles}
             />
           </Route>
 
@@ -181,6 +264,13 @@ const Platform: React.FC = () => {
           <Route exact path="/sermons/:id">
             <SermonEditorPage />
           </Route>
+
+          {/* Sudo Admin Manager - restricted to specific user */}
+          {isSudoAdmin && (
+            <Route path="/sudo-admin">
+              <SudoAdminManager />
+            </Route>
+          )}
 
           {/* Coming in future releases */}
           {/* <Route path="/calendar">

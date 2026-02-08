@@ -1,155 +1,177 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
-  IonContent,
   IonPage,
-  IonTitle,
-  IonButton,
-  IonText,
-  IonCard,
-  IonCardContent,
   IonSpinner,
+  IonButton,
+  IonIcon,
+  IonToast,
 } from "@ionic/react";
-import { shareSocial } from "ionicons/icons";
-import { Share } from "@capacitor/share";
+import { save, close, create } from "ionicons/icons";
 
 /* Components */
-import PlatformHeader from "../../Header/Header";
+import { IPhoneHomeScreen } from "../../../../components/NFC/iPhoneHomeScreen";
+import { TileConfig } from "../../../../components/NFC/iPhoneHomeScreen/types";
 
 /* Styles */
 import "./NFC.scss";
 
 /* Hooks */
-import { useGetNFCConfig } from "../../../../hooks/NFCConfigHooks";
-import { cash, personAdd, calendar } from "ionicons/icons";
-import Tabs, { Tab } from "../../Tabs/Tabs";
+import { useAppContext } from "../../../../context/context";
+import { useNFCPageData } from "../../../../hooks/useNFCPageData";
+import { useNFCEditMode } from "../../../../hooks/useNFCEditMode";
+import { useGetHomeScreenByLink } from "../../../../hooks/HomeScreenHooks";
 
+/**
+ * Public NFC page that displays an iPhone-style home screen
+ * Accessed via:
+ * - /nfc?id=xxx (NFC config)
+ * - /nfc?hs=xxx (HomeScreen link)
+ */
 const NFC: React.FC = () => {
-  const id = new URLSearchParams(window.location.search).get("id") || "";
-  const { data: nfcConfigResults, loading } = useGetNFCConfig(id);
+  const urlParams = new URLSearchParams(window.location.search);
+  const nfcId = urlParams.get("id") || "";
+  const homeScreenLink = urlParams.get("hs") || "";
 
-  const handleBlockButton = () => {
-    // Replace with your desired link
-    window.location.href =
-      nfcConfigResults?.getNFCConfig?.results?.mainButton.url! || "";
-  };
+  const { userInfo } = useAppContext();
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
 
-  const handleCash = () => {
-    // Replace with your desired link
-    window.location.href =
-      nfcConfigResults?.getNFCConfig?.results?.givingLink?.url || "";
-  };
+  // NFC Config data
+  const nfcData = useNFCPageData(nfcId);
 
-  const handleNewMember = () => {
-    // Replace with your desired link
-    window.location.href =
-      nfcConfigResults?.getNFCConfig?.results?.memberRegistrationLink?.url ||
-      "";
-  };
+  // HomeScreen data
+  const [getHomeScreen, { data: hsData, loading: hsLoading }] =
+    useGetHomeScreenByLink();
 
-  const handleEventLink = () => {
-    // Replace with your desired link
-    window.location.href =
-      nfcConfigResults?.getNFCConfig?.results?.eventsLink?.url || "";
-  };
-
-  const tabs = (): Tab[] => {
-    const tabsPrototype: Tab[] = [];
-    const nfcConfig = nfcConfigResults?.getNFCConfig?.results;
-
-    if (nfcConfig?.givingLink?.isVisible) {
-      tabsPrototype.push({
-        icon: cash,
-        label: "Give",
-        value: "give",
-        onClick: handleCash,
-      });
+  useEffect(() => {
+    if (homeScreenLink) {
+      getHomeScreen({ variables: { shareableLink: homeScreenLink } });
     }
+  }, [homeScreenLink, getHomeScreen]);
 
-    if (nfcConfig?.memberRegistrationLink?.isVisible) {
-      tabsPrototype.push({
-        icon: personAdd,
-        label: "New Member",
-        value: "new-member",
-        onClick: handleNewMember,
-      });
+  // Determine which data to use
+  const loading = nfcId ? nfcData.loading : hsLoading;
+  const tiles = nfcId
+    ? nfcData.tiles
+    : hsData?.getHomeScreenByLink?.results?.tiles || [];
+  const wallpaper = nfcId
+    ? nfcData.wallpaper
+    : hsData?.getHomeScreenByLink?.results?.wallpaper;
+  const homeScreenId = nfcId
+    ? nfcData.nfcConfig?.homeScreen?._id
+    : hsData?.getHomeScreenByLink?.results?._id;
+  const ownerId = nfcId
+    ? nfcData.nfcConfig?.owner?._id
+    : hsData?.getHomeScreenByLink?.results?.owner?._id;
+
+  // Edit mode management
+  const {
+    isEditMode,
+    isOwner,
+    currentTiles,
+    currentWallpaper,
+    isSaving,
+    setCurrentTiles,
+    saveTiles,
+    enterEditMode,
+    exitEditMode,
+  } = useNFCEditMode({
+    homeScreenId,
+    initialTiles: tiles,
+    initialWallpaper: wallpaper,
+    ownerId,
+    currentUserId: userInfo?._id,
+    onSaveSuccess: async () => {
+      setToastMessage("Changes saved successfully!");
+      setShowToast(true);
+      if (nfcId) {
+        await nfcData.refetch();
+      } else {
+        await getHomeScreen({ variables: { shareableLink: homeScreenLink } });
+      }
+    },
+    onSaveError: (error) => {
+      setToastMessage(`Failed to save: ${error}`);
+      setShowToast(true);
+    },
+  });
+
+  // Handle tile click
+  const handleTileClick = (tile: TileConfig) => {
+    if (tile.url && tile.url !== "#") {
+      window.location.href = tile.url;
     }
-
-    if (nfcConfig?.eventsLink?.isVisible) {
-      tabsPrototype.push({
-        icon: calendar,
-        label: "Events",
-        value: "events",
-        onClick: handleEventLink,
-      });
-    }
-
-    tabsPrototype.push({
-      icon: shareSocial,
-      label: "Share",
-      value: "share",
-      onClick: () => {
-        const shareUrl = nfcConfig?.mainButton.url || window.location.href;
-        const shareTitle = nfcConfig?.title || "Check this out!";
-        const shareDescription = nfcConfig?.description || "";
-
-        Share.share({
-          title: shareTitle,
-          text: `${shareTitle}\n\n${shareDescription}\n\n🔗 ${shareUrl}`,
-          url: shareUrl,
-        });
-      },
-    });
-
-    return tabsPrototype;
   };
 
   return (
-    <IonPage id="nfc-page">
-      <PlatformHeader />
-
-      <IonContent
-        className="ion-padding"
-        style={{ "--background": "var(--ion-background-color)" }}
-      >
-        <div className="nfc-container">
-          {loading ? (
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                minHeight: "300px",
-              }}
-            >
-              <IonSpinner name="crescent" style={{ width: 48, height: 48 }} />
-            </div>
-          ) : (
-            <div className="nfc-content-container">
-              <IonCard className="nfc-card">
-                <IonCardContent>
-                  <IonTitle className="nfc-title">
-                    {nfcConfigResults?.getNFCConfig?.results?.title}
-                  </IonTitle>
-
-                  <IonText color="medium" className="nfc-description">
-                    <p>
-                      {nfcConfigResults?.getNFCConfig?.results?.description}
-                    </p>
-                  </IonText>
-
-                  {/* <NFCShare nfcConfig={nfcConfig?.getNFCConfig!} /> */}
-
-                  <IonButton onClick={handleBlockButton}>
-                    {nfcConfigResults?.getNFCConfig?.results?.mainButton.text}
-                  </IonButton>
-                </IonCardContent>
-              </IonCard>
+    <IonPage id="nfc-page" className="nfc-homescreen-page">
+      {loading ? (
+        <div className="nfc-loading">
+          <IonSpinner name="crescent" />
+        </div>
+      ) : (
+        <>
+          {/* Edit Mode Controls */}
+          {isEditMode && (
+            <div className="nfc-edit-controls">
+              <IonButton
+                fill="solid"
+                shape="round"
+                color="primary"
+                onClick={saveTiles}
+                disabled={isSaving}
+              >
+                <IonIcon slot="start" icon={save} />
+                {isSaving ? "Saving..." : "Save Changes"}
+              </IonButton>
+              <IonButton
+                fill="outline"
+                shape="round"
+                color="medium"
+                onClick={exitEditMode}
+                disabled={isSaving}
+              >
+                <IonIcon slot="start" icon={close} />
+                Exit Edit Mode
+              </IonButton>
             </div>
           )}
-        </div>
 
-        <Tabs tabs={tabs()} />
-      </IonContent>
+          {/* Edit Page Button (when owner is viewing but not editing) */}
+          {!isEditMode && isOwner && (
+            <div className="nfc-owner-controls">
+              <IonButton
+                fill="solid"
+                shape="round"
+                color="primary"
+                onClick={enterEditMode}
+                size="small"
+              >
+                <IonIcon slot="start" icon={create} />
+                Edit Page
+              </IonButton>
+            </div>
+          )}
+
+          <IPhoneHomeScreen
+            tiles={currentTiles}
+            wallpaper={currentWallpaper}
+            isEditMode={isEditMode}
+            onTileClick={handleTileClick}
+            onTilesChange={setCurrentTiles}
+            showStatusBar={true}
+            showDock={true}
+          />
+
+          <IonToast
+            isOpen={showToast}
+            onDidDismiss={() => setShowToast(false)}
+            message={toastMessage}
+            duration={3000}
+            position="top"
+          />
+        </>
+      )}
     </IonPage>
   );
 };

@@ -1,9 +1,76 @@
+// NFC Page Styles - iPhone Home Screen
+
 #nfc-page {
+  // Full-screen home screen mode
+  &.nfc-homescreen-page {
+    --background: transparent;
+    
+    .iphone-homescreen {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  
+  // Edit controls bar (full edit mode)
+  .nfc-edit-controls {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10000;
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    
+    ion-button {
+      margin: 0;
+      
+      &:first-child {
+        flex: 1;
+      }
+    }
+  }
+  
+  // Owner controls (when viewing but not editing)
+  .nfc-owner-controls {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 9999;
+    
+    ion-button {
+      --background: rgba(var(--ion-color-primary-rgb), 0.95);
+      --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+    }
+  }
+  
+  // Loading state
+  .nfc-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    
+    ion-spinner {
+      width: 48px;
+      height: 48px;
+      color: white;
+    }
+  }
+
+  // Legacy styles (keeping for backwards compatibility)
   .nfc-container {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100%;
+    
     .nfc-content-container {
       max-width: 600px;
       width: 100%;
@@ -31,7 +98,6 @@
 
   .nfc-description {
     display: block;
-    // margin-bottom: 16px;
     font-size: 14px;
     line-height: 20px;
     text-align: center;

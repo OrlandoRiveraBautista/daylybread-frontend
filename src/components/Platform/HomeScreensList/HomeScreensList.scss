@@ -1,0 +1,379 @@
+@import "../../../theme/variables.scss";
+
+// Keyframe animations
+@keyframes nfcDevicesListFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes newHomeScreenPulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+}
+
+.home-screens-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  animation: nfcDevicesListFadeIn 0.3s ease-out;
+}
+
+.screens-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+  gap: 16px;
+  animation: nfcDevicesListFadeIn 0.4s ease-out;
+
+  h1 {
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--ion-text-color);
+    margin: 0 0 8px 0;
+  }
+
+  p {
+    font-size: 16px;
+    color: var(--ion-color-medium);
+    margin: 0;
+  }
+}
+
+.empty-state-card {
+  background: $glass-background-light;
+  border: 1px solid $glass-border-lighter;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  animation: nfcDevicesListFadeIn 0.5s ease-out;
+
+  .empty-state {
+    text-align: center;
+    padding: 48px 24px;
+
+    .empty-state-icon {
+      font-size: 80px;
+      color: var(--ion-color-medium);
+      opacity: 0.3;
+      margin-bottom: 24px;
+    }
+
+    h2 {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--ion-text-color);
+      margin: 0 0 12px 0;
+    }
+
+    p {
+      font-size: 16px;
+      color: var(--ion-color-medium);
+      margin: 0 0 24px 0;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .empty-state-card {
+    background: $glass-background-dark;
+    border: 1px solid $glass-border-dark;
+  }
+}
+
+.devices-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 24px;
+  animation: nfcDevicesListFadeIn 0.4s ease-out;
+}
+
+.device-card {
+  background: $glass-background-light;
+  border: 1px solid $glass-border-lighter;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  margin: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--ion-color-primary),
+      transparent
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+
+    &::before {
+      opacity: 1;
+    }
+  }
+
+  &:active {
+    transform: translateY(-3px);
+    transition-duration: 0.1s;
+  }
+
+  .device-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .device-info {
+    flex: 1;
+    min-width: 0;
+
+    ion-card-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--ion-text-color);
+      margin-bottom: 8px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  }
+
+  &:hover .device-info ion-card-title {
+    color: var(--ion-color-primary);
+  }
+
+  .device-meta {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+
+    ion-badge {
+      text-transform: capitalize;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    ion-chip {
+      height: 24px;
+      font-size: 12px;
+      margin: 0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  }
+
+  .device-actions {
+    display: flex;
+    gap: 4px;
+
+    ion-button {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+      &:hover {
+        transform: scale(1.1);
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
+    }
+  }
+
+  .device-description {
+    display: block;
+    margin-bottom: 16px;
+
+    p {
+      margin: 0;
+      line-height: 1.5;
+    }
+  }
+
+  .device-stats {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 16px;
+    padding: 16px;
+    background: $glass-background-medium;
+    border: 1px solid $glass-border-lighter;
+    border-radius: 12px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      ion-text {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      strong {
+        font-size: 18px;
+        color: var(--ion-text-color);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+    }
+  }
+
+  &:hover .device-stats {
+    background: $glass-background-hover;
+    border: 1px solid $glass-border-light;
+  }
+
+  &:hover .device-stats .stat-item strong {
+    color: var(--ion-color-primary);
+    transform: scale(1.05);
+  }
+
+  .device-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+
+    ion-chip {
+      height: 28px;
+      font-size: 13px;
+      margin: 0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+  }
+
+  &.new-home-screen-card {
+    border: 2px dashed rgba(var(--ion-color-medium-rgb), 0.5);
+    background: $glass-background-light;
+    display: flex;
+    s &:hover {
+      border-color: var(--ion-color-primary);
+      background: rgba(var(--ion-color-primary-rgb), 0.15);
+    }
+
+    ion-card-content {
+      justify-content: center;
+      align-items: center;
+      min-height: 200px;
+      height: 100%;
+      display: flex;
+    }
+
+    .new-home-screen-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--ion-color-medium);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+      .add-icon {
+        font-size: 48px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      span {
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+    }
+
+    &:hover .new-home-screen-content {
+      color: var(--ion-color-primary);
+      transform: scale(1.05);
+
+      .add-icon {
+        animation: newHomeScreenPulse 1s ease-in-out infinite;
+      }
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .device-card {
+    background: $glass-background-dark;
+    border: 1px solid $glass-border-dark;
+
+    &:hover {
+      background: rgba(40, 40, 40, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+
+    .device-stats {
+      background: $glass-background-dark;
+      border: 1px solid $glass-border-dark;
+    }
+
+    &:hover .device-stats {
+      background: $glass-background-dark-hover;
+      border: 1px solid $glass-border-dark-hover;
+    }
+
+    &.new-home-screen-card {
+      background: $glass-background-dark;
+
+      &:hover {
+        background: rgba(var(--ion-color-primary-rgb), 0.2);
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .devices-header {
+    flex-direction: column;
+    align-items: flex-start;
+
+    h1 {
+      font-size: 24px;
+    }
+
+    p {
+      font-size: 14px;
+    }
+
+    ion-button {
+      width: 100%;
+    }
+  }
+
+  .devices-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .device-card {
+    .device-actions {
+      flex-direction: column;
+    }
+  }
+}
