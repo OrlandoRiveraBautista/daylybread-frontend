@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import {
   IonCard,
   IonCardContent,
@@ -85,7 +85,6 @@ export const SudoAdminManager: React.FC = () => {
     isLoading,
     isCreating,
     isUpdating,
-    isDeleting,
     isSearchingUsers,
     error,
     successMessage,
@@ -211,8 +210,10 @@ export const SudoAdminManager: React.FC = () => {
       config.nfcId?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       config.deviceType?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       config.owner?.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      config.owner?.firstName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      config.owner?.lastName?.toLowerCase().includes(searchQuery.toLowerCase())
+      config.owner?.firstName
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      config.owner?.lastName?.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const formatDate = (dateString: string) => {
@@ -240,8 +241,8 @@ export const SudoAdminManager: React.FC = () => {
         <div>
           <h1>Sudo Admin Manager</h1>
           <p>
-            Create and manage NFC configurations for any user. Configure physical
-            NFC tags and assign them to home screens on the go.
+            Create and manage NFC configurations for any user. Configure
+            physical NFC tags and assign them to home screens on the go.
           </p>
         </div>
         <IonButton
@@ -288,7 +289,9 @@ export const SudoAdminManager: React.FC = () => {
         <IonCard className="admin-form-card">
           <IonCardHeader>
             <IonCardTitle>
-              {editingId ? "Edit NFC Configuration" : "Create New NFC Configuration"}
+              {editingId
+                ? "Edit NFC Configuration"
+                : "Create New NFC Configuration"}
             </IonCardTitle>
           </IonCardHeader>
           <IonCardContent>
@@ -301,7 +304,10 @@ export const SudoAdminManager: React.FC = () => {
                     <div className="owner-info">
                       <IonAvatar>
                         <div className="avatar-placeholder">
-                          {(selectedOwner.firstName?.[0] || selectedOwner.email[0]).toUpperCase()}
+                          {(
+                            selectedOwner.firstName?.[0] ||
+                            selectedOwner.email[0]
+                          ).toUpperCase()}
                         </div>
                       </IonAvatar>
                       <div className="owner-details">
@@ -350,14 +356,18 @@ export const SudoAdminManager: React.FC = () => {
                               >
                                 <IonAvatar slot="start">
                                   <div className="avatar-placeholder">
-                                    {(user.firstName?.[0] || user.email[0]).toUpperCase()}
+                                    {(
+                                      user.firstName?.[0] || user.email[0]
+                                    ).toUpperCase()}
                                   </div>
                                 </IonAvatar>
                                 <IonLabel>
                                   <h3>{getOwnerDisplayName(user)}</h3>
                                   <p>{user.email}</p>
                                   {user.churchName && (
-                                    <p className="church-name">{user.churchName}</p>
+                                    <p className="church-name">
+                                      {user.churchName}
+                                    </p>
                                   )}
                                 </IonLabel>
                               </IonItem>
@@ -438,7 +448,11 @@ export const SudoAdminManager: React.FC = () => {
                   onIonChange={(e) =>
                     handleInputChange("homeScreenId", e.detail.value || "")
                   }
-                  placeholder={selectedOwner ? "Select a home screen" : "Select owner first"}
+                  placeholder={
+                    selectedOwner
+                      ? "Select a home screen"
+                      : "Select owner first"
+                  }
                   className="form-select"
                   disabled={!selectedOwner}
                   interface="popover"
@@ -538,7 +552,7 @@ export const SudoAdminManager: React.FC = () => {
                           {config.deviceType && (
                             <IonBadge color="secondary">
                               {deviceTypes.find(
-                                (t) => t.value === config.deviceType
+                                (t) => t.value === config.deviceType,
                               )?.label || config.deviceType}
                             </IonBadge>
                           )}
@@ -581,7 +595,10 @@ export const SudoAdminManager: React.FC = () => {
                         <span className="detail-value">
                           {getOwnerDisplayName(config.owner)}
                           {config.owner?.email && (
-                            <span className="owner-email"> ({config.owner.email})</span>
+                            <span className="owner-email">
+                              {" "}
+                              ({config.owner.email})
+                            </span>
                           )}
                         </span>
                       </div>
@@ -611,7 +628,9 @@ export const SudoAdminManager: React.FC = () => {
                       <div className="detail-row">
                         <IonIcon icon={eye} />
                         <span className="detail-label">Views:</span>
-                        <span className="detail-value">{config.views || 0}</span>
+                        <span className="detail-value">
+                          {config.views || 0}
+                        </span>
                       </div>
                       <div className="detail-row">
                         <IonIcon icon={time} />
