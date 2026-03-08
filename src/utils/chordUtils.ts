@@ -215,7 +215,7 @@ export function plainTextToChordPro(text: string): string {
     }
 
     // Check if this looks like a section header (e.g., "Intro:", "Verse 1:", "[Chorus]", etc.)
-    const sectionMatch = trimmed.match(/^\[?(\w[\w\s]*\d*)\]?[:\-]?\s*$/);
+    const sectionMatch = trimmed.match(/^\[?(\w[\w\s]*\d*)\]?[:-]?\s*$/);
     if (sectionMatch && isSectionHeader(sectionMatch[1])) {
       result.push(`[${sectionMatch[1].trim()}]`);
       i++;
@@ -293,7 +293,6 @@ function mergeChordAndLyricLines(chordLine: string, lyricLine: string): string {
  */
 export function getTransposedKeyName(originalKey: string, semitones: number): string {
   if (!originalKey) return "";
-  const isMinor = originalKey.endsWith("m") && !originalKey.endsWith("dim") && !originalKey.endsWith("dom");
   const rootMatch = originalKey.match(/^([A-G][#b]?)/);
   if (!rootMatch) return originalKey;
 
