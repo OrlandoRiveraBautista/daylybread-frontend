@@ -1,0 +1,196 @@
+@import "../../../../theme/variables.scss";
+@import "../worship-forms";
+
+@keyframes teamDetailFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.team-detail {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  animation: teamDetailFadeIn 0.3s ease-out;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+    gap: 16px;
+
+    &-left {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    h1 { font-size: 28px; font-weight: 600; margin: 0 0 4px 0; }
+    p { font-size: 14px; color: var(--ion-color-medium); margin: 0; }
+  }
+
+  &__tabs {
+    margin-bottom: 24px;
+    --background: $glass-background-light;
+    border-radius: 12px;
+    border: 1px solid $glass-border-lighter;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .team-detail__tabs {
+    --background: $glass-background-dark;
+    border: 1px solid $glass-border-dark;
+  }
+}
+
+.members-list, .invites-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.member-card, .invite-card {
+  background: $glass-background-light;
+  border: 1px solid $glass-border-lighter;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  margin: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    transform: translateX(4px);
+  }
+
+  ion-card-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .member-card, .invite-card {
+    background: $glass-background-dark;
+    border: 1px solid $glass-border-dark;
+  }
+}
+
+.member-card__info, .invite-card__info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.member-card__avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    rgba(var(--ion-color-primary-rgb), 1),
+    rgba(var(--ion-color-primary-rgb), 0.7)
+  );
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.member-card__details, .invite-card__details {
+  h3 { font-size: 16px; font-weight: 600; margin: 0 0 2px 0; }
+  p { font-size: 13px; margin: 0; }
+}
+
+.member-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+
+  ion-badge { font-size: 10px; padding: 4px 8px; }
+  ion-chip { height: 26px; font-size: 11px; }
+}
+
+.invite-card__status-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.empty-section {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--ion-color-medium);
+  font-size: 15px;
+}
+
+.invite-form {
+  padding: 24px;
+
+  h2 { font-size: 22px; font-weight: 600; margin: 0 0 8px 0; text-align: center; }
+
+  &__subtitle {
+    font-size: 14px;
+    color: var(--ion-color-medium);
+    text-align: center;
+    margin: 0 0 24px 0;
+  }
+
+  .form-field { margin-bottom: 16px; }
+}
+
+.invite-method-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px 16px;
+  background: rgba(var(--ion-color-primary-rgb), 0.08);
+  border-radius: 12px;
+  margin-bottom: 24px;
+  font-size: 13px;
+  color: var(--ion-color-medium);
+  line-height: 1.5;
+
+  ion-icon {
+    font-size: 18px;
+    color: var(--ion-color-primary);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+}
+
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+
+  ion-button { margin: 0; --box-shadow: none; text-transform: none; font-weight: 500; }
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 24px;
+  text-align: center;
+  ion-spinner { --color: var(--ion-color-primary); width: 48px; height: 48px; margin-bottom: 16px; }
+  p { color: var(--ion-color-medium); margin: 0; }
+}
+
+@media (max-width: 768px) {
+  .team-detail__header {
+    flex-direction: column;
+    align-items: stretch;
+    h1 { font-size: 22px; }
+    > ion-button { width: 100%; margin: 4px 0 0 0; }
+    &-left { align-items: flex-start; }
+  }
+}

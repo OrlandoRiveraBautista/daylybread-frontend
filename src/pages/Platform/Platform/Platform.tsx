@@ -24,6 +24,18 @@ import { SermonsManagement } from "../../../components/Platform/SermonsManagemen
 import { SermonEditorPage } from "../../../components/Platform/SermonEditor";
 import { SudoAdminManager, SUDO_ADMIN_USER_ID } from "../../../components/Platform/SudoAdminManager";
 
+/* Worship Team Manager */
+import { WorshipDashboard } from "../../../components/Platform/Worship/WorshipDashboard/WorshipDashboard";
+import { TeamsManagement } from "../../../components/Platform/Worship/TeamsManagement/TeamsManagement";
+import { TeamDetail } from "../../../components/Platform/Worship/TeamDetail/TeamDetail";
+import { SongLibrary } from "../../../components/Platform/Worship/SongLibrary/SongLibrary";
+import { ServicesManagement } from "../../../components/Platform/Worship/ServicesManagement/ServicesManagement";
+import { ServiceDetail } from "../../../components/Platform/Worship/ServiceDetail/ServiceDetail";
+import { RehearsalsManagement } from "../../../components/Platform/Worship/RehearsalsManagement/RehearsalsManagement";
+import { TeamInviteAccept } from "../../../components/Platform/Worship/TeamInviteAccept/TeamInviteAccept";
+import { SongView } from "../../../components/Platform/Worship/SongView/SongView";
+import { LiveService } from "../../../components/Platform/Worship/LiveService/LiveService";
+
 const Platform: React.FC = () => {
   const { userInfo } = useAppContext();
   const history = useHistory();
@@ -67,6 +79,7 @@ const Platform: React.FC = () => {
     if (path.includes("/sudo-admin")) return "sudo-admin";
     if (path.includes("/nfc")) return "nfc";
     if (path.includes("/sermons")) return "sermons";
+    if (path.includes("/worship")) return "worship";
     if (path.includes("/calendar")) return "calendar";
     if (path.includes("/organization")) return "organization";
     if (path.includes("/analytics")) return "analytics";
@@ -80,6 +93,7 @@ const Platform: React.FC = () => {
       overview: "/",
       nfc: "/nfc",
       sermons: "/sermons",
+      worship: "/worship",
       calendar: "/calendar",
       organization: "/organization",
       analytics: "/analytics",
@@ -219,7 +233,8 @@ const Platform: React.FC = () => {
   }
 
   if (!isAuthenticated) {
-    return <Redirect to="/login" />;
+    const redirectPath = location.pathname !== "/login" ? `?redirect=${encodeURIComponent(location.pathname)}` : "";
+    return <Redirect to={`/login${redirectPath}`} />;
   }
 
   return (
@@ -251,6 +266,47 @@ const Platform: React.FC = () => {
               onUnassignNFC={handleUnassignNFC}
               isSaving={isSavingTiles}
             />
+          </Route>
+
+          {/* Worship Team Manager */}
+          <Route exact path="/worship/invite/:token">
+            <TeamInviteAccept />
+          </Route>
+
+          <Route exact path="/worship">
+            <WorshipDashboard />
+          </Route>
+
+          <Route exact path="/worship/teams">
+            <TeamsManagement />
+          </Route>
+
+          <Route exact path="/worship/teams/:id">
+            <TeamDetail />
+          </Route>
+
+          <Route exact path="/worship/songs">
+            <SongLibrary />
+          </Route>
+
+          <Route exact path="/worship/songs/:id">
+            <SongView />
+          </Route>
+
+          <Route exact path="/worship/services">
+            <ServicesManagement />
+          </Route>
+
+          <Route exact path="/worship/services/:id">
+            <ServiceDetail />
+          </Route>
+
+          <Route exact path="/worship/services/:id/live">
+            <LiveService />
+          </Route>
+
+          <Route exact path="/worship/rehearsals">
+            <RehearsalsManagement />
           </Route>
 
           <Route exact path="/sermons">

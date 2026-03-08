@@ -1,0 +1,132 @@
+@import "../../../../theme/variables.scss";
+
+.chord-sheet {
+  &__controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 0 16px;
+    border-bottom: 1px solid $glass-border-lighter;
+    margin-bottom: 16px;
+  }
+
+  &__transpose {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    .transpose-btn {
+      --padding-start: 4px;
+      --padding-end: 4px;
+      font-size: 22px;
+    }
+
+    .reset-btn {
+      font-size: 13px;
+      --padding-start: 8px;
+      --padding-end: 8px;
+    }
+  }
+
+  &__key-display {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 60px;
+    justify-content: center;
+
+    .key-badge {
+      font-size: 14px;
+      padding: 4px 12px;
+      font-weight: 600;
+    }
+
+    .transpose-indicator {
+      font-size: 12px;
+      color: var(--ion-color-medium);
+      font-weight: 500;
+    }
+  }
+
+  &__content {
+    font-family: "SF Mono", "Menlo", "Monaco", "Courier New", monospace;
+    line-height: 1.4;
+    padding: 0 4px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+.chord-line {
+  &--empty {
+    height: 1em;
+  }
+
+  &--section {
+    margin-top: 20px;
+    margin-bottom: 8px;
+
+    .section-label {
+      font-weight: 700;
+      font-size: 0.9em;
+      color: var(--ion-color-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+  }
+
+  &--lyrics {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    white-space: pre-wrap;
+    margin-bottom: 2px;
+
+    &.has-chords {
+      margin-bottom: 4px;
+    }
+  }
+}
+
+.chord-pair {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+
+  .chord {
+    display: block;
+    font-weight: 700;
+    color: var(--ion-color-primary);
+    font-size: 0.9em;
+    line-height: 1.6;
+    white-space: nowrap;
+    user-select: all;
+  }
+
+  .lyric {
+    display: flex;
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .chord-sheet {
+    &__controls {
+      border-bottom-color: $glass-border-dark;
+    }
+  }
+
+  .chord-pair .chord {
+    color: var(--ion-color-tertiary);
+  }
+}
+
+@media (max-width: 768px) {
+  .chord-sheet {
+    &__content {
+      font-size: 13px !important;
+    }
+  }
+}

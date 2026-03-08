@@ -152,6 +152,42 @@
   }
 }
 
+// Logout footer
+.dashboard-menu-footer {
+  --background: transparent;
+  background: transparent;
+  padding: 8px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+
+  .dashboard-logout-item {
+    --background: transparent;
+    --border-radius: 16px;
+    border-radius: 16px;
+    --padding-start: 16px;
+    font-weight: 500;
+    color: var(--ion-color-danger);
+    --color: var(--ion-color-danger);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    ion-icon {
+      color: var(--ion-color-danger);
+      font-size: 20px;
+      margin-right: 16px;
+    }
+
+    &:hover {
+      background: rgba(var(--ion-color-danger-rgb), 0.08);
+      transform: translateX(4px);
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .dashboard-menu-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+}
+
 // Dashboard Header & Toolbar Glassmorphism
 .dashboard-header {
   background: rgba(255, 255, 255, 0.4);

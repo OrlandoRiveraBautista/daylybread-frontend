@@ -1,6 +1,5 @@
 import { gql } from "../__generated__/gql";
 import { useLazyQuery, useMutation, useQuery, useSubscription } from "@apollo/client";
-import { gql as rawGql } from "@apollo/client";
 
 /* Queries */
 const GetSermons = gql(`
@@ -218,7 +217,7 @@ export interface SermonAIPromptInfo {
 }
 
 /* Sermon AI Mutations */
-const GenerateSermonContent = rawGql`
+const GenerateSermonContent = gql(`
   mutation GenerateSermonContent($input: SermonAIInput!) {
     generateSermonContent(input: $input) {
       result {
@@ -232,10 +231,10 @@ const GenerateSermonContent = rawGql`
       }
     }
   }
-`;
+`);
 
 /* Sermon AI Queries */
-const GetSermonAIPromptTypes = rawGql`
+const GetSermonAIPromptTypes = gql(`
   query GetSermonAIPromptTypes {
     getSermonAIPromptTypes {
       type
@@ -244,7 +243,7 @@ const GetSermonAIPromptTypes = rawGql`
       description
     }
   }
-`;
+`);
 
 /* Sermon AI Hooks */
 export const useGenerateSermonContent = () => {
@@ -267,17 +266,17 @@ export const useLazyGetSermonAIPromptTypes = () => {
 };
 
 /* Sermon AI Streaming */
-const StreamSermonContent = rawGql`
+const StreamSermonContent = gql(`
   mutation StreamSermonContent($input: SermonAIInput!) {
     streamSermonContent(input: $input)
   }
-`;
+`);
 
-const SermonAIStreamSubscription = rawGql`
+const SermonAIStreamSubscription = gql(`
   subscription SermonAIStream($sessionId: String!) {
     sermonAIStream(sessionId: $sessionId)
   }
-`;
+`);
 
 export const useStreamSermonContent = () => {
   return useMutation<{ streamSermonContent: boolean }, { input: SermonAIInput }>(

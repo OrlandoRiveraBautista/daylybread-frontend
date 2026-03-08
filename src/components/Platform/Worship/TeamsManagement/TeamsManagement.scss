@@ -1,0 +1,327 @@
+@import "../../../../theme/variables.scss";
+@import "../worship-forms";
+
+@keyframes teamsFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes teamDelete {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.95); }
+  100% { opacity: 0; transform: scale(0.8) translateY(-20px); max-height: 0; margin-bottom: 0; }
+}
+
+.teams-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  animation: teamsFadeIn 0.3s ease-out;
+}
+
+.teams-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  gap: 16px;
+
+  &__left {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  h1 { font-size: 32px; font-weight: 600; color: var(--ion-text-color); margin: 0 0 8px 0; }
+  p { font-size: 16px; color: var(--ion-color-medium); margin: 0; }
+}
+
+.teams-search {
+  margin-bottom: 24px;
+  ion-searchbar {
+    --background: $glass-background-light;
+    border: 1px solid $glass-border-lighter;
+    --border-radius: 16px;
+    --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .teams-search ion-searchbar {
+    --background: $glass-background-dark;
+    border: 1px solid $glass-border-dark;
+  }
+}
+
+.teams-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.team-card {
+  background: $glass-background-light;
+  border: 1px solid $glass-border-lighter;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  margin: 0;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--ion-color-primary), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover {
+    border-color: rgba(var(--ion-color-primary-rgb), 0.5);
+    transform: translateY(-6px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+
+    &::before { opacity: 1; }
+  }
+
+  &.deleting {
+    animation: teamDelete 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    pointer-events: none;
+  }
+
+  ion-card-content {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    min-height: 160px;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+
+    .team-icon {
+      font-size: 32px;
+      color: var(--ion-color-primary);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    ion-badge {
+      font-size: 10px;
+      padding: 4px 8px;
+    }
+  }
+
+  &:hover &__header .team-icon {
+    transform: scale(1.1) rotate(5deg);
+  }
+
+  &__name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ion-text-color);
+    margin: 0 0 4px 0;
+    line-height: 1.4;
+  }
+
+  &__desc {
+    font-size: 13px;
+    color: var(--ion-color-medium);
+    margin: 0 0 auto 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 4px;
+    margin-top: 8px;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &:hover &__actions {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  &.new-team-card {
+    border: 2px dashed rgba(var(--ion-color-medium-rgb), 0.5);
+    background: $glass-background-light;
+
+    &:hover {
+      border-color: var(--ion-color-primary);
+      background: rgba(var(--ion-color-primary-rgb), 0.15);
+    }
+
+    ion-card-content { justify-content: center; align-items: center; }
+
+    .new-team-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--ion-color-medium);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+      .add-icon { font-size: 48px; }
+      span { font-size: 14px; font-weight: 500; }
+    }
+
+    &:hover .new-team-content {
+      color: var(--ion-color-primary);
+      transform: scale(1.05);
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .team-card {
+    background: $glass-background-dark;
+    border: 1px solid $glass-border-dark;
+
+    &:hover { background: $glass-background-dark-hover; }
+
+    &.new-team-card {
+      background: $glass-background-dark;
+      &:hover { background: rgba(var(--ion-color-primary-rgb), 0.2); }
+    }
+  }
+}
+
+/* Reuse sermon patterns for empty, loading, error, delete, and create modals */
+.loading-state, .error-card, .empty-state-container, .empty-state-card,
+.delete-confirmation, .delete-team-modal, .create-team-modal {
+  // Inherit from SermonsManagement.scss patterns
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 24px;
+  text-align: center;
+  ion-spinner { --color: var(--ion-color-primary); width: 48px; height: 48px; margin-bottom: 16px; }
+  p { color: var(--ion-color-medium); margin: 0; }
+}
+
+.empty-state-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.empty-state-card {
+  background: $glass-background-light;
+  backdrop-filter: blur(20px);
+  border: 1px solid $glass-border-lighter;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: 0 auto;
+
+  .empty-state {
+    text-align: center;
+    padding: 64px 32px;
+
+    .empty-state-icon-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 120px;
+      height: 120px;
+      margin-bottom: 24px;
+
+      &::before {
+        content: "";
+        position: absolute;
+        bottom: 10px; right: 3px;
+        width: 100%; height: 100%;
+        background: var(--ion-color-primary);
+        opacity: 0.08;
+        border-radius: 50%;
+      }
+
+      .empty-state-icon { font-size: 80px; color: var(--ion-color-primary); opacity: 0.6; position: relative; z-index: 1; }
+    }
+
+    h2 { font-size: 24px; font-weight: 600; margin: 0 0 12px 0; }
+    .empty-state-description { font-size: 16px; color: var(--ion-color-medium); line-height: 1.5; margin: 0 0 32px 0; }
+    .empty-state-button { margin: 0; --padding-start: 28px; --padding-end: 28px; height: 44px; }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .empty-state-card {
+    background: rgba(30, 30, 30, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+}
+
+.create-team-form {
+  padding: 24px;
+
+  h2 { font-size: 22px; font-weight: 600; margin: 0 0 24px 0; text-align: center; }
+
+  .form-field { margin-bottom: 16px; }
+}
+
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  margin-top: 8px;
+
+  ion-button { margin: 0; --box-shadow: none; text-transform: none; font-weight: 500; }
+}
+
+.delete-confirmation {
+  text-align: center;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .warning-icon { font-size: 64px; color: var(--ion-color-danger); margin-bottom: 16px; }
+  h2 { font-size: 22px; font-weight: 600; margin: 0 0 12px 0; }
+  p { font-size: 16px; color: var(--ion-color-medium); margin: 0 0 24px 0; line-height: 1.5; }
+}
+
+.error-card {
+  --background: var(--ion-color-danger-tint);
+  border-radius: 12px;
+  ion-card-content { text-align: center; padding: 24px; }
+}
+
+@media (max-width: 768px) {
+  .teams-header {
+    flex-direction: column;
+    align-items: stretch;
+    h1 { font-size: 24px; }
+    p { font-size: 14px; }
+    > ion-button { width: 100%; margin: 4px 0 0 0; }
+    &__left { align-items: flex-start; }
+  }
+  .teams-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+  .team-card {
+    ion-card-content { min-height: 140px; padding: 12px; }
+    &__actions { opacity: 1; }
+    &__header .team-icon { font-size: 26px; }
+    &__name { font-size: 15px; }
+  }
+}

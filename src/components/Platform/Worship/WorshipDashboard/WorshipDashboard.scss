@@ -1,0 +1,379 @@
+@import "../../../../theme/variables.scss";
+
+@keyframes worshipFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.worship-dashboard {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  animation: worshipFadeIn 0.3s ease-out;
+
+  &__header {
+    margin-bottom: 32px;
+    animation: worshipFadeIn 0.4s ease-out;
+
+    h1 {
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--ion-text-color);
+      margin: 0 0 8px 0;
+    }
+
+    p {
+      font-size: 16px;
+      color: var(--ion-color-medium);
+      margin: 0;
+    }
+  }
+
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  &__section {
+    margin-bottom: 32px;
+  }
+
+  &__empty {
+    display: flex;
+    justify-content: center;
+    margin-top: 24px;
+  }
+}
+
+.stat-card {
+  background: $glass-background-light;
+  border: 1px solid $glass-border-lighter;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  margin: 0;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+    border-color: rgba(var(--ion-color-primary-rgb), 0.3);
+  }
+
+  ion-card-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+  }
+
+  &__icon {
+    font-size: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: rgba(var(--ion-color-primary-rgb), 0.1);
+    flex-shrink: 0;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--ion-text-color);
+    line-height: 1.2;
+  }
+
+  &__label {
+    font-size: 14px;
+    color: var(--ion-color-medium);
+    font-weight: 500;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .stat-card {
+    background: $glass-background-dark;
+    border: 1px solid $glass-border-dark;
+
+    &:hover {
+      background: $glass-background-dark-hover;
+    }
+  }
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+
+  h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--ion-text-color);
+    margin: 0;
+  }
+
+  .section-link {
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.upcoming-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.upcoming-card {
+  background: $glass-background-light;
+  border: 1px solid $glass-border-lighter;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  margin: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    transform: translateX(4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  }
+
+  ion-card-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 16px 20px;
+  }
+
+  &__date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 48px;
+    padding: 8px;
+    border-radius: 12px;
+    background: linear-gradient(
+      135deg,
+      rgba(var(--ion-color-primary-rgb), 1),
+      rgba(var(--ion-color-primary-rgb), 0.85)
+    );
+    color: white;
+  }
+
+  &__day {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  &__month {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  &__info {
+    flex: 1;
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--ion-text-color);
+      margin: 0 0 6px 0;
+    }
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--ion-color-medium);
+
+    ion-icon {
+      font-size: 14px;
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .upcoming-card {
+    background: $glass-background-dark;
+    border: 1px solid $glass-border-dark;
+  }
+}
+
+.teams-preview {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.team-preview-card {
+  background: $glass-background-light;
+  border: 1px solid $glass-border-lighter;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  margin: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+  }
+
+  ion-card-content {
+    text-align: center;
+    padding: 24px 16px;
+  }
+
+  &__icon {
+    font-size: 32px;
+    color: var(--ion-color-primary);
+    margin-bottom: 8px;
+  }
+
+  h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+    color: var(--ion-text-color);
+  }
+
+  p {
+    font-size: 13px;
+    margin: 0;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .team-preview-card {
+    background: $glass-background-dark;
+    border: 1px solid $glass-border-dark;
+  }
+}
+
+.empty-welcome-card {
+  background: $glass-background-light;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid $glass-border-lighter;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: 0;
+}
+
+.empty-welcome {
+  text-align: center;
+  padding: 48px 24px;
+
+  &__icon {
+    font-size: 80px;
+    color: var(--ion-color-primary);
+    opacity: 0.6;
+    margin-bottom: 24px;
+  }
+
+  h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--ion-text-color);
+    margin: 0 0 12px 0;
+  }
+
+  p {
+    font-size: 16px;
+    color: var(--ion-color-medium);
+    line-height: 1.5;
+    margin: 0 0 24px 0;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+
+    .action-link {
+      cursor: pointer;
+      font-weight: 500;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .empty-welcome-card {
+    background: rgba(30, 30, 30, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 24px;
+  text-align: center;
+
+  ion-spinner {
+    --color: var(--ion-color-primary);
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+  }
+
+  p {
+    color: var(--ion-color-medium);
+    margin: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .worship-dashboard__header h1 {
+    font-size: 24px;
+  }
+
+  .worship-dashboard__stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stat-card ion-card-content {
+    padding: 16px;
+  }
+
+  .stat-card__value {
+    font-size: 22px;
+  }
+
+  .stat-card__icon {
+    font-size: 28px;
+    width: 44px;
+    height: 44px;
+  }
+
+  .teams-preview {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

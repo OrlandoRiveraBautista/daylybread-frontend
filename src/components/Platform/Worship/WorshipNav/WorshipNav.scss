@@ -1,0 +1,85 @@
+@import "../../../../theme/variables.scss";
+
+.worship-nav {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  margin-bottom: 24px;
+  background: $glass-background-light;
+  border: 1px solid $glass-border-lighter;
+  border-radius: 14px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
+  // Hide scrollbar but keep functionality
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--ion-color-medium);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    font-family: inherit;
+
+    ion-icon {
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      background: rgba(var(--ion-color-primary-rgb), 0.06);
+      color: var(--ion-color-primary);
+    }
+
+    &.active {
+      background: var(--ion-color-primary);
+      color: white;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(var(--ion-color-primary-rgb), 0.3);
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .worship-nav {
+    background: $glass-background-dark;
+    border-color: $glass-border-dark;
+
+    &__item:hover {
+      background: rgba(var(--ion-color-primary-rgb), 0.12);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .worship-nav {
+    margin-bottom: 16px;
+
+    &__item {
+      padding: 8px 12px;
+      font-size: 12px;
+
+      ion-icon { font-size: 16px; }
+
+      // Hide labels on mobile, show only icons
+      span { display: none; }
+    }
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .worship-nav__item {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}
