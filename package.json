@@ -70,8 +70,9 @@
   },
   "scripts": {
     "start": "ionic serve --prod",
-    "build": "ionic build --prod && npm run delete-maps",
+    "build": "npm run sitemap && ionic build --prod && npm run delete-maps",
     "dev": "ionic serve",
+    "sitemap": "node scripts/generate-sitemap.js",
     "delete-maps": "rm ./build/static/js/*.map && rm ./build/static/css/*.map",
     "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!(@ionic/react|@ionic/react-router|@ionic/core|@stencil/core|ionicons)/)'",
     "eject": "react-scripts eject",
