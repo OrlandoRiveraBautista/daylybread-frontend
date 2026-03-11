@@ -289,6 +289,30 @@ function mergeChordAndLyricLines(chordLine: string, lyricLine: string): string {
 }
 
 /**
+ * Calculate the semitone difference between two keys for auto-transposition.
+ * e.g. G → D = -5 semitones
+ */
+export function getSemitonesBetweenKeys(fromKey: string, toKey: string): number {
+  const extractRoot = (key: string) => {
+    const match = key.match(/^([A-G][#b]?)/);
+    return match ? match[1] : null;
+  };
+
+  const fromRoot = extractRoot(fromKey);
+  const toRoot = extractRoot(toKey);
+  if (!fromRoot || !toRoot) return 0;
+
+  const fromIdx = NOTE_TO_INDEX[fromRoot];
+  const toIdx = NOTE_TO_INDEX[toRoot];
+  if (fromIdx === undefined || toIdx === undefined) return 0;
+
+  let diff = toIdx - fromIdx;
+  if (diff > 6) diff -= 12;
+  if (diff < -6) diff += 12;
+  return diff;
+}
+
+/**
  * Get the key name for a given semitone offset from the original key
  */
 export function getTransposedKeyName(originalKey: string, semitones: number): string {

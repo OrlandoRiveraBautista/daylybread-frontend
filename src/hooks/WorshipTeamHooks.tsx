@@ -253,10 +253,13 @@ const GetMyInvites = gql(`
           _id
           firstName
           lastName
+          email
+          churchName
         }
         team {
           _id
           name
+          description
         }
       }
       errors {
@@ -464,11 +467,24 @@ export const useSendTeamInvite = () => {
 export const useRespondToInvite = () => {
   return useMutation(RespondToInvite, {
     refetchQueries: [{ query: GetMyInvites }],
+    // Evict all cached TeamInvite lists so any open TeamDetail page
+    // immediately reflects the updated status without a manual refresh.
+    update(cache) {
+      cache.evict({ fieldName: "getTeamInvites" });
+      cache.gc();
+    },
   });
 };
 
 export const useAcceptInviteByToken = () => {
-  return useMutation(AcceptInviteByToken);
+  return useMutation(AcceptInviteByToken, {
+    // Same cache eviction — the invite status changed on the server,
+    // so any cached getTeamInvites result is now stale.
+    update(cache) {
+      cache.evict({ fieldName: "getTeamInvites" });
+      cache.gc();
+    },
+  });
 };
 
 export const useCancelTeamInvite = () => {

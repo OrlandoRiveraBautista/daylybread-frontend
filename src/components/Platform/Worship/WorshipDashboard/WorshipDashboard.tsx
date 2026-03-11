@@ -17,7 +17,9 @@ import {
 import { useGetWorshipTeams } from "../../../../hooks/WorshipTeamHooks";
 import { useGetWorshipServices } from "../../../../hooks/WorshipServiceHooks";
 import { useGetSongs } from "../../../../hooks/SongHooks";
+import { parseServiceDate } from "../../../../utils/serviceDate";
 import { WorshipNav } from "../WorshipNav/WorshipNav";
+import { PageHeader } from "../../PageHeader";
 import "./WorshipDashboard.scss";
 
 export const WorshipDashboard: React.FC = () => {
@@ -34,7 +36,7 @@ export const WorshipDashboard: React.FC = () => {
 
   // Get upcoming services (future dates)
   const upcomingServices = services
-    .filter((s: any) => new Date(Number(s.date)) >= new Date())
+    .filter((s: any) => parseServiceDate(s.date) >= new Date())
     .slice(0, 3);
 
   const totalMembers = teams.reduce(
@@ -76,10 +78,10 @@ export const WorshipDashboard: React.FC = () => {
   if (isLoading) {
     return (
       <div className="worship-dashboard">
-        <div className="worship-dashboard__header">
-          <h1>Worship Team Manager</h1>
-          <p>Organize your worship teams, services, and setlists</p>
-        </div>
+        <PageHeader
+          title="Worship Team Manager"
+          subtitle="Organize your worship teams, services, and setlists"
+        />
         <div className="loading-state">
           <IonSpinner name="crescent" />
           <p>Loading dashboard...</p>
@@ -91,10 +93,10 @@ export const WorshipDashboard: React.FC = () => {
   return (
     <div className="worship-dashboard">
       <WorshipNav />
-      <div className="worship-dashboard__header">
-        <h1>Worship Team Manager</h1>
-        <p>Organize your worship teams, services, and setlists</p>
-      </div>
+      <PageHeader
+        title="Worship Team Manager"
+        subtitle="Organize your worship teams, services, and setlists"
+      />
 
       <div className="worship-dashboard__stats">
         {stats.map((stat) => (
@@ -140,14 +142,18 @@ export const WorshipDashboard: React.FC = () => {
                 <IonCardContent>
                   <div className="upcoming-card__date">
                     <span className="upcoming-card__day">
-                      {new Date(Number(service.date)).toLocaleDateString("en-US", { day: "numeric" })}
+                      {parseServiceDate(service.date).toLocaleDateString("en-US", { day: "numeric" })}
                     </span>
                     <span className="upcoming-card__month">
-                      {new Date(Number(service.date)).toLocaleDateString("en-US", { month: "short" })}
+                      {parseServiceDate(service.date).toLocaleDateString("en-US", { month: "short" })}
                     </span>
                   </div>
                   <div className="upcoming-card__info">
                     <h3>{service.name}</h3>
+                    <div className="upcoming-card__meta upcoming-card__time">
+                      <IonIcon icon={calendar} />
+                      <span>{parseServiceDate(service.date).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true })}</span>
+                    </div>
                     <div className="upcoming-card__meta">
                       <IonIcon icon={people} />
                       <span>{service.team?.name}</span>

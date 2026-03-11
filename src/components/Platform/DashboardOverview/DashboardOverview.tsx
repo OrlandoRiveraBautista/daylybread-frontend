@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useMemo } from "react";
+import { useHistory } from "react-router-dom";
 import {
   IonCard,
   IonCardContent,
@@ -10,11 +11,26 @@ import {
   IonCol,
   IonText,
   IonButton,
+  IonSpinner,
 } from "@ionic/react";
-import { card, document } from "ionicons/icons";
+import { card, document, calendar, playCircle } from "ionicons/icons";
 import { DashboardSection } from "../DashboardLayout";
 import { useGetSermons } from "../../../hooks/SermonHooks";
+import { useGetWorshipServices } from "../../../hooks/WorshipServiceHooks";
+import { parseServiceDate } from "../../../utils/serviceDate";
+import { PageHeader } from "../PageHeader";
 import "./DashboardOverview.scss";
+
+/** Service date is stored in UTC (ISO or ms); check if it falls on today (local date). */
+function isServiceToday(service: { date: string }) {
+  const d = parseServiceDate(service.date);
+  const now = new Date();
+  return (
+    d.getFullYear() === now.getFullYear() &&
+    d.getMonth() === now.getMonth() &&
+    d.getDate() === now.getDate()
+  );
+}
 
 interface DashboardOverviewProps {
   organizationName?: string;
@@ -27,9 +43,17 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   onNavigate,
   nfcDeviceCount = 0,
 }) => {
+  const history = useHistory();
   // Fetch sermons to get the real count
   const { data: sermonsData, loading: sermonsLoading } = useGetSermons();
   const sermonCount = sermonsData?.getSermons?.results?.length || 0;
+
+  const { data: servicesData, loading: servicesLoading } = useGetWorshipServices();
+  const todaysServices = useMemo(() => {
+    const all = servicesData?.getWorshipServices?.results || [];
+    return all.filter((s: { date: string }) => isServiceToday(s));
+  }, [servicesData?.getWorshipServices?.results]);
+  const primaryTodaysService = todaysServices[0];
 
   const stats = [
     {
@@ -90,8 +114,82 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   return (
     <div className="dashboard-overview-container">
       <div className="dashboard-welcome">
-        <h1>Welcome to {organizationName || "Your Dashboard"}</h1>
-        <p>Manage your church or organization from one central place</p>
+        <PageHeader
+          title={`Welcome to ${organizationName || "Your Dashboard"}`}
+          subtitle="Manage your church or organization from one central place"
+        />
+      </div>
+
+      {/* Today's service — front and center */}
+      <div className="todays-service-section">
+        {servicesLoading ? (
+          <IonCard className="todays-service-card todays-service-card--loading">
+            <IonCardContent>
+              <IonSpinner name="crescent" />
+              <IonText color="medium">Loading today&apos;s service...</IonText>
+            </IonCardContent>
+          </IonCard>
+        ) : primaryTodaysService ? (
+          <IonCard className="todays-service-card todays-service-card--active">
+            <IonCardContent>
+              <div className="todays-service-badge">Today&apos;s service</div>
+              <h2 className="todays-service-name">{primaryTodaysService.name}</h2>
+              <div className="todays-service-meta">
+                <IonIcon icon={calendar} />
+                <span>
+                  {parseServiceDate(primaryTodaysService.date).toLocaleString(
+                    "en-US",
+                    { dateStyle: "short", timeStyle: "short" },
+                  )}
+                  {primaryTodaysService.team?.name && (
+                    <> · {primaryTodaysService.team.name}</>
+                  )}
+                </span>
+              </div>
+              <div className="todays-service-actions">
+                <IonButton
+                  fill="solid"
+                  color="primary"
+                  onClick={() =>
+                    history.push(`/worship/services/${primaryTodaysService._id}/live`)
+                  }
+                  className="todays-service-btn-primary"
+                >
+                  <IonIcon icon={playCircle} slot="start" />
+                  Go live
+                </IonButton>
+                <IonButton
+                  fill="outline"
+                  color="primary"
+                  onClick={() =>
+                    history.push(`/worship/services/${primaryTodaysService._id}`)
+                  }
+                >
+                  View service
+                </IonButton>
+              </div>
+              {todaysServices.length > 1 && (
+                <IonText color="medium" className="todays-service-more">
+                  +{todaysServices.length - 1} more today
+                </IonText>
+              )}
+            </IonCardContent>
+          </IonCard>
+        ) : (
+          <IonCard className="todays-service-card todays-service-card--empty">
+            <IonCardContent>
+              <IonIcon icon={calendar} className="todays-service-empty-icon" />
+              <IonText color="medium">No service scheduled for today</IonText>
+              <IonButton
+                fill="clear"
+                size="small"
+                onClick={() => onNavigate("worship" as DashboardSection)}
+              >
+                View worship services
+              </IonButton>
+            </IonCardContent>
+          </IonCard>
+        )}
       </div>
 
       <IonGrid>

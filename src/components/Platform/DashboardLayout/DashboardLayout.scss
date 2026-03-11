@@ -10,6 +10,26 @@
   }
 }
 
+@keyframes logoutDimIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes logoutContentIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @keyframes slideInLeft {
   from {
     opacity: 0;
@@ -24,8 +44,8 @@
 // Menu Container Glassmorphism
 .dashboard-menu {
   --background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
+  backdrop-filter: blur(15px) saturate(180%) brightness(1.05);
+  -webkit-backdrop-filter: blur(15px) saturate(180%) brightness(1.05);
   border-right: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 4px 0 24px rgba(0, 0, 0, 0.1);
 }
@@ -56,98 +76,142 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   animation: dashboardLayoutFadeIn 0.4s ease-out;
-  background: $glass-background-light;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.75),
+    rgba(240, 244, 255, 0.6)
+  );
   border-radius: 20px;
-  margin: 12px;
-  border: 1px solid $glass-border-lighter;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  margin: 12px 12px 4px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.06),
+    inset 0 1px 1px rgba(255, 255, 255, 0.9);
 }
 
 @media (prefers-color-scheme: dark) {
   .dashboard-menu-header {
-    background: $glass-background-dark-hover;
-    border: 1px solid $glass-border-dark-hover;
+    background: linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.07),
+      rgba(255, 255, 255, 0.04)
+    );
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   }
 }
 
 .dashboard-menu-logo {
-  width: 120px;
+  width: 110px;
   height: auto;
 }
 
 .dashboard-org-name {
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
   color: var(--ion-color-medium);
   text-align: center;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  background: rgba(var(--ion-color-primary-rgb), 0.07);
+  border-radius: 20px;
+  border: 1px solid rgba(var(--ion-color-primary-rgb), 0.12);
 }
 
 .dashboard-menu-list {
-  padding: 16px 8px;
-
+  padding: 8px 10px 8px;
+  background: none;
   ion-item {
     --background: transparent;
-    --border-radius: 16px;
-    border-radius: 16px;
-    --padding-start: 16px;
-    margin-bottom: 8px;
+    --border-radius: 14px;
+    border-radius: 14px;
+    --padding-start: 14px;
+    --padding-end: 8px;
+    --min-height: 48px;
+    margin-bottom: 4px;
     font-weight: 500;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    background: $glass-background-dark;
-    border: 1px solid $glass-border-dark;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 
     > ion-icon {
-      margin-right: 16px;
-      font-size: 20px;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      margin-right: 14px;
+      font-size: 19px;
+      color: var(--ion-color-medium);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    ion-label {
+      font-size: 15px;
+      color: var(--ion-color-medium);
+      transition: color 0.25s ease;
     }
 
     &.dashboard-menu-item-active {
       background: linear-gradient(
         135deg,
-        rgba(var(--ion-color-primary-rgb), 1),
-        rgba(var(--ion-color-primary-rgb), 0.85)
+        rgba(var(--ion-color-primary-rgb), 0.15),
+        rgba(var(--ion-color-primary-rgb), 0.08)
       );
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      box-shadow: 0 8px 32px rgba(var(--ion-color-primary-rgb), 0.3);
-      --color: white;
+      border: 1px solid rgba(var(--ion-color-primary-rgb), 0.25);
+      box-shadow: 0 4px 16px rgba(var(--ion-color-primary-rgb), 0.12);
+      --color: var(--ion-color-primary);
 
-      ion-icon {
-        color: white;
+      > ion-icon {
+        color: var(--ion-color-primary);
+        transform: scale(1.05);
       }
 
       ion-label {
-        color: white;
+        color: var(--ion-color-primary);
+        font-weight: 600;
       }
     }
 
     &:hover:not(.dashboard-menu-item-active) {
-      background: $glass-background-dark-hover;
-      border: 1px solid $glass-border-dark-hover;
-      transform: translateX(4px);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      background: $glass-background-hover;
+      border-radius: 18px;
+      transform: translateX(3px);
 
       > ion-icon {
-        transform: scale(1.1);
+        color: var(--ion-color-dark);
+        transform: scale(1.08);
+      }
+
+      ion-label {
+        color: var(--ion-color-dark);
       }
     }
 
     &:active {
-      transform: translateX(2px);
+      transform: translateX(1px) scale(0.99);
     }
   }
 }
 
 @media (prefers-color-scheme: dark) {
   .dashboard-menu-list ion-item {
-    background: $glass-background-dark-hover;
-    border: 1px solid $glass-border-dark-hover;
+    &.dashboard-menu-item-active {
+      background: linear-gradient(
+        135deg,
+        rgba(var(--ion-color-primary-rgb), 0.25),
+        rgba(var(--ion-color-primary-rgb), 0.15)
+      );
+      border: 1px solid rgba(var(--ion-color-primary-rgb), 0.35);
+      box-shadow: 0 4px 16px rgba(var(--ion-color-primary-rgb), 0.2);
+    }
 
     &:hover:not(.dashboard-menu-item-active) {
-      background: rgba(255, 255, 255, 0.18);
-      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: $glass-background-dark-hover;
+
+      > ion-icon {
+        color: #fff;
+      }
+
+      ion-label {
+        color: #fff;
+      }
     }
   }
 }
@@ -156,43 +220,54 @@
 .dashboard-menu-footer {
   --background: transparent;
   background: transparent;
-  padding: 8px;
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 8px 10px 12px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
 
   .dashboard-logout-item {
     --background: transparent;
-    --border-radius: 16px;
-    border-radius: 16px;
-    --padding-start: 16px;
+    --border-radius: 14px;
+    border-radius: 14px;
+    --padding-start: 14px;
+    --min-height: 48px;
     font-weight: 500;
     color: var(--ion-color-danger);
     --color: var(--ion-color-danger);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 
     ion-icon {
       color: var(--ion-color-danger);
-      font-size: 20px;
-      margin-right: 16px;
+      font-size: 19px;
+      margin-right: 14px;
+      transition: transform 0.25s ease;
+    }
+
+    ion-label {
+      font-size: 15px;
     }
 
     &:hover {
-      background: rgba(var(--ion-color-danger-rgb), 0.08);
-      transform: translateX(4px);
+      background: rgba(var(--ion-color-danger-rgb), 0.07);
+      border-radius: 18px;
+      transform: translateX(3px);
+
+      ion-icon {
+        transform: scale(1.08);
+      }
     }
   }
 }
 
 @media (prefers-color-scheme: dark) {
   .dashboard-menu-footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
   }
 }
 
 // Dashboard Header & Toolbar Glassmorphism
 .dashboard-header {
   background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(15px) saturate(180%) brightness(1.05);
+  -webkit-backdrop-filter: blur(15px) saturate(180%) brightness(1.05);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
 
@@ -234,4 +309,53 @@
       --background-hover: rgba(255, 255, 255, 0.25);
     }
   }
+}
+
+// Logout dim overlay — dark scrim that gradually covers the dashboard
+.logout-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  // Pure dark scrim — this is what creates the visible dim effect
+  background: rgba(0, 0, 0, 0);
+  animation: logoutDimIn 3.4s cubic-bezier(0.25, 0, 0.5, 1) forwards;
+  animation-fill-mode: forwards;
+}
+
+// We use a pseudo-element so the scrim color can animate independently
+// while the content fades in on its own schedule
+.logout-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 1);
+  animation: logoutDimIn 3.4s cubic-bezier(0.25, 0, 0.5, 1) forwards;
+}
+
+.logout-overlay-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  // Content appears early so the user immediately knows what's happening
+  animation: logoutContentIn 0.4s ease-out 0.15s backwards;
+}
+
+.logout-overlay-spinner {
+  width: 36px;
+  height: 36px;
+  --color: #ffffff;
+}
+
+.logout-overlay-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+  letter-spacing: 0.3px;
 }

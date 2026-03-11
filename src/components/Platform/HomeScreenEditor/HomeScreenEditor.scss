@@ -150,6 +150,7 @@
       box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
       // border-color:;
       border: 3px solid rgba(var(--ion-color-primary-rgb), 0.5);
+      border-radius: 16px;
 
       &::before {
         opacity: 1;
@@ -307,6 +308,7 @@
 
 .tile-library {
   padding: 20px;
+  @include platform-sheet-animate;
 
   .category-section {
     margin-bottom: 28px;
@@ -349,6 +351,7 @@
       border-color: var(--ion-color-primary);
       transform: translateY(-2px);
       box-shadow: 0 4px 16px rgba(var(--ion-color-primary-rgb), 0.2);
+      border-radius: 20px;
     }
 
     &:active {
@@ -433,6 +436,7 @@
 
 .tile-config {
   padding: 20px;
+  @include platform-sheet-animate;
 
   .tile-preview {
     display: flex;

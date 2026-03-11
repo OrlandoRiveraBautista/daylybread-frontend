@@ -4,11 +4,11 @@ import {
   IonButton,
   IonIcon,
   IonSpinner,
-  IonBadge,
 } from "@ionic/react";
-import { arrowBack, expandOutline, contractOutline } from "ionicons/icons";
+import { expandOutline, contractOutline } from "ionicons/icons";
 import { useGetSong } from "../../../../hooks/SongHooks";
 import { ChordSheet } from "../ChordSheet/ChordSheet";
+import { PageHeader } from "../../PageHeader";
 import "./SongView.scss";
 
 export const SongView: React.FC = () => {
@@ -33,39 +33,35 @@ export const SongView: React.FC = () => {
   if (!song) {
     return (
       <div className="song-view">
-        <IonButton fill="clear" onClick={() => history.goBack()}>
-          <IonIcon slot="start" icon={arrowBack} /> Back
-        </IonButton>
-        <p>Song not found.</p>
+        <PageHeader title="Song not found" onBack={() => history.goBack()} />
       </div>
     );
   }
 
   return (
     <div className={`song-view ${isZenMode ? "song-view--zen" : ""}`}>
-      <div className="song-view__header">
-        <div className="song-view__header-left">
-          <IonButton fill="clear" size="small" shape="round" onClick={() => history.goBack()}>
-            <IonIcon slot="icon-only" icon={arrowBack} />
-          </IonButton>
-          <div className="song-view__title-block">
-            <h1>{song.title}</h1>
-            {song.artist && <p className="song-view__artist">{song.artist}</p>}
-          </div>
-        </div>
-        <div className="song-view__header-right">
-          {song.bpm && <IonBadge color="medium">{song.bpm} BPM</IonBadge>}
+      <PageHeader
+        className="song-view__header"
+        title={song.title}
+        subtitle={song.artist ?? undefined}
+        onBack={() => history.goBack()}
+        badges={song.bpm ? [{ label: `${song.bpm} BPM`, color: "medium" }] : []}
+        rightSlot={
           <IonButton
             fill="clear"
             size="small"
             shape="round"
             onClick={() => setIsZenMode(!isZenMode)}
             title={isZenMode ? "Exit zen mode" : "Zen mode"}
+            aria-label={isZenMode ? "Exit zen mode" : "Enter zen mode"}
           >
-            <IonIcon slot="icon-only" icon={isZenMode ? contractOutline : expandOutline} />
+            <IonIcon
+              slot="icon-only"
+              icon={isZenMode ? contractOutline : expandOutline}
+            />
           </IonButton>
-        </div>
-      </div>
+        }
+      />
 
       <div className="song-view__body">
         {song.chordChart ? (

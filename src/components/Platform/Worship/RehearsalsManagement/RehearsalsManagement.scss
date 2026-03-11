@@ -2,7 +2,6 @@
 @import "../worship-forms";
 
 @keyframes rehearsalsFadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes rehearsalDelete { 0% { opacity: 1; } 100% { opacity: 0; transform: scale(0.95) translateX(-20px); max-height: 0; } }
 
 .rehearsals-container { max-width: 1200px; margin: 0 auto; padding: 24px 16px; animation: rehearsalsFadeIn 0.3s ease-out; }
 
@@ -18,8 +17,8 @@
 .rehearsal-card {
   background: $glass-background-light; border: 1px solid $glass-border-lighter; border-radius: 16px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06); margin: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  &:hover { transform: translateX(4px); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1); }
-  &.deleting { animation: rehearsalDelete 0.3s forwards; pointer-events: none; }
+  &:hover { transform: translateX(4px); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1); border-radius: 20px; }
+  &.deleting { @include item-delete-animate; }
 
   ion-card-content { display: flex; align-items: flex-start; gap: 20px; padding: 16px 20px; }
 
@@ -50,19 +49,6 @@
 
 /* Shared patterns */
 .loading-state { display: flex; flex-direction: column; align-items: center; padding: 64px 24px; text-align: center; ion-spinner { --color: var(--ion-color-primary); width: 48px; height: 48px; margin-bottom: 16px; } p { color: var(--ion-color-medium); } }
-.empty-state-container { display: flex; justify-content: center; min-height: 400px; align-items: center; }
-.empty-state-card { background: $glass-background-light; backdrop-filter: blur(20px); border: 1px solid $glass-border-lighter; border-radius: 20px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); max-width: 500px; margin: 0 auto;
-  .empty-state { text-align: center; padding: 64px 32px;
-    .empty-state-icon-wrapper { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 120px; height: 120px; margin-bottom: 24px;
-      &::before { content: ""; position: absolute; bottom: 10px; right: 3px; width: 100%; height: 100%; background: var(--ion-color-success); opacity: 0.08; border-radius: 50%; }
-      .empty-state-icon { font-size: 80px; color: var(--ion-color-success); opacity: 0.6; position: relative; z-index: 1; }
-    }
-    h2 { font-size: 24px; font-weight: 600; margin: 0 0 12px 0; }
-    .empty-state-description { font-size: 16px; color: var(--ion-color-medium); margin: 0 0 32px 0; }
-    .empty-state-button { margin: 0; }
-  }
-}
-@media (prefers-color-scheme: dark) { .empty-state-card { background: rgba(30, 30, 30, 0.6); border: 1px solid rgba(255, 255, 255, 0.15); } }
 .button-group { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; ion-button { margin: 0; --box-shadow: none; text-transform: none; font-weight: 500; } }
 .delete-confirmation { text-align: center; padding: 24px; display: flex; flex-direction: column; align-items: center; .warning-icon { font-size: 64px; color: var(--ion-color-danger); margin-bottom: 16px; } h2 { font-size: 22px; font-weight: 600; margin: 0 0 12px 0; } p { font-size: 16px; color: var(--ion-color-medium); margin: 0 0 24px 0; } }
 

@@ -39,6 +39,7 @@
     &:hover {
       background: rgba(var(--ion-color-primary-rgb), 0.06);
       color: var(--ion-color-primary);
+      border-radius: 14px;
     }
 
     &.active {

@@ -6,12 +6,6 @@ import {
   IonButton,
   IonIcon,
   IonText,
-  IonModal,
-  IonContent,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonSpinner,
   IonInput,
   IonTextarea,
   IonSelect,
@@ -19,38 +13,55 @@ import {
   IonItem,
   IonLabel,
 } from "@ionic/react";
-import { add, trash, arrowBack, people, musicalNotes, time } from "ionicons/icons";
-import { useGetRehearsals, useCreateRehearsal, useDeleteRehearsal } from "../../../../hooks/WorshipServiceHooks";
+import { trash, people, musicalNotes, time, calendar } from "ionicons/icons";
+import { useGetRehearsals, useCreateRehearsal, useDeleteRehearsal, useGetWorshipServices } from "../../../../hooks/WorshipServiceHooks";
 import { useGetWorshipTeams } from "../../../../hooks/WorshipTeamHooks";
 import { useGetSongs } from "../../../../hooks/SongHooks";
+import { parseServiceDate } from "../../../../utils/serviceDate";
+import { useAppContext } from "../../../../context/context";
+import { useDeleteWithAnimation } from "../../../../hooks/useDeleteWithAnimation";
 import { PlatformBottomSheet } from "../../PlatformBottomSheet";
 import { WorshipNav } from "../WorshipNav/WorshipNav";
+import { WorshipPageHeader } from "../shared/WorshipPageHeader";
+import { WorshipLoadingState } from "../shared/WorshipLoadingState";
+import EmptyState from "../../../EmptyState/EmptyState";
+import { WorshipDeleteModal } from "../shared/WorshipDeleteModal";
 import "./RehearsalsManagement.scss";
 
 export const RehearsalsManagement: React.FC = () => {
   const history = useHistory();
+  const { userInfo } = useAppContext();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [newRehearsal, setNewRehearsal] = useState({ teamId: "", date: "", notes: "", songIds: [] as string[] });
+  const [newRehearsal, setNewRehearsal] = useState({ teamId: "", serviceId: "", date: "", notes: "", songIds: [] as string[] });
 
   const { data, loading, error, refetch } = useGetRehearsals();
   const { data: teamsData } = useGetWorshipTeams();
+  const { data: servicesData } = useGetWorshipServices();
   const { data: songsData } = useGetSongs();
   const [createRehearsal, { loading: isCreating }] = useCreateRehearsal();
   const [deleteRehearsal, { loading: isDeleting }] = useDeleteRehearsal();
 
   const rehearsals: any[] = data?.getRehearsals?.results || [];
   const teams: any[] = teamsData?.getWorshipTeams?.results || [];
+  const services: any[] = servicesData?.getWorshipServices?.results || [];
   const songs: any[] = songsData?.getSongs?.results || [];
+  const ownedTeams = teams.filter((t) => t.author?._id === userInfo?._id);
+  const canCreateRehearsal = ownedTeams.length > 0;
+
+  const { deletingId, handleDelete } = useDeleteWithAnimation(
+    (opts) => deleteRehearsal(opts),
+    refetch,
+  );
 
   const handleCreate = async () => {
-    if (!newRehearsal.teamId || !newRehearsal.date) return;
+    if (!newRehearsal.teamId || !newRehearsal.serviceId || !newRehearsal.date) return;
     try {
       await createRehearsal({
         variables: {
           options: {
             teamId: newRehearsal.teamId,
+            serviceId: newRehearsal.serviceId,
             date: newRehearsal.date,
             notes: newRehearsal.notes || undefined,
             songIds: newRehearsal.songIds.length > 0 ? newRehearsal.songIds : undefined,
@@ -58,72 +69,43 @@ export const RehearsalsManagement: React.FC = () => {
         },
       });
       setShowCreateModal(false);
-      setNewRehearsal({ teamId: "", date: "", notes: "", songIds: [] });
+      setNewRehearsal({ teamId: "", serviceId: "", date: "", notes: "", songIds: [] });
     } catch (err) {
       console.error("Error creating rehearsal:", err);
     }
   };
 
-  const handleDelete = async (rehearsalId: string) => {
-    try {
-      setDeletingId(rehearsalId);
-      setShowDeleteConfirm(null);
-      setTimeout(async () => {
-        try {
-          await deleteRehearsal({ variables: { id: rehearsalId } });
-          await refetch();
-        } finally { setDeletingId(null); }
-      }, 300);
-    } catch (err) { setDeletingId(null); }
-  };
-
   return (
     <div className="rehearsals-container">
       <WorshipNav />
-      <div className="rehearsals-header">
-        <div className="rehearsals-header__left">
-          <IonButton fill="clear" size="small" shape="round" onClick={() => history.push("/worship")}>
-            <IonIcon slot="icon-only" icon={arrowBack} />
-          </IonButton>
-          <div>
-            <h1>Rehearsals</h1>
-            <p>Schedule and manage practice sessions</p>
-          </div>
-        </div>
-        <IonButton size="large" fill="solid" shape="round" color="primary" onClick={() => setShowCreateModal(true)}>
-          <IonIcon slot="start" icon={add} />
-          New Rehearsal
-        </IonButton>
-      </div>
 
-      {loading && (
-        <div className="loading-state"><IonSpinner name="crescent" /><p>Loading rehearsals...</p></div>
-      )}
+      <WorshipPageHeader
+        classPrefix="rehearsals"
+        title="Rehearsals"
+        subtitle="Schedule and manage practice sessions"
+        onBack={() => history.push("/worship")}
+        actionLabel="New Rehearsal"
+        onAction={() => setShowCreateModal(true)}
+        showAction={canCreateRehearsal}
+      />
+
+      {loading && <WorshipLoadingState message="Loading rehearsals..." />}
 
       {!loading && !error && rehearsals.length === 0 && (
-        <div className="empty-state-container">
-          <IonCard className="empty-state-card">
-            <IonCardContent>
-              <div className="empty-state">
-                <div className="empty-state-icon-wrapper">
-                  <IonIcon icon={time} className="empty-state-icon" />
-                </div>
-                <h2>No Rehearsals Yet</h2>
-                <p className="empty-state-description">Schedule a rehearsal to prepare your worship team.</p>
-                <IonButton size="large" fill="solid" shape="round" color="primary" onClick={() => setShowCreateModal(true)} className="empty-state-button">
-                  <IonIcon slot="start" icon={add} />
-                  Schedule Rehearsal
-                </IonButton>
-              </div>
-            </IonCardContent>
-          </IonCard>
-        </div>
+        <EmptyState
+          icon={time}
+          title="No Rehearsals Yet"
+          description="Schedule a rehearsal to prepare your worship team."
+          actionLabel={canCreateRehearsal ? "Schedule Rehearsal" : undefined}
+          onAction={canCreateRehearsal ? () => setShowCreateModal(true) : undefined}
+        />
       )}
 
       {!loading && !error && rehearsals.length > 0 && (
         <div className="rehearsals-list">
           {rehearsals.map((rehearsal: any) => {
             const isBeingDeleted = deletingId === rehearsal._id;
+            const isOwner = rehearsal.author?._id === userInfo?._id;
             const rehearsalDate = new Date(Number(rehearsal.date));
             const rehearsalSongs = rehearsal.songIds
               ? songs.filter((s: any) => rehearsal.songIds.includes(s._id))
@@ -143,6 +125,12 @@ export const RehearsalsManagement: React.FC = () => {
                         <IonIcon icon={people} />
                         {rehearsal.team?.name}
                       </span>
+                      {rehearsal.service && (
+                        <span className="rehearsal-card__meta-item">
+                          <IonIcon icon={calendar} />
+                          {rehearsal.service.name}
+                        </span>
+                      )}
                       {rehearsalSongs.length > 0 && (
                         <span className="rehearsal-card__meta-item">
                           <IonIcon icon={musicalNotes} />
@@ -161,10 +149,12 @@ export const RehearsalsManagement: React.FC = () => {
                       </div>
                     )}
                   </div>
-                  <IonButton fill="clear" size="small" shape="round" color="danger" disabled={isBeingDeleted}
-                    onClick={() => setShowDeleteConfirm(rehearsal._id)}>
-                    <IonIcon slot="icon-only" icon={trash} />
-                  </IonButton>
+                  {isOwner && (
+                    <IonButton fill="clear" size="small" shape="round" color="danger" disabled={isBeingDeleted}
+                      onClick={() => setShowDeleteConfirm(rehearsal._id)}>
+                      <IonIcon slot="icon-only" icon={trash} />
+                    </IonButton>
+                  )}
                 </IonCardContent>
               </IonCard>
             );
@@ -172,14 +162,13 @@ export const RehearsalsManagement: React.FC = () => {
         </div>
       )}
 
-      {/* Create Rehearsal Modal */}
       <PlatformBottomSheet
         isOpen={showCreateModal}
-        onClose={() => { setShowCreateModal(false); setNewRehearsal({ teamId: "", date: "", notes: "", songIds: [] }); }}
+        onClose={() => { setShowCreateModal(false); setNewRehearsal({ teamId: "", serviceId: "", date: "", notes: "", songIds: [] }); }}
         title="Schedule Rehearsal"
         onSave={handleCreate}
         saveLabel="Schedule Rehearsal"
-        saveDisabled={!newRehearsal.teamId || !newRehearsal.date}
+        saveDisabled={!newRehearsal.teamId || !newRehearsal.serviceId || !newRehearsal.date}
         isSaving={isCreating}
         breakpoints={[0, 0.75, 0.95]}
         initialBreakpoint={0.75}
@@ -192,8 +181,23 @@ export const RehearsalsManagement: React.FC = () => {
             interface="action-sheet"
             placeholder="Select a team"
           >
-            {teams.map((team: any) => (
+            {ownedTeams.map((team: any) => (
               <IonSelectOption key={team._id} value={team._id}>{team.name}</IonSelectOption>
+            ))}
+          </IonSelect>
+        </IonItem>
+        <IonItem lines="none">
+          <IonLabel position="stacked">Service *</IonLabel>
+          <IonSelect
+            value={newRehearsal.serviceId}
+            onIonChange={(e) => setNewRehearsal({ ...newRehearsal, serviceId: e.detail.value })}
+            interface="action-sheet"
+            placeholder="Select a service"
+          >
+            {services.map((service: any) => (
+              <IonSelectOption key={service._id} value={service._id}>
+                {service.name} — {parseServiceDate(service.date).toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit", hour12: true })}
+              </IonSelectOption>
             ))}
           </IonSelect>
         </IonItem>
@@ -231,32 +235,15 @@ export const RehearsalsManagement: React.FC = () => {
         </IonItem>
       </PlatformBottomSheet>
 
-      {/* Delete Confirmation Modal */}
-      <IonModal isOpen={!!showDeleteConfirm} onDidDismiss={() => setShowDeleteConfirm(null)} breakpoints={[0, 0.45]} initialBreakpoint={0.45}>
-        <IonHeader>
-          <IonToolbar>
-            <IonTitle>Delete Rehearsal</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent>
-          <div className="worship-delete-confirm">
-            <IonIcon icon={trash} className="worship-delete-icon" />
-            <h2>Delete Rehearsal?</h2>
-            <p>This action cannot be undone.</p>
-            <IonButton
-              expand="block"
-              size="large"
-              shape="round"
-              color="danger"
-              style={{ width: "100%" }}
-              onClick={() => handleDelete(showDeleteConfirm!)}
-              disabled={isDeleting}
-            >
-              {isDeleting ? <IonSpinner name="crescent" /> : "Delete"}
-            </IonButton>
-          </div>
-        </IonContent>
-      </IonModal>
+      <WorshipDeleteModal
+        isOpen={!!showDeleteConfirm}
+        onDismiss={() => setShowDeleteConfirm(null)}
+        onConfirm={() => handleDelete(showDeleteConfirm!, () => setShowDeleteConfirm(null))}
+        isDeleting={isDeleting}
+        title="Delete Rehearsal"
+        message="This action cannot be undone."
+        confirmLabel="Delete"
+      />
     </div>
   );
 };

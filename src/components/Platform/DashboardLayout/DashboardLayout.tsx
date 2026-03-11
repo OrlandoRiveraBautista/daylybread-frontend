@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   IonIcon,
   IonMenu,
@@ -14,11 +14,20 @@ import {
   IonMenuButton,
   IonImg,
   IonFooter,
+  IonSpinner,
 } from "@ionic/react";
 import { useHistory } from "react-router";
-import { card, home, document as documentIcon, shield, musicalNotes, logOutOutline } from "ionicons/icons";
+import {
+  card,
+  home,
+  document as documentIcon,
+  shield,
+  musicalNotes,
+  logOutOutline,
+} from "ionicons/icons";
 import { useApolloClient } from "@apollo/client";
 import { useSignout } from "../../../hooks/AuthHooks";
+import { useAppContext } from "../../../context/context";
 import { NotificationCenter } from "../NotificationCenter";
 import SmallWordLogo from "../../../assets/images/small-word-logo.svg";
 import SmallWordLogoDark from "../../../assets/images/small-word-logo-dark.svg";
@@ -53,10 +62,15 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   const history = useHistory();
   const client = useApolloClient();
   const { signout } = useSignout();
+  const { clearUser } = useAppContext();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogout = async () => {
+    setIsLoggingOut(true);
+    await new Promise((resolve) => setTimeout(resolve, 3400));
     await signout();
     await client.clearStore();
+    clearUser();
     history.push("/login");
   };
 
@@ -207,6 +221,16 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           {children}
         </IonContent>
       </div>
+
+      {isLoggingOut && (
+        <div className="logout-overlay">
+          <div className="logout-overlay-content">
+            <IonSpinner name="crescent" className="logout-overlay-spinner" />
+            <p className="logout-overlay-text">Untill next time...</p>
+            <p className="logout-overlay-text">God Bless You!</p>
+          </div>
+        </div>
+      )}
     </>
   );
 };

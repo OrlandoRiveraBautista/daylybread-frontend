@@ -31,8 +31,6 @@
   margin-bottom: 32px;
   padding: 24px;
   background: $glass-background-hover;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   border: 1px solid $glass-border-lighter;
   border-radius: 24px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
@@ -53,22 +51,13 @@
       transparent 70%
     );
     animation: pulse 8s ease-in-out infinite;
+    pointer-events: none;
   }
 
-  h1 {
-    font-size: 32px;
-    font-weight: 700;
-    color: var(--ion-text-color);
-    margin: 0 0 8px 0;
-    position: relative;
-    z-index: 1;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  }
-
-  p {
-    font-size: 16px;
-    color: var(--ion-color-medium);
-    margin: 0;
+  // PageHeader sits inside this card — remove its bottom margin
+  // so the card padding controls spacing
+  .page-header {
+    margin-bottom: 0;
     position: relative;
     z-index: 1;
   }
@@ -78,6 +67,145 @@
   .dashboard-welcome {
     background: $glass-background-dark-hover;
     border: 1px solid $glass-border-dark;
+  }
+}
+
+// Today's service — front and center
+.todays-service-section {
+  margin-bottom: 32px;
+  animation: dashboardOverviewFadeIn 0.35s ease-out both;
+}
+
+.todays-service-card {
+  margin: 0;
+  border-radius: 24px;
+  overflow: hidden;
+  border-width: 2px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+
+  &--loading {
+    background: $glass-background-hover;
+    border: 1px solid $glass-border-lighter;
+
+    ion-card-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 28px;
+    }
+  }
+
+  &--active {
+    background: linear-gradient(
+      135deg,
+      rgba(var(--ion-color-primary-rgb), 0.12) 0%,
+      $glass-background-hover 50%
+    );
+    border-color: var(--ion-color-primary);
+    position: relative;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(
+        90deg,
+        var(--ion-color-primary),
+        rgba(var(--ion-color-primary-rgb), 0.6)
+      );
+    }
+
+    ion-card-content {
+      padding: 28px 24px;
+    }
+  }
+
+  &--empty {
+    background: $glass-background-light;
+    border: 1px dashed $glass-border-lighter;
+
+    ion-card-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 24px;
+      text-align: center;
+    }
+  }
+}
+
+.todays-service-badge {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ion-color-primary);
+  margin-bottom: 8px;
+}
+
+.todays-service-name {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--ion-text-color);
+  margin: 0 0 12px 0;
+  line-height: 1.2;
+}
+
+.todays-service-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  color: var(--ion-color-medium);
+  font-size: 15px;
+
+  ion-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+}
+
+.todays-service-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+
+  .todays-service-btn-primary ion-icon {
+    margin-right: 6px;
+  }
+}
+
+.todays-service-more {
+  display: block;
+  margin-top: 12px;
+  font-size: 13px;
+}
+
+.todays-service-empty-icon {
+  font-size: 40px;
+  opacity: 0.5;
+}
+
+@media (prefers-color-scheme: dark) {
+  .todays-service-card--active {
+    background: linear-gradient(
+      135deg,
+      rgba(var(--ion-color-primary-rgb), 0.2) 0%,
+      $glass-background-dark-hover 50%
+    );
+    border-color: var(--ion-color-primary);
+  }
+
+  .todays-service-card--empty {
+    background: $glass-background-dark;
+    border-color: $glass-border-dark;
   }
 }
 
@@ -123,6 +251,7 @@
     box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
     background: rgba(255, 255, 255, 0.95);
     border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 28px;
 
     &::before {
       opacity: 1;
@@ -370,13 +499,16 @@
 }
 
 @media (max-width: 768px) {
-  .dashboard-welcome {
-    h1 {
-      font-size: 24px;
-    }
+  .todays-service-name {
+    font-size: 20px;
+  }
 
-    p {
-      font-size: 14px;
+  .todays-service-actions {
+    flex-direction: column;
+    width: 100%;
+
+    ion-button {
+      width: 100%;
     }
   }
 

@@ -1,4 +1,5 @@
 @import "../../../theme/variables.scss";
+@import "../platform-modal";
 
 /* ─── Shared Worship Modal Form Styles ─── */
 
@@ -35,6 +36,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  @include platform-sheet-animate;
 
   .worship-delete-icon {
     font-size: 56px;
@@ -54,5 +56,158 @@
     color: var(--ion-color-medium);
     margin: 0 0 24px 0;
     line-height: 1.5;
+  }
+
+  &__action-btn {
+    --box-shadow: none;
+    --border-radius: 64px;
+    width: 100%;
+    text-transform: none;
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+}
+
+/* ─── Publish confirmation modal ─── */
+@keyframes publishFadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes publishIconPop {
+  0%   { opacity: 0; transform: scale(0.5); }
+  70%  { transform: scale(1.15); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.worship-publish-confirm {
+  text-align: center;
+  padding: 32px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+
+  .worship-publish-icon {
+    font-size: 64px;
+    color: var(--ion-color-success);
+    margin-bottom: 16px;
+    animation: publishIconPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+
+  h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ion-text-color);
+    margin: 0 0 8px 0;
+    animation: publishFadeUp 0.35s ease both;
+    animation-delay: 0.1s;
+  }
+
+  p {
+    font-size: 14px;
+    color: var(--ion-color-medium);
+    margin: 0 0 28px 0;
+    line-height: 1.5;
+    animation: publishFadeUp 0.35s ease both;
+    animation-delay: 0.18s;
+  }
+
+  &__action-btn {
+    --box-shadow: none;
+    text-transform: none;
+    font-weight: 600;
+    letter-spacing: 0;
+    width: 100%;
+    margin-bottom: 8px;
+    animation: publishFadeUp 0.35s ease both;
+    animation-delay: 0.26s;
+  }
+
+  &__cancel-btn {
+    --box-shadow: none;
+    text-transform: none;
+    font-weight: 500;
+    letter-spacing: 0;
+    width: 100%;
+    animation: publishFadeUp 0.35s ease both;
+    animation-delay: 0.32s;
+  }
+}
+
+/* ─── Shared loading state ─── */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 24px;
+  text-align: center;
+
+  ion-spinner {
+    --color: var(--ion-color-primary);
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+  }
+
+  p {
+    color: var(--ion-color-medium);
+    margin: 0;
+  }
+}
+
+/* ─── Shared button group ─── */
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  margin-top: 8px;
+
+  ion-button {
+    margin: 0;
+    --box-shadow: none;
+    text-transform: none;
+    font-weight: 500;
+  }
+}
+
+/* ─── Shared management page header ─── */
+/* Legacy placeholder — kept for any remaining @extend usage.
+   New code should use the <PageHeader> component directly. */
+%worship-page-header {
+  // Styles are now provided by PageHeader component (PageHeader.scss).
+  // This placeholder is intentionally minimal to avoid duplication.
+  margin-bottom: 24px;
+}
+
+/* ─── Shared searchbar ─── */
+%worship-searchbar {
+  margin-bottom: 24px;
+
+  ion-searchbar {
+    --background: $glass-background-light;
+    border: 1px solid $glass-border-lighter;
+    --border-radius: 16px;
+    --box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  %worship-searchbar ion-searchbar {
+    --background: $glass-background-dark;
+    border: 1px solid $glass-border-dark;
+  }
+}
+
+/* ─── Error card ─── */
+.error-card {
+  --background: var(--ion-color-danger-tint);
+  border-radius: 12px;
+
+  ion-card-content {
+    text-align: center;
+    padding: 24px;
   }
 }

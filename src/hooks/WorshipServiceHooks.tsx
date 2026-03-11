@@ -161,6 +161,22 @@ const DeleteWorshipService = gql(`
   }
 `);
 
+const PublishWorshipService = gql(`
+  mutation PublishWorshipService($id: String!) {
+    publishWorshipService(id: $id) {
+      results {
+        _id
+        name
+        status
+      }
+      errors {
+        field
+        message
+      }
+    }
+  }
+`);
+
 /* ─── Service Assignments ─── */
 
 const CreateServiceAssignment = gql(`
@@ -349,8 +365,8 @@ const ReorderSetlistItems = gql(`
 /* ─── Rehearsals ─── */
 
 const GetRehearsals = gql(`
-  query GetRehearsals($teamId: String) {
-    getRehearsals(teamId: $teamId) {
+  query GetRehearsals($teamId: String, $serviceId: String) {
+    getRehearsals(teamId: $teamId, serviceId: $serviceId) {
       results {
         _id
         date
@@ -360,6 +376,11 @@ const GetRehearsals = gql(`
         team {
           _id
           name
+        }
+        service {
+          _id
+          name
+          date
         }
         author {
           _id
@@ -386,6 +407,11 @@ const CreateRehearsal = gql(`
         team {
           _id
           name
+        }
+        service {
+          _id
+          name
+          date
         }
       }
       errors {
@@ -469,6 +495,12 @@ export const useDeleteWorshipService = () => {
   });
 };
 
+export const usePublishWorshipService = () => {
+  return useMutation(PublishWorshipService, {
+    refetchQueries: [{ query: GetWorshipServices }],
+  });
+};
+
 // Assignments
 export const useCreateServiceAssignment = () => {
   return useMutation(CreateServiceAssignment);
@@ -515,9 +547,9 @@ export const useReorderSetlistItems = () => {
 };
 
 // Rehearsals
-export const useGetRehearsals = (teamId?: string) => {
+export const useGetRehearsals = (teamId?: string, serviceId?: string) => {
   return useQuery(GetRehearsals, {
-    variables: { teamId },
+    variables: { teamId, serviceId },
   });
 };
 

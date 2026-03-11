@@ -70,7 +70,7 @@ export const PlatformBottomSheet: React.FC<PlatformBottomSheetProps> = ({
           {onSave && (
             <IonButton
               expand="block"
-              size="large"
+              fill="solid"
               shape="round"
               className="platform-save-button"
               onClick={onSave}

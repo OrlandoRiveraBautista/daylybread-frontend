@@ -214,6 +214,13 @@ const context = constate(() => {
   };
 
   /**
+   * Clears the user from the context (used on logout)
+   */
+  const clearUser = () => {
+    setUserInfo(undefined);
+  };
+
+  /**
    * Sets the device info to the context
    */
   const setDevice = (dto: IDeviceInfo) => {
@@ -309,6 +316,7 @@ const context = constate(() => {
     setChapterMedia,
     setCurrentMediaTimestamp,
     setUser,
+    clearUser,
     setDevice,
     addVerseToList,
     removeVerseFromList,

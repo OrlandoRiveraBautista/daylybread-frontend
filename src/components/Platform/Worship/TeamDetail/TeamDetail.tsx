@@ -1,34 +1,18 @@
 import React, { useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import {
-  IonCard,
-  IonCardContent,
   IonButton,
   IonIcon,
-  IonText,
-  IonSpinner,
-  IonInput,
   IonSelect,
   IonSelectOption,
-  IonBadge,
-  IonChip,
-  IonLabel,
+  IonInput,
   IonSegment,
   IonSegmentButton,
+  IonLabel,
   IonItem,
   IonToast,
 } from "@ionic/react";
-import {
-  arrowBack,
-  personAdd,
-  mail,
-  trash,
-  musicalNote,
-  checkmarkCircle,
-  closeCircle,
-  time,
-  refresh,
-} from "ionicons/icons";
+import { personAdd, mail } from "ionicons/icons";
 import {
   useGetWorshipTeam,
   useSendTeamInvite,
@@ -41,22 +25,12 @@ import { InviteMethod, TeamRole } from "../../../../__generated__/graphql";
 import { useAppContext } from "../../../../context/context";
 import { PlatformBottomSheet } from "../../PlatformBottomSheet";
 import { WorshipNav } from "../WorshipNav/WorshipNav";
+import { WorshipPageHeader } from "../shared/WorshipPageHeader";
+import { WorshipLoadingState } from "../shared/WorshipLoadingState";
+import { TeamMembersList } from "./TeamMembersList";
+import { TeamInvitesList } from "./TeamInvitesList";
+import { TEAM_ROLES } from "../../../../utils/worshipConstants";
 import "./TeamDetail.scss";
-
-const TEAM_ROLES = [
-  { value: "WORSHIP_LEADER", label: "Worship Leader" },
-  { value: "GUITAR", label: "Guitar" },
-  { value: "ELECTRIC_GUITAR", label: "Electric Guitar" },
-  { value: "ACOUSTIC_GUITAR", label: "Acoustic Guitar" },
-  { value: "BASS", label: "Bass" },
-  { value: "PIANO", label: "Piano" },
-  { value: "KEYS", label: "Keys" },
-  { value: "DRUMS", label: "Drums" },
-  { value: "VOCALS", label: "Vocals" },
-  { value: "SOUND", label: "Sound" },
-  { value: "MEDIA", label: "Media" },
-  { value: "OTHER", label: "Other" },
-];
 
 export const TeamDetail: React.FC = () => {
   const history = useHistory();
@@ -68,12 +42,7 @@ export const TeamDetail: React.FC = () => {
   const [removingMemberId, setRemovingMemberId] = useState<string | null>(null);
   const [cancellingInviteId, setCancellingInviteId] = useState<string | null>(null);
   const [resendingInviteId, setResendingInviteId] = useState<string | null>(null);
-  const [inviteForm, setInviteForm] = useState({
-    email: "",
-    role: "OTHER",
-    method: "BOTH",
-    skills: "",
-  });
+  const [inviteForm, setInviteForm] = useState({ email: "", role: "OTHER", method: "BOTH", skills: "" });
 
   const { data, loading, refetch } = useGetWorshipTeam(id);
   const { data: invitesData, refetch: refetchInvites } = useGetTeamInvites(id);
@@ -110,10 +79,7 @@ export const TeamDetail: React.FC = () => {
         },
       });
       const methodLabel = METHOD_LABELS[inviteForm.method] ?? inviteForm.method;
-      setToast({
-        message: `Invite sent to ${inviteForm.email} via ${methodLabel}.`,
-        color: "success",
-      });
+      setToast({ message: `Invite sent to ${inviteForm.email} via ${methodLabel}.`, color: "success" });
       setShowInviteModal(false);
       setInviteForm({ email: "", role: "OTHER", method: "BOTH", skills: "" });
       refetchInvites();
@@ -167,30 +133,10 @@ export const TeamDetail: React.FC = () => {
     }
   };
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "accepted": return checkmarkCircle;
-      case "declined": return closeCircle;
-      default: return time;
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "accepted": return "success";
-      case "declined": return "danger";
-      case "expired": return "medium";
-      default: return "warning";
-    }
-  };
-
   if (loading) {
     return (
       <div className="team-detail">
-        <div className="loading-state">
-          <IonSpinner name="crescent" />
-          <p>Loading team...</p>
-        </div>
+        <WorshipLoadingState message="Loading team..." />
       </div>
     );
   }
@@ -199,7 +145,6 @@ export const TeamDetail: React.FC = () => {
     return (
       <div className="team-detail">
         <IonButton fill="clear" onClick={() => history.push("/worship/teams")}>
-          <IonIcon slot="start" icon={arrowBack} />
           Back to Teams
         </IonButton>
         <p>Team not found.</p>
@@ -210,25 +155,23 @@ export const TeamDetail: React.FC = () => {
   return (
     <div className="team-detail">
       <WorshipNav />
-      <div className="team-detail__header">
-        <div className="team-detail__header-left">
-          <IonButton fill="clear" size="small" shape="round" onClick={() => history.push("/worship/teams")}>
-            <IonIcon slot="icon-only" icon={arrowBack} />
-          </IonButton>
-          <div>
-            <h1>{team.name}</h1>
-            {team.description && <p>{team.description}</p>}
-          </div>
-        </div>
-        {isOwner && (
-          <IonButton size="large" fill="solid" shape="round" color="primary" onClick={() => setShowInviteModal(true)}>
-            <IonIcon slot="start" icon={personAdd} />
-            Invite
-          </IonButton>
-        )}
-      </div>
 
-      <IonSegment value={activeTab} onIonChange={(e) => setActiveTab(e.detail.value as any)} className="team-detail__tabs">
+      <WorshipPageHeader
+        classPrefix="team-detail"
+        title={team.name}
+        subtitle={team.description ?? undefined}
+        onBack={() => history.push("/worship/teams")}
+        actionLabel="Invite"
+        actionIcon={personAdd}
+        onAction={() => setShowInviteModal(true)}
+        showAction={isOwner}
+      />
+
+      <IonSegment
+        value={activeTab}
+        onIonChange={(e) => setActiveTab(e.detail.value as any)}
+        className="team-detail__tabs"
+      >
         <IonSegmentButton value="members">
           <IonLabel>Members ({members.length})</IonLabel>
         </IonSegmentButton>
@@ -240,107 +183,23 @@ export const TeamDetail: React.FC = () => {
       </IonSegment>
 
       {activeTab === "members" && (
-        <div className="members-list">
-          {members.length === 0 ? (
-            <div className="empty-section">
-              <p>No members yet. Send an invite to get started.</p>
-            </div>
-          ) : (
-            members.map((member: any) => (
-              <IonCard key={member._id} className="member-card">
-                <IonCardContent>
-                  <div className="member-card__info">
-                    <div className="member-card__avatar">
-                      {(member.user?.firstName?.[0] || "?").toUpperCase()}
-                    </div>
-                    <div className="member-card__details">
-                      <h3>{member.user?.firstName} {member.user?.lastName}</h3>
-                      <IonText color="medium"><p>{member.user?.email}</p></IonText>
-                      <div className="member-card__tags">
-                        <IonBadge color="primary">
-                          {TEAM_ROLES.find((r) => r.value === member.role)?.label || member.role}
-                        </IonBadge>
-                        {member.skills?.map((skill: string) => (
-                          <IonChip key={skill} outline>
-                            <IonIcon icon={musicalNote} />
-                            <IonLabel>{skill}</IonLabel>
-                          </IonChip>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  {isOwner && (
-                    <IonButton fill="clear" size="small" shape="round" color="danger"
-                      disabled={removingMemberId === member._id}
-                      onClick={() => handleRemoveMember(member._id)}>
-                      {removingMemberId === member._id
-                        ? <IonSpinner name="crescent" style={{ width: 18, height: 18 }} />
-                        : <IonIcon slot="icon-only" icon={trash} />}
-                    </IonButton>
-                  )}
-                </IonCardContent>
-              </IonCard>
-            ))
-          )}
-        </div>
+        <TeamMembersList
+          members={members}
+          isOwner={isOwner}
+          removingMemberId={removingMemberId}
+          onRemoveMember={handleRemoveMember}
+          authorId={team.author?._id}
+        />
       )}
 
       {activeTab === "invites" && (
-        <div className="invites-list">
-          {invites.length === 0 ? (
-            <div className="empty-section">
-              <p>No pending invites.</p>
-            </div>
-          ) : (
-            invites.map((invite: any) => (
-              <IonCard key={invite._id} className="invite-card">
-                <IonCardContent>
-                  <div className="invite-card__info">
-                    <IonIcon
-                      icon={getStatusIcon(invite.status)}
-                      className="invite-card__status-icon"
-                      color={getStatusColor(invite.status)}
-                    />
-                    <div className="invite-card__details">
-                      <h3>
-                        {invite.invitedUser?.firstName
-                          ? `${invite.invitedUser.firstName} ${invite.invitedUser.lastName}`
-                          : invite.email}
-                      </h3>
-                      <IonText color="medium">
-                        <p>
-                          {TEAM_ROLES.find((r) => r.value === invite.role)?.label || invite.role}
-                          {" · "}via {invite.method}
-                        </p>
-                      </IonText>
-                      <IonBadge color={getStatusColor(invite.status)}>{invite.status}</IonBadge>
-                    </div>
-                  </div>
-                  <div style={{ display: "flex", gap: "4px" }}>
-                    {invite.status !== "accepted" && (
-                      <IonButton fill="clear" size="small" shape="round" color="primary"
-                        disabled={resendingInviteId === invite._id || cancellingInviteId === invite._id}
-                        onClick={() => handleResendInvite(invite._id, invite.invitedUser?.email || invite.email)}>
-                        {resendingInviteId === invite._id
-                          ? <IonSpinner name="crescent" style={{ width: 18, height: 18 }} />
-                          : <IonIcon slot="icon-only" icon={refresh} />}
-                      </IonButton>
-                    )}
-                    {invite.status !== "accepted" && (
-                      <IonButton fill="clear" size="small" shape="round" color="danger"
-                        disabled={cancellingInviteId === invite._id || resendingInviteId === invite._id}
-                        onClick={() => handleCancelInvite(invite._id)}>
-                        {cancellingInviteId === invite._id
-                          ? <IonSpinner name="crescent" style={{ width: 18, height: 18 }} />
-                          : <IonIcon slot="icon-only" icon={trash} />}
-                      </IonButton>
-                    )}
-                  </div>
-                </IonCardContent>
-              </IonCard>
-            ))
-          )}
-        </div>
+        <TeamInvitesList
+          invites={invites}
+          resendingInviteId={resendingInviteId}
+          cancellingInviteId={cancellingInviteId}
+          onResendInvite={handleResendInvite}
+          onCancelInvite={handleCancelInvite}
+        />
       )}
 
       <IonToast
@@ -352,7 +211,6 @@ export const TeamDetail: React.FC = () => {
         onDidDismiss={() => setToast(null)}
       />
 
-      {/* Invite Modal */}
       <PlatformBottomSheet
         isOpen={showInviteModal}
         onClose={() => { setShowInviteModal(false); setInviteForm({ email: "", role: "OTHER", method: "BOTH", skills: "" }); }}

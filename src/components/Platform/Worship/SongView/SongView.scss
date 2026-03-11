@@ -35,39 +35,10 @@
     }
   }
 
+  // song-view__header is the className passed to <PageHeader>
+  // The transition enables the zen-mode collapse animation
   &__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 24px;
-    gap: 16px;
     transition: all 0.3s ease;
-
-    &-left {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-    }
-
-    &-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-  }
-
-  &__title-block {
-    h1 {
-      font-size: 28px;
-      font-weight: 600;
-      margin: 0 0 4px 0;
-    }
-  }
-
-  &__artist {
-    font-size: 16px;
-    color: var(--ion-color-medium);
-    margin: 0;
   }
 
   &__body {
@@ -142,22 +113,9 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .song-view {
     padding: 16px 12px;
-
-    &__header {
-      flex-direction: column;
-      gap: 12px;
-
-      &-right {
-        align-self: flex-end;
-      }
-    }
-
-    &__title-block h1 {
-      font-size: 22px;
-    }
 
     &__body {
       padding: 16px 12px;

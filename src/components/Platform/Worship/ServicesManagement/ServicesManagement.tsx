@@ -5,12 +5,6 @@ import {
   IonCardContent,
   IonButton,
   IonIcon,
-  IonModal,
-  IonContent,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonSpinner,
   IonSearchbar,
   IonInput,
   IonTextarea,
@@ -20,19 +14,28 @@ import {
   IonItem,
   IonLabel,
 } from "@ionic/react";
-import { add, calendar, trash, people, arrowBack, list } from "ionicons/icons";
+import { calendar, trash, people, list } from "ionicons/icons";
+import Highlighter from "react-highlight-words";
 import { useGetWorshipServices, useCreateWorshipService, useDeleteWorshipService } from "../../../../hooks/WorshipServiceHooks";
 import { useGetWorshipTeams } from "../../../../hooks/WorshipTeamHooks";
+import { parseServiceDate, toDateTimeLocalInput, defaultServiceDateTime } from "../../../../utils/serviceDate";
+import { getServiceStatusColor } from "../../../../utils/worshipConstants";
+import { useAppContext } from "../../../../context/context";
+import { useDeleteWithAnimation } from "../../../../hooks/useDeleteWithAnimation";
 import { PlatformBottomSheet } from "../../PlatformBottomSheet";
 import { WorshipNav } from "../WorshipNav/WorshipNav";
+import { WorshipPageHeader } from "../shared/WorshipPageHeader";
+import { WorshipLoadingState } from "../shared/WorshipLoadingState";
+import EmptyState from "../../../EmptyState/EmptyState";
+import { WorshipDeleteModal } from "../shared/WorshipDeleteModal";
 import "./ServicesManagement.scss";
 
 export const ServicesManagement: React.FC = () => {
   const history = useHistory();
+  const { userInfo } = useAppContext();
   const [searchQuery, setSearchQuery] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [newService, setNewService] = useState({ name: "", date: "", teamId: "", notes: "" });
 
   const { data, loading, error, refetch } = useGetWorshipServices();
@@ -42,6 +45,13 @@ export const ServicesManagement: React.FC = () => {
 
   const services: any[] = data?.getWorshipServices?.results || [];
   const teams: any[] = teamsData?.getWorshipTeams?.results || [];
+  const ownedTeams = teams.filter((t) => t.author?._id === userInfo?._id);
+  const canCreateService = ownedTeams.length > 0;
+
+  const { deletingId, handleDelete } = useDeleteWithAnimation(
+    (opts) => deleteService(opts),
+    refetch,
+  );
 
   const filteredServices = services.filter((s) => {
     return s.name.toLowerCase().includes(searchQuery.toLowerCase()) || deletingId === s._id;
@@ -54,7 +64,7 @@ export const ServicesManagement: React.FC = () => {
         variables: {
           options: {
             name: newService.name,
-            date: newService.date,
+            date: new Date(newService.date).toISOString(),
             teamId: newService.teamId,
             notes: newService.notes || undefined,
           },
@@ -67,83 +77,48 @@ export const ServicesManagement: React.FC = () => {
     }
   };
 
-  const handleDelete = async (serviceId: string) => {
-    try {
-      setDeletingId(serviceId);
-      setShowDeleteConfirm(null);
-      setTimeout(async () => {
-        try {
-          await deleteService({ variables: { id: serviceId } });
-          await refetch();
-        } finally { setDeletingId(null); }
-      }, 300);
-    } catch (err) {
-      setDeletingId(null);
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "scheduled": return "primary";
-      case "completed": return "success";
-      case "cancelled": return "danger";
-      default: return "medium";
-    }
+  const openCreate = () => {
+    setNewService((prev) => ({ ...prev, date: toDateTimeLocalInput(defaultServiceDateTime()) }));
+    setShowCreateModal(true);
   };
 
   return (
     <div className="services-container">
       <WorshipNav />
-      <div className="services-header">
-        <div className="services-header__left">
-          <IonButton fill="clear" size="small" shape="round" onClick={() => history.push("/worship")}>
-            <IonIcon slot="icon-only" icon={arrowBack} />
-          </IonButton>
-          <div>
-            <h1>Services</h1>
-            <p>Schedule and manage worship services</p>
-          </div>
-        </div>
-        <IonButton size="large" fill="solid" shape="round" color="primary" onClick={() => setShowCreateModal(true)}>
-          <IonIcon slot="start" icon={add} />
-          New Service
-        </IonButton>
-      </div>
+
+      <WorshipPageHeader
+        classPrefix="services"
+        title="Services"
+        subtitle="Schedule and manage worship services"
+        onBack={() => history.push("/worship")}
+        actionLabel="New Service"
+        onAction={openCreate}
+        showAction={canCreateService}
+      />
 
       <div className="services-search">
         <IonSearchbar value={searchQuery} onIonInput={(e) => setSearchQuery(e.detail.value || "")} placeholder="Search services..." debounce={300} />
       </div>
 
-      {loading && (
-        <div className="loading-state"><IonSpinner name="crescent" /><p>Loading services...</p></div>
-      )}
+      {loading && <WorshipLoadingState message="Loading services..." />}
 
       {!loading && !error && filteredServices.length === 0 && (
-        <div className="empty-state-container">
-          <IonCard className="empty-state-card">
-            <IonCardContent>
-              <div className="empty-state">
-                <div className="empty-state-icon-wrapper">
-                  <IonIcon icon={calendar} className="empty-state-icon" />
-                </div>
-                <h2>No Services Yet</h2>
-                <p className="empty-state-description">Create a service to start scheduling your worship team.</p>
-                <IonButton size="large" fill="solid" shape="round" color="primary" onClick={() => setShowCreateModal(true)} className="empty-state-button">
-                  <IonIcon slot="start" icon={add} />
-                  Create Service
-                </IonButton>
-              </div>
-            </IonCardContent>
-          </IonCard>
-        </div>
+        <EmptyState
+          icon={calendar}
+          title="No Services Yet"
+          description="Create a service to start scheduling your worship team."
+          actionLabel={canCreateService ? "Create Service" : undefined}
+          onAction={canCreateService ? openCreate : undefined}
+        />
       )}
 
       {!loading && !error && filteredServices.length > 0 && (
         <div className="services-list">
           {filteredServices.map((service) => {
             const isBeingDeleted = deletingId === service._id;
-            const serviceDate = new Date(Number(service.date));
+            const serviceDate = parseServiceDate(service.date);
             const isPast = serviceDate < new Date();
+            const isOwner = service.author?._id === userInfo?._id;
             return (
               <IonCard
                 key={service._id}
@@ -156,11 +131,21 @@ export const ServicesManagement: React.FC = () => {
                     <span className="service-card__day">{serviceDate.toLocaleDateString("en-US", { day: "numeric" })}</span>
                     <span className="service-card__month">{serviceDate.toLocaleDateString("en-US", { month: "short" })}</span>
                     <span className="service-card__year">{serviceDate.toLocaleDateString("en-US", { year: "numeric" })}</span>
+                    <span className="service-card__time">{serviceDate.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true })}</span>
                   </div>
                   <div className="service-card__info">
                     <div className="service-card__title-row">
-                      <h3>{service.name}</h3>
-                      <IonBadge color={getStatusColor(service.status)}>{service.status}</IonBadge>
+                      <h3>
+                        {searchQuery ? (
+                          <Highlighter
+                            searchWords={[searchQuery]}
+                            autoEscape
+                            textToHighlight={service.name}
+                            highlightClassName="service-highlight"
+                          />
+                        ) : service.name}
+                      </h3>
+                      <IonBadge color={getServiceStatusColor(service.status)}>{service.status}</IonBadge>
                     </div>
                     <div className="service-card__meta">
                       <span className="service-card__meta-item">
@@ -174,12 +159,14 @@ export const ServicesManagement: React.FC = () => {
                     </div>
                     {service.notes && <p className="service-card__notes">{service.notes}</p>}
                   </div>
-                  <div className="service-card__actions" onClick={(e) => e.stopPropagation()}>
-                    <IonButton fill="clear" size="small" shape="round" color="danger" disabled={isBeingDeleted}
-                      onClick={(e) => { e.stopPropagation(); setShowDeleteConfirm(service._id); }}>
-                      <IonIcon slot="icon-only" icon={trash} />
-                    </IonButton>
-                  </div>
+                  {isOwner && (
+                    <div className="service-card__actions" onClick={(e) => e.stopPropagation()}>
+                      <IonButton fill="clear" size="small" shape="round" color="danger" disabled={isBeingDeleted}
+                        onClick={(e) => { e.stopPropagation(); setShowDeleteConfirm(service._id); }}>
+                        <IonIcon slot="icon-only" icon={trash} />
+                      </IonButton>
+                    </div>
+                  )}
                 </IonCardContent>
               </IonCard>
             );
@@ -187,7 +174,6 @@ export const ServicesManagement: React.FC = () => {
         </div>
       )}
 
-      {/* Create Service Modal */}
       <PlatformBottomSheet
         isOpen={showCreateModal}
         onClose={() => { setShowCreateModal(false); setNewService({ name: "", date: "", teamId: "", notes: "" }); }}
@@ -209,11 +195,11 @@ export const ServicesManagement: React.FC = () => {
           />
         </IonItem>
         <IonItem lines="none">
-          <IonLabel position="stacked">Date *</IonLabel>
+          <IonLabel position="stacked">Date & time *</IonLabel>
           <IonInput
             value={newService.date}
             onIonInput={(e) => setNewService({ ...newService, date: e.detail.value || "" })}
-            type="date"
+            type="datetime-local"
           />
         </IonItem>
         <IonItem lines="none">
@@ -224,7 +210,7 @@ export const ServicesManagement: React.FC = () => {
             interface="action-sheet"
             placeholder="Select a team"
           >
-            {teams.map((team: any) => (
+            {ownedTeams.map((team: any) => (
               <IonSelectOption key={team._id} value={team._id}>{team.name}</IonSelectOption>
             ))}
           </IonSelect>
@@ -241,32 +227,15 @@ export const ServicesManagement: React.FC = () => {
         </IonItem>
       </PlatformBottomSheet>
 
-      {/* Delete Confirmation Modal */}
-      <IonModal isOpen={!!showDeleteConfirm} onDidDismiss={() => setShowDeleteConfirm(null)} breakpoints={[0, 0.45]} initialBreakpoint={0.45}>
-        <IonHeader>
-          <IonToolbar>
-            <IonTitle>Delete Service</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent>
-          <div className="worship-delete-confirm">
-            <IonIcon icon={trash} className="worship-delete-icon" />
-            <h2>Delete Service?</h2>
-            <p>This will also remove all assignments. This action cannot be undone.</p>
-            <IonButton
-              expand="block"
-              size="large"
-              shape="round"
-              color="danger"
-              style={{ width: "100%" }}
-              onClick={() => handleDelete(showDeleteConfirm!)}
-              disabled={isDeleting}
-            >
-              {isDeleting ? <IonSpinner name="crescent" /> : "Delete Service"}
-            </IonButton>
-          </div>
-        </IonContent>
-      </IonModal>
+      <WorshipDeleteModal
+        isOpen={!!showDeleteConfirm}
+        onDismiss={() => setShowDeleteConfirm(null)}
+        onConfirm={() => handleDelete(showDeleteConfirm!, () => setShowDeleteConfirm(null))}
+        isDeleting={isDeleting}
+        title="Delete Service"
+        message="This will also remove all assignments. This action cannot be undone."
+        confirmLabel="Delete Service"
+      />
     </div>
   );
 };

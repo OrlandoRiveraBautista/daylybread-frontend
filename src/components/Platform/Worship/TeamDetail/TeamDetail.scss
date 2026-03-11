@@ -44,83 +44,336 @@
   }
 }
 
+// ─── Lists ────────────────────────────────────────────────────────────────────
+
 .members-list, .invites-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
-.member-card, .invite-card {
+// ─── Member card ─────────────────────────────────────────────────────────────
+
+.member-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
   background: $glass-background-light;
   border: 1px solid $glass-border-lighter;
-  border-radius: 16px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-  margin: 0;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 18px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s ease, border-radius 0.2s ease, transform 0.2s ease;
 
   &:hover {
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-    transform: translateX(4px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.09);
+    border-radius: 22px;
+    transform: translateX(3px);
+  }
+
+  &--removing {
+    @include item-delete-animate;
+  }
+
+  &__avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    font-weight: 700;
+    flex-shrink: 0;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  }
+
+  &__body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  &__name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ion-text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__owner-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--ion-color-primary);
+    background: rgba(var(--ion-color-primary-rgb), 0.1);
+    border-radius: 20px;
+    padding: 2px 8px 2px 5px;
+    white-space: nowrap;
+
+    ion-icon {
+      font-size: 12px;
+    }
+  }
+
+  &__email {
+    font-size: 12px;
+    color: var(--ion-color-medium);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px;
+    margin-top: 6px;
+  }
+
+  &__role-pill {
+    display: inline-flex;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ion-color-primary);
+    background: rgba(var(--ion-color-primary-rgb), 0.1);
+    border-radius: 20px;
+    padding: 3px 10px;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+  }
+
+  &__skill-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--ion-color-medium);
+    background: $glass-background-medium;
+    border: 1px solid $glass-border-lighter;
+    border-radius: 20px;
+    padding: 3px 9px;
+    white-space: nowrap;
+
+    ion-icon {
+      font-size: 11px;
+      opacity: 0.7;
+    }
+  }
+
+  &__remove-btn {
+    flex-shrink: 0;
+    --padding-start: 6px;
+    --padding-end: 6px;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  &:hover &__remove-btn {
+    opacity: 1;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .member-card {
+    background: $glass-background-dark;
+    border-color: $glass-border-dark;
+
+    &__skill-chip {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: $glass-border-dark;
+    }
+  }
+}
+
+// Always show remove button on touch devices
+@media (hover: none) {
+  .member-card__remove-btn {
+    opacity: 1 !important;
+  }
+}
+
+// ─── Invite card (shared base) ────────────────────────────────────────────────
+
+.invite-card {
+  background: $glass-background-light;
+  border: 1px solid $glass-border-lighter;
+  border-radius: 18px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  margin: 0;
+  transition: box-shadow 0.2s ease, border-radius 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.09);
+    border-radius: 22px;
+    transform: translateX(3px);
   }
 
   ion-card-content {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 20px;
+    padding: 14px 16px;
   }
 }
 
 @media (prefers-color-scheme: dark) {
-  .member-card, .invite-card {
+  .invite-card {
     background: $glass-background-dark;
     border: 1px solid $glass-border-dark;
   }
 }
 
-.member-card__info, .invite-card__info {
+.invite-card__info {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
   flex: 1;
 }
 
-.member-card__avatar {
-  width: 48px;
-  height: 48px;
+.invite-card__details {
+  h3 { font-size: 15px; font-weight: 600; margin: 0 0 2px 0; }
+  p { font-size: 12px; margin: 0; }
+}
+
+// ─── Invite card status variants ─────────────────────────────────────────────
+
+.invite-card {
+  &--dimmed {
+    opacity: 0.65;
+  }
+
+  &--removing {
+    @include item-delete-animate;
+  }
+}
+
+.invite-card__actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.invite-card__badge {
+  font-size: 10px;
+  padding: 3px 8px;
+  margin-top: 6px;
+  display: inline-block;
+  border-radius: 20px;
+  text-transform: capitalize;
+}
+
+// Circular icon container — color changes per status
+.invite-card__status-icon-wrap {
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  background: linear-gradient(
-    135deg,
-    rgba(var(--ion-color-primary-rgb), 1),
-    rgba(var(--ion-color-primary-rgb), 0.7)
-  );
-  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
-  font-weight: 600;
   flex-shrink: 0;
+
+  .invite-card__status-icon {
+    font-size: 22px;
+  }
+
+  &--accepted {
+    background: rgba(var(--ion-color-success-rgb), 0.12);
+    .invite-card__status-icon { color: var(--ion-color-success); }
+  }
+
+  &--declined {
+    background: rgba(var(--ion-color-danger-rgb), 0.12);
+    .invite-card__status-icon { color: var(--ion-color-danger); }
+  }
+
+  &--pending {
+    background: rgba(var(--ion-color-warning-rgb), 0.12);
+    .invite-card__status-icon { color: var(--ion-color-warning); }
+  }
+
+  &--expired {
+    background: rgba(var(--ion-color-medium-rgb), 0.12);
+    .invite-card__status-icon { color: var(--ion-color-medium); }
+  }
 }
 
-.member-card__details, .invite-card__details {
-  h3 { font-size: 16px; font-weight: 600; margin: 0 0 2px 0; }
-  p { font-size: 13px; margin: 0; }
-}
+// ─── Accepted invites collapsed section ──────────────────────────────────────
 
-.member-card__tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+.invites-accepted-section {
   margin-top: 8px;
 
-  ion-badge { font-size: 10px; padding: 4px 8px; }
-  ion-chip { height: 26px; font-size: 11px; }
+  &__toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: none;
+    border: none;
+    border-top: 1px solid $glass-border-lighter;
+    cursor: pointer;
+    color: var(--ion-color-medium);
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: var(--ion-text-color);
+    }
+  }
+
+  &__toggle-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__check-icon {
+    font-size: 18px;
+    color: var(--ion-color-success);
+  }
+
+  &__chevron {
+    font-size: 16px;
+    transition: transform 0.2s ease;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 8px;
+    animation: inviteAcceptedFadeIn 0.2s ease-out both;
+  }
 }
 
-.invite-card__status-icon {
-  font-size: 32px;
-  flex-shrink: 0;
+@keyframes inviteAcceptedFadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-color-scheme: dark) {
+  .invites-accepted-section__toggle {
+    border-top-color: $glass-border-dark;
+  }
 }
 
 .empty-section {

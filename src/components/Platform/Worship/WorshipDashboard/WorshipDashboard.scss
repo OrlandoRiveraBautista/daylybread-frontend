@@ -11,24 +11,6 @@
   padding: 24px 16px;
   animation: worshipFadeIn 0.3s ease-out;
 
-  &__header {
-    margin-bottom: 32px;
-    animation: worshipFadeIn 0.4s ease-out;
-
-    h1 {
-      font-size: 32px;
-      font-weight: 600;
-      color: var(--ion-text-color);
-      margin: 0 0 8px 0;
-    }
-
-    p {
-      font-size: 16px;
-      color: var(--ion-color-medium);
-      margin: 0;
-    }
-  }
-
   &__stats {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -60,6 +42,7 @@
     transform: translateY(-4px);
     box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
     border-color: rgba(var(--ion-color-primary-rgb), 0.3);
+    border-radius: 20px;
   }
 
   ion-card-content {
@@ -152,6 +135,7 @@
   &:hover {
     transform: translateX(4px);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
   }
 
   ion-card-content {
@@ -237,6 +221,7 @@
   &:hover {
     transform: translateY(-4px);
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
   }
 
   ion-card-content {
@@ -272,8 +257,6 @@
 
 .empty-welcome-card {
   background: $glass-background-light;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
   border: 1px solid $glass-border-lighter;
   border-radius: 20px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
@@ -351,10 +334,6 @@
 }
 
 @media (max-width: 768px) {
-  .worship-dashboard__header h1 {
-    font-size: 24px;
-  }
-
   .worship-dashboard__stats {
     grid-template-columns: repeat(2, 1fr);
   }
