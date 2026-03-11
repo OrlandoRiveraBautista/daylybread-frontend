@@ -223,6 +223,71 @@
     <script>
       (function () {
         try {
+          // ── Bible Brain book name lookup ────────────────────────────────────
+          var BOOK_NAMES = {
+            GEN:"Genesis",EXO:"Exodus",LEV:"Leviticus",NUM:"Numbers",DEU:"Deuteronomy",
+            JOS:"Joshua",JDG:"Judges",RUT:"Ruth",
+            "1SA":"1 Samuel","2SA":"2 Samuel","1KI":"1 Kings","2KI":"2 Kings",
+            "1CH":"1 Chronicles","2CH":"2 Chronicles",
+            EZR:"Ezra",NEH:"Nehemiah",EST:"Esther",JOB:"Job",PSA:"Psalms",
+            PRO:"Proverbs",ECC:"Ecclesiastes",SNG:"Song of Solomon",
+            ISA:"Isaiah",JER:"Jeremiah",LAM:"Lamentations",EZK:"Ezekiel",
+            DAN:"Daniel",HOS:"Hosea",JOL:"Joel",AMO:"Amos",OBA:"Obadiah",
+            JON:"Jonah",MIC:"Micah",NAM:"Nahum",HAB:"Habakkuk",ZEP:"Zephaniah",
+            HAG:"Haggai",ZEC:"Zechariah",MAL:"Malachi",
+            MAT:"Matthew",MRK:"Mark",LUK:"Luke",JHN:"John",ACT:"Acts",
+            ROM:"Romans","1CO":"1 Corinthians","2CO":"2 Corinthians",
+            GAL:"Galatians",EPH:"Ephesians",PHP:"Philippians",COL:"Colossians",
+            "1TH":"1 Thessalonians","2TH":"2 Thessalonians",
+            "1TI":"1 Timothy","2TI":"2 Timothy",TIT:"Titus",PHM:"Philemon",
+            HEB:"Hebrews",JAS:"James","1PE":"1 Peter","2PE":"2 Peter",
+            "1JN":"1 John","2JN":"2 John","3JN":"3 John",JUD:"Jude",REV:"Revelation"
+          };
+
+          // ── Parse /read/:languageId/:bibleId/:bookId/:chapter from URL ──────
+          var pathname = window.location.pathname || "";
+          var readMatch = pathname.match(
+            /^\/read\/(\d+)\/([A-Z0-9]+)(?:\/([A-Z0-9]+)(?:\/(\d+))?)?/
+          );
+
+          var pageTitle = "Daylybread: Smart Bible with AI | Feeds your spirit";
+          var pageDesc = "Your smart Bible companion with AI assistance, multiple translations, mood-based verses, and personalized spiritual growth features. Read the Bible in all languages for free.";
+
+          if (readMatch) {
+            var bibleAbbr = readMatch[2];
+            var bookId    = readMatch[3];
+            var chapter   = readMatch[4];
+            // Strip language prefix (first 3 chars) to get display name e.g. "KJV", "ESV"
+            var transDisplay = bibleAbbr.length > 3 ? bibleAbbr.slice(3) : bibleAbbr;
+            var bookName = bookId ? (BOOK_NAMES[bookId] || bookId) : null;
+
+            if (bookName && chapter) {
+              pageTitle = bookName + " " + chapter + " (" + transDisplay + ") | Daylybread";
+              pageDesc  = "Read " + bookName + " chapter " + chapter + " in the " + transDisplay + ". Study with AI assistance, cross-references, and commentary on Daylybread.";
+            } else if (bookName) {
+              pageTitle = "Book of " + bookName + " (" + transDisplay + ") | Daylybread";
+              pageDesc  = "Read the complete Book of " + bookName + " in the " + transDisplay + " with AI Bible assistance, study notes, and cross-references on Daylybread.";
+            } else {
+              pageTitle = transDisplay + " Bible — Read Online | Daylybread";
+              pageDesc  = "Read the complete " + transDisplay + " Bible online with AI assistance, study tools, and personalized features. Free on Daylybread.";
+            }
+          }
+
+          // ── Apply to <title> and <meta> tags ─────────────────────────────────
+          document.title = pageTitle;
+
+          function setMeta(selector, attr, value) {
+            var el = document.querySelector(selector);
+            if (el) el.setAttribute(attr, value);
+          }
+
+          setMeta('meta[name="description"]',       "content", pageDesc);
+          setMeta('meta[property="og:title"]',      "content", pageTitle);
+          setMeta('meta[property="og:description"]',"content", pageDesc);
+          setMeta('meta[name="twitter:title"]',     "content", pageTitle);
+          setMeta('meta[name="twitter:description"]',"content", pageDesc);
+
+          // ── Platform / variant detection ─────────────────────────────────
           var urlParams = new URLSearchParams(window.location.search);
           var host = window.location.hostname || "";
           var inferredSubdomain = (host.split(".") || [])[0] || "";
@@ -233,10 +298,47 @@
 
           var isPlatform = variant === "platform";
 
-          var defaultTitle =
-            "Daylybread: Smart Bible with AI | Feeds your spirit";
-          var platformTitle = "Daylybread Platform";
-          document.title = isPlatform ? platformTitle : defaultTitle;
+          if (isPlatform) {
+            // ── Platform per-route titles & descriptions ──────────────────────
+            var PLATFORM_ROUTES = [
+              { pattern: /^\/worship\/services\/[^/]+\/live/, title: "Live Service — Worship | Platform Daylybread",        desc: "Run a live worship service with real-time chord sheets, auto-scroll, and setlist navigation." },
+              { pattern: /^\/worship\/services\/[^/]+/,       title: "Service Detail — Worship | Platform Daylybread",     desc: "View and manage a planned worship service, setlist, and team assignments." },
+              { pattern: /^\/worship\/services/,              title: "Services — Worship | Platform Daylybread",           desc: "Plan and manage upcoming worship services, setlists, and team assignments." },
+              { pattern: /^\/worship\/teams\/[^/]+/,          title: "Team Detail — Worship | Platform Daylybread",        desc: "Manage worship team members, roles, and skills." },
+              { pattern: /^\/worship\/teams/,                 title: "Teams — Worship | Platform Daylybread",              desc: "Create and manage worship teams for your church or organization." },
+              { pattern: /^\/worship\/songs\/[^/]+/,          title: "Song — Worship | Platform Daylybread",               desc: "View chord sheets, lyrics, and song details for worship planning." },
+              { pattern: /^\/worship\/songs/,                 title: "Song Library — Worship | Platform Daylybread",       desc: "Browse and manage your worship song library with chord sheets and lyrics." },
+              { pattern: /^\/worship\/rehearsals/,            title: "Rehearsals — Worship | Platform Daylybread",         desc: "Schedule and manage worship team rehearsals." },
+              { pattern: /^\/worship\/invite\//,              title: "Join Worship Team | Platform Daylybread",            desc: "Accept your invitation to join a worship team on Platform Daylybread." },
+              { pattern: /^\/worship/,                        title: "Worship Dashboard | Platform Daylybread",            desc: "Manage your worship ministry — teams, services, songs, and rehearsals in one place." },
+              { pattern: /^\/sermons\/new/,                   title: "New Sermon | Platform Daylybread",                   desc: "Write and publish a new sermon with the Platform Daylybread sermon editor." },
+              { pattern: /^\/sermons\/[^/]+/,                 title: "Edit Sermon | Platform Daylybread",                  desc: "Edit and publish your sermon with the Platform Daylybread sermon editor." },
+              { pattern: /^\/sermons/,                        title: "Sermons | Platform Daylybread",                      desc: "Create, manage, and publish sermons for your congregation." },
+              { pattern: /^\/nfc/,                            title: "NFC & Home Screens | Platform Daylybread",           desc: "Configure NFC devices and custom home screen layouts for your church." },
+              { pattern: /^\/sudo-admin/,                     title: "Admin | Platform Daylybread",                        desc: "Super-admin management panel." },
+              { pattern: /^\//,                               title: "Dashboard | Platform Daylybread",                    desc: "Manage your church's worship teams, sermons, NFC devices, and more from one dashboard." },
+            ];
+
+            var platformTitle = "Platform Daylybread";
+            var platformDesc  = "The church management dashboard for worship teams, sermons, NFC home screens, and more.";
+
+            for (var r = 0; r < PLATFORM_ROUTES.length; r++) {
+              if (PLATFORM_ROUTES[r].pattern.test(pathname)) {
+                platformTitle = PLATFORM_ROUTES[r].title;
+                platformDesc  = PLATFORM_ROUTES[r].desc;
+                break;
+              }
+            }
+
+            document.title = platformTitle;
+            setMeta('meta[name="description"]',        "content", platformDesc);
+            setMeta('meta[property="og:title"]',       "content", platformTitle);
+            setMeta('meta[property="og:description"]', "content", platformDesc);
+            setMeta('meta[name="twitter:title"]',      "content", platformTitle);
+            setMeta('meta[name="twitter:description"]',"content", platformDesc);
+            // Platform is a private dashboard — don't index it
+            setMeta('meta[name="robots"]', "content", "noindex, nofollow");
+          }
 
           var appNameMeta = document.querySelector(
             'meta[name="application-name"]'
@@ -244,8 +346,8 @@
           if (appNameMeta)
             appNameMeta.setAttribute(
               "content",
-              isPlatform ? "Daylybread Platform" : "Daylybread"
-            );
+              isPlatform ? "Platform Daylybread" : "Daylybread"
+          );
 
           var appleTitleMeta = document.querySelector(
             'meta[name="apple-mobile-web-app-title"]'
@@ -253,7 +355,7 @@
           if (appleTitleMeta)
             appleTitleMeta.setAttribute(
               "content",
-              isPlatform ? "Daylybread Platform" : "Daylybread"
+              isPlatform ? "Platform Daylybread" : "Daylybread"
             );
 
           var manifestLink = document.getElementById("pwa-manifest");
