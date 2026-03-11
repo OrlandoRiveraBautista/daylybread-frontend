@@ -1,0 +1,318 @@
+@import "../../../theme/variables.scss";
+@import "../platform-modal";
+
+.item-card {
+  background: $glass-background-light;
+  border: 1px solid $glass-border-light;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    border-radius: 20px;
+  }
+
+  // Color variants
+  &--primary {
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        var(--ion-color-primary),
+        transparent
+      );
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    &:hover {
+      border: 1px solid rgba(var(--ion-color-primary-rgb), 0.3);
+
+      &::before {
+        opacity: 1;
+      }
+    }
+  }
+
+  &--secondary {
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        var(--ion-color-secondary),
+        transparent
+      );
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    &:hover {
+      border: 1px solid rgba(var(--ion-color-secondary-rgb), 0.3);
+
+      &::before {
+        opacity: 1;
+      }
+    }
+  }
+
+  &--tertiary {
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        var(--ion-color-tertiary),
+        transparent
+      );
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    &:hover {
+      border: 1px solid rgba(var(--ion-color-tertiary-rgb), 0.3);
+
+      &::before {
+        opacity: 1;
+      }
+    }
+  }
+
+  &--success {
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        var(--ion-color-success),
+        transparent
+      );
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    &:hover {
+      border: 1px solid rgba(var(--ion-color-success-rgb), 0.3);
+
+      &::before {
+        opacity: 1;
+      }
+    }
+  }
+
+  &--warning {
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        var(--ion-color-warning),
+        transparent
+      );
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    &:hover {
+      border: 1px solid rgba(var(--ion-color-warning-rgb), 0.3);
+
+      &::before {
+        opacity: 1;
+      }
+    }
+  }
+
+  &--danger {
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        var(--ion-color-danger),
+        transparent
+      );
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    &:hover {
+      border: 1px solid rgba(var(--ion-color-danger-rgb), 0.3);
+
+      &::before {
+        opacity: 1;
+      }
+    }
+  }
+
+  ion-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__icon {
+    font-size: 32px;
+    flex-shrink: 0;
+  }
+
+  &__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  &__title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ion-text-color);
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  &__subtitle {
+    font-size: 14px;
+    color: var(--ion-color-medium);
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  &__metadata {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    font-size: 14px;
+    color: var(--ion-color-medium);
+
+    ion-icon {
+      font-size: 16px;
+      margin-right: 4px;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 4px;
+    justify-content: flex-end;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  &:hover &__actions {
+    opacity: 1;
+  }
+
+  /* On touch devices there is no hover — always show actions */
+  @media (hover: none) {
+    &__actions {
+      opacity: 1;
+    }
+  }
+
+  &.deleting {
+    @include item-delete-animate;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .item-card {
+    background: $glass-background-dark;
+    border: 1px solid $glass-border-dark;
+
+    &:hover {
+      background: $glass-background-dark-hover;
+    }
+
+    &--primary:hover {
+      border: 1px solid rgba(var(--ion-color-primary-rgb), 0.5);
+    }
+
+    &--secondary:hover {
+      border: 1px solid rgba(var(--ion-color-secondary-rgb), 0.5);
+    }
+
+    &--tertiary:hover {
+      border: 1px solid rgba(var(--ion-color-tertiary-rgb), 0.5);
+    }
+
+    &--success:hover {
+      border: 1px solid rgba(var(--ion-color-success-rgb), 0.5);
+    }
+
+    &--warning:hover {
+      border: 1px solid rgba(var(--ion-color-warning-rgb), 0.5);
+    }
+
+    &--danger:hover {
+      border: 1px solid rgba(var(--ion-color-danger-rgb), 0.5);
+    }
+  }
+}
+
+.item-card__highlight {
+  background: rgba(var(--ion-color-warning-rgb), 0.35);
+  color: inherit;
+  border-radius: 3px;
+  padding: 0 1px;
+  font-weight: 600;
+}
+
+@media (prefers-color-scheme: dark) {
+  .item-card__highlight {
+    background: rgba(var(--ion-color-warning-rgb), 0.45);
+  }
+}

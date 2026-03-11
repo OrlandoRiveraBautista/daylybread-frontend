@@ -28,30 +28,6 @@
   animation: sudoAdminFadeIn 0.3s ease-out;
 }
 
-// Header Section
-.admin-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 32px;
-  gap: 16px;
-  animation: sudoAdminFadeIn 0.4s ease-out;
-
-  h1 {
-    font-size: 32px;
-    font-weight: 600;
-    color: var(--ion-text-color);
-    margin: 0 0 8px 0;
-  }
-
-  p {
-    font-size: 16px;
-    color: var(--ion-color-medium);
-    margin: 0;
-    max-width: 600px;
-    line-height: 1.5;
-  }
-}
 
 // Status Messages
 .status-message {
@@ -438,49 +414,6 @@
   }
 }
 
-// Empty State
-.empty-state-card {
-  background: $glass-background-light;
-  border: 1px solid $glass-border-lighter;
-  border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-
-  .empty-state {
-    text-align: center;
-    padding: 48px 24px;
-
-    .empty-state-icon {
-      font-size: 80px;
-      color: var(--ion-color-medium);
-      opacity: 0.3;
-      margin-bottom: 24px;
-    }
-
-    h2 {
-      font-size: 24px;
-      font-weight: 600;
-      color: var(--ion-text-color);
-      margin: 0 0 12px 0;
-    }
-
-    p {
-      font-size: 16px;
-      color: var(--ion-color-medium);
-      margin: 0 0 24px 0;
-      max-width: 500px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  .empty-state-card {
-    background: $glass-background-dark;
-    border: 1px solid $glass-border-dark;
-  }
-}
-
 // Configs Grid
 .configs-grid {
   display: grid;
@@ -521,6 +454,7 @@
     box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
     background: rgba(255, 255, 255, 0.7);
     border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 24px;
 
     &::before {
       opacity: 1;
@@ -671,23 +605,6 @@
 
 // Responsive adjustments
 @media (max-width: 768px) {
-  .admin-header {
-    flex-direction: column;
-    align-items: flex-start;
-
-    h1 {
-      font-size: 24px;
-    }
-
-    p {
-      font-size: 14px;
-    }
-
-    ion-button {
-      width: 100%;
-    }
-  }
-
   .form-grid {
     grid-template-columns: 1fr;
   }
@@ -714,5 +631,19 @@
     .detail-value {
       padding-left: 28px;
     }
+  }
+}
+
+.sudo-highlight {
+  background: rgba(var(--ion-color-warning-rgb), 0.35);
+  color: inherit;
+  border-radius: 3px;
+  padding: 0 1px;
+  font-weight: 600;
+}
+
+@media (prefers-color-scheme: dark) {
+  .sudo-highlight {
+    background: rgba(var(--ion-color-warning-rgb), 0.45);
   }
 }

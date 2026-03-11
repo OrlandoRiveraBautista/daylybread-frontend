@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   IonIcon,
   IonMenu,
@@ -13,9 +13,22 @@ import {
   IonButtons,
   IonMenuButton,
   IonImg,
+  IonFooter,
+  IonSpinner,
 } from "@ionic/react";
 import { useHistory } from "react-router";
-import { card, home, document, shield } from "ionicons/icons";
+import {
+  card,
+  home,
+  document as documentIcon,
+  shield,
+  musicalNotes,
+  logOutOutline,
+} from "ionicons/icons";
+import { useApolloClient } from "@apollo/client";
+import { useSignout } from "../../../hooks/AuthHooks";
+import { useAppContext } from "../../../context/context";
+import { NotificationCenter } from "../NotificationCenter";
 import SmallWordLogo from "../../../assets/images/small-word-logo.svg";
 import SmallWordLogoDark from "../../../assets/images/small-word-logo-dark.svg";
 import "./DashboardLayout.scss";
@@ -24,6 +37,7 @@ export type DashboardSection =
   | "overview"
   | "nfc"
   | "sermons"
+  | "worship"
   | "calendar"
   | "organization"
   | "analytics"
@@ -46,6 +60,19 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   isSudoAdmin = false,
 }) => {
   const history = useHistory();
+  const client = useApolloClient();
+  const { signout } = useSignout();
+  const { clearUser } = useAppContext();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    await new Promise((resolve) => setTimeout(resolve, 3400));
+    await signout();
+    await client.clearStore();
+    clearUser();
+    history.push("/login");
+  };
 
   const menuItems = [
     {
@@ -62,9 +89,15 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     },
     {
       section: "sermons" as DashboardSection,
-      icon: document,
+      icon: documentIcon,
       label: "Sermons",
       path: "/sermons",
+    },
+    {
+      section: "worship" as DashboardSection,
+      icon: musicalNotes,
+      label: "Worship Teams",
+      path: "/worship",
     },
     // Sudo Admin Manager - only visible to admin users
     ...(isSudoAdmin
@@ -155,6 +188,19 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
             ))}
           </IonList>
         </IonContent>
+        <IonFooter className="ion-no-border dashboard-menu-footer">
+          <IonMenuToggle autoHide={false}>
+            <IonItem
+              button
+              lines="none"
+              onClick={handleLogout}
+              className="dashboard-logout-item"
+            >
+              <IonIcon slot="start" icon={logOutOutline} />
+              <IonLabel>Logout</IonLabel>
+            </IonItem>
+          </IonMenuToggle>
+        </IonFooter>
       </IonMenu>
 
       <div className="ion-page" id="main-content">
@@ -166,12 +212,25 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
             <IonTitle>
               {menuItems.find((item) => item.section === activeSection)?.label}
             </IonTitle>
+            <IonButtons slot="end">
+              <NotificationCenter />
+            </IonButtons>
           </IonToolbar>
         </IonHeader>
         <IonContent className="ion-padding dashboard-content">
           {children}
         </IonContent>
       </div>
+
+      {isLoggingOut && (
+        <div className="logout-overlay">
+          <div className="logout-overlay-content">
+            <IonSpinner name="crescent" className="logout-overlay-spinner" />
+            <p className="logout-overlay-text">Untill next time...</p>
+            <p className="logout-overlay-text">God Bless You!</p>
+          </div>
+        </div>
+      )}
     </>
   );
 };

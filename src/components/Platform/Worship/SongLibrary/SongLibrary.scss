@@ -1,0 +1,141 @@
+@import "../../../../theme/variables.scss";
+@import "../worship-forms";
+
+@keyframes songsFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+
+.songs-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  animation: songsFadeIn 0.3s ease-out;
+}
+
+.songs-header {
+  @extend %worship-page-header;
+}
+
+.songs-search {
+  @extend %worship-searchbar;
+}
+
+@media (prefers-color-scheme: dark) {
+  .songs-search ion-searchbar {
+    --background: $glass-background-dark;
+    border: 1px solid $glass-border-dark;
+  }
+}
+
+.songs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.song-card {
+  .song-icon {
+    color: var(--ion-color-tertiary);
+  }
+}
+
+/* Song Detail Modal */
+.song-detail-modal {
+  padding: 24px;
+  @include platform-sheet-animate;
+
+  h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+  }
+
+  .song-detail__artist {
+    font-size: 16px;
+    color: var(--ion-color-medium);
+    margin: 0 0 12px 0;
+  }
+
+  .song-detail__tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+
+  .song-detail__section {
+    margin-bottom: 24px;
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0 0 8px 0;
+      color: var(--ion-color-primary);
+    }
+
+    p {
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    a {
+      color: var(--ion-color-primary);
+      text-decoration: none;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .song-detail__lyrics,
+  .song-detail__chords {
+    font-family: monospace;
+    font-size: 14px;
+    white-space: pre-wrap;
+    line-height: 1.8;
+    background: var(--ion-background-color);
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid $glass-border-lighter;
+    overflow-x: auto;
+    margin: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .songs-header {
+    flex-direction: column;
+    align-items: stretch;
+    h1 {
+      font-size: 24px;
+    }
+    p {
+      font-size: 14px;
+    }
+    > ion-button {
+      width: 100%;
+      margin: 4px 0 0 0;
+    }
+    &__left {
+      align-items: flex-start;
+    }
+  }
+  .songs-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+  .song-card {
+    ion-card-content {
+      min-height: 120px;
+      padding: 12px;
+    }
+    .item-card__header .song-icon {
+      font-size: 22px;
+    }
+  }
+}

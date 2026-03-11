@@ -1,0 +1,336 @@
+@import "../../../../theme/variables.scss";
+@import "../worship-forms";
+
+@keyframes teamsFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+
+.teams-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  animation: teamsFadeIn 0.3s ease-out;
+}
+
+.teams-header {
+  @extend %worship-page-header;
+}
+
+// ── Segment tabs ──────────────────────────────────────────────────────────────
+
+.teams-tabs {
+  margin-bottom: 20px;
+  border-radius: 12px;
+  border: 1px solid $glass-border-lighter;
+
+  ion-segment-button {
+    --indicator-color: var(--ion-color-primary);
+  }
+
+  &__badge {
+    margin-left: 6px;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    vertical-align: middle;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .teams-tabs {
+    border: 1px solid $glass-border-dark;
+  }
+}
+
+// ── Search ────────────────────────────────────────────────────────────────────
+
+.teams-search {
+  @extend %worship-searchbar;
+}
+
+@media (prefers-color-scheme: dark) {
+  .teams-search ion-searchbar {
+    --background: $glass-background-dark;
+    border: 1px solid $glass-border-dark;
+  }
+}
+
+// ── Team grid ─────────────────────────────────────────────────────────────────
+
+.teams-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.team-card {
+  .team-icon {
+    color: var(--ion-color-primary);
+  }
+}
+
+// ── Team card owner row ───────────────────────────────────────────────────────
+
+.team-card__owner {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--ion-color-medium);
+  margin-top: 4px;
+
+  ion-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+}
+
+// ── Invited sections ──────────────────────────────────────────────────────────
+
+.invited-section {
+  margin-bottom: 28px;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  &__icon {
+    font-size: 18px;
+    color: var(--ion-color-tertiary);
+  }
+
+  &__title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ion-color-dark);
+    margin: 0;
+    flex: 1;
+  }
+
+  &__count {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+}
+
+// ── Invite cards ──────────────────────────────────────────────────────────────
+
+.invites-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.invite-card {
+  background: $glass-background-light;
+  border: 1px solid $glass-border-lighter;
+  border-radius: 18px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  margin: 0;
+
+  ion-card-content {
+    padding: 20px;
+  }
+
+  &__top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  &__team-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    flex: 1;
+  }
+
+  &__team-icon {
+    font-size: 28px;
+    color: var(--ion-color-primary);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  &__team-name {
+    font-size: 17px;
+    font-weight: 700;
+    margin: 0 0 4px 0;
+    color: var(--ion-color-dark);
+  }
+
+  &__team-desc {
+    font-size: 13px;
+    color: var(--ion-color-medium);
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  &__role-badge {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 10px;
+    text-transform: capitalize;
+    flex-shrink: 0;
+  }
+
+  &__divider {
+    height: 1px;
+    background: $glass-border-lighter;
+    margin: 0 0 16px 0;
+  }
+
+  &__owner {
+    margin-bottom: 12px;
+  }
+
+  &__owner-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ion-color-medium);
+    margin: 0 0 8px 0;
+  }
+
+  &__owner-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  &__owner-avatar {
+    font-size: 36px;
+    color: var(--ion-color-medium);
+    flex-shrink: 0;
+  }
+
+  &__owner-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__owner-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+  }
+
+  &__owner-meta {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    color: var(--ion-color-medium);
+
+    ion-icon {
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+  }
+
+  &__owner-email {
+    color: var(--ion-color-primary);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+
+  &__skill-badge {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 8px;
+  }
+
+  &__expires {
+    display: block;
+    font-size: 12px;
+    margin-bottom: 16px;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 10px;
+
+    ion-button {
+      flex: 1;
+      margin: 0;
+      --box-shadow: none;
+      text-transform: none;
+      font-weight: 600;
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .invite-card {
+    background: $glass-background-dark;
+    border: 1px solid $glass-border-dark;
+
+    &__divider {
+      background: $glass-border-dark;
+    }
+  }
+}
+
+// ── Responsive ────────────────────────────────────────────────────────────────
+
+@media (max-width: 768px) {
+  .teams-header {
+    flex-direction: column;
+    align-items: stretch;
+    h1 {
+      font-size: 24px;
+    }
+    p {
+      font-size: 14px;
+    }
+    > ion-button {
+      width: 100%;
+      margin: 4px 0 0 0;
+    }
+    &__left {
+      align-items: flex-start;
+    }
+  }
+
+  .teams-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+
+  .team-card {
+    ion-card-content {
+      min-height: 140px;
+      padding: 12px;
+    }
+    .item-card__header .team-icon {
+      font-size: 26px;
+    }
+  }
+
+  .invite-card__actions {
+    flex-direction: column;
+  }
+}

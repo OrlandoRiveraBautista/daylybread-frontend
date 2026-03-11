@@ -16,11 +16,13 @@ import {
   card, 
   cart, 
   trash, 
-  add, 
   link as linkIcon,
   qrCode 
 } from "ionicons/icons";
 import { NFCProducts } from "../NFCProducts";
+import { AddCard } from "../AddCard";
+import EmptyState from "../../EmptyState/EmptyState";
+import { PageHeader } from "../PageHeader";
 import "./NFCDevicesManagement.scss";
 
 export interface NFCDeviceConfig {
@@ -75,62 +77,28 @@ export const NFCDevicesManagement: React.FC<NFCDevicesManagementProps> = ({
 
   return (
     <div className="nfc-devices-management-container">
-      <div className="management-header">
-        <div>
-          <h1>NFC Devices</h1>
-          <p>
-            Manage your physical NFC tags and assign them to home screens.
-            Shop for NFC products to expand your collection.
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        title="NFC Devices"
+        subtitle="Manage your physical NFC tags and assign them to home screens. Shop for NFC products to expand your collection."
+      />
 
       {nfcDevices.length === 0 ? (
-        <IonCard className="empty-state-card">
-          <IonCardContent>
-            <div className="empty-state">
-              <IonIcon icon={qrCode} className="empty-state-icon" />
-              <h2>No NFC Devices Yet</h2>
-              <p>
-                Get started by shopping for NFC tags. Once you have them,
-                you can assign them to your home screens for tap-to-access functionality.
-              </p>
-              <div
-                style={{
-                  display: "flex",
-                  gap: "8px",
-                  marginTop: "16px",
-                  justifyContent: "center",
-                  flexWrap: "wrap",
-                }}
-              >
-                <IonButton
-                  shape="round"
-                  color="primary"
-                  onClick={() => setShowNFCProducts(true)}
-                >
-                  <IonIcon slot="start" icon={cart} />
-                  Shop NFC Tags
-                </IonButton>
-              </div>
-            </div>
-          </IonCardContent>
-        </IonCard>
+        <EmptyState
+          icon={qrCode}
+          title="No NFC Devices Yet"
+          description="Get started by shopping for NFC tags. Once you have them, you can assign them to your home screens for tap-to-access functionality."
+          actionLabel="Shop NFC Tags"
+          actionIcon={cart}
+          onAction={() => setShowNFCProducts(true)}
+        />
       ) : (
         <div className="nfc-devices-grid">
-          {/* Add NFC Device Card */}
-          <IonCard
-            className="nfc-device-card new-nfc-device-card"
+          <AddCard
+            label="Add NFC Device"
             onClick={() => setShowNFCProducts(true)}
-            button
-          >
-            <IonCardContent>
-              <div className="new-nfc-device-content">
-                <IonIcon icon={add} className="add-icon" />
-                <span>Add NFC Device</span>
-              </div>
-            </IonCardContent>
-          </IonCard>
+            color="primary"
+            className="nfc-device-card"
+          />
 
           {/* Existing NFC Devices */}
           {nfcDevices.map((device) => (

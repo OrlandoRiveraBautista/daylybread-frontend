@@ -12,11 +12,10 @@ import {
   IonIcon,
   IonText,
   IonBadge,
-  IonCard,
-  IonCardContent,
 } from "@ionic/react";
 import { close, card, checkmarkCircle, cart } from "ionicons/icons";
 import { NFCDeviceConfig } from "../NFCDevicesManagement/NFCDevicesManagement";
+import EmptyState from "../../EmptyState/EmptyState";
 import "./AssignNFCModal.scss";
 
 interface AssignNFCModalProps {
@@ -81,29 +80,14 @@ export const AssignNFCModal: React.FC<AssignNFCModalProps> = ({
         </div>
 
         {availableDevices.length === 0 ? (
-          <IonCard className="empty-state-card">
-            <IonCardContent>
-              <div className="empty-state">
-                <IonIcon icon={cart} className="empty-state-icon" />
-                <h2>No Available NFC Devices</h2>
-                <p>
-                  You don't have any unassigned NFC devices yet. Shop for NFC tags
-                  to enable tap-to-access functionality for your home screens.
-                </p>
-                <IonButton
-                  shape="round"
-                  color="primary"
-                  onClick={() => {
-                    onShopNFCTags();
-                    handleClose();
-                  }}
-                >
-                  <IonIcon slot="start" icon={cart} />
-                  Shop NFC Tags
-                </IonButton>
-              </div>
-            </IonCardContent>
-          </IonCard>
+          <EmptyState
+            icon={cart}
+            title="No Available NFC Devices"
+            description="You don't have any unassigned NFC devices yet. Shop for NFC tags to enable tap-to-access functionality for your home screens."
+            actionLabel="Shop NFC Tags"
+            actionIcon={cart}
+            onAction={() => { onShopNFCTags(); handleClose(); }}
+          />
         ) : (
           <>
             <IonList>

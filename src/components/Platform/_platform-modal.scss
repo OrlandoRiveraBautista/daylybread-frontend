@@ -44,6 +44,64 @@
 }
 
 /**
+ * Standard item deletion animation
+ * Apply to any list item that is being removed.
+ * Works for both grid cards and list rows.
+ * Duration: 350ms — long enough to feel smooth, short enough to feel snappy.
+ */
+@keyframes itemDeleteOut {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateX(0);
+    max-height: 200px;
+    margin-bottom: 10px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  30% {
+    opacity: 0.6;
+    transform: scale(0.97) translateX(-6px);
+    border-color: rgba(var(--ion-color-danger-rgb), 0.4);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.92) translateX(-24px);
+    max-height: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+@mixin item-delete-animate {
+  animation: itemDeleteOut 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/**
+ * Bottom sheet entrance animations
+ * Apply @include platform-sheet-animate to any direct content wrapper inside IonContent
+ * Children stagger in via nth-child delays automatically
+ */
+@keyframes sheetFadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@mixin platform-sheet-animate {
+  & > * {
+    animation: sheetFadeUp 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+    @for $i from 1 through 12 {
+      &:nth-child(#{$i}) {
+        animation-delay: #{($i - 1) * 55}ms;
+      }
+    }
+  }
+}
+
+/**
  * Reusable modal header styling
  * Matches the Edit Home Screen modal header structure
  */
