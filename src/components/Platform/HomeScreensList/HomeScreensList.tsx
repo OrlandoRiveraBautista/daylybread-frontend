@@ -22,11 +22,13 @@ import {
   shareSocial,
   cart,
   trash,
-  add,
   close,
 } from "ionicons/icons";
 import { HomeScreenEditor } from "../HomeScreenEditor";
+import { AddCard } from "../AddCard";
 import { TileConfig } from "../../NFC/iPhoneHomeScreen/types";
+import EmptyState from "../../EmptyState/EmptyState";
+import { PageHeader } from "../PageHeader";
 import "./HomeScreensList.scss";
 
 export interface HomeScreen {
@@ -180,65 +182,32 @@ export const HomeScreensList: React.FC<HomeScreensListProps> = ({
 
   return (
     <div className="home-screens-container">
-      <div className="screens-header">
-        <div>
-          <h1>Home Screens</h1>
-          <p>
-            Create multiple home screens and share them via link instantly.
-            Design custom layouts for different purposes.
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        title="Home Screens"
+        subtitle="Create multiple home screens and share them via link instantly. Design custom layouts for different purposes."
+      />
 
       {homeScreens.length === 0 ? (
-        <IonCard className="empty-state-card">
-          <IonCardContent>
-            <div className="empty-state">
-              <IonIcon icon={qrCode} className="empty-state-icon" />
-              <h2>Create Your First Home Screen</h2>
-              <p>
-                Design home screen layouts and share them via link instantly.
-                Add NFC tags to enable tap-to-access functionality.
-              </p>
-              <div
-                style={{
-                  display: "flex",
-                  gap: "8px",
-                  marginTop: "16px",
-                  justifyContent: "center",
-                  flexWrap: "wrap",
-                }}
-              >
-                <IonButton
-                  shape="round"
-                  color="primary"
-                  onClick={() => setShowHomeScreenEditor(true)}
-                >
-                  <IonIcon slot="start" icon={create} />
-                  Create Home Screen
-                </IonButton>
-              </div>
-            </div>
-          </IonCardContent>
-        </IonCard>
+        <EmptyState
+          icon={qrCode}
+          title="Create Your First Home Screen"
+          description="Design home screen layouts and share them via link instantly. Add NFC tags to enable tap-to-access functionality."
+          actionLabel="Create Home Screen"
+          actionIcon={create}
+          onAction={() => setShowHomeScreenEditor(true)}
+        />
       ) : (
         <div className="devices-grid">
-          {/* New Home Screen Card */}
-          <IonCard
-            className="device-card new-home-screen-card"
+          <AddCard
+            label="New Home Screen"
             onClick={() => {
               setEditingHomeScreen(null);
               setShowHomeScreenEditor(true);
             }}
-            button
-          >
-            <IonCardContent>
-              <div className="new-home-screen-content">
-                <IonIcon icon={add} className="add-icon" />
-                <span>New Home Screen</span>
-              </div>
-            </IonCardContent>
-          </IonCard>
+            color="primary"
+            size="large"
+            className="device-card"
+          />
 
           {/* Existing Home Screens */}
           {homeScreens.map((homeScreen) => (

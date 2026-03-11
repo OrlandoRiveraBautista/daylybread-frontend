@@ -1,0 +1,303 @@
+@import "../../../theme/variables.scss";
+
+.add-card {
+  border: 2px dashed rgba(var(--ion-color-medium-rgb), 0.5);
+  background: $glass-background-light;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin: 0;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    border-radius: 20px;
+  }
+
+  ion-card-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--ion-color-medium);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &__icon {
+    font-size: 48px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &__label {
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  // Color variants
+  &--primary {
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        var(--ion-color-primary),
+        transparent
+      );
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    &:hover {
+      border-color: var(--ion-color-primary);
+      background: rgba(var(--ion-color-primary-rgb), 0.15);
+
+      &::before {
+        opacity: 1;
+      }
+
+      .add-card__content {
+        color: var(--ion-color-primary);
+      }
+    }
+  }
+
+  &--secondary {
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        var(--ion-color-secondary),
+        transparent
+      );
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    &:hover {
+      border-color: var(--ion-color-secondary);
+      background: rgba(var(--ion-color-secondary-rgb), 0.15);
+
+      &::before {
+        opacity: 1;
+      }
+
+      .add-card__content {
+        color: var(--ion-color-secondary);
+      }
+    }
+  }
+
+  &--tertiary {
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        var(--ion-color-tertiary),
+        transparent
+      );
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    &:hover {
+      border-color: var(--ion-color-tertiary);
+      background: rgba(var(--ion-color-tertiary-rgb), 0.1);
+
+      &::before {
+        opacity: 1;
+      }
+
+      .add-card__content {
+        color: var(--ion-color-tertiary);
+      }
+    }
+  }
+
+  &--success {
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        var(--ion-color-success),
+        transparent
+      );
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    &:hover {
+      border-color: var(--ion-color-success);
+      background: rgba(var(--ion-color-success-rgb), 0.15);
+
+      &::before {
+        opacity: 1;
+      }
+
+      .add-card__content {
+        color: var(--ion-color-success);
+      }
+    }
+  }
+
+  &--warning {
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        var(--ion-color-warning),
+        transparent
+      );
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    &:hover {
+      border-color: var(--ion-color-warning);
+      background: rgba(var(--ion-color-warning-rgb), 0.15);
+
+      &::before {
+        opacity: 1;
+      }
+
+      .add-card__content {
+        color: var(--ion-color-warning);
+      }
+    }
+  }
+
+  &--danger {
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        var(--ion-color-danger),
+        transparent
+      );
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    &:hover {
+      border-color: var(--ion-color-danger);
+      background: rgba(var(--ion-color-danger-rgb), 0.15);
+
+      &::before {
+        opacity: 1;
+      }
+
+      .add-card__content {
+        color: var(--ion-color-danger);
+      }
+    }
+  }
+
+  // Size variants
+  &--small {
+    min-height: 120px;
+
+    .add-card__icon {
+      font-size: 32px;
+    }
+
+    .add-card__label {
+      font-size: 12px;
+    }
+  }
+
+  &--medium {
+    min-height: 150px;
+  }
+
+  &--large {
+    min-height: 200px;
+
+    ion-card-content {
+      min-height: 200px;
+    }
+
+    .add-card__icon {
+      font-size: 64px;
+    }
+
+    .add-card__label {
+      font-size: 16px;
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .add-card {
+    background: $glass-background-dark;
+
+    &--primary:hover {
+      background: rgba(var(--ion-color-primary-rgb), 0.2);
+    }
+
+    &--secondary:hover {
+      background: rgba(var(--ion-color-secondary-rgb), 0.2);
+    }
+
+    &--tertiary:hover {
+      background: rgba(var(--ion-color-tertiary-rgb), 0.2);
+    }
+
+    &--success:hover {
+      background: rgba(var(--ion-color-success-rgb), 0.2);
+    }
+
+    &--warning:hover {
+      background: rgba(var(--ion-color-warning-rgb), 0.2);
+    }
+
+    &--danger:hover {
+      background: rgba(var(--ion-color-danger-rgb), 0.2);
+    }
+  }
+}

@@ -1,0 +1,70 @@
+@import "../../../../theme/variables.scss";
+@import "../worship-forms";
+
+@keyframes rehearsalsFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.rehearsals-container { max-width: 1200px; margin: 0 auto; padding: 24px 16px; animation: rehearsalsFadeIn 0.3s ease-out; }
+
+.rehearsals-header {
+  display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; gap: 16px;
+  &__left { display: flex; align-items: flex-start; gap: 8px; }
+  h1 { font-size: 32px; font-weight: 600; margin: 0 0 8px 0; }
+  p { font-size: 16px; color: var(--ion-color-medium); margin: 0; }
+}
+
+.rehearsals-list { display: flex; flex-direction: column; gap: 12px; }
+
+.rehearsal-card {
+  background: $glass-background-light; border: 1px solid $glass-border-lighter; border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06); margin: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  &:hover { transform: translateX(4px); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1); border-radius: 20px; }
+  &.deleting { @include item-delete-animate; }
+
+  ion-card-content { display: flex; align-items: flex-start; gap: 20px; padding: 16px 20px; }
+
+  &__date {
+    display: flex; flex-direction: column; align-items: center; min-width: 48px; padding: 8px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(var(--ion-color-success-rgb), 1), rgba(var(--ion-color-success-rgb), 0.8));
+    color: white; flex-shrink: 0;
+  }
+  &__day { font-size: 22px; font-weight: 700; line-height: 1.2; }
+  &__month { font-size: 11px; font-weight: 600; text-transform: uppercase; }
+
+  &__info { flex: 1;
+    h3 { font-size: 16px; font-weight: 600; margin: 0 0 6px 0; }
+  }
+  &__meta { display: flex; gap: 16px; }
+  &__meta-item { display: flex; align-items: center; gap: 4px; font-size: 13px; color: var(--ion-color-medium); ion-icon { font-size: 14px; } }
+  &__notes { font-size: 13px; margin: 6px 0 0 0; }
+  &__songs { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+}
+
+.rehearsal-song-tag {
+  font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 500;
+  background: rgba(var(--ion-color-tertiary-rgb), 0.12); color: var(--ion-color-tertiary);
+}
+
+@media (prefers-color-scheme: dark) { .rehearsal-card { background: $glass-background-dark; border: 1px solid $glass-border-dark; } }
+
+/* Shared patterns */
+.loading-state { display: flex; flex-direction: column; align-items: center; padding: 64px 24px; text-align: center; ion-spinner { --color: var(--ion-color-primary); width: 48px; height: 48px; margin-bottom: 16px; } p { color: var(--ion-color-medium); } }
+.button-group { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; ion-button { margin: 0; --box-shadow: none; text-transform: none; font-weight: 500; } }
+.delete-confirmation { text-align: center; padding: 24px; display: flex; flex-direction: column; align-items: center; .warning-icon { font-size: 64px; color: var(--ion-color-danger); margin-bottom: 16px; } h2 { font-size: 22px; font-weight: 600; margin: 0 0 12px 0; } p { font-size: 16px; color: var(--ion-color-medium); margin: 0 0 24px 0; } }
+
+@media (max-width: 768px) {
+  .rehearsals-header {
+    flex-direction: column;
+    align-items: stretch;
+    h1 { font-size: 24px; }
+    p { font-size: 14px; }
+    > ion-button { width: 100%; margin: 4px 0 0 0; }
+    &__left { align-items: flex-start; }
+  }
+  .rehearsal-card {
+    ion-card-content { gap: 12px; padding: 12px 14px; }
+    &__meta { flex-direction: column; gap: 4px; }
+    &__date { min-width: 44px; }
+    &__day { font-size: 18px; }
+  }
+}

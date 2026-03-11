@@ -8,7 +8,7 @@ import {
   IonIcon,
   IonSpinner,
 } from "@ionic/react";
-import { useHistory } from "react-router";
+import { useHistory, useLocation } from "react-router";
 
 /* Components */
 import GoogleAuth from "./GoogleAuth";
@@ -39,6 +39,7 @@ interface IIsValid {
 
 const Login: React.FC = () => {
   const history = useHistory();
+  const location = useLocation();
   const { setUser, userInfo } = useAppContext();
   const [loginOptions, setLoginOptions] = useState<IUsernamePasswordInput>({
     email: "",
@@ -121,7 +122,13 @@ const Login: React.FC = () => {
   };
 
   const handleRedirect = () => {
-    // Check subdomain and redirect accordingly
+    const params = new URLSearchParams(location.search);
+    const redirectTo = params.get("redirect");
+    if (redirectTo) {
+      history.push(redirectTo);
+      return;
+    }
+
     const subdomain = window.location.hostname.split(".")[0];
     if (subdomain === "platform") {
       history.push("/");

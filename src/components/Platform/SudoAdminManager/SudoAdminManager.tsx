@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Highlighter from "react-highlight-words";
 import {
   IonCard,
   IonCardContent,
@@ -39,6 +40,8 @@ import {
   search,
 } from "ionicons/icons";
 import { useAdminNFCConfigs } from "../../../hooks/useAdminNFCConfigs";
+import EmptyState from "../../EmptyState/EmptyState";
+import { PageHeader } from "../PageHeader";
 import "./SudoAdminManager.scss";
 
 // Admin user ID that has access to this page
@@ -237,24 +240,20 @@ export const SudoAdminManager: React.FC = () => {
 
   return (
     <div className="sudo-admin-container">
-      <div className="admin-header">
-        <div>
-          <h1>Sudo Admin Manager</h1>
-          <p>
-            Create and manage NFC configurations for any user. Configure
-            physical NFC tags and assign them to home screens on the go.
-          </p>
-        </div>
-        <IonButton
-          fill="outline"
-          shape="round"
-          onClick={refetch}
-          disabled={isLoading}
-        >
-          <IonIcon slot="start" icon={refresh} />
-          Refresh
-        </IonButton>
-      </div>
+      <PageHeader
+        title="Sudo Admin Manager"
+        subtitle="Create and manage NFC configurations for any user. Configure physical NFC tags and assign them to home screens on the go."
+        actions={[
+          {
+            label: "Refresh",
+            icon: refresh,
+            fill: "outline",
+            color: "primary",
+            onClick: refetch,
+            disabled: isLoading,
+          },
+        ]}
+      />
 
       {/* Status Messages */}
       {(successMessage || error) && (
@@ -362,11 +361,36 @@ export const SudoAdminManager: React.FC = () => {
                                   </div>
                                 </IonAvatar>
                                 <IonLabel>
-                                  <h3>{getOwnerDisplayName(user)}</h3>
-                                  <p>{user.email}</p>
+                                  <h3>
+                                    {ownerSearchQuery ? (
+                                      <Highlighter
+                                        searchWords={[ownerSearchQuery]}
+                                        autoEscape
+                                        textToHighlight={getOwnerDisplayName(user)}
+                                        highlightClassName="sudo-highlight"
+                                      />
+                                    ) : getOwnerDisplayName(user)}
+                                  </h3>
+                                  <p>
+                                    {ownerSearchQuery ? (
+                                      <Highlighter
+                                        searchWords={[ownerSearchQuery]}
+                                        autoEscape
+                                        textToHighlight={user.email}
+                                        highlightClassName="sudo-highlight"
+                                      />
+                                    ) : user.email}
+                                  </p>
                                   {user.churchName && (
                                     <p className="church-name">
-                                      {user.churchName}
+                                      {ownerSearchQuery ? (
+                                        <Highlighter
+                                          searchWords={[ownerSearchQuery]}
+                                          autoEscape
+                                          textToHighlight={user.churchName}
+                                          highlightClassName="sudo-highlight"
+                                        />
+                                      ) : user.churchName}
                                     </p>
                                   )}
                                 </IonLabel>
@@ -518,28 +542,13 @@ export const SudoAdminManager: React.FC = () => {
               <p>Loading NFC configurations...</p>
             </div>
           ) : filteredConfigs.length === 0 ? (
-            <IonCard className="empty-state-card">
-              <IonCardContent>
-                <div className="empty-state">
-                  <IonIcon icon={card} className="empty-state-icon" />
-                  <h2>No NFC Configurations Found</h2>
-                  <p>
-                    {searchQuery
-                      ? "No configurations match your search."
-                      : "Create your first NFC configuration to get started."}
-                  </p>
-                  {!searchQuery && (
-                    <IonButton
-                      shape="round"
-                      onClick={() => setActiveTab("create")}
-                    >
-                      <IonIcon slot="start" icon={add} />
-                      Create Config
-                    </IonButton>
-                  )}
-                </div>
-              </IonCardContent>
-            </IonCard>
+            <EmptyState
+              icon={card}
+              title="No NFC Configurations Found"
+              description={searchQuery ? "No configurations match your search." : "Create your first NFC configuration to get started."}
+              actionLabel={!searchQuery ? "Create Config" : undefined}
+              onAction={!searchQuery ? () => setActiveTab("create") : undefined}
+            />
           ) : (
             <div className="configs-grid">
               {filteredConfigs.map((config: any) => (
@@ -547,7 +556,16 @@ export const SudoAdminManager: React.FC = () => {
                   <IonCardHeader>
                     <div className="config-card-header">
                       <div className="config-info">
-                        <IonCardTitle>{config.name}</IonCardTitle>
+                        <IonCardTitle>
+                          {searchQuery ? (
+                            <Highlighter
+                              searchWords={[searchQuery]}
+                              autoEscape
+                              textToHighlight={config.name || ""}
+                              highlightClassName="sudo-highlight"
+                            />
+                          ) : config.name}
+                        </IonCardTitle>
                         <div className="config-badges">
                           {config.deviceType && (
                             <IonBadge color="secondary">
@@ -593,11 +611,26 @@ export const SudoAdminManager: React.FC = () => {
                         <IonIcon icon={person} />
                         <span className="detail-label">Owner:</span>
                         <span className="detail-value">
-                          {getOwnerDisplayName(config.owner)}
+                          {searchQuery ? (
+                            <Highlighter
+                              searchWords={[searchQuery]}
+                              autoEscape
+                              textToHighlight={getOwnerDisplayName(config.owner)}
+                              highlightClassName="sudo-highlight"
+                            />
+                          ) : getOwnerDisplayName(config.owner)}
                           {config.owner?.email && (
                             <span className="owner-email">
-                              {" "}
-                              ({config.owner.email})
+                              {" "}(
+                              {searchQuery ? (
+                                <Highlighter
+                                  searchWords={[searchQuery]}
+                                  autoEscape
+                                  textToHighlight={config.owner.email}
+                                  highlightClassName="sudo-highlight"
+                                />
+                              ) : config.owner.email}
+                              )
                             </span>
                           )}
                         </span>

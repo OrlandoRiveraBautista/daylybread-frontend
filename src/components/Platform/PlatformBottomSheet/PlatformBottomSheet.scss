@@ -1,0 +1,6 @@
+@import "../platform-modal";
+
+.platform-bottom-sheet-body {
+  padding: 20px;
+  @include platform-sheet-animate;
+}

@@ -1,0 +1,196 @@
+@import "../../../../theme/variables.scss";
+
+@keyframes teamInviteFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.team-invite-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100%;
+  padding: 24px 16px;
+  animation: teamInviteFadeIn 0.35s ease-out;
+}
+
+.team-invite-card {
+  background: $glass-background-light;
+  border: 1px solid $glass-border-lighter;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  max-width: 480px;
+  width: 100%;
+  margin: 0;
+
+  ion-card-content {
+    padding: 0;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .team-invite-card {
+    background: $glass-background-dark;
+    border: 1px solid $glass-border-dark;
+  }
+}
+
+// ── Status states (loading / accepted / declined / error) ──────────────────
+
+.team-invite-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 32px;
+  text-align: center;
+
+  .status-icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+
+    &--success { color: var(--ion-color-success); }
+    &--danger  { color: var(--ion-color-danger);  }
+    &--medium  { color: var(--ion-color-medium);  }
+    &--primary { color: var(--ion-color-primary); }
+  }
+
+  h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ion-text-color);
+    margin: 0 0 12px 0;
+  }
+
+  p {
+    font-size: 15px;
+    color: var(--ion-color-medium);
+    margin: 0 0 28px 0;
+    line-height: 1.5;
+  }
+
+  ion-spinner {
+    --color: var(--ion-color-primary);
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+  }
+
+  ion-button {
+    width: 100%;
+    margin: 0;
+  }
+}
+
+// ── Invite detail body ──────────────────────────────────────────────────────
+
+.team-invite-body {
+  padding: 32px 24px 24px;
+}
+
+.team-invite-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 28px;
+
+  .hero-icon {
+    font-size: 56px;
+    color: var(--ion-color-primary);
+    margin-bottom: 12px;
+  }
+
+  h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ion-text-color);
+    margin: 0 0 4px 0;
+  }
+
+  p {
+    font-size: 14px;
+    color: var(--ion-color-medium);
+    margin: 0;
+  }
+}
+
+.team-invite-divider {
+  height: 1px;
+  background: $glass-border-lighter;
+  margin-bottom: 24px;
+
+  @media (prefers-color-scheme: dark) {
+    background: $glass-border-dark;
+  }
+}
+
+.team-invite-detail-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+
+  .detail-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .detail-text {
+    font-size: 15px;
+    color: var(--ion-text-color);
+    line-height: 1.4;
+
+    strong {
+      font-weight: 600;
+    }
+  }
+}
+
+.team-invite-skills-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ion-color-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 8px;
+  padding-left: 2px;
+}
+
+.team-invite-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+
+  ion-chip {
+    margin: 0;
+  }
+}
+
+.team-invite-expires {
+  font-size: 12px;
+  color: var(--ion-color-medium);
+  margin-bottom: 4px;
+}
+
+.team-invite-error {
+  font-size: 14px;
+  color: var(--ion-color-danger);
+  margin: 12px 0 0 0;
+}
+
+.team-invite-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+
+  ion-button {
+    flex: 1;
+    margin: 0;
+  }
+}

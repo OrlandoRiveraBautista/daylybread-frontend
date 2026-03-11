@@ -1,0 +1,94 @@
+@import "../../../../theme/variables.scss";
+
+@keyframes serviceDetailFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.service-detail {
+  max-width: 900px; margin: 0 auto; padding: 24px 16px; animation: serviceDetailFadeIn 0.3s ease-out;
+
+  &__meta-dot {
+    opacity: 0.5;
+  }
+
+  &__notes-card {
+    background: $glass-background-light; border: 1px solid $glass-border-lighter; border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06); margin: 0 0 24px 0;
+    p { margin: 0; font-size: 14px; line-height: 1.6; }
+  }
+
+  &__tabs {
+    margin-bottom: 24px;
+    --background: $glass-background-light;
+    border-radius: 12px;
+    border: 1px solid $glass-border-lighter;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .service-detail__notes-card { background: $glass-background-dark; border: 1px solid $glass-border-dark; }
+  .service-detail__tabs { --background: $glass-background-dark; border: 1px solid $glass-border-dark; }
+}
+
+.section-action-bar { display: flex; justify-content: flex-end; margin-bottom: 16px; }
+
+.assignments-list, .setlist-list { display: flex; flex-direction: column; gap: 10px; }
+
+.assignment-card {
+  background: $glass-background-light; border: 1px solid $glass-border-lighter; border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05); margin: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  &:hover { transform: translateX(4px); box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); border-radius: 18px; }
+
+  ion-card-content { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; }
+  &__info { display: flex; align-items: center; gap: 12px; flex: 1; }
+  &__status { font-size: 24px; flex-shrink: 0; }
+  &__details {
+    h3 { font-size: 15px; font-weight: 600; margin: 0 0 4px 0; }
+    ion-badge { font-size: 10px; padding: 3px 8px; }
+  }
+}
+
+.setlist-item-card {
+  background: $glass-background-light; border: 1px solid $glass-border-lighter; border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05); margin: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  &:hover { transform: translateX(4px); box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); border-radius: 18px; }
+
+  ion-card-content { display: flex; align-items: center; gap: 16px; padding: 14px 16px; }
+
+  .setlist-item__order {
+    width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700; flex-shrink: 0;
+    background: linear-gradient(135deg, rgba(var(--ion-color-tertiary-rgb), 1), rgba(var(--ion-color-tertiary-rgb), 0.7));
+    color: white;
+  }
+  .setlist-item__info { flex: 1;
+    h3 { font-size: 15px; font-weight: 600; margin: 0 0 4px 0; }
+  }
+  .setlist-item__meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    span { font-size: 13px; color: var(--ion-color-medium); }
+    ion-badge { font-size: 10px; padding: 3px 8px; }
+  }
+  .setlist-item__notes { font-size: 12px; margin: 4px 0 0 0; }
+  .setlist-item__actions { display: flex; align-items: center; flex-shrink: 0; }
+  .setlist-item__reorder { cursor: grab; color: var(--ion-color-medium); font-size: 20px; margin-right: -8px; }
+}
+
+@media (prefers-color-scheme: dark) {
+  .assignment-card, .setlist-item-card { background: $glass-background-dark; border: 1px solid $glass-border-dark; }
+}
+
+.empty-section { text-align: center; padding: 48px 24px; color: var(--ion-color-medium); font-size: 15px; }
+
+.assign-form, .add-song-form { padding: 24px;
+  h2 { font-size: 22px; font-weight: 600; margin: 0 0 24px 0; text-align: center; }
+  .form-field { margin-bottom: 16px; }
+  .form-row { display: flex; gap: 12px; .form-field { flex: 1; } }
+}
+
+.button-group { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; ion-button { margin: 0; --box-shadow: none; text-transform: none; font-weight: 500; } }
+.loading-state { display: flex; flex-direction: column; align-items: center; padding: 64px 24px; text-align: center; ion-spinner { --color: var(--ion-color-primary); width: 48px; height: 48px; margin-bottom: 16px; } p { color: var(--ion-color-medium); } }
+
+@media (max-width: 640px) {
+  .service-detail .page-header__meta {
+    flex-wrap: wrap;
+  }
+}

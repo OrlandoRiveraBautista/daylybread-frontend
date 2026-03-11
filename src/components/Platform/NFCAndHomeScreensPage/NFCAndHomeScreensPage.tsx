@@ -5,6 +5,7 @@ import { NFCDevicesManagement, NFCDeviceConfig } from "../NFCDevicesManagement";
 import { NFCProducts } from "../NFCProducts";
 import { TileConfig } from "../../NFC/iPhoneHomeScreen/types";
 import { NFCDevice } from "../../../types/nfc.types";
+import { PageHeader } from "../PageHeader";
 import "./NFCAndHomeScreensPage.scss";
 
 type TabType = "home-screens" | "nfc-devices";
@@ -76,14 +77,10 @@ export const NFCAndHomeScreensPage: React.FC<NFCAndHomeScreensPageProps> = ({
 
   return (
     <div className="nfc-and-home-screens-page">
-      <div className="page-header">
-        <div className="header-content">
-          <h1>NFC & Home Screens</h1>
-          <p>
-            Manage your home screen layouts and physical NFC devices in one place.
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        title="NFC & Home Screens"
+        subtitle="Manage your home screen layouts and physical NFC devices in one place."
+      />
 
       <div className="tab-selector">
         <IonSegment

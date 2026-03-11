@@ -1,0 +1,177 @@
+@import "../../../theme/variables.scss";
+
+// ─── Page Header Component ────────────────────────────────────────────────────
+//
+// A single, reusable header used across all platform pages (worship, sermons,
+// overview, etc.). Supports two variants:
+//   • page    — large title, used at the top of a full page
+//   • section — smaller, compact, used inside a page for sub-sections
+//
+// Mobile-first: stacks vertically on small screens, side-by-side on larger ones.
+// ─────────────────────────────────────────────────────────────────────────────
+
+@keyframes pageHeaderFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+  animation: pageHeaderFadeIn 0.25s ease-out both;
+
+  // ── Left column ────────────────────────────────────────────────────────────
+  &__left {
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+    min-width: 0; // allow text to shrink/truncate
+    flex: 1;
+  }
+
+  &__back {
+    // Optical alignment: nudge the icon to sit flush with the title baseline
+    margin-top: 2px;
+    flex-shrink: 0;
+
+    // Larger tap target on touch devices
+    --padding-start: 6px;
+    --padding-end: 6px;
+    --padding-top: 6px;
+    --padding-bottom: 6px;
+  }
+
+  &__title-block {
+    min-width: 0;
+    padding-top: 2px; // align with back-button icon center
+  }
+
+  &__title {
+    font-weight: 600;
+    color: var(--ion-text-color);
+    margin: 0 0 4px 0;
+    line-height: 1.2;
+    // Prevent very long titles from breaking layout
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  &__subtitle {
+    font-size: 15px;
+    color: var(--ion-color-medium);
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    margin-top: 6px;
+    font-size: 13px;
+    color: var(--ion-color-medium);
+    line-height: 1.4;
+  }
+
+  // ── Right column ───────────────────────────────────────────────────────────
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  &__badge {
+    text-transform: capitalize;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+  }
+
+  &__action {
+    --box-shadow: none;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  // ── Page variant (default) ─────────────────────────────────────────────────
+  &--page {
+    .page-header__title {
+      font-size: 30px;
+    }
+
+    .page-header__subtitle {
+      font-size: 15px;
+    }
+  }
+
+  // ── Section variant ────────────────────────────────────────────────────────
+  &--section {
+    margin-bottom: 16px;
+
+    .page-header__title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .page-header__subtitle {
+      font-size: 13px;
+    }
+  }
+}
+
+// ─── Mobile ──────────────────────────────────────────────────────────────────
+@media (max-width: 640px) {
+  .page-header {
+    flex-direction: column;
+    gap: 12px;
+
+    &__left {
+      width: 100%;
+    }
+
+    &__right {
+      width: 100%;
+      // On mobile, push actions to the right edge
+      justify-content: flex-end;
+    }
+
+    &--page .page-header__title {
+      font-size: 22px;
+    }
+
+    &--section .page-header__title {
+      font-size: 18px;
+    }
+
+    // Make action buttons full-width on very small screens
+    &__action {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+}
+
+// ─── Dark mode ───────────────────────────────────────────────────────────────
+@media (prefers-color-scheme: dark) {
+  .page-header {
+    &__title {
+      color: var(--ion-text-color);
+    }
+  }
+}

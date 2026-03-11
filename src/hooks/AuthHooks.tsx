@@ -1,6 +1,12 @@
 import { gql } from "../__generated__/gql";
 import { useLazyQuery, useMutation } from "@apollo/client";
 
+const Signout = gql(`
+  query Signout {
+    signout
+  }
+`);
+
 /* Queries */
 const Login = gql(`
     query Login($options: UsernamePasswordInput!) {
@@ -107,3 +113,11 @@ export const useLoginWithGoogle = () => {
     data,
   };
 };
+
+export const useSignout = () => {
+  const [signout, { loading }] = useLazyQuery(Signout, {
+    fetchPolicy: "network-only",
+  });
+  return { signout, loading };
+};
+

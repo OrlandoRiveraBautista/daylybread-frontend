@@ -1,0 +1,449 @@
+@import "../../../../theme/variables.scss";
+@import "../worship-forms";
+
+@keyframes teamDetailFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.team-detail {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  animation: teamDetailFadeIn 0.3s ease-out;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+    gap: 16px;
+
+    &-left {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    h1 { font-size: 28px; font-weight: 600; margin: 0 0 4px 0; }
+    p { font-size: 14px; color: var(--ion-color-medium); margin: 0; }
+  }
+
+  &__tabs {
+    margin-bottom: 24px;
+    --background: $glass-background-light;
+    border-radius: 12px;
+    border: 1px solid $glass-border-lighter;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .team-detail__tabs {
+    --background: $glass-background-dark;
+    border: 1px solid $glass-border-dark;
+  }
+}
+
+// ─── Lists ────────────────────────────────────────────────────────────────────
+
+.members-list, .invites-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+// ─── Member card ─────────────────────────────────────────────────────────────
+
+.member-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: $glass-background-light;
+  border: 1px solid $glass-border-lighter;
+  border-radius: 18px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s ease, border-radius 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.09);
+    border-radius: 22px;
+    transform: translateX(3px);
+  }
+
+  &--removing {
+    @include item-delete-animate;
+  }
+
+  &__avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    font-weight: 700;
+    flex-shrink: 0;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  }
+
+  &__body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  &__name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ion-text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__owner-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--ion-color-primary);
+    background: rgba(var(--ion-color-primary-rgb), 0.1);
+    border-radius: 20px;
+    padding: 2px 8px 2px 5px;
+    white-space: nowrap;
+
+    ion-icon {
+      font-size: 12px;
+    }
+  }
+
+  &__email {
+    font-size: 12px;
+    color: var(--ion-color-medium);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px;
+    margin-top: 6px;
+  }
+
+  &__role-pill {
+    display: inline-flex;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ion-color-primary);
+    background: rgba(var(--ion-color-primary-rgb), 0.1);
+    border-radius: 20px;
+    padding: 3px 10px;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+  }
+
+  &__skill-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--ion-color-medium);
+    background: $glass-background-medium;
+    border: 1px solid $glass-border-lighter;
+    border-radius: 20px;
+    padding: 3px 9px;
+    white-space: nowrap;
+
+    ion-icon {
+      font-size: 11px;
+      opacity: 0.7;
+    }
+  }
+
+  &__remove-btn {
+    flex-shrink: 0;
+    --padding-start: 6px;
+    --padding-end: 6px;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  &:hover &__remove-btn {
+    opacity: 1;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .member-card {
+    background: $glass-background-dark;
+    border-color: $glass-border-dark;
+
+    &__skill-chip {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: $glass-border-dark;
+    }
+  }
+}
+
+// Always show remove button on touch devices
+@media (hover: none) {
+  .member-card__remove-btn {
+    opacity: 1 !important;
+  }
+}
+
+// ─── Invite card (shared base) ────────────────────────────────────────────────
+
+.invite-card {
+  background: $glass-background-light;
+  border: 1px solid $glass-border-lighter;
+  border-radius: 18px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  margin: 0;
+  transition: box-shadow 0.2s ease, border-radius 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.09);
+    border-radius: 22px;
+    transform: translateX(3px);
+  }
+
+  ion-card-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .invite-card {
+    background: $glass-background-dark;
+    border: 1px solid $glass-border-dark;
+  }
+}
+
+.invite-card__info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+}
+
+.invite-card__details {
+  h3 { font-size: 15px; font-weight: 600; margin: 0 0 2px 0; }
+  p { font-size: 12px; margin: 0; }
+}
+
+// ─── Invite card status variants ─────────────────────────────────────────────
+
+.invite-card {
+  &--dimmed {
+    opacity: 0.65;
+  }
+
+  &--removing {
+    @include item-delete-animate;
+  }
+}
+
+.invite-card__actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.invite-card__badge {
+  font-size: 10px;
+  padding: 3px 8px;
+  margin-top: 6px;
+  display: inline-block;
+  border-radius: 20px;
+  text-transform: capitalize;
+}
+
+// Circular icon container — color changes per status
+.invite-card__status-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  .invite-card__status-icon {
+    font-size: 22px;
+  }
+
+  &--accepted {
+    background: rgba(var(--ion-color-success-rgb), 0.12);
+    .invite-card__status-icon { color: var(--ion-color-success); }
+  }
+
+  &--declined {
+    background: rgba(var(--ion-color-danger-rgb), 0.12);
+    .invite-card__status-icon { color: var(--ion-color-danger); }
+  }
+
+  &--pending {
+    background: rgba(var(--ion-color-warning-rgb), 0.12);
+    .invite-card__status-icon { color: var(--ion-color-warning); }
+  }
+
+  &--expired {
+    background: rgba(var(--ion-color-medium-rgb), 0.12);
+    .invite-card__status-icon { color: var(--ion-color-medium); }
+  }
+}
+
+// ─── Accepted invites collapsed section ──────────────────────────────────────
+
+.invites-accepted-section {
+  margin-top: 8px;
+
+  &__toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: none;
+    border: none;
+    border-top: 1px solid $glass-border-lighter;
+    cursor: pointer;
+    color: var(--ion-color-medium);
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: var(--ion-text-color);
+    }
+  }
+
+  &__toggle-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__check-icon {
+    font-size: 18px;
+    color: var(--ion-color-success);
+  }
+
+  &__chevron {
+    font-size: 16px;
+    transition: transform 0.2s ease;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 8px;
+    animation: inviteAcceptedFadeIn 0.2s ease-out both;
+  }
+}
+
+@keyframes inviteAcceptedFadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-color-scheme: dark) {
+  .invites-accepted-section__toggle {
+    border-top-color: $glass-border-dark;
+  }
+}
+
+.empty-section {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--ion-color-medium);
+  font-size: 15px;
+}
+
+.invite-form {
+  padding: 24px;
+
+  h2 { font-size: 22px; font-weight: 600; margin: 0 0 8px 0; text-align: center; }
+
+  &__subtitle {
+    font-size: 14px;
+    color: var(--ion-color-medium);
+    text-align: center;
+    margin: 0 0 24px 0;
+  }
+
+  .form-field { margin-bottom: 16px; }
+}
+
+.invite-method-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px 16px;
+  background: rgba(var(--ion-color-primary-rgb), 0.08);
+  border-radius: 12px;
+  margin-bottom: 24px;
+  font-size: 13px;
+  color: var(--ion-color-medium);
+  line-height: 1.5;
+
+  ion-icon {
+    font-size: 18px;
+    color: var(--ion-color-primary);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+}
+
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+
+  ion-button { margin: 0; --box-shadow: none; text-transform: none; font-weight: 500; }
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 24px;
+  text-align: center;
+  ion-spinner { --color: var(--ion-color-primary); width: 48px; height: 48px; margin-bottom: 16px; }
+  p { color: var(--ion-color-medium); margin: 0; }
+}
+
+@media (max-width: 768px) {
+  .team-detail__header {
+    flex-direction: column;
+    align-items: stretch;
+    h1 { font-size: 22px; }
+    > ion-button { width: 100%; margin: 4px 0 0 0; }
+    &-left { align-items: flex-start; }
+  }
+}

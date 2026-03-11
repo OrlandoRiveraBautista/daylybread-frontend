@@ -8,13 +8,16 @@ import {
   IonText,
   IonModal,
   IonContent,
-  IonBadge,
   IonSpinner,
   IonSearchbar,
 } from "@ionic/react";
-import { add, create, trash, document, time } from "ionicons/icons";
+import { add, document, time, trash } from "ionicons/icons";
 import { useGetSermons, useDeleteSermon } from "../../../hooks/SermonHooks";
+import { AddCard } from "../AddCard";
+import { ItemCard } from "../ItemCard";
 import { SermonStatus } from "../../../__generated__/graphql";
+import EmptyState from "../../EmptyState/EmptyState";
+import { PageHeader } from "../PageHeader";
 import "./SermonsManagement.scss";
 
 interface SermonData {
@@ -96,22 +99,18 @@ export const SermonsManagement: React.FC = () => {
 
   return (
     <div className="sermons-container">
-      <div className="sermons-header">
-        <div>
-          <h1>Sermons</h1>
-          <p>Create and manage your sermon notes</p>
-        </div>
-        <IonButton
-          size="large"
-          fill="solid"
-          shape="round"
-          color="primary"
-          onClick={handleCreateNew}
-        >
-          <IonIcon slot="start" icon={add} />
-          New Sermon
-        </IonButton>
-      </div>
+      <PageHeader
+        title="Sermons"
+        subtitle="Create and manage your sermon notes"
+        actions={[
+          {
+            label: "New Sermon",
+            icon: add,
+            color: "primary",
+            onClick: handleCreateNew,
+          },
+        ]}
+      />
 
       <div className="sermons-search">
         <IonSearchbar
@@ -139,112 +138,49 @@ export const SermonsManagement: React.FC = () => {
       )}
 
       {!loading && !error && filteredSermons.length === 0 && (
-        <div className="empty-state-container">
-          <IonCard className="empty-state-card">
-            <IonCardContent>
-              <div className="empty-state">
-                <div className="empty-state-icon-wrapper">
-                  <IonIcon icon={document} className="empty-state-icon" />
-                </div>
-                <h2>No Sermons Yet</h2>
-                <p className="empty-state-description">
-                  Create your first sermon to get started.
-                </p>
-
-                <IonButton
-                  size="large"
-                  fill="solid"
-                  shape="round"
-                  color="primary"
-                  onClick={handleCreateNew}
-                  className="empty-state-button"
-                >
-                  <IonIcon slot="start" icon={add} />
-                  Create Sermon
-                </IonButton>
-              </div>
-            </IonCardContent>
-          </IonCard>
-        </div>
+        <EmptyState
+          icon={document}
+          title="No Sermons Yet"
+          description="Create your first sermon to get started."
+          actionLabel="Create Sermon"
+          onAction={handleCreateNew}
+        />
       )}
 
       {!loading && !error && filteredSermons.length > 0 && (
         <div className="sermons-grid">
-          {/* New Sermon Card */}
-          <IonCard
-            className="sermon-card new-sermon-card"
+          <AddCard
+            label="New Sermon"
             onClick={handleCreateNew}
-            button
-          >
-            <IonCardContent>
-              <div className="new-sermon-content">
-                <IonIcon icon={add} className="add-icon" />
-                <span>New Sermon</span>
-              </div>
-            </IonCardContent>
-          </IonCard>
+            color="primary"
+            className="sermon-card"
+          />
 
           {/* Existing Sermons */}
           {filteredSermons.map((sermon) => {
             const isDeleting = deletingSermonId === sermon._id;
             return (
-            <IonCard
-              key={sermon._id}
-              className={`sermon-card ${isDeleting ? 'deleting' : ''}`}
-              onClick={() => !isDeleting && handleEditSermon(sermon)}
-              button={!isDeleting}
-            >
-              <IonCardContent>
-                <div className="sermon-card-header">
-                  <IonIcon icon={document} className="doc-icon" />
-                  <IonBadge color={getStatusColor(sermon.status)}>
-                    {sermon.status}
-                  </IonBadge>
-                </div>
-
-                <h3 className="sermon-title">{sermon.title}</h3>
-
-                <div className="sermon-meta">
-                  <IonIcon icon={time} />
-                  <IonText color="medium">
-                    Edited{" "}
-                    {new Date(Number(sermon.updatedAt)).toLocaleDateString()}
-                  </IonText>
-                </div>
-
-                <div
-                  className="sermon-actions"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <IonButton
-                    fill="clear"
-                    size="small"
-                    shape="round"
-                    color="primary"
-                    disabled={isDeleting}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleEditSermon(sermon);
-                    }}
-                  >
-                    <IonIcon slot="icon-only" icon={create} />
-                  </IonButton>
-                  <IonButton
-                    fill="clear"
-                    size="small"
-                    shape="round"
-                    color="danger"
-                    disabled={isDeleting}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setShowDeleteConfirm(sermon._id);
-                    }}
-                  >
-                    <IonIcon slot="icon-only" icon={trash} />
-                  </IonButton>
-                </div>
-              </IonCardContent>
-            </IonCard>
+              <ItemCard
+                key={sermon._id}
+                icon={document}
+                iconClassName="doc-icon"
+                title={sermon.title}
+                badges={[{ text: sermon.status, color: getStatusColor(sermon.status) }]}
+                metadata={
+                  <>
+                    <IonIcon icon={time} />
+                    <IonText color="medium">
+                      Edited {new Date(Number(sermon.updatedAt)).toLocaleDateString()}
+                    </IonText>
+                  </>
+                }
+                onClick={() => handleEditSermon(sermon)}
+                onEdit={() => handleEditSermon(sermon)}
+                onDelete={() => setShowDeleteConfirm(sermon._id)}
+                isDeleting={isDeleting}
+                className="sermon-card"
+                searchWords={searchQuery ? [searchQuery] : []}
+              />
             );
           })}
         </div>

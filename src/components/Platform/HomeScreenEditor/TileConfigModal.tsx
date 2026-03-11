@@ -192,7 +192,7 @@ export const TileConfigModal: React.FC<TileConfigModalProps> = ({
 
           <IonButton
             expand="block"
-            size="large"
+            fill="solid"
             shape="round"
             onClick={handleSave}
             className="platform-save-button"

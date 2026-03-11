@@ -1,0 +1,124 @@
+@import "../../../../theme/variables.scss";
+
+@keyframes songViewFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.song-view {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  animation: songViewFadeIn 0.3s ease-out;
+  min-height: 100vh;
+  transition: all 0.3s ease;
+
+  &--zen {
+    max-width: 100%;
+    padding: 16px;
+
+    .song-view__header {
+      opacity: 0;
+      height: 0;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+      transition: all 0.3s ease;
+    }
+
+    .song-view__body {
+      padding-top: 8px;
+    }
+
+    // Show header on hover in zen mode
+    &:hover .song-view__header {
+      opacity: 1;
+      height: auto;
+      margin-bottom: 16px;
+    }
+  }
+
+  // song-view__header is the className passed to <PageHeader>
+  // The transition enables the zen-mode collapse animation
+  &__header {
+    transition: all 0.3s ease;
+  }
+
+  &__body {
+    background: $glass-background-light;
+    border: 1px solid $glass-border-lighter;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  }
+
+  &__lyrics {
+    font-family: "SF Mono", "Menlo", "Monaco", "Courier New", monospace;
+    font-size: 15px;
+    white-space: pre-wrap;
+    line-height: 1.8;
+    margin: 0;
+  }
+
+  &__empty {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--ion-color-medium);
+  }
+
+  &__notes {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid $glass-border-lighter;
+
+    h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ion-color-primary);
+      margin: 0 0 8px 0;
+    }
+
+    p {
+      margin: 0;
+      line-height: 1.6;
+      color: var(--ion-color-medium);
+    }
+  }
+
+  &__reference {
+    margin-top: 16px;
+
+    a {
+      color: var(--ion-color-primary);
+      text-decoration: none;
+      font-size: 14px;
+      &:hover { text-decoration: underline; }
+    }
+  }
+
+  &__loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 64px 24px;
+    ion-spinner { --color: var(--ion-color-primary); width: 48px; height: 48px; margin-bottom: 16px; }
+    p { color: var(--ion-color-medium); }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .song-view__body {
+    background: $glass-background-dark;
+    border-color: $glass-border-dark;
+  }
+  .song-view__notes {
+    border-top-color: $glass-border-dark;
+  }
+}
+
+@media (max-width: 640px) {
+  .song-view {
+    padding: 16px 12px;
+
+    &__body {
+      padding: 16px 12px;
+    }
+  }
+}

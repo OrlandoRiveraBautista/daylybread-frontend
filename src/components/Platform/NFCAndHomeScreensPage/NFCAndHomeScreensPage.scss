@@ -5,28 +5,10 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-}
-
-.page-header {
   padding: 24px 16px 0;
   max-width: 1200px;
   margin: 0 auto;
-  width: 100%;
-
-  .header-content {
-    h1 {
-      font-size: 32px;
-      font-weight: 600;
-      color: var(--ion-text-color);
-      margin: 0 0 8px 0;
-    }
-
-    p {
-      font-size: 16px;
-      color: var(--ion-color-medium);
-      margin: 0 0 24px 0;
-    }
-  }
+  box-sizing: border-box;
 }
 
 .tab-selector {
@@ -79,18 +61,8 @@
 
 // Responsive adjustments
 @media (max-width: 768px) {
-  .page-header {
+  .nfc-and-home-screens-page {
     padding: 16px 12px 0;
-
-    .header-content {
-      h1 {
-        font-size: 24px;
-      }
-
-      p {
-        font-size: 14px;
-      }
-    }
   }
 
   .tab-selector {
