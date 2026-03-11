@@ -5,9 +5,9 @@
 @keyframes fadeOverlay { from { opacity: 0; } to { opacity: 1; } }
 
 .live-service {
-  display: flex;
-  flex-direction: column;
+  display: block;
   min-height: 100vh;
+  padding-bottom: 140px;
   animation: liveServiceFadeIn 0.3s ease-out;
   position: relative;
 
@@ -181,12 +181,127 @@
     padding: 4px 10px;
   }
 
-  &__autoscroll-btn {
-    font-size: 12px;
-    --padding-start: 10px;
-    --padding-end: 10px;
-    text-transform: none;
+  // ── Auto-scroll FAB ─────────────────────────────────────────────────────────
+  &__scroll-fab-wrap {
+    position: fixed;
+    right: 16px;
+    bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__speed-popover {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: rgba(245, 245, 248, 0.92);
+    border: 1px solid rgba(195, 198, 207, 0.5);
+    border-radius: 40px;
+    padding: 10px 6px;
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.12),
+      inset 0 1.5px 0 rgba(255, 255, 255, 0.9),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.04);
+    animation: sheetFadeUp 0.18s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  &__speed-step {
+    background: none;
+    border: none;
+    padding: 0;
+    width: 28px;
     height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: var(--ion-color-success);
+    font-size: 18px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s;
+
+    &:hover { background: rgba(var(--ion-color-success-rgb), 0.1); }
+    &:disabled { opacity: 0.3; cursor: default; }
+  }
+
+  &__speed-slider {
+    writing-mode: vertical-lr;
+    direction: rtl;
+    appearance: slider-vertical;
+    -webkit-appearance: slider-vertical;
+    width: 28px;
+    height: 120px;
+    padding: 0;
+    flex-shrink: 0;
+    cursor: pointer;
+    accent-color: var(--ion-color-success);
+
+    &::-webkit-slider-runnable-track {
+      background: $glass-border-light;
+      border-radius: 4px;
+    }
+
+    &::-webkit-slider-thumb {
+      width: 18px;
+      height: 18px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  &__speed-badge {
+    background: rgba(245, 245, 248, 0.92);
+    border: 1px solid rgba(195, 198, 207, 0.5);
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ion-color-success);
+    cursor: pointer;
+    transition: all 0.15s;
+    animation: sheetFadeUp 0.18s ease both;
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+
+    span { font-size: 10px; font-weight: 500; opacity: 0.8; }
+
+    &:hover { background: rgba(238, 237, 241, 0.95); }
+  }
+
+  &__scroll-fab {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 1px solid rgba(195, 198, 207, 0.5);
+    background: rgba(245, 245, 248, 0.92);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: var(--ion-text-color);
+    cursor: pointer;
+    box-shadow:
+      0 8px 24px rgba(0, 0, 0, 0.1),
+      inset 0 1.5px 0 rgba(255, 255, 255, 0.9),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.04);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:active { transform: scale(0.91); }
+
+    &--active {
+      background: rgba(var(--ion-color-success-rgb), 0.88);
+      border-color: rgba(var(--ion-color-success-rgb), 0.6);
+      color: #fff;
+      box-shadow:
+        0 8px 24px rgba(var(--ion-color-success-rgb), 0.4),
+        0 0 0 4px rgba(var(--ion-color-success-rgb), 0.18),
+        inset 0 1.5px 0 rgba(255, 255, 255, 0.3);
+    }
   }
 
   &__item-notes {
@@ -204,11 +319,9 @@
     }
   }
 
-  // Content
+  // Content — normal document flow so window.scrollBy works
   &__content {
-    flex: 1;
-    padding: 0 20px 120px;
-    overflow-y: auto;
+    padding: 0 20px 24px;
   }
 
   &__lyrics {
@@ -233,15 +346,13 @@
     right: 0;
     display: flex;
     justify-content: space-between;
-    padding: 12px 16px;
+    padding: 8px 16px;
+    padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
     background: var(--ion-background-color);
     border-top: 1px solid $glass-border-lighter;
     backdrop-filter: blur(15px) saturate(180%) brightness(1.05);
     -webkit-backdrop-filter: blur(15px) saturate(180%) brightness(1.05);
     z-index: 10;
-
-    // Add safe area padding for iPhone
-    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
   }
 
   &__nav-btn {
@@ -289,6 +400,50 @@
 
 @media (prefers-color-scheme: dark) {
   .live-service {
+    &__speed-popover {
+      background: rgba(38, 38, 40, 0.92);
+      border-color: rgba(255, 255, 255, 0.1);
+      box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.5),
+        inset 0 1.5px 0 rgba(255, 255, 255, 0.07),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    &__speed-badge {
+      background: rgba(38, 38, 40, 0.92);
+      border-color: rgba(255, 255, 255, 0.1);
+      box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+
+      &:hover { background: rgba(52, 52, 56, 0.95); }
+    }
+
+    &__speed-slider {
+      &::-webkit-slider-runnable-track {
+        background: rgba(255, 255, 255, 0.15);
+      }
+    }
+
+    &__scroll-fab {
+      background: rgba(38, 38, 40, 0.92);
+      border-color: rgba(255, 255, 255, 0.1);
+      box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.5),
+        inset 0 1.5px 0 rgba(255, 255, 255, 0.07),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+
+      &--active {
+        background: rgba(var(--ion-color-success-rgb), 0.88);
+        border-color: rgba(var(--ion-color-success-rgb), 0.6);
+        color: #fff;
+        box-shadow:
+          0 8px 24px rgba(var(--ion-color-success-rgb), 0.4),
+          0 0 0 4px rgba(var(--ion-color-success-rgb), 0.18),
+          inset 0 1.5px 0 rgba(255, 255, 255, 0.2);
+      }
+    }
+
     &__top-bar {
       background: rgba(18, 18, 18, 0.25);
       border: 1px solid rgba(255, 255, 255, 0.12);
@@ -325,7 +480,7 @@
     }
 
     &__content {
-      padding: 0 16px 120px;
+      padding: 0 16px 24px;
     }
 
     &__setlist-drawer {
