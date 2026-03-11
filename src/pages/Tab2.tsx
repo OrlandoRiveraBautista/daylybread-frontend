@@ -34,7 +34,7 @@ import { displayBibleAbbr } from "../utils/support";
 
 const Tab2: React.FC = () => {
   // Context
-  const { chosenBible, chosenBook, chosenChapterMedia, chosenChapterNumber } =
+  const { chosenBible, chosenBook, chosenChapterMedia, chosenChapterNumber, chosenChapterVerses } =
     useAppContext();
 
   // Get URL parameters for SEO
@@ -49,13 +49,19 @@ const Tab2: React.FC = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [openBibleNavModal, setOpenBibleNavModal] = useState<boolean>(false);
 
+  // Use the first verse of the current chapter as the SEO preview text
+  const firstVerseText = chosenChapterVerses?.current?.[0]?.verseText ?? undefined;
+
   // Generate SEO configuration
   const seoConfig = generateBiblePageSEO({
     book: chosenBook?.name || params.currentBookId,
     chapter:
       chosenChapterNumber || parseInt(params.currentChapterNumber || "0"),
     translation: chosenBible?.abbr || params.currentBibleId,
-    language: params.currentLanguage || "en",
+    languageId: params.currentLanguage
+      ? parseInt(params.currentLanguage)
+      : undefined,
+    verseText: firstVerseText,
   });
 
   return (

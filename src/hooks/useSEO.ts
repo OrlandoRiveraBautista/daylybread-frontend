@@ -96,95 +96,112 @@ export const generateBiblePageSEO = ({
   verse,
   translation,
   verseText,
-  language = "en",
+  languageId,
 }: {
   book?: string;
   chapter?: number;
   verse?: number;
   translation?: string;
   verseText?: string;
-  language?: string;
+  /** Bible Brain numeric language ID (e.g. 17045 for English, 6411 for Spanish) */
+  languageId?: number;
 }): SEOConfig => {
-  const baseTitle = "Read the Bible";
   const baseBibleUrl = "https://bible.daylybread.com/read";
 
-  let title = baseTitle;
+  // Derive a human-readable display name for the translation (strip lang prefix)
+  const translationDisplay = translation
+    ? translation.length > 3
+      ? translation.slice(3)
+      : translation
+    : undefined;
+
+  let title = "Read the Bible";
   let description =
     "Read the Bible with AI assistance, multiple translations, and personalized features on Daylybread.";
   let url = baseBibleUrl;
   let keywords =
     "Bible reading, scripture study, biblical text, Christian app, Bible translations, Bible study tools";
 
-  if (book && chapter) {
-    title = `${book} ${chapter}${verse ? `:${verse}` : ""} - ${
-      translation || "Bible"
-    } | Daylybread`;
-    description = verseText
-      ? `Read ${book} ${chapter}${verse ? `:${verse}` : ""} in ${
-          translation || "multiple translations"
-        }: "${verseText.substring(
-          0,
-          150
-        )}..." Study with AI assistance on Daylybread.`
-      : `Read ${book} chapter ${chapter} in ${
-          translation || "multiple translations"
-        } with AI Bible assistance, cross-references, and commentary on Daylybread.`;
+  // Build the canonical URL using the real Bible Brain route format
+  const buildUrl = (parts: (string | number | undefined)[]) =>
+    [baseBibleUrl, ...parts.filter(Boolean)].join("/");
 
-    url = `${baseBibleUrl}/${language}/${translation?.toLowerCase()}/${book.toUpperCase()}${
-      chapter ? `/${chapter}` : ""
-    }`;
-    keywords = `${book} ${chapter}, ${translation} Bible, ${book} chapter ${chapter}, Bible verse, scripture study, ${book} commentary, Bible reading, Christian study, biblical text, ${translation} translation`;
+  if (book && chapter) {
+    const ref = `${book} ${chapter}${verse ? `:${verse}` : ""}`;
+    const trans = translationDisplay || "Bible";
+    title = `${ref} (${trans}) | Daylybread`;
+
+    if (verseText) {
+      const preview =
+        verseText.length > 160
+          ? verseText.substring(0, 157) + "…"
+          : verseText;
+      description = `"${preview}" — ${ref} ${trans}. Read, study, and explore with AI assistance on Daylybread.`;
+    } else {
+      description = `Read ${book} chapter ${chapter} in the ${trans}. Study with AI assistance, cross-references, and commentary on Daylybread.`;
+    }
+
+    url = buildUrl([languageId, translation, book.toUpperCase(), chapter]);
+    keywords = `${book} ${chapter}, ${trans} Bible, ${book} chapter ${chapter}, Bible verse, scripture study, ${book} commentary, Bible reading, ${trans} translation`;
   } else if (book) {
-    title = `Book of ${book} - ${translation || "Bible"} | Daylybread`;
-    description = `Read the complete Book of ${book} in ${
-      translation || "multiple translations"
-    } with AI Bible assistance, study notes, and cross-references on Daylybread.`;
-    url = `${baseBibleUrl}/${language}/${translation?.toLowerCase()}/${book.toUpperCase()}`;
-    keywords = `Book of ${book}, ${translation} Bible, ${book} chapters, Bible book study, scripture reading, ${book} commentary, Bible study tools`;
+    const trans = translationDisplay || "Bible";
+    title = `Book of ${book} (${trans}) | Daylybread`;
+    description = `Read the complete Book of ${book} in the ${trans} with AI Bible assistance, study notes, and cross-references on Daylybread.`;
+    url = buildUrl([languageId, translation, book.toUpperCase()]);
+    keywords = `Book of ${book}, ${trans} Bible, ${book} chapters, Bible book study, scripture reading, ${book} commentary`;
   } else if (translation) {
-    title = `${translation} Bible - Read Online | Daylybread`;
-    description = `Read the complete ${translation} Bible online with AI assistance, study tools, and personalized features. Access all books and chapters for free on Daylybread.`;
-    url = `${baseBibleUrl}/${language}/${translation.toLowerCase()}`;
-    keywords = `${translation} Bible, ${translation} translation, Bible online, read Bible, Bible study, scripture reading, Bible app`;
+    const trans = translationDisplay || translation;
+    title = `${trans} Bible — Read Online | Daylybread`;
+    description = `Read the complete ${trans} Bible online with AI assistance, study tools, and personalized features. Access all books and chapters free on Daylybread.`;
+    url = buildUrl([languageId, translation]);
+    keywords = `${trans} Bible, ${trans} translation, Bible online, read Bible, Bible study, scripture reading`;
   }
 
-  const jsonLd: any = {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    headline: title,
-    description: description,
-    url: url,
-    author: {
-      "@type": "Organization",
-      name: "Daylybread",
-    },
-    publisher: {
-      "@type": "Organization",
-      name: "Daylybread",
-      logo: {
-        "@type": "ImageObject",
-        url: "https://bible.daylybread.com/assets/icon/Daylybread Icon.png",
-      },
-    },
-    dateModified: new Date().toISOString(),
-    mainEntityOfPage: {
-      "@type": "WebPage",
-      "@id": url,
-    },
-    articleSection: "Bible Study",
-    keywords: keywords.split(", "),
-    inLanguage: language,
-    isPartOf: {
-      "@type": "WebSite",
-      name: "Daylybread",
-      url: "https://bible.daylybread.com",
+  const publisher = {
+    "@type": "Organization",
+    name: "Daylybread",
+    logo: {
+      "@type": "ImageObject",
+      url: "https://bible.daylybread.com/assets/icon/Daylybread%20Icon.png",
     },
   };
 
-  if (verseText) {
-    jsonLd.text = verseText;
-    jsonLd["@type"] = "SacredText";
-  }
+  // Use SacredText schema when we have actual verse content
+  const jsonLd: any =
+    verseText && book && chapter
+      ? {
+          "@context": "https://schema.org",
+          "@type": "SacredText",
+          name: title,
+          description,
+          url,
+          text: verseText,
+          about: {
+            "@type": "Book",
+            name: book,
+            isPartOf: {
+              "@type": "Book",
+              name: `${translationDisplay || translation} Bible`,
+            },
+          },
+          publisher,
+          mainEntityOfPage: { "@type": "WebPage", "@id": url },
+          isPartOf: { "@type": "WebSite", name: "Daylybread", url: "https://bible.daylybread.com" },
+        }
+      : {
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: title,
+          description,
+          url,
+          author: publisher,
+          publisher,
+          dateModified: new Date().toISOString(),
+          mainEntityOfPage: { "@type": "WebPage", "@id": url },
+          articleSection: "Bible Study",
+          keywords: keywords.split(", "),
+          isPartOf: { "@type": "WebSite", name: "Daylybread", url: "https://bible.daylybread.com" },
+        };
 
   return {
     title,

@@ -12,6 +12,9 @@ import { usePlatformAuth } from "../../../hooks/usePlatformAuth";
 import { usePlatformNFCDevices } from "../../../hooks/usePlatformNFCDevices";
 import { useAssignHomeScreenToNFCConfig } from "../../../hooks/NFCConfigHooks";
 
+/* SEO */
+import SEOHead from "../../../components/SEO/SEOHead";
+
 /* Components */
 import CheckingAuthentication from "../../../components/Auth/CheckingAuthentication";
 import {
@@ -72,6 +75,112 @@ const Platform: React.FC = () => {
 
   // Check if user is sudo admin
   const isSudoAdmin = userInfo?._id === SUDO_ADMIN_USER_ID;
+
+  // ── Per-route SEO metadata ────────────────────────────────────────────────
+  const PLATFORM_SEO: Array<{
+    pattern: RegExp;
+    title: string;
+    description: string;
+  }> = [
+    {
+      pattern: /\/worship\/services\/[^/]+\/live/,
+      title: "Live Service — Worship | Platform Daylybread",
+      description:
+        "Run a live worship service with real-time chord sheets, auto-scroll, and setlist navigation.",
+    },
+    {
+      pattern: /\/worship\/services\/[^/]+/,
+      title: "Service Detail — Worship | Platform Daylybread",
+      description:
+        "View and manage a planned worship service, setlist, and team assignments.",
+    },
+    {
+      pattern: /\/worship\/services/,
+      title: "Services — Worship | Platform Daylybread",
+      description:
+        "Plan and manage upcoming worship services, setlists, and team assignments.",
+    },
+    {
+      pattern: /\/worship\/teams\/[^/]+/,
+      title: "Team Detail — Worship | Platform Daylybread",
+      description: "Manage worship team members, roles, and skills.",
+    },
+    {
+      pattern: /\/worship\/teams/,
+      title: "Teams — Worship | Platform Daylybread",
+      description:
+        "Create and manage worship teams for your church or organization.",
+    },
+    {
+      pattern: /\/worship\/songs\/[^/]+/,
+      title: "Song — Worship | Platform Daylybread",
+      description:
+        "View chord sheets, lyrics, and song details for worship planning.",
+    },
+    {
+      pattern: /\/worship\/songs/,
+      title: "Song Library — Worship | Platform Daylybread",
+      description:
+        "Browse and manage your worship song library with chord sheets and lyrics.",
+    },
+    {
+      pattern: /\/worship\/rehearsals/,
+      title: "Rehearsals — Worship | Platform Daylybread",
+      description: "Schedule and manage worship team rehearsals.",
+    },
+    {
+      pattern: /\/worship\/invite\//,
+      title: "Join Worship Team | Platform Daylybread",
+      description:
+        "Accept your invitation to join a worship team on Platform Daylybread.",
+    },
+    {
+      pattern: /\/worship/,
+      title: "Worship Dashboard | Platform Daylybread",
+      description:
+        "Manage your worship ministry — teams, services, songs, and rehearsals in one place.",
+    },
+    {
+      pattern: /\/sermons\/new/,
+      title: "New Sermon | Platform Daylybread",
+      description:
+        "Write and publish a new sermon with the Platform Daylybread sermon editor.",
+    },
+    {
+      pattern: /\/sermons\/[^/]+/,
+      title: "Edit Sermon | Platform Daylybread",
+      description:
+        "Edit and publish your sermon with the Platform Daylybread sermon editor.",
+    },
+    {
+      pattern: /\/sermons/,
+      title: "Sermons | Platform Daylybread",
+      description:
+        "Create, manage, and publish sermons for your congregation.",
+    },
+    {
+      pattern: /\/nfc/,
+      title: "NFC & Home Screens | Platform Daylybread",
+      description:
+        "Configure NFC devices and custom home screen layouts for your church.",
+    },
+    {
+      pattern: /\/sudo-admin/,
+      title: "Admin | Platform Daylybread",
+      description: "Super-admin management panel.",
+    },
+  ];
+
+  const currentPath = location.pathname;
+  const matchedSEO = PLATFORM_SEO.find(({ pattern }) =>
+    pattern.test(currentPath)
+  );
+  const platformSEO = {
+    title: matchedSEO?.title ?? "Dashboard | Platform Daylybread",
+    description:
+      matchedSEO?.description ??
+      "Manage your church's worship teams, sermons, NFC devices, and more from one dashboard.",
+  };
 
   // Get active section from URL
   const getActiveSection = (): DashboardSection => {
@@ -239,6 +348,12 @@ const Platform: React.FC = () => {
 
   return (
     <IonPage id="platform-page">
+      <SEOHead
+        title={platformSEO.title}
+        description={platformSEO.description}
+        noindex
+        nofollow
+      />
       <DashboardLayout
         activeSection={getActiveSection()}
         onSectionChange={handleSectionChange}
