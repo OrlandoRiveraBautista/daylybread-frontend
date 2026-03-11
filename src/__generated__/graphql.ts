@@ -1740,11 +1740,11 @@ export type TeamMember = {
   __typename?: 'TeamMember';
   _id: Scalars['ID'];
   createdAt: Scalars['String'];
-  role: TeamRole;
+  role?: Maybe<TeamRole>;
   skills?: Maybe<Array<Scalars['String']>>;
   team: WorshipTeam;
   updatedAt: Scalars['String'];
-  user: User;
+  user?: Maybe<User>;
 };
 
 export type TeamMemberInput = {
@@ -2450,14 +2450,14 @@ export type GetWorshipServicesQueryVariables = Exact<{
 }>;
 
 
-export type GetWorshipServicesQuery = { __typename?: 'Query', getWorshipServices: { __typename?: 'WorshipServicesResponse', results?: Array<{ __typename?: 'WorshipService', _id: string, name: string, date: string, notes?: string | null, status: ServiceStatus, createdAt: string, updatedAt: string, author: { __typename?: 'User', _id: string, firstName?: string | null, lastName?: string | null }, team: { __typename?: 'WorshipTeam', _id: string, name: string }, assignments?: Array<{ __typename?: 'ServiceAssignment', _id: string, role: TeamRole, status: AssignmentStatus, notes?: string | null, member: { __typename?: 'TeamMember', _id: string, role: TeamRole, user: { __typename?: 'User', _id: string, firstName?: string | null, lastName?: string | null } } }> | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type GetWorshipServicesQuery = { __typename?: 'Query', getWorshipServices: { __typename?: 'WorshipServicesResponse', results?: Array<{ __typename?: 'WorshipService', _id: string, name: string, date: string, notes?: string | null, status: ServiceStatus, createdAt: string, updatedAt: string, author: { __typename?: 'User', _id: string, firstName?: string | null, lastName?: string | null }, team: { __typename?: 'WorshipTeam', _id: string, name: string }, assignments?: Array<{ __typename?: 'ServiceAssignment', _id: string, role: TeamRole, status: AssignmentStatus, notes?: string | null, member: { __typename?: 'TeamMember', _id: string, role?: TeamRole | null, user?: { __typename?: 'User', _id: string, firstName?: string | null, lastName?: string | null } | null } }> | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type GetWorshipServiceQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type GetWorshipServiceQuery = { __typename?: 'Query', getWorshipService: { __typename?: 'WorshipServiceResponse', results?: { __typename?: 'WorshipService', _id: string, name: string, date: string, notes?: string | null, status: ServiceStatus, createdAt: string, updatedAt: string, author: { __typename?: 'User', _id: string, firstName?: string | null, lastName?: string | null }, team: { __typename?: 'WorshipTeam', _id: string, name: string }, assignments?: Array<{ __typename?: 'ServiceAssignment', _id: string, role: TeamRole, status: AssignmentStatus, notes?: string | null, member: { __typename?: 'TeamMember', _id: string, role: TeamRole, user: { __typename?: 'User', _id: string, firstName?: string | null, lastName?: string | null } } }> | null, setlist?: { __typename?: 'Setlist', _id: string, name: string, items?: Array<{ __typename?: 'SetlistItem', _id: string, order: number, key?: string | null, bpm?: number | null, notes?: string | null, song: { __typename?: 'Song', _id: string, title: string, artist?: string | null, defaultKey?: string | null, bpm?: number | null, lyrics?: string | null, chordChart?: string | null } }> | null } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type GetWorshipServiceQuery = { __typename?: 'Query', getWorshipService: { __typename?: 'WorshipServiceResponse', results?: { __typename?: 'WorshipService', _id: string, name: string, date: string, notes?: string | null, status: ServiceStatus, createdAt: string, updatedAt: string, author: { __typename?: 'User', _id: string, firstName?: string | null, lastName?: string | null }, team: { __typename?: 'WorshipTeam', _id: string, name: string }, assignments?: Array<{ __typename?: 'ServiceAssignment', _id: string, role: TeamRole, status: AssignmentStatus, notes?: string | null, member: { __typename?: 'TeamMember', _id: string, role?: TeamRole | null, user?: { __typename?: 'User', _id: string, firstName?: string | null, lastName?: string | null } | null } }> | null, setlist?: { __typename?: 'Setlist', _id: string, name: string, items?: Array<{ __typename?: 'SetlistItem', _id: string, order: number, key?: string | null, bpm?: number | null, notes?: string | null, song: { __typename?: 'Song', _id: string, title: string, artist?: string | null, defaultKey?: string | null, bpm?: number | null, lyrics?: string | null, chordChart?: string | null } }> | null } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type CreateWorshipServiceMutationVariables = Exact<{
   options: WorshipServiceInput;
@@ -2493,7 +2493,7 @@ export type CreateServiceAssignmentMutationVariables = Exact<{
 }>;
 
 
-export type CreateServiceAssignmentMutation = { __typename?: 'Mutation', createServiceAssignment: { __typename?: 'ServiceAssignmentResponse', results?: { __typename?: 'ServiceAssignment', _id: string, role: TeamRole, status: AssignmentStatus, member: { __typename?: 'TeamMember', _id: string, user: { __typename?: 'User', _id: string, firstName?: string | null, lastName?: string | null } } } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type CreateServiceAssignmentMutation = { __typename?: 'Mutation', createServiceAssignment: { __typename?: 'ServiceAssignmentResponse', results?: { __typename?: 'ServiceAssignment', _id: string, role: TeamRole, status: AssignmentStatus, member: { __typename?: 'TeamMember', _id: string, user?: { __typename?: 'User', _id: string, firstName?: string | null, lastName?: string | null } | null } } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type RespondToAssignmentMutationVariables = Exact<{
   assignmentId: Scalars['String'];
@@ -2588,14 +2588,14 @@ export type DeleteRehearsalMutation = { __typename?: 'Mutation', deleteRehearsal
 export type GetWorshipTeamsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetWorshipTeamsQuery = { __typename?: 'Query', getWorshipTeams: { __typename?: 'WorshipTeamsResponse', results?: Array<{ __typename?: 'WorshipTeam', _id: string, name: string, description?: string | null, createdAt: string, updatedAt: string, author: { __typename?: 'User', _id: string, firstName?: string | null, lastName?: string | null }, members?: Array<{ __typename?: 'TeamMember', _id: string, role: TeamRole, skills?: Array<string> | null, user: { __typename?: 'User', _id: string, firstName?: string | null, lastName?: string | null, email: string } }> | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type GetWorshipTeamsQuery = { __typename?: 'Query', getWorshipTeams: { __typename?: 'WorshipTeamsResponse', results?: Array<{ __typename?: 'WorshipTeam', _id: string, name: string, description?: string | null, createdAt: string, updatedAt: string, author: { __typename?: 'User', _id: string, firstName?: string | null, lastName?: string | null }, members?: Array<{ __typename?: 'TeamMember', _id: string, role?: TeamRole | null, skills?: Array<string> | null, user?: { __typename?: 'User', _id: string, firstName?: string | null, lastName?: string | null, email: string } | null }> | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type GetWorshipTeamQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type GetWorshipTeamQuery = { __typename?: 'Query', getWorshipTeam: { __typename?: 'WorshipTeamResponse', results?: { __typename?: 'WorshipTeam', _id: string, name: string, description?: string | null, createdAt: string, updatedAt: string, author: { __typename?: 'User', _id: string, firstName?: string | null, lastName?: string | null }, members?: Array<{ __typename?: 'TeamMember', _id: string, role: TeamRole, skills?: Array<string> | null, user: { __typename?: 'User', _id: string, firstName?: string | null, lastName?: string | null, email: string } }> | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type GetWorshipTeamQuery = { __typename?: 'Query', getWorshipTeam: { __typename?: 'WorshipTeamResponse', results?: { __typename?: 'WorshipTeam', _id: string, name: string, description?: string | null, createdAt: string, updatedAt: string, author: { __typename?: 'User', _id: string, firstName?: string | null, lastName?: string | null }, members?: Array<{ __typename?: 'TeamMember', _id: string, role?: TeamRole | null, skills?: Array<string> | null, user?: { __typename?: 'User', _id: string, firstName?: string | null, lastName?: string | null, email: string } | null }> | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type CreateWorshipTeamMutationVariables = Exact<{
   options: WorshipTeamInput;
@@ -2624,14 +2624,14 @@ export type GetTeamMembersQueryVariables = Exact<{
 }>;
 
 
-export type GetTeamMembersQuery = { __typename?: 'Query', getTeamMembers: { __typename?: 'TeamMembersResponse', results?: Array<{ __typename?: 'TeamMember', _id: string, role: TeamRole, skills?: Array<string> | null, createdAt: string, user: { __typename?: 'User', _id: string, firstName?: string | null, lastName?: string | null, email: string }, team: { __typename?: 'WorshipTeam', _id: string, name: string } }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type GetTeamMembersQuery = { __typename?: 'Query', getTeamMembers: { __typename?: 'TeamMembersResponse', results?: Array<{ __typename?: 'TeamMember', _id: string, role?: TeamRole | null, skills?: Array<string> | null, createdAt: string, user?: { __typename?: 'User', _id: string, firstName?: string | null, lastName?: string | null, email: string } | null, team: { __typename?: 'WorshipTeam', _id: string, name: string } }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type AddTeamMemberMutationVariables = Exact<{
   options: TeamMemberInput;
 }>;
 
 
-export type AddTeamMemberMutation = { __typename?: 'Mutation', addTeamMember: { __typename?: 'TeamMemberResponse', results?: { __typename?: 'TeamMember', _id: string, role: TeamRole, skills?: Array<string> | null, user: { __typename?: 'User', _id: string, firstName?: string | null, lastName?: string | null, email: string } } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type AddTeamMemberMutation = { __typename?: 'Mutation', addTeamMember: { __typename?: 'TeamMemberResponse', results?: { __typename?: 'TeamMember', _id: string, role?: TeamRole | null, skills?: Array<string> | null, user?: { __typename?: 'User', _id: string, firstName?: string | null, lastName?: string | null, email: string } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type UpdateTeamMemberMutationVariables = Exact<{
   id: Scalars['String'];
@@ -2639,7 +2639,7 @@ export type UpdateTeamMemberMutationVariables = Exact<{
 }>;
 
 
-export type UpdateTeamMemberMutation = { __typename?: 'Mutation', updateTeamMember: { __typename?: 'TeamMemberResponse', results?: { __typename?: 'TeamMember', _id: string, role: TeamRole, skills?: Array<string> | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type UpdateTeamMemberMutation = { __typename?: 'Mutation', updateTeamMember: { __typename?: 'TeamMemberResponse', results?: { __typename?: 'TeamMember', _id: string, role?: TeamRole | null, skills?: Array<string> | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type RemoveTeamMemberMutationVariables = Exact<{
   id: Scalars['String'];
