@@ -337,11 +337,16 @@ const Platform: React.FC = () => {
     }
   };
 
-  if (isLoading) {
+  // Song library and individual song view are publicly accessible — no login required.
+  const isSongsPublicRoute =
+    location.pathname === "/worship/songs" ||
+    location.pathname.startsWith("/worship/songs/");
+
+  if (!isSongsPublicRoute && isLoading) {
     return <CheckingAuthentication />;
   }
 
-  if (!isAuthenticated) {
+  if (!isSongsPublicRoute && !isAuthenticated) {
     const redirectPath = location.pathname !== "/login" ? `?redirect=${encodeURIComponent(location.pathname)}` : "";
     return <Redirect to={`/login${redirectPath}`} />;
   }
