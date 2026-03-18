@@ -1,83 +1,261 @@
 @import "../../../../theme/variables.scss";
 
 .chord-importer {
-  padding: 16px;
+  width: 100%;
+  border: 1px solid $glass-border-lighter;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-top: 8px;
 
-  &__header {
-    text-align: center;
-    margin-bottom: 20px;
+  // ── Tab switcher ─────────────────────────────────────────────
+  &__tabs {
+    display: flex;
+    border-bottom: 1px solid $glass-border-lighter;
+  }
 
-    h3 {
-      font-size: 18px;
+  &__tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ion-color-medium);
+    transition: color 0.15s, background 0.15s;
+
+    ion-icon {
+      font-size: 15px;
+    }
+
+    &--active {
+      color: var(--ion-color-tertiary);
       font-weight: 600;
-      margin: 8px 0 4px;
-    }
+      background: rgba(var(--ion-color-tertiary-rgb), 0.05);
+      position: relative;
 
-    p {
-      font-size: 14px;
-      color: var(--ion-color-medium);
-      margin: 0;
-      line-height: 1.5;
+      &::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 20%;
+        right: 20%;
+        height: 2px;
+        background: var(--ion-color-tertiary);
+        border-radius: 2px 2px 0 0;
+      }
     }
   }
 
-  &__icon {
-    font-size: 40px;
+  // ── Body ─────────────────────────────────────────────────────
+  &__body {
+    padding: 14px 14px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  // ── Hint text ────────────────────────────────────────────────
+  &__hint {
+    font-size: 12px;
+    color: var(--ion-color-medium);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  // ── URL input row ────────────────────────────────────────────
+  &__url-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--ion-background-color);
+    border: 1.5px solid $glass-border-lighter;
+    border-radius: 10px;
+    padding: 2px 10px;
+    transition: border-color 0.15s;
+
+    &:focus-within {
+      border-color: var(--ion-color-tertiary);
+    }
+
+    &--error {
+      border-color: var(--ion-color-danger) !important;
+    }
+  }
+
+  &__url-icon {
+    font-size: 15px;
+    color: var(--ion-color-medium);
+    flex-shrink: 0;
+  }
+
+  &__url-input {
+    flex: 1;
+    --padding-start: 0;
+    --padding-end: 0;
+    --padding-top: 6px;
+    --padding-bottom: 6px;
+    font-size: 14px;
+  }
+
+  // ── Site chips ───────────────────────────────────────────────
+  &__chips {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  &__chip {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 9px;
+    border-radius: 20px;
+    background: rgba(var(--ion-color-tertiary-rgb), 0.08);
     color: var(--ion-color-tertiary);
+    border: 1px solid rgba(var(--ion-color-tertiary-rgb), 0.18);
   }
 
-  &__input,
-  &__preview {
-    margin-bottom: 16px;
+  // ── Error ────────────────────────────────────────────────────
+  &__error {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 8px 10px;
+    background: rgba(var(--ion-color-danger-rgb), 0.07);
+    border: 1px solid rgba(var(--ion-color-danger-rgb), 0.2);
+    border-radius: 10px;
+    color: var(--ion-color-danger);
+    font-size: 12.5px;
+    line-height: 1.45;
+
+    ion-icon {
+      flex-shrink: 0;
+      font-size: 15px;
+      margin-top: 1px;
+    }
   }
 
+  // ── Textarea ─────────────────────────────────────────────────
   &__textarea {
     font-family: "SF Mono", "Menlo", "Monaco", "Courier New", monospace !important;
     font-size: 13px !important;
     line-height: 1.6 !important;
     background: var(--ion-background-color);
     border: 1px solid $glass-border-lighter;
-    border-radius: 12px;
-    padding: 12px;
-    margin-top: 8px;
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-top: 0;
 
     &--preview {
       border-color: var(--ion-color-success);
-      background: rgba(var(--ion-color-success-rgb), 0.05);
+      background: rgba(var(--ion-color-success-rgb), 0.04);
     }
   }
 
-  &__preview-label {
-    font-weight: 600;
-    font-size: 14px;
-    margin-bottom: 4px;
-    display: block;
-  }
-
-  &__hint {
-    font-size: 12px;
-    color: var(--ion-color-medium);
-    margin: 8px 0 0;
-    line-height: 1.4;
-  }
-
+  // ── Actions ──────────────────────────────────────────────────
   &__actions {
     display: flex;
     justify-content: flex-end;
-    gap: 8px;
-    padding-top: 8px;
+    align-items: center;
+    gap: 4px;
+  }
+
+  &__spinner {
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+  }
+
+  // ── Preview mode ─────────────────────────────────────────────
+  &--preview {
+    border-color: rgba(var(--ion-color-success-rgb), 0.3);
+
+    .chord-importer__body {
+      padding-top: 0;
+    }
+  }
+
+  &__preview-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(var(--ion-color-success-rgb), 0.15);
+    flex-wrap: wrap;
+  }
+
+  &__preview-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ion-color-success-shade);
+
+    ion-icon {
+      font-size: 13px;
+    }
+  }
+
+  &__preview-song {
+    font-size: 12px;
+    color: var(--ion-color-medium);
+    font-style: italic;
+  }
+
+  &__preview-key {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: rgba(var(--ion-color-tertiary-rgb), 0.1);
+    color: var(--ion-color-tertiary);
+    border: 1px solid rgba(var(--ion-color-tertiary-rgb), 0.2);
+    margin-left: auto;
+  }
+
+  // preview body padding
+  &--preview &__body {
+    padding-top: 12px;
   }
 }
 
+// ── Dark mode ────────────────────────────────────────────────────
 @media (prefers-color-scheme: dark) {
   .chord-importer {
+    border-color: $glass-border-dark;
+
+    &__tabs {
+      border-bottom-color: $glass-border-dark;
+    }
+
+    &__tab--active {
+      background: rgba(var(--ion-color-tertiary-rgb), 0.1);
+    }
+
+    &__url-row {
+      background: $glass-background-dark;
+      border-color: $glass-border-dark;
+    }
+
     &__textarea {
+      background: $glass-background-dark;
       border-color: $glass-border-dark;
 
       &--preview {
+        background: rgba(var(--ion-color-success-rgb), 0.07);
         border-color: var(--ion-color-success-shade);
-        background: rgba(var(--ion-color-success-rgb), 0.1);
       }
+    }
+
+    &--preview {
+      border-color: rgba(var(--ion-color-success-rgb), 0.25);
     }
   }
 }

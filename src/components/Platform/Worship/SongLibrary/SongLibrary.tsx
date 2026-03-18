@@ -75,6 +75,7 @@ export const SongLibrary: React.FC = () => {
             lyrics: newSong.lyrics || undefined,
             chordChart: newSong.chordChart || undefined,
             youtubeLink: newSong.youtubeLink || undefined,
+            chordsUrl: newSong.chordsUrl || undefined,
             notes: newSong.notes || undefined,
           },
         },
