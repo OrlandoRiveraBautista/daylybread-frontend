@@ -25,6 +25,7 @@ export function useSaveToLibrary(
             lyrics: song.lyrics || undefined,
             chordChart: song.chordChart || undefined,
             youtubeLink: song.youtubeLink || undefined,
+            chordsUrl: song.chordsUrl || undefined,
             notes: song.notes || undefined,
           },
         },

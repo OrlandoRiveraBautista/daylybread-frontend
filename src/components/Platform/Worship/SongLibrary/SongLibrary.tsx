@@ -28,6 +28,7 @@ import "./SongLibrary.scss";
 export const SongLibrary: React.FC = () => {
   const history = useHistory();
   const { userInfo } = useAppContext();
+  const isLoggedIn = !!userInfo?._id;
   const [searchQuery, setSearchQuery] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
@@ -75,6 +76,7 @@ export const SongLibrary: React.FC = () => {
             lyrics: newSong.lyrics || undefined,
             chordChart: newSong.chordChart || undefined,
             youtubeLink: newSong.youtubeLink || undefined,
+            chordsUrl: newSong.chordsUrl || undefined,
             notes: newSong.notes || undefined,
           },
         },
@@ -99,10 +101,10 @@ export const SongLibrary: React.FC = () => {
       <WorshipPageHeader
         classPrefix="songs"
         title="Song Library"
-        subtitle="Manage your church's song collection"
+        subtitle="Browse the community song collection"
         onBack={() => history.push("/worship")}
-        actionLabel="Add Song"
-        onAction={() => setShowCreateModal(true)}
+        actionLabel={isLoggedIn ? "Add Song" : undefined}
+        onAction={isLoggedIn ? () => setShowCreateModal(true) : undefined}
       />
 
       <div className="songs-search">
@@ -120,25 +122,27 @@ export const SongLibrary: React.FC = () => {
         <EmptyState
           icon={musicalNotes}
           title="No Songs Yet"
-          description="Add songs to your library to use in setlists."
-          actionLabel="Add Song"
-          onAction={() => setShowCreateModal(true)}
+          description={isLoggedIn ? "Add songs to your library to use in setlists." : "No songs have been added yet."}
+          actionLabel={isLoggedIn ? "Add Song" : undefined}
+          onAction={isLoggedIn ? () => setShowCreateModal(true) : undefined}
           color="tertiary"
         />
       )}
 
       {!loading && !error && filteredSongs.length > 0 && (
         <div className="songs-grid">
-          <AddCard
-            label="Add Song"
-            onClick={() => setShowCreateModal(true)}
-            color="tertiary"
-            className="song-card"
-          />
+          {isLoggedIn && (
+            <AddCard
+              label="Add Song"
+              onClick={() => setShowCreateModal(true)}
+              color="tertiary"
+              className="song-card"
+            />
+          )}
           {filteredSongs.map((song) => {
             const isBeingDeleted = deletingId === song._id;
             const isSavingThis = savingToLibraryId === song._id;
-            const isOwner = song.author?._id === userInfo?._id;
+            const isOwner = isLoggedIn && song.author?._id === userInfo?._id;
             const alreadyInMyLibrary = mySongTitles.has(song.title.toLowerCase().trim());
             const badges = [];
             if (song.defaultKey) badges.push({ text: song.defaultKey, color: "tertiary" as const });
@@ -155,7 +159,7 @@ export const SongLibrary: React.FC = () => {
                 onClick={() => setShowSongDetail(song)}
                 onDelete={isOwner ? () => setShowDeleteConfirm(song._id) : undefined}
                 customActions={
-                  !isOwner && !alreadyInMyLibrary
+                  isLoggedIn && !isOwner && !alreadyInMyLibrary
                     ? [{ icon: bookmarkOutline, color: "tertiary", onClick: () => handleSaveToLibrary(song), hidden: isSavingThis }]
                     : undefined
                 }

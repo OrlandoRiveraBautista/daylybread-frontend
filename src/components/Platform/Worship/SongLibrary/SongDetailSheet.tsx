@@ -131,6 +131,24 @@ export const SongDetailSheet: React.FC<SongDetailSheetProps> = ({
                 </a>
               </div>
             )}
+            {song.chordsUrl && (
+              <div className="song-detail__section">
+                <h3>Chords Reference</h3>
+                <a
+                  href={song.chordsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  View chords on {(() => {
+                    try {
+                      return new URL(song.chordsUrl).hostname.replace("www.", "");
+                    } catch {
+                      return "source site";
+                    }
+                  })()}
+                </a>
+              </div>
+            )}
           </div>
         )}
       </IonContent>

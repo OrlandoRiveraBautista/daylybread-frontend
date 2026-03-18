@@ -13,6 +13,7 @@ const GetSongs = gql(`
         lyrics
         chordChart
         youtubeLink
+        chordsUrl
         notes
         createdAt
         updatedAt
@@ -42,6 +43,7 @@ const GetSong = gql(`
         lyrics
         chordChart
         youtubeLink
+        chordsUrl
         notes
         createdAt
         updatedAt
@@ -71,6 +73,7 @@ const SearchSongs = gql(`
         lyrics
         chordChart
         youtubeLink
+        chordsUrl
         notes
         createdAt
         updatedAt
@@ -100,6 +103,7 @@ const CreateSong = gql(`
         lyrics
         chordChart
         youtubeLink
+        chordsUrl
         notes
         createdAt
         updatedAt
@@ -129,6 +133,7 @@ const UpdateSong = gql(`
         lyrics
         chordChart
         youtubeLink
+        chordsUrl
         notes
         createdAt
         updatedAt
@@ -153,6 +158,21 @@ const DeleteSong = gql(`
         _id
         title
       }
+      errors {
+        field
+        message
+      }
+    }
+  }
+`);
+
+const FetchChordsFromUrl = gql(`
+  query FetchChordsFromUrl($url: String!) {
+    fetchChordsFromUrl(url: $url) {
+      rawText
+      title
+      artist
+      key
       errors {
         field
         message
@@ -202,4 +222,8 @@ export const useDeleteSong = () => {
   return useMutation(DeleteSong, {
     refetchQueries: [{ query: GetSongs }],
   });
+};
+
+export const useFetchChordsFromUrl = () => {
+  return useLazyQuery(FetchChordsFromUrl);
 };

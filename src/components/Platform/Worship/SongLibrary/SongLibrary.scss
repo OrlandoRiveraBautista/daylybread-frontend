@@ -10,7 +10,6 @@
   }
 }
 
-
 .songs-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -40,8 +39,13 @@
 }
 
 .song-card {
+  display: flex;
+  justify-content: flex-start;
   .song-icon {
     color: var(--ion-color-tertiary);
+  }
+  ion-card-content {
+    height: 100%;
   }
 }
 

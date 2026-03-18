@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 import {
   IonCard,
@@ -9,15 +9,15 @@ import {
   IonSpinner,
   IonBadge,
   IonInput,
-  IonSelect,
-  IonSelectOption,
   IonItem,
   IonLabel,
   IonReorder,
   IonReorderGroup,
   IonToast,
+  IonSearchbar,
 } from "@ionic/react";
-import { add, trash, createOutline, bookmarkOutline } from "ionicons/icons";
+import { add, trash, createOutline, bookmarkOutline, musicalNotes, checkmarkCircle } from "ionicons/icons";
+import Highlighter from "react-highlight-words";
 import {
   useCreateSetlist,
   useAddSetlistItem,
@@ -25,8 +25,10 @@ import {
   useUpdateSetlistItem,
   useReorderSetlistItems,
 } from "../../../../hooks/WorshipServiceHooks";
+import { useCreateSong } from "../../../../hooks/SongHooks";
 import { useSaveToLibrary } from "../../../../hooks/useSaveToLibrary";
 import { PlatformBottomSheet } from "../../PlatformBottomSheet";
+import { SongForm, SongFormValues, EMPTY_SONG_FORM } from "../SongLibrary/SongForm";
 
 interface ServiceSetlistProps {
   serviceId: string;
@@ -54,12 +56,17 @@ export const ServiceSetlist: React.FC<ServiceSetlistProps> = ({
   const [editForm, setEditForm] = useState({ key: "", bpm: "", notes: "" });
   const [songForm, setSongForm] = useState({ songId: "", key: "", bpm: "", notes: "" });
   const [toast, setToast] = useState<{ message: string; color: string } | null>(null);
+  const [songSearchQuery, setSongSearchQuery] = useState("");
+  const [showNewSongForm, setShowNewSongForm] = useState(false);
+  const [newSongForm, setNewSongForm] = useState<SongFormValues>(EMPTY_SONG_FORM);
+  const [showImporter, setShowImporter] = useState(false);
 
   const [createSetlist] = useCreateSetlist();
   const [addSetlistItem, { loading: isAddingSong }] = useAddSetlistItem();
   const [removeSetlistItem] = useRemoveSetlistItem();
   const [updateSetlistItem, { loading: isUpdatingItem }] = useUpdateSetlistItem();
   const [reorderSetlistItems] = useReorderSetlistItems();
+  const [createSong, { loading: isCreatingSong }] = useCreateSong();
 
   const { savingToLibraryId, saveToLibrary: handleSaveToLibrary } = useSaveToLibrary(
     (title) => setToast({ message: `"${title}" saved to your library.`, color: "success" }),
@@ -67,6 +74,16 @@ export const ServiceSetlist: React.FC<ServiceSetlistProps> = ({
   );
 
   const setlistItems: any[] = setlist?.items || [];
+
+  const filteredSongs = useMemo(() => {
+    const q = songSearchQuery.toLowerCase().trim();
+    if (!q) return songs;
+    return songs.filter(
+      (s: any) =>
+        s.title?.toLowerCase().includes(q) ||
+        s.artist?.toLowerCase().includes(q),
+    );
+  }, [songs, songSearchQuery]);
 
   const handleAddSong = async () => {
     if (!songForm.songId) return;
@@ -171,6 +188,43 @@ export const ServiceSetlist: React.FC<ServiceSetlistProps> = ({
     }
   };
 
+  const handleCreateSong = async () => {
+    if (!newSongForm.title.trim()) return;
+    try {
+      const result = await createSong({
+        variables: {
+          options: {
+            title: newSongForm.title,
+            artist: newSongForm.artist || undefined,
+            defaultKey: newSongForm.defaultKey || undefined,
+            bpm: newSongForm.bpm ? parseInt(newSongForm.bpm) : undefined,
+            lyrics: newSongForm.lyrics || undefined,
+            chordChart: newSongForm.chordChart || undefined,
+            youtubeLink: newSongForm.youtubeLink || undefined,
+            chordsUrl: newSongForm.chordsUrl || undefined,
+            notes: newSongForm.notes || undefined,
+          },
+        },
+      });
+      const created = result.data?.createSong?.results;
+      setShowNewSongForm(false);
+      setShowImporter(false);
+      setNewSongForm(EMPTY_SONG_FORM);
+      if (created?._id) {
+        setSongForm({
+          songId: created._id,
+          key: created.defaultKey || "",
+          bpm: created.bpm?.toString() || "",
+          notes: "",
+        });
+        setSongSearchQuery("");
+      }
+      onRefetch();
+    } catch (err) {
+      console.error("Error creating song:", err);
+    }
+  };
+
   return (
     <>
       <div className="setlist-section">
@@ -247,66 +301,142 @@ export const ServiceSetlist: React.FC<ServiceSetlistProps> = ({
       {/* Add Song to Setlist Modal */}
       <PlatformBottomSheet
         isOpen={showAddSongModal}
-        onClose={() => { setShowAddSongModal(false); setSongForm({ songId: "", key: "", bpm: "", notes: "" }); }}
+        onClose={() => {
+          setShowAddSongModal(false);
+          setSongForm({ songId: "", key: "", bpm: "", notes: "" });
+          setSongSearchQuery("");
+        }}
         title="Add Song to Setlist"
         onSave={handleAddSong}
         saveLabel="Add Song"
         saveDisabled={!songForm.songId}
         isSaving={isAddingSong}
-        breakpoints={[0, 0.7, 0.9]}
-        initialBreakpoint={0.7}
+        breakpoints={[0, 0.85, 1]}
+        initialBreakpoint={0.85}
       >
-        <IonItem lines="none">
-          <IonLabel position="stacked">Song *</IonLabel>
-          <IonSelect
-            value={songForm.songId}
-            onIonChange={(e) => {
-              const selectedSong = songs.find((s: any) => s._id === e.detail.value);
-              setSongForm({
-                ...songForm,
-                songId: e.detail.value,
-                key: selectedSong?.defaultKey || "",
-                bpm: selectedSong?.bpm?.toString() || "",
-              });
-            }}
-            interface="action-sheet"
-            placeholder="Select a song"
-          >
-            {songs.map((s: any) => (
-              <IonSelectOption key={s._id} value={s._id}>
-                {s.title}{s.artist ? ` - ${s.artist}` : ""}
-              </IonSelectOption>
-            ))}
-          </IonSelect>
-        </IonItem>
-        <IonItem lines="none">
-          <IonLabel position="stacked">Key</IonLabel>
-          <IonInput
-            value={songForm.key}
-            onIonInput={(e) => setSongForm({ ...songForm, key: e.detail.value || "" })}
-            placeholder="e.g. G"
-            clearInput
+        <div className="song-picker">
+          <IonSearchbar
+            value={songSearchQuery}
+            onIonInput={(e) => setSongSearchQuery(e.detail.value || "")}
+            placeholder="Search by title or artist..."
+            debounce={200}
+            className="song-picker__searchbar"
           />
-        </IonItem>
-        <IonItem lines="none">
-          <IonLabel position="stacked">BPM</IonLabel>
-          <IonInput
-            value={songForm.bpm}
-            onIonInput={(e) => setSongForm({ ...songForm, bpm: e.detail.value || "" })}
-            placeholder="e.g. 120"
-            type="number"
-            clearInput
-          />
-        </IonItem>
-        <IonItem lines="none">
-          <IonLabel position="stacked">Notes</IonLabel>
-          <IonInput
-            value={songForm.notes}
-            onIonInput={(e) => setSongForm({ ...songForm, notes: e.detail.value || "" })}
-            placeholder="Optional notes..."
-            clearInput
-          />
-        </IonItem>
+
+          {songForm.songId && (() => {
+            const selected = songs.find((s: any) => s._id === songForm.songId);
+            return selected ? (
+              <div className="song-picker__selected-banner">
+                <IonIcon icon={checkmarkCircle} color="tertiary" />
+                <span>
+                  <strong>{selected.title}</strong>
+                  {selected.artist ? ` — ${selected.artist}` : ""}
+                </span>
+              </div>
+            ) : null;
+          })()}
+
+          <div className="song-picker__list">
+            {filteredSongs.length === 0 ? (
+              <div className="song-picker__empty">
+                <p>{songSearchQuery ? "No songs match your search." : "No songs in the library yet."}</p>
+                <IonButton
+                  fill="outline"
+                  size="small"
+                  shape="round"
+                  color="tertiary"
+                  onClick={() => setShowNewSongForm(true)}
+                >
+                  <IonIcon slot="start" icon={add} />
+                  Create New Song
+                </IonButton>
+              </div>
+            ) : (
+              <>
+              {filteredSongs.map((s: any) => (
+                <div
+                  key={s._id}
+                  className={`song-picker__item${songForm.songId === s._id ? " song-picker__item--selected" : ""}`}
+                  onClick={() =>
+                    setSongForm({
+                      ...songForm,
+                      songId: s._id,
+                      key: s.defaultKey || "",
+                      bpm: s.bpm?.toString() || "",
+                    })
+                  }
+                >
+                  <div className="song-picker__item-icon">
+                    <IonIcon icon={musicalNotes} className="song-picker__item-icon-note" />
+                    <IonIcon icon={checkmarkCircle} className="song-picker__item-icon-check" />
+                  </div>
+                  <div className="song-picker__item-info">
+                    <span className="song-picker__item-title">
+                      <Highlighter
+                        searchWords={songSearchQuery ? [songSearchQuery] : []}
+                        autoEscape
+                        textToHighlight={s.title}
+                        highlightClassName="item-card__highlight"
+                      />
+                    </span>
+                    {s.artist && (
+                      <span className="song-picker__item-artist">
+                        <Highlighter
+                          searchWords={songSearchQuery ? [songSearchQuery] : []}
+                          autoEscape
+                          textToHighlight={s.artist}
+                          highlightClassName="item-card__highlight"
+                        />
+                      </span>
+                    )}
+                  </div>
+                  <div className="song-picker__item-badges">
+                    {s.defaultKey && <IonBadge color="tertiary">{s.defaultKey}</IonBadge>}
+                    {s.bpm && <IonBadge color="medium">{s.bpm} BPM</IonBadge>}
+                  </div>
+                </div>
+              ))}
+              <div className="song-picker__create-row" onClick={() => setShowNewSongForm(true)}>
+                <div className="song-picker__item-icon song-picker__item-icon--add">
+                  <IonIcon icon={add} />
+                </div>
+                <span className="song-picker__create-label">Create New Song</span>
+              </div>
+              </>
+            )}
+          </div>
+        </div>
+
+        <div className="song-form-fields">
+          <IonItem lines="none">
+            <IonLabel position="stacked">Key</IonLabel>
+            <IonInput
+              value={songForm.key}
+              onIonInput={(e) => setSongForm({ ...songForm, key: e.detail.value || "" })}
+              placeholder="e.g. G"
+              clearInput
+            />
+          </IonItem>
+          <IonItem lines="none">
+            <IonLabel position="stacked">BPM</IonLabel>
+            <IonInput
+              value={songForm.bpm}
+              onIonInput={(e) => setSongForm({ ...songForm, bpm: e.detail.value || "" })}
+              placeholder="e.g. 120"
+              type="number"
+              clearInput
+            />
+          </IonItem>
+          <IonItem lines="none">
+            <IonLabel position="stacked">Notes</IonLabel>
+            <IonInput
+              value={songForm.notes}
+              onIonInput={(e) => setSongForm({ ...songForm, notes: e.detail.value || "" })}
+              placeholder="Optional notes..."
+              clearInput
+            />
+          </IonItem>
+        </div>
       </PlatformBottomSheet>
 
       {/* Edit Setlist Item Modal */}
@@ -350,6 +480,21 @@ export const ServiceSetlist: React.FC<ServiceSetlistProps> = ({
           />
         </IonItem>
       </PlatformBottomSheet>
+
+      <SongForm
+        isOpen={showNewSongForm}
+        onClose={() => {
+          setShowNewSongForm(false);
+          setShowImporter(false);
+          setNewSongForm(EMPTY_SONG_FORM);
+        }}
+        onSave={handleCreateSong}
+        values={newSongForm}
+        onChange={setNewSongForm}
+        isSaving={isCreatingSong}
+        showImporter={showImporter}
+        onShowImporter={setShowImporter}
+      />
 
       <IonToast
         isOpen={!!toast}
