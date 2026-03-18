@@ -92,6 +92,19 @@ export const SongView: React.FC = () => {
             </a>
           </div>
         )}
+        {song.chordsUrl && (
+          <div className="song-view__reference">
+            <a href={song.chordsUrl} target="_blank" rel="noopener noreferrer">
+              View chords on {(() => {
+                try {
+                  return new URL(song.chordsUrl).hostname.replace("www.", "");
+                } catch {
+                  return "source site";
+                }
+              })()}
+            </a>
+          </div>
+        )}
       </div>
     </div>
   );

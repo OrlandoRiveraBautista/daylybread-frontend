@@ -8,7 +8,7 @@ import {
   IonIcon,
 } from "@ionic/react";
 import { cloudUploadOutline } from "ionicons/icons";
-import { ChordImporter } from "../ChordSheet/ChordImporter";
+import { ChordImporter, ChordImportMeta } from "../ChordSheet/ChordImporter";
 import { PlatformBottomSheet } from "../../PlatformBottomSheet";
 
 export interface SongFormValues {
@@ -19,6 +19,7 @@ export interface SongFormValues {
   lyrics: string;
   chordChart: string;
   youtubeLink: string;
+  chordsUrl: string;
   notes: string;
 }
 
@@ -30,6 +31,7 @@ export const EMPTY_SONG_FORM: SongFormValues = {
   lyrics: "",
   chordChart: "",
   youtubeLink: "",
+  chordsUrl: "",
   notes: "",
 };
 
@@ -87,6 +89,50 @@ export const SongForm: React.FC<SongFormProps> = ({
           clearInput
         />
       </IonItem>
+
+      {/* Chord Chart — importer lives right here, after Artist */}
+      <IonItem lines="none">
+        <IonLabel position="stacked">Chord Chart</IonLabel>
+        {showImporter ? (
+          <ChordImporter
+            onImport={(chordPro, meta: ChordImportMeta = {}) => {
+              onChange({
+                ...values,
+                chordChart: chordPro,
+                chordsUrl: meta.chordsUrl || values.chordsUrl,
+                title: meta.title && !values.title.trim() ? meta.title : values.title,
+                artist: meta.artist && !values.artist.trim() ? meta.artist : values.artist,
+                defaultKey: meta.key && !values.defaultKey.trim() ? meta.key : values.defaultKey,
+              });
+              onShowImporter(false);
+            }}
+            onCancel={() => onShowImporter(false)}
+          />
+        ) : (
+          <>
+            <IonTextarea
+              value={values.chordChart}
+              onIonInput={(e) => set("chordChart")(e.detail.value || "")}
+              placeholder={`ChordPro format: [Am]Lyrics go [G]here\nOr use the import button below to fetch from a URL or paste from another site.`}
+              rows={6}
+              autoGrow
+              className="chordpro-textarea"
+            />
+            <IonButton
+              fill="outline"
+              size="small"
+              shape="round"
+              color="tertiary"
+              onClick={() => onShowImporter(true)}
+              style={{ marginTop: "8px", alignSelf: "flex-start" }}
+            >
+              <IonIcon slot="start" icon={cloudUploadOutline} />
+              Import from URL or site
+            </IonButton>
+          </>
+        )}
+      </IonItem>
+
       <IonItem lines="none">
         <IonLabel position="stacked">Key</IonLabel>
         <IonInput
@@ -107,40 +153,6 @@ export const SongForm: React.FC<SongFormProps> = ({
         />
       </IonItem>
       <IonItem lines="none">
-        <IonLabel position="stacked">Chord Chart</IonLabel>
-        {!showImporter ? (
-          <>
-            <IonTextarea
-              value={values.chordChart}
-              onIonInput={(e) => set("chordChart")(e.detail.value || "")}
-              placeholder={`ChordPro format: [Am]Lyrics go [G]here\nOr use the import button below to paste from another site.`}
-              rows={6}
-              autoGrow
-              className="chordpro-textarea"
-            />
-            <IonButton
-              fill="outline"
-              size="small"
-              shape="round"
-              color="tertiary"
-              onClick={() => onShowImporter(true)}
-              style={{ marginTop: "8px", alignSelf: "flex-start" }}
-            >
-              <IonIcon slot="start" icon={cloudUploadOutline} />
-              Import from another site
-            </IonButton>
-          </>
-        ) : (
-          <ChordImporter
-            onImport={(chordPro) => {
-              set("chordChart")(chordPro);
-              onShowImporter(false);
-            }}
-            onCancel={() => onShowImporter(false)}
-          />
-        )}
-      </IonItem>
-      <IonItem lines="none">
         <IonLabel position="stacked">Lyrics (without chords)</IonLabel>
         <IonTextarea
           value={values.lyrics}
@@ -156,6 +168,16 @@ export const SongForm: React.FC<SongFormProps> = ({
           value={values.youtubeLink}
           onIonInput={(e) => set("youtubeLink")(e.detail.value || "")}
           placeholder="https://youtube.com/..."
+          type="url"
+          clearInput
+        />
+      </IonItem>
+      <IonItem lines="none">
+        <IonLabel position="stacked">Chords Reference URL</IonLabel>
+        <IonInput
+          value={values.chordsUrl}
+          onIonInput={(e) => set("chordsUrl")(e.detail.value || "")}
+          placeholder="https://lacuerda.net/... or cifraclub.com/..."
           type="url"
           clearInput
         />
