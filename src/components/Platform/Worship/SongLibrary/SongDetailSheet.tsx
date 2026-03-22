@@ -10,7 +10,7 @@ import {
   IonIcon,
   IonSpinner,
 } from "@ionic/react";
-import { expandOutline, bookmarkOutline } from "ionicons/icons";
+import { expandOutline, bookmarkOutline, createOutline } from "ionicons/icons";
 import { useHistory } from "react-router-dom";
 import { ChordSheet } from "../ChordSheet/ChordSheet";
 
@@ -20,8 +20,11 @@ interface SongDetailSheetProps {
   /** The current user's owned song titles (lowercase trimmed) for the "save" guard */
   mySongTitles: Set<string>;
   currentUserId: string | undefined;
+  /** Logged-in users can edit any song */
+  isLoggedIn: boolean;
   onSaveToLibrary: (song: any) => void;
   savingToLibraryId: string | null;
+  onEdit?: (song: any) => void;
 }
 
 export const SongDetailSheet: React.FC<SongDetailSheetProps> = ({
@@ -29,8 +32,10 @@ export const SongDetailSheet: React.FC<SongDetailSheetProps> = ({
   onDismiss,
   mySongTitles,
   currentUserId,
+  isLoggedIn,
   onSaveToLibrary,
   savingToLibraryId,
+  onEdit,
 }) => {
   const history = useHistory();
 
@@ -77,6 +82,18 @@ export const SongDetailSheet: React.FC<SongDetailSheetProps> = ({
                 <IonIcon slot="start" icon={expandOutline} />
                 Full Screen
               </IonButton>
+              {isLoggedIn && onEdit && (
+                <IonButton
+                  fill="outline"
+                  size="small"
+                  shape="round"
+                  color="primary"
+                  onClick={() => onEdit(song)}
+                >
+                  <IonIcon slot="start" icon={createOutline} />
+                  Edit
+                </IonButton>
+              )}
               {!isOwner && !alreadySaved && (
                 <IonButton
                   fill="outline"

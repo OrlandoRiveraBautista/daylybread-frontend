@@ -9,7 +9,7 @@ import {
   IonLabel,
   IonToast,
 } from "@ionic/react";
-import { playCircle, checkmarkCircle } from "ionicons/icons";
+import { playCircle, checkmarkCircle, musicalNotes } from "ionicons/icons";
 import { PageHeader } from "../../PageHeader";
 import {
   useGetWorshipService,
@@ -157,6 +157,16 @@ export const ServiceDetail: React.FC = () => {
                   onClick: () => setShowPublishConfirm(true),
                   disabled: publishing,
                   loading: publishing,
+                },
+              ]
+            : []),
+          ...(setlistItems.length > 0
+            ? [
+                {
+                  label: "Practice",
+                  icon: musicalNotes,
+                  color: "tertiary",
+                  onClick: () => history.push(`/worship/services/${id}/practice`),
                 },
               ]
             : []),

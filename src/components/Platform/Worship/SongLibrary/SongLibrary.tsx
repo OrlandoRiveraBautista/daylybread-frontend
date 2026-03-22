@@ -10,6 +10,7 @@ import { ItemCard } from "../../ItemCard";
 import {
   useGetSongs,
   useCreateSong,
+  useUpdateSong,
   useDeleteSong,
 } from "../../../../hooks/SongHooks";
 import { useAppContext } from "../../../../context/context";
@@ -21,7 +22,12 @@ import { WorshipPageHeader } from "../shared/WorshipPageHeader";
 import { WorshipLoadingState } from "../shared/WorshipLoadingState";
 import EmptyState from "../../../EmptyState/EmptyState";
 import { WorshipDeleteModal } from "../shared/WorshipDeleteModal";
-import { SongForm, SongFormValues, EMPTY_SONG_FORM } from "./SongForm";
+import {
+  SongForm,
+  SongFormValues,
+  EMPTY_SONG_FORM,
+  songToFormValues,
+} from "./SongForm";
 import { SongDetailSheet } from "./SongDetailSheet";
 import "./SongLibrary.scss";
 
@@ -36,9 +42,13 @@ export const SongLibrary: React.FC = () => {
   const [showImporter, setShowImporter] = useState(false);
   const [toast, setToast] = useState<{ message: string; color: string } | null>(null);
   const [newSong, setNewSong] = useState<SongFormValues>(EMPTY_SONG_FORM);
+  const [editingSongId, setEditingSongId] = useState<string | null>(null);
+  const [editSong, setEditSong] = useState<SongFormValues>(EMPTY_SONG_FORM);
+  const [showEditImporter, setShowEditImporter] = useState(false);
 
   const { data, loading, error, refetch } = useGetSongs();
   const [createSong, { loading: isCreating }] = useCreateSong();
+  const [updateSong, { loading: isUpdating }] = useUpdateSong();
   const [deleteSong, { loading: isDeleting }] = useDeleteSong();
 
   const songs: any[] = data?.getSongs?.results || [];
@@ -92,6 +102,58 @@ export const SongLibrary: React.FC = () => {
     setShowCreateModal(false);
     setShowImporter(false);
     setNewSong(EMPTY_SONG_FORM);
+  };
+
+  const openEditModal = (song: any) => {
+    setShowCreateModal(false);
+    setEditingSongId(song._id);
+    setEditSong(songToFormValues(song));
+    setShowEditImporter(false);
+  };
+
+  const closeEditModal = () => {
+    setEditingSongId(null);
+    setEditSong(EMPTY_SONG_FORM);
+    setShowEditImporter(false);
+  };
+
+  const handleUpdate = async () => {
+    if (!editingSongId || !editSong.title.trim()) return;
+    try {
+      const result = await updateSong({
+        variables: {
+          id: editingSongId,
+          options: {
+            title: editSong.title,
+            artist: editSong.artist || undefined,
+            defaultKey: editSong.defaultKey || undefined,
+            bpm: editSong.bpm ? parseInt(editSong.bpm, 10) : undefined,
+            lyrics: editSong.lyrics || undefined,
+            chordChart: editSong.chordChart || undefined,
+            youtubeLink: editSong.youtubeLink || undefined,
+            chordsUrl: editSong.chordsUrl || undefined,
+            notes: editSong.notes || undefined,
+          },
+        },
+      });
+      if (result.data?.updateSong?.errors?.length) {
+        setToast({
+          message: result.data.updateSong.errors[0].message || "Could not save song.",
+          color: "danger",
+        });
+        return;
+      }
+      closeEditModal();
+      setToast({ message: "Song updated.", color: "success" });
+      if (showSongDetail?._id === editingSongId) {
+        await refetch();
+        const updated = result.data?.updateSong?.results;
+        if (updated) setShowSongDetail(updated);
+      }
+    } catch (err) {
+      console.error("Error updating song:", err);
+      setToast({ message: "Failed to update song.", color: "danger" });
+    }
   };
 
   return (
@@ -157,6 +219,7 @@ export const SongLibrary: React.FC = () => {
                 subtitle={song.artist}
                 badges={badges}
                 onClick={() => setShowSongDetail(song)}
+                onEdit={isLoggedIn ? () => openEditModal(song) : undefined}
                 onDelete={isOwner ? () => setShowDeleteConfirm(song._id) : undefined}
                 customActions={
                   isLoggedIn && !isOwner && !alreadyInMyLibrary
@@ -178,8 +241,13 @@ export const SongLibrary: React.FC = () => {
         onDismiss={() => setShowSongDetail(null)}
         mySongTitles={mySongTitles}
         currentUserId={userInfo?._id}
+        isLoggedIn={isLoggedIn}
         onSaveToLibrary={handleSaveToLibrary}
         savingToLibraryId={savingToLibraryId}
+        onEdit={(s) => {
+          setShowSongDetail(null);
+          openEditModal(s);
+        }}
       />
 
       <SongForm
@@ -191,6 +259,19 @@ export const SongLibrary: React.FC = () => {
         isSaving={isCreating}
         showImporter={showImporter}
         onShowImporter={setShowImporter}
+        mode="create"
+      />
+
+      <SongForm
+        isOpen={!!editingSongId}
+        onClose={closeEditModal}
+        onSave={handleUpdate}
+        values={editSong}
+        onChange={setEditSong}
+        isSaving={isUpdating}
+        showImporter={showEditImporter}
+        onShowImporter={setShowEditImporter}
+        mode="edit"
       />
 
       <WorshipDeleteModal
