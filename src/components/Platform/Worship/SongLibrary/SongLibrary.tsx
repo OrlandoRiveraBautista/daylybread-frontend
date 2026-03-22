@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import {
+  IonIcon,
   IonSearchbar,
   IonToast,
 } from "@ionic/react";
-import { musicalNotes, bookmarkOutline } from "ionicons/icons";
+import { musicalNotes, bookmarkOutline, logoYoutube } from "ionicons/icons";
 import { AddCard } from "../../AddCard";
 import { ItemCard } from "../../ItemCard";
 import {
@@ -30,6 +31,24 @@ import {
 } from "./SongForm";
 import { SongDetailSheet } from "./SongDetailSheet";
 import "./SongLibrary.scss";
+
+function formatSongOwnerLine(
+  author: { firstName?: string | null; lastName?: string | null } | undefined,
+  isOwner: boolean,
+): string {
+  if (isOwner) return "Yours";
+  if (!author) return "";
+  const first = author.firstName?.trim() || "";
+  const last = author.lastName?.trim() || "";
+  if (first && last) return `${first} ${last.charAt(0)}.`;
+  if (first) return first;
+  if (last) return last;
+  return "Community";
+}
+
+function hasYoutubeLink(link: string | null | undefined): boolean {
+  return typeof link === "string" && link.trim().length > 0;
+}
 
 export const SongLibrary: React.FC = () => {
   const history = useHistory();
@@ -206,6 +225,8 @@ export const SongLibrary: React.FC = () => {
             const isSavingThis = savingToLibraryId === song._id;
             const isOwner = isLoggedIn && song.author?._id === userInfo?._id;
             const alreadyInMyLibrary = mySongTitles.has(song.title.toLowerCase().trim());
+            const ownerLine = formatSongOwnerLine(song.author, isOwner);
+            const withVideo = hasYoutubeLink(song.youtubeLink);
             const badges = [];
             if (song.defaultKey) badges.push({ text: song.defaultKey, color: "tertiary" as const });
             if (song.bpm) badges.push({ text: `${song.bpm} BPM`, color: "medium" as const });
@@ -217,6 +238,30 @@ export const SongLibrary: React.FC = () => {
                 iconClassName="song-icon"
                 title={song.title}
                 subtitle={song.artist}
+                metadata={
+                  <div className="song-card__meta">
+                    {ownerLine && (
+                      <div className="song-card__meta-owner">
+                        <span className="song-card__meta-kicker">
+                          {isOwner ? "Your song" : "Added by"}
+                        </span>
+                        {!isOwner && (
+                          <span className="song-card__meta-owner-name">{ownerLine}</span>
+                        )}
+                      </div>
+                    )}
+                    {ownerLine && <span className="song-card__meta-sep" aria-hidden="true" />}
+                    <span
+                      className={`song-card__meta-video${withVideo ? " song-card__meta-video--has" : ""}`}
+                      title={withVideo ? "Includes a YouTube link" : "No YouTube link"}
+                    >
+                      <IonIcon icon={logoYoutube} aria-hidden="true" />
+                      <span className="song-card__meta-video-label">
+                        {withVideo ? "Video" : "No video"}
+                      </span>
+                    </span>
+                  </div>
+                }
                 badges={badges}
                 onClick={() => setShowSongDetail(song)}
                 onEdit={isLoggedIn ? () => openEditModal(song) : undefined}
