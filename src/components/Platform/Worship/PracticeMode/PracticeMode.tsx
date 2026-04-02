@@ -6,7 +6,13 @@ import React, {
   useCallback,
 } from "react";
 import { useHistory, useParams, useLocation } from "react-router-dom";
-import { IonButton, IonIcon, IonSpinner, IonBadge, IonText } from "@ionic/react";
+import {
+  IonButton,
+  IonIcon,
+  IonSpinner,
+  IonBadge,
+  IonText,
+} from "@ionic/react";
 import {
   arrowBack,
   chevronBackOutline,
@@ -24,6 +30,7 @@ import { useGetWorshipService } from "../../../../hooks/WorshipServiceHooks";
 import { ChordSheet } from "../ChordSheet/ChordSheet";
 import { LiveSetlistDrawer } from "../LiveService/LiveSetlistDrawer";
 import { PracticeAudioPlayer } from "./PracticeAudioPlayer";
+import { YouTubeEmbedPlayer } from "./YouTubeEmbedPlayer";
 import {
   transposeChordPro,
   shouldUseFlats,
@@ -142,7 +149,8 @@ export const PracticeMode: React.FC = () => {
       setPrefetchTipOpen(false);
     };
     document.addEventListener("pointerdown", onPointerDown, true);
-    return () => document.removeEventListener("pointerdown", onPointerDown, true);
+    return () =>
+      document.removeEventListener("pointerdown", onPointerDown, true);
   }, [prefetchTipOpen]);
 
   /** Pre-download setlist audio one-by-one (current song first); shares cache with the player. */
@@ -302,6 +310,17 @@ export const PracticeMode: React.FC = () => {
       : 0;
   const totalPitchSemitones = basePitchSemitones + chordTransposeExtra;
 
+  // Use the embedded YouTube player in browser contexts where yt-dlp streaming
+  // and Web Audio pitch-shifting are not available. On localhost (including
+  // custom .local domains) the full PracticeAudioPlayer (yt-dlp + Tone.js) is
+  // used instead.
+  const isLocalhost =
+    typeof window !== "undefined" &&
+    (window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1" ||
+      window.location.hostname === "::1" ||
+      window.location.hostname.endsWith(".local"));
+
   return (
     <div className="live-service practice-mode">
       <div className="live-service__top-bar practice-mode__top-bar">
@@ -348,7 +367,10 @@ export const PracticeMode: React.FC = () => {
                   setPrefetchTipOpen((v) => !v);
                 }}
               >
-                <span className="practice-mode__prefetch-sync-inner" aria-hidden>
+                <span
+                  className="practice-mode__prefetch-sync-inner"
+                  aria-hidden
+                >
                   <svg
                     className="practice-mode__prefetch-sync-svg"
                     width={PREFETCH_RING_SIZE}
@@ -489,13 +511,22 @@ export const PracticeMode: React.FC = () => {
           )}
 
           {videoId ? (
-            <PracticeAudioPlayer
-              key={`${currentIndex}-${videoId}`}
-              practiceServiceId={id}
-              youtubeVideoId={videoId}
-              pitchSemitones={totalPitchSemitones}
-              songTitle={song?.title}
-            />
+            isLocalhost ? (
+              <PracticeAudioPlayer
+                key={`${currentIndex}-${videoId}`}
+                practiceServiceId={id}
+                youtubeVideoId={videoId}
+                pitchSemitones={totalPitchSemitones}
+                songTitle={song?.title}
+              />
+            ) : (
+              <YouTubeEmbedPlayer
+                key={`${currentIndex}-${videoId}`}
+                youtubeVideoId={videoId}
+                pitchSemitones={totalPitchSemitones}
+                songTitle={song?.title}
+              />
+            )
           ) : (
             <div className="practice-mode__no-audio">
               <IonText color="medium">
