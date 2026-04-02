@@ -45,6 +45,16 @@ import {
 import "../LiveService/LiveService.scss";
 import "./PracticeMode.scss";
 
+// True when running on a local dev host — enables yt-dlp streaming + pitch
+// shifting. In production (any non-local host) we fall back to the embedded
+// YouTube player and skip all yt-dlp network calls entirely.
+const IS_LOCAL_HOST =
+  typeof window !== "undefined" &&
+  (window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1" ||
+    window.location.hostname === "::1" ||
+    window.location.hostname.endsWith(".local"));
+
 const PREFETCH_RING_SIZE = 28;
 const PREFETCH_RING_STROKE = 2.25;
 const PREFETCH_RING_RADIUS =
@@ -126,7 +136,7 @@ export const PracticeMode: React.FC = () => {
 
   /** Drop in-memory reference audio when leaving this service’s practice mode. */
   useEffect(() => {
-    if (!id) return;
+    if (!id || !IS_LOCAL_HOST) return;
     return () => {
       disposePracticeAudioSession();
     };
@@ -155,7 +165,7 @@ export const PracticeMode: React.FC = () => {
 
   /** Pre-download setlist audio one-by-one (current song first); shares cache with the player. */
   useEffect(() => {
-    if (!id || practiceVideoIdsInOrder.length === 0) {
+    if (!id || !IS_LOCAL_HOST || practiceVideoIdsInOrder.length === 0) {
       setPrefetchProgress(null);
       return;
     }
@@ -310,16 +320,6 @@ export const PracticeMode: React.FC = () => {
       : 0;
   const totalPitchSemitones = basePitchSemitones + chordTransposeExtra;
 
-  // Use the embedded YouTube player in browser contexts where yt-dlp streaming
-  // and Web Audio pitch-shifting are not available. On localhost (including
-  // custom .local domains) the full PracticeAudioPlayer (yt-dlp + Tone.js) is
-  // used instead.
-  const isLocalhost =
-    typeof window !== "undefined" &&
-    (window.location.hostname === "localhost" ||
-      window.location.hostname === "127.0.0.1" ||
-      window.location.hostname === "::1" ||
-      window.location.hostname.endsWith(".local"));
 
   return (
     <div className="live-service practice-mode">
@@ -511,7 +511,7 @@ export const PracticeMode: React.FC = () => {
           )}
 
           {videoId ? (
-            isLocalhost ? (
+            IS_LOCAL_HOST ? (
               <PracticeAudioPlayer
                 key={`${currentIndex}-${videoId}`}
                 practiceServiceId={id}
