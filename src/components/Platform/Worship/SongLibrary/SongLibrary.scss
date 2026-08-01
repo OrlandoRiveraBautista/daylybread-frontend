@@ -47,6 +47,90 @@
   ion-card-content {
     height: 100%;
   }
+
+  /* Pull metadata out of “song” typography: divider + label style vs title/artist */
+  .item-card__metadata {
+    width: 100%;
+    margin-top: 4px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(var(--ion-color-medium-rgb), 0.22);
+    font-size: 11px;
+    line-height: 1.35;
+    align-items: flex-start;
+    color: var(--ion-color-medium);
+  }
+
+  .song-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 10px;
+    width: 100%;
+  }
+
+  .song-card__meta-owner {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px;
+    max-width: 100%;
+  }
+
+  .song-card__meta-kicker {
+    flex-shrink: 0;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ion-color-medium);
+    opacity: 0.72;
+  }
+
+  .song-card__meta-owner-name {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ion-color-medium);
+    opacity: 0.88;
+    letter-spacing: 0.01em;
+  }
+
+  .song-card__meta-sep {
+    opacity: 0.35;
+    user-select: none;
+    font-weight: 300;
+  }
+
+  .song-card__meta-video {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto;
+
+    ion-icon {
+      font-size: 13px;
+      flex-shrink: 0;
+      opacity: 0.55;
+    }
+
+    &--has ion-icon {
+      opacity: 1;
+      color: #c00;
+    }
+  }
+
+  .song-card__meta-video-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    opacity: 0.75;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .song-card .item-card__metadata {
+    border-top-color: rgba(255, 255, 255, 0.08);
+  }
 }
 
 /* Song Detail Modal */

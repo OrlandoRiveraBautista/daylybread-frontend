@@ -38,6 +38,7 @@ import { RehearsalsManagement } from "../../../components/Platform/Worship/Rehea
 import { TeamInviteAccept } from "../../../components/Platform/Worship/TeamInviteAccept/TeamInviteAccept";
 import { SongView } from "../../../components/Platform/Worship/SongView/SongView";
 import { LiveService } from "../../../components/Platform/Worship/LiveService/LiveService";
+import { PracticeMode } from "../../../components/Platform/Worship/PracticeMode/PracticeMode";
 
 const Platform: React.FC = () => {
   const { userInfo } = useAppContext();
@@ -82,6 +83,12 @@ const Platform: React.FC = () => {
     title: string;
     description: string;
   }> = [
+    {
+      pattern: /\/worship\/services\/[^/]+\/practice/,
+      title: "Practice — Worship | Platform Daylybread",
+      description:
+        "Practice the setlist with chord sheets and transposed reference audio.",
+    },
     {
       pattern: /\/worship\/services\/[^/]+\/live/,
       title: "Live Service — Worship | Platform Daylybread",
@@ -423,6 +430,10 @@ const Platform: React.FC = () => {
 
           <Route exact path="/worship/services/:id/live">
             <LiveService />
+          </Route>
+
+          <Route exact path="/worship/services/:id/practice">
+            <PracticeMode />
           </Route>
 
           <Route exact path="/worship/rehearsals">

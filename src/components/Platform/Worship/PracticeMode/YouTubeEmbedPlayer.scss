@@ -1,0 +1,141 @@
+.yt-embed-player {
+  margin: 16px 20px 24px;
+  padding: 20px 20px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(var(--ion-color-tertiary-rgb), 0.28);
+  background: linear-gradient(
+    165deg,
+    rgba(var(--ion-color-tertiary-rgb), 0.12) 0%,
+    rgba(var(--ion-color-tertiary-rgb), 0.04) 48%,
+    var(--ion-card-background, var(--ion-background-color, #fff)) 100%
+  );
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 8px 24px rgba(0, 0, 0, 0.06);
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  &__title-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    min-width: 0;
+    flex: 1;
+  }
+
+  &__eyebrow {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ion-color-medium);
+    margin: 0;
+    line-height: 1;
+  }
+
+  &__info-btn {
+    margin: 0 0 0 -2px;
+    flex: 0 0 auto;
+    width: 28px;
+    height: 28px;
+    min-width: 0;
+    --padding-start: 0;
+    --padding-end: 0;
+    --color: var(--ion-color-tertiary);
+
+    &::part(native) {
+      padding: 0;
+      width: 28px;
+      height: 28px;
+      min-width: 0;
+    }
+
+    ion-icon {
+      font-size: 20px;
+    }
+  }
+
+  &__pitch-badge {
+    flex-shrink: 0;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 8px 10px;
+    border-radius: 999px;
+    letter-spacing: 0.02em;
+  }
+
+  &__frame-wrap {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* 16:9 */
+    height: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #000;
+  }
+
+  &__iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 12px;
+  }
+}
+
+.yt-embed-player__info-popover {
+  --width: min(320px, calc(100vw - 32px));
+  --max-height: 70vh;
+}
+
+.yt-embed-player__info-popover-body {
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 14px;
+  --padding-bottom: 16px;
+}
+
+.yt-embed-player__info-popover-title {
+  margin: 0 0 10px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ion-text-color);
+}
+
+.yt-embed-player__info-popover-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ion-color-medium-shade, var(--ion-color-medium));
+}
+
+.yt-embed-player__info-popover-note {
+  margin: 12px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ion-color-medium);
+  font-style: italic;
+}
+
+@media (prefers-color-scheme: dark) {
+  .yt-embed-player {
+    background: linear-gradient(
+      165deg,
+      rgba(var(--ion-color-tertiary-rgb), 0.18) 0%,
+      rgba(var(--ion-color-tertiary-rgb), 0.06) 45%,
+      rgba(20, 22, 28, 0.96) 100%
+    );
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.04) inset,
+      0 10px 28px rgba(0, 0, 0, 0.35);
+  }
+}

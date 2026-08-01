@@ -1,23 +1,46 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import {
   IonButton,
   IonIcon,
   IonSpinner,
+  IonToast,
 } from "@ionic/react";
-import { expandOutline, contractOutline } from "ionicons/icons";
-import { useGetSong } from "../../../../hooks/SongHooks";
+import { expandOutline, contractOutline, createOutline } from "ionicons/icons";
+import { useGetSong, useUpdateSong } from "../../../../hooks/SongHooks";
+import { useAppContext } from "../../../../context/context";
 import { ChordSheet } from "../ChordSheet/ChordSheet";
 import { PageHeader } from "../../PageHeader";
+import {
+  SongForm,
+  SongFormValues,
+  EMPTY_SONG_FORM,
+  songToFormValues,
+} from "../SongLibrary/SongForm";
 import "./SongView.scss";
 
 export const SongView: React.FC = () => {
   const history = useHistory();
   const { id } = useParams<{ id: string }>();
+  const { userInfo } = useAppContext();
+  const isLoggedIn = !!userInfo?._id;
   const [isZenMode, setIsZenMode] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editForm, setEditForm] = useState<SongFormValues>(EMPTY_SONG_FORM);
+  const [showEditImporter, setShowEditImporter] = useState(false);
+  const [toast, setToast] = useState<{ message: string; color: string } | null>(
+    null,
+  );
 
-  const { data, loading } = useGetSong(id);
+  const { data, loading, refetch } = useGetSong(id);
+  const [updateSong, { loading: isUpdating }] = useUpdateSong();
   const song = data?.getSong?.results;
+
+  useEffect(() => {
+    if (song && showEditModal) {
+      setEditForm(songToFormValues(song));
+    }
+  }, [song, showEditModal]);
 
   if (loading) {
     return (
@@ -38,6 +61,48 @@ export const SongView: React.FC = () => {
     );
   }
 
+  const closeEdit = () => {
+    setShowEditModal(false);
+    setShowEditImporter(false);
+    setEditForm(EMPTY_SONG_FORM);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editForm.title.trim()) return;
+    try {
+      const result = await updateSong({
+        variables: {
+          id: song._id,
+          options: {
+            title: editForm.title,
+            artist: editForm.artist || undefined,
+            defaultKey: editForm.defaultKey || undefined,
+            bpm: editForm.bpm ? parseInt(editForm.bpm, 10) : undefined,
+            lyrics: editForm.lyrics || undefined,
+            chordChart: editForm.chordChart || undefined,
+            youtubeLink: editForm.youtubeLink || undefined,
+            chordsUrl: editForm.chordsUrl || undefined,
+            notes: editForm.notes || undefined,
+          },
+        },
+      });
+      if (result.data?.updateSong?.errors?.length) {
+        setToast({
+          message:
+            result.data.updateSong.errors[0].message || "Could not save song.",
+          color: "danger",
+        });
+        return;
+      }
+      closeEdit();
+      setToast({ message: "Song updated.", color: "success" });
+      await refetch();
+    } catch (e) {
+      console.error(e);
+      setToast({ message: "Failed to update song.", color: "danger" });
+    }
+  };
+
   return (
     <div className={`song-view ${isZenMode ? "song-view--zen" : ""}`}>
       <PageHeader
@@ -46,6 +111,18 @@ export const SongView: React.FC = () => {
         subtitle={song.artist ?? undefined}
         onBack={() => history.goBack()}
         badges={song.bpm ? [{ label: `${song.bpm} BPM`, color: "medium" }] : []}
+        actions={
+          isLoggedIn
+            ? [
+                {
+                  label: "Edit",
+                  icon: createOutline,
+                  onClick: () => setShowEditModal(true),
+                  fill: "outline" as const,
+                },
+              ]
+            : []
+        }
         rightSlot={
           <IonButton
             fill="clear"
@@ -106,6 +183,27 @@ export const SongView: React.FC = () => {
           </div>
         )}
       </div>
+
+      <SongForm
+        isOpen={showEditModal}
+        onClose={closeEdit}
+        onSave={handleSaveEdit}
+        values={editForm}
+        onChange={setEditForm}
+        isSaving={isUpdating}
+        showImporter={showEditImporter}
+        onShowImporter={setShowEditImporter}
+        mode="edit"
+      />
+
+      <IonToast
+        isOpen={!!toast}
+        message={toast?.message}
+        color={toast?.color}
+        duration={3000}
+        position="top"
+        onDidDismiss={() => setToast(null)}
+      />
     </div>
   );
 };
