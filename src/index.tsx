@@ -6,6 +6,7 @@ import reportWebVitals from "./reportWebVitals";
 import { ContextProvider } from "./context/context";
 import { TourProvider } from "./context/TourContext";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { HelmetProvider } from "react-helmet-async";
 import logrocketService from "./services/logrocketService";
 
 /* GraphQL Imports */
@@ -51,17 +52,19 @@ const container = document.getElementById("root");
 const root = createRoot(container!);
 root.render(
   <React.StrictMode>
-    <ApolloProvider client={client}>
-      <GoogleOAuthProvider
-        clientId={process.env.REACT_APP_GOOGLE_OAUTH_CLIENT_ID!}
-      >
-        <ContextProvider>
-          <TourProvider>
-            <App />
-          </TourProvider>
-        </ContextProvider>
-      </GoogleOAuthProvider>
-    </ApolloProvider>
+    <HelmetProvider>
+      <ApolloProvider client={client}>
+        <GoogleOAuthProvider
+          clientId={process.env.REACT_APP_GOOGLE_OAUTH_CLIENT_ID!}
+        >
+          <ContextProvider>
+            <TourProvider>
+              <App />
+            </TourProvider>
+          </ContextProvider>
+        </GoogleOAuthProvider>
+      </ApolloProvider>
+    </HelmetProvider>
   </React.StrictMode>
 );
 

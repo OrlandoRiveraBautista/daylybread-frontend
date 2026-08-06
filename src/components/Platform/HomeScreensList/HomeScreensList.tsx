@@ -213,7 +213,7 @@ export const HomeScreensList: React.FC<HomeScreensListProps> = ({
   };
 
   return (
-    <div className="home-screens-container">
+    <div className="devices-page-container">
       <PageHeader
         title="Home Screens"
         subtitle="Create multiple home screens and share them via link instantly. Design custom layouts for different purposes."

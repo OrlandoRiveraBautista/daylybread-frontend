@@ -12,12 +12,14 @@ import {
   IonChip,
   IonAlert,
 } from "@ionic/react";
-import { 
-  card, 
-  cart, 
-  trash, 
+import {
+  card,
+  cart,
+  trash,
   link as linkIcon,
-  qrCode 
+  qrCode,
+  checkmarkCircle,
+  phonePortraitOutline,
 } from "ionicons/icons";
 import { NFCProducts } from "../NFCProducts";
 import { AddCard } from "../AddCard";
@@ -50,7 +52,6 @@ interface NFCDevicesManagementProps {
 
 export const NFCDevicesManagement: React.FC<NFCDevicesManagementProps> = ({
   nfcDevices = [],
-  onAssignToHomeScreen,
   onUnassign,
   onDelete,
 }) => {
@@ -76,7 +77,7 @@ export const NFCDevicesManagement: React.FC<NFCDevicesManagementProps> = ({
   };
 
   return (
-    <div className="nfc-devices-management-container">
+    <div className="devices-page-container">
       <PageHeader
         title="NFC Devices"
         subtitle="Manage your physical NFC tags and assign them to home screens. Shop for NFC products to expand your collection."
@@ -92,30 +93,41 @@ export const NFCDevicesManagement: React.FC<NFCDevicesManagementProps> = ({
           onAction={() => setShowNFCProducts(true)}
         />
       ) : (
-        <div className="nfc-devices-grid">
+        <div className="devices-grid">
           <AddCard
             label="Add NFC Device"
             onClick={() => setShowNFCProducts(true)}
             color="primary"
-            className="nfc-device-card"
+            size="large"
+            className="device-card"
           />
 
-          {/* Existing NFC Devices */}
           {nfcDevices.map((device) => (
-            <IonCard key={device._id} className="nfc-device-card">
+            <IonCard key={device._id} className="device-card">
               <IonCardHeader>
-                <div className="nfc-device-card-header">
-                  <div className="nfc-device-info">
+                <div className="device-card-header">
+                  <div className="device-info">
                     <IonCardTitle>{device.name}</IonCardTitle>
-                    <div className="nfc-device-meta">
+                    <div className="device-meta">
                       <IonBadge color="success">Active</IonBadge>
                       <IonChip color="secondary">
                         <IonIcon icon={card} />
                         <IonLabel>ID: {device.nfcId.slice(0, 8)}...</IonLabel>
                       </IonChip>
+                      {device.homeScreen ? (
+                        <IonChip color="primary">
+                          <IonIcon icon={phonePortraitOutline} />
+                          <IonLabel>Assigned</IonLabel>
+                        </IonChip>
+                      ) : (
+                        <IonChip color="medium" outline>
+                          <IonIcon icon={phonePortraitOutline} />
+                          <IonLabel>Unassigned</IonLabel>
+                        </IonChip>
+                      )}
                     </div>
                   </div>
-                  <div className="nfc-device-actions">
+                  <div className="device-actions">
                     <IonButton
                       fill="clear"
                       shape="round"
@@ -128,7 +140,7 @@ export const NFCDevicesManagement: React.FC<NFCDevicesManagementProps> = ({
                 </div>
               </IonCardHeader>
               <IonCardContent>
-                <div className="nfc-device-stats">
+                <div className="device-stats">
                   <div className="stat-item">
                     <IonText color="medium">Type</IonText>
                     <strong>{device.deviceType || "NFC Tag"}</strong>
@@ -137,61 +149,43 @@ export const NFCDevicesManagement: React.FC<NFCDevicesManagementProps> = ({
                     <IonText color="medium">Views</IonText>
                     <strong>{device.views}</strong>
                   </div>
+                  <div className="stat-item">
+                    <IonText color="medium">Created</IonText>
+                    <strong>
+                      {device.createdAt
+                        ? new Date(
+                            Number(device.createdAt) || device.createdAt,
+                          ).toLocaleDateString()
+                        : "—"}
+                    </strong>
+                  </div>
                 </div>
 
-                {device.homeScreen ? (
-                  <>
-                    <div
-                      style={{
-                        background: "var(--ion-color-success-tint)",
-                        padding: "12px",
-                        borderRadius: "12px",
-                        marginBottom: "12px",
-                        textAlign: "center",
-                      }}
-                    >
-                      <IonText
-                        color="success"
-                        style={{ fontSize: "13px", fontWeight: "500" }}
-                      >
-                        <IonIcon
-                          icon={linkIcon}
-                          style={{ verticalAlign: "middle", marginRight: "4px" }}
-                        />
-                        Linked to {device.homeScreen.name}
-                      </IonText>
-                    </div>
-
-                    {onUnassign && (
-                      <IonButton
-                        expand="block"
-                        fill="outline"
-                        shape="round"
-                        color="medium"
-                        size="small"
-                        onClick={() => onUnassign(device._id)}
-                      >
-                        Unassign from Home Screen
-                      </IonButton>
-                    )}
-                  </>
-                ) : (
-                  <div
-                    style={{
-                      background: "var(--ion-color-medium-tint)",
-                      padding: "12px",
-                      borderRadius: "12px",
-                      marginBottom: "12px",
-                      textAlign: "center",
-                    }}
-                  >
-                    <IonText
-                      color="medium"
-                      style={{ fontSize: "13px", fontWeight: "500" }}
-                    >
+                <div className="nfc-status-row">
+                  {device.homeScreen ? (
+                    <span className="nfc-status-tag nfc-status-tag--connected">
+                      <IonIcon icon={checkmarkCircle} />
+                      Linked to {device.homeScreen.name}
+                    </span>
+                  ) : (
+                    <span className="nfc-status-tag nfc-status-tag--none">
+                      <IonIcon icon={linkIcon} />
                       Not assigned to any home screen
-                    </IonText>
-                  </div>
+                    </span>
+                  )}
+                </div>
+
+                {device.homeScreen && onUnassign && (
+                  <IonButton
+                    expand="block"
+                    fill="outline"
+                    shape="round"
+                    color="medium"
+                    size="small"
+                    onClick={() => onUnassign(device._id)}
+                  >
+                    Unassign from Home Screen
+                  </IonButton>
                 )}
               </IonCardContent>
             </IonCard>
@@ -199,17 +193,14 @@ export const NFCDevicesManagement: React.FC<NFCDevicesManagementProps> = ({
         </div>
       )}
 
-      {/* NFC Products Modal */}
       <NFCProducts
         isOpen={showNFCProducts}
         onClose={() => setShowNFCProducts(false)}
         onSelectProduct={(productId) => {
           console.log("Selected product:", productId);
-          // TODO: Handle product selection and NFC device registration
         }}
       />
 
-      {/* Delete Confirmation Alert */}
       <IonAlert
         isOpen={showDeleteAlert}
         onDidDismiss={() => {
