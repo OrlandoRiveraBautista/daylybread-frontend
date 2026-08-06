@@ -53,6 +53,17 @@ const BookmarkAssetList: React.FC = () => {
     //upon mount
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Keep the open bookmark in sync after list refetch (e.g. after note save).
+  useEffect(() => {
+    if (!selectedBookmark?._id) return;
+    const fresh = bookmarksResponse?.getMyBookmarks?.results?.find(
+      (bookmark) => bookmark._id === selectedBookmark._id
+    );
+    if (fresh) {
+      setSelectedBookmark(fresh as Bookmark);
+    }
+  }, [bookmarksResponse]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const onDismiss = () => {
     setSelectedBookmark(undefined);
     setIsOpen(false);

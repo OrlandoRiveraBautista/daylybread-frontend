@@ -155,8 +155,16 @@ async function fetchBiblesForLanguage(apiUrl, languageCode) {
     const data = await gql(apiUrl, query, {
       options: { languageCode, page },
     });
-    const { data: bibles, meta } = data.getListOFBibles;
-    lastPage = meta.pagination.lastPage;
+    const payload = data.getListOFBibles;
+    // Guard against FieldError-shaped / unexpected responses
+    if (!payload?.data || !payload?.meta?.pagination) {
+      throw new Error(
+        `Unexpected getListOFBibles response on page ${page} for ${languageCode}`
+      );
+    }
+
+    const { data: bibles, meta } = payload;
+    lastPage = meta.pagination.lastPage || page;
 
     for (const bible of bibles) {
       if (bible.abbr && bible.languageId) {
@@ -168,6 +176,10 @@ async function fetchBiblesForLanguage(apiUrl, languageCode) {
       }
     }
     page++;
+    // Small pause so sitemap generation doesn't stampede the API / Bible Brain.
+    if (page <= lastPage) {
+      await new Promise((r) => setTimeout(r, 150));
+    }
   } while (page <= lastPage);
 
   return results;
