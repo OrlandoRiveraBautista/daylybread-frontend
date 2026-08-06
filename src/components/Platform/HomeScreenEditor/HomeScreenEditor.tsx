@@ -3,16 +3,10 @@ import {
   IonButton,
   IonIcon,
   IonModal,
-  IonAccordion,
-  IonAccordionGroup,
-  IonItem,
-  IonLabel,
-  IonText,
   IonAlert,
   IonContent,
   IonFooter,
   IonToolbar,
-  IonInput,
 } from "@ionic/react";
 import {
   add,
@@ -24,13 +18,13 @@ import { IPhoneHomeScreen } from "../../NFC/iPhoneHomeScreen";
 import { TileLibrary } from "./TileLibrary";
 import { TileConfigModal } from "./TileConfigModal";
 import { PlatformModalHeader } from "../PlatformModalHeader";
+import { PlatformForm, PlatformFormInput } from "../PlatformFormInput";
 import {
   TileConfig,
   generateTileId,
   getDefaultTiles,
   TilePreset,
 } from "../../NFC/iPhoneHomeScreen/types";
-import "../../../pages/Platform/Platform/Platform.scss";
 import "./HomeScreenEditor.scss";
 
 interface HomeScreenEditorProps {
@@ -241,76 +235,76 @@ export const HomeScreenEditor: React.FC<HomeScreenEditorProps> = ({
           showSaveButton={true}
         />
 
-        {/* Collapsible Controls Section */}
-        <IonAccordionGroup className="editor-controls-wrapper">
-          <IonAccordion value="controls">
-            <IonItem slot="header">
-              <IonIcon icon={create} slot="start" />
-              <IonLabel>Edit Controls</IonLabel>
-            </IonItem>
-
-            <div className="controls-content" slot="content">
+        {/* Two-column layout: controls on left, preview on right (desktop) */}
+        <IonContent className="editor-body-content">
+          <div className="editor-body">
+            {/* Left: Controls Panel */}
+            <div className="editor-controls-panel">
               {/* Name Input */}
-              <div className="platform-form-container" style={{ padding: "16px" }}>
-                <div className="platform-form">
-                  <IonItem>
-                    <IonLabel position="stacked">Home Screen Name</IonLabel>
-                    <IonInput
-                      value={name}
-                      placeholder="Enter home screen name"
-                      onIonInput={(e) => {
-                        setName(e.detail.value || "");
-                        setHasChanges(true);
-                      }}
-                    />
-                  </IonItem>
-                </div>
+              <div className="editor-section">
+                <PlatformForm>
+                  <PlatformFormInput
+                    label="Home Screen Name"
+                    value={name}
+                    placeholder="Enter home screen name"
+                    onIonInput={(e) => {
+                      setName(e.detail.value || "");
+                      setHasChanges(true);
+                    }}
+                  />
+                </PlatformForm>
               </div>
 
               {/* Toolbar */}
-              <div className="editor-toolbar">
-                <IonButton
-                  fill={isEditMode ? "solid" : "outline"}
-                  size="small"
-                  shape="round"
-                  onClick={() => setIsEditMode(!isEditMode)}
-                  color="primary"
-                >
-                  <IonIcon slot="start" icon={create} />
-                  {isEditMode ? "Exit Edit" : "Edit"}
-                </IonButton>
+              <div className="editor-section">
+                <p className="editor-section-label">Edit Buttons</p>
+                <p className="editor-section-hint">
+                  {isEditMode
+                    ? "Drag tiles to reorder. Tap a tile to edit it."
+                    : "Click on the buttons of the screen to edit them."}
+                </p>
+                <div className="editor-toolbar">
+                  <IonButton
+                    fill={isEditMode ? "solid" : "outline"}
+                    size="small"
+                    shape="round"
+                    onClick={() => setIsEditMode(!isEditMode)}
+                    color="primary"
+                  >
+                    <IonIcon slot="start" icon={create} />
+                    {isEditMode ? "Exit Edit" : "Edit"}
+                  </IonButton>
 
-                <IonButton
-                  fill="outline"
-                  size="small"
-                  shape="round"
-                  color="primary"
-                  onClick={() => setShowTileLibrary(true)}
-                  disabled={!isEditMode}
-                >
-                  <IonIcon slot="start" icon={add} />
-                  Add Tile
-                </IonButton>
+                  <IonButton
+                    fill="outline"
+                    size="small"
+                    shape="round"
+                    color="primary"
+                    onClick={() => setShowTileLibrary(true)}
+                    disabled={!isEditMode}
+                  >
+                    <IonIcon slot="start" icon={add} />
+                    Add title
+                  </IonButton>
 
-                <IonButton
-                  fill="outline"
-                  size="small"
-                  shape="round"
-                  color="primary"
-                  onClick={handleReset}
-                  disabled={!isEditMode}
-                >
-                  <IonIcon slot="start" icon={refresh} />
-                  Reset
-                </IonButton>
+                  <IonButton
+                    fill="clear"
+                    size="small"
+                    shape="round"
+                    color="medium"
+                    onClick={handleCancel}
+                  >
+                    Cancel
+                  </IonButton>
+                </div>
               </div>
 
               {/* Wallpaper Picker */}
-              <div className="wallpaper-picker">
-                <IonLabel className="picker-label">
+              <div className="editor-section wallpaper-picker">
+                <p className="editor-section-label">
                   <IonIcon icon={colorPalette} />
                   Background
-                </IonLabel>
+                </p>
                 <div className="wallpaper-options">
                   {wallpaperPresets.map((wp, index) => (
                     <button
@@ -326,42 +320,67 @@ export const HomeScreenEditor: React.FC<HomeScreenEditorProps> = ({
                   ))}
                 </div>
               </div>
-            </div>
-          </IonAccordion>
-        </IonAccordionGroup>
 
-        {/* Phone Preview */}
-        <IonContent className="phone-preview-content">
-          <div className="phone-preview-container">
-            <div className="phone-frame">
-              <div className="phone-notch" />
-              <IPhoneHomeScreen
-                tiles={tiles}
-                wallpaper={wallpaper}
-                title={title}
-                isEditMode={isEditMode}
-                onTileDelete={handleDeleteTile}
-                onTileEdit={handleEditTile}
-                onTilesChange={handleTilesChange}
-                showStatusBar={true}
-                showDock={true}
-              />
-              <div className="phone-home-indicator" />
+              {/* Reset */}
+              <div className="editor-section">
+                <IonButton
+                  fill="outline"
+                  size="small"
+                  shape="round"
+                  color="medium"
+                  onClick={handleReset}
+                >
+                  <IonIcon slot="start" icon={refresh} />
+                  Reset to default
+                </IonButton>
+              </div>
+            </div>
+
+            {/* Right: Phone Preview */}
+            <div className="editor-preview-panel">
+              <div className="phone-frame-scale">
+                <div className="phone-frame">
+                  <div className="phone-notch" />
+                  <IPhoneHomeScreen
+                    tiles={tiles}
+                    wallpaper={wallpaper}
+                    title={title}
+                    isEditMode={isEditMode}
+                    onTileClick={handleEditTile}
+                    onTileDelete={handleDeleteTile}
+                    onTileEdit={handleEditTile}
+                    onTilesChange={handleTilesChange}
+                    showStatusBar={true}
+                    showDock={true}
+                  />
+                  <div className="phone-home-indicator" />
+                </div>
+              </div>
             </div>
           </div>
         </IonContent>
 
-        {/* Instructions Footer */}
+        {/* Save Footer */}
         <IonFooter className="editor-footer">
           <IonToolbar>
-            <div className="editor-instructions">
-              <IonText color="medium">
-                <p>
-                  {isEditMode
-                    ? "Drag tiles to reorder. Tap a tile to edit its settings."
-                    : "Tap 'Edit' to rearrange tiles and customize your home screen."}
-                </p>
-              </IonText>
+            <div className="editor-footer-actions">
+              <IonButton
+                fill="solid"
+                shape="round"
+                color="primary"
+                onClick={handleSave}
+                disabled={isSaving || !hasChanges}
+              >
+                {isSaving ? "Saving…" : "Save"}
+              </IonButton>
+              <IonButton
+                fill="clear"
+                shape="round"
+                color="medium"
+                onClick={handleCancel}
+              >
+                Cancel
+              </IonButton>
             </div>
           </IonToolbar>
         </IonFooter>

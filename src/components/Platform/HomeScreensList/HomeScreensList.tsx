@@ -13,16 +13,18 @@ import {
   IonAlert,
   IonSelect,
   IonSelectOption,
+  IonToast,
 } from "@ionic/react";
 import {
   create,
   qrCode,
   card,
   link,
-  shareSocial,
+  openOutline,
   cart,
   trash,
   close,
+  checkmarkCircle,
 } from "ionicons/icons";
 import { HomeScreenEditor } from "../HomeScreenEditor";
 import { AddCard } from "../AddCard";
@@ -30,6 +32,32 @@ import { TileConfig } from "../../NFC/iPhoneHomeScreen/types";
 import EmptyState from "../../EmptyState/EmptyState";
 import { PageHeader } from "../PageHeader";
 import "./HomeScreensList.scss";
+
+const copyTextToClipboard = async (text: string): Promise<boolean> => {
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch {
+    // Fall through to legacy copy
+  }
+
+  try {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    document.body.appendChild(textarea);
+    textarea.select();
+    const copied = document.execCommand("copy");
+    document.body.removeChild(textarea);
+    return copied;
+  } catch {
+    return false;
+  }
+};
 
 export interface HomeScreen {
   _id: string;
@@ -97,6 +125,10 @@ export const HomeScreensList: React.FC<HomeScreensListProps> = ({
   const [editingHomeScreen, setEditingHomeScreen] = useState<HomeScreen | null>(null);
   const [homeScreenToDelete, setHomeScreenToDelete] = useState<HomeScreen | null>(null);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+  const [toast, setToast] = useState<{
+    message: string;
+    color?: string;
+  } | null>(null);
 
   // Sync editingHomeScreen with homeScreens prop when it updates (after save)
   useEffect(() => {
@@ -286,47 +318,20 @@ export const HomeScreensList: React.FC<HomeScreensListProps> = ({
                   </div>
                 </div>
 
-                {homeScreen.nfcIds.length === 0 ? (
-                  <div
-                    style={{
-                      background: "var(--ion-color-light)",
-                      padding: "12px",
-                      borderRadius: "12px",
-                      marginBottom: "12px",
-                      textAlign: "center",
-                    }}
-                  >
-                    <IonText color="medium" style={{ fontSize: "13px" }}>
-                      <IonIcon
-                        icon={card}
-                        style={{ verticalAlign: "middle", marginRight: "4px" }}
-                      />
+                <div className="nfc-status-row">
+                  {homeScreen.nfcIds.length === 0 ? (
+                    <span className="nfc-status-tag nfc-status-tag--none">
+                      <IonIcon icon={card} />
                       No NFC devices assigned
-                    </IonText>
-                  </div>
-                ) : (
-                  <div
-                    style={{
-                      background: "var(--ion-color-success-tint)",
-                      padding: "12px",
-                      borderRadius: "12px",
-                      marginBottom: "12px",
-                      textAlign: "center",
-                    }}
-                  >
-                    <IonText
-                      color="success"
-                      style={{ fontSize: "13px", fontWeight: "500" }}
-                    >
-                      <IonIcon
-                        icon={card}
-                        style={{ verticalAlign: "middle", marginRight: "4px" }}
-                      />
+                    </span>
+                  ) : (
+                    <span className="nfc-status-tag nfc-status-tag--connected">
+                      <IonIcon icon={checkmarkCircle} />
                       {homeScreen.nfcIds.length} NFC device
                       {homeScreen.nfcIds.length !== 1 ? "s" : ""} connected
-                    </IonText>
-                  </div>
-                )}
+                    </span>
+                  )}
+                </div>
 
                 <div
                   style={{ display: "flex", gap: "8px", marginBottom: "8px" }}
@@ -340,19 +345,29 @@ export const HomeScreensList: React.FC<HomeScreensListProps> = ({
                     target="_blank"
                     style={{ flex: 1 }}
                   >
-                    <IonIcon slot="start" icon={shareSocial} />
+                    <IonIcon slot="start" icon={openOutline} />
                     Open
                   </IonButton>
                   <IonButton
                     fill="outline"
                     shape="round"
                     color="primary"
-                    onClick={() => {
-                      navigator.clipboard.writeText(getHomeScreenUrl(homeScreen));
-                      // TODO: Show toast notification
+                    type="button"
+                    onClick={async (e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      const url = getHomeScreenUrl(homeScreen);
+                      const copied = await copyTextToClipboard(url);
+                      setToast(
+                        copied
+                          ? { message: "Link copied to clipboard", color: "success" }
+                          : { message: "Could not copy link", color: "danger" },
+                      );
                     }}
+                    title="Copy link"
                   >
-                    <IonIcon slot="icon-only" icon={link} />
+                    <IonIcon slot="start" icon={link} />
+                    Copy link
                   </IonButton>
                 </div>
 
@@ -504,6 +519,15 @@ export const HomeScreensList: React.FC<HomeScreensListProps> = ({
             handler: handleConfirmDelete,
           },
         ]}
+      />
+
+      <IonToast
+        isOpen={!!toast}
+        message={toast?.message}
+        color={toast?.color}
+        duration={2000}
+        position="bottom"
+        onDidDismiss={() => setToast(null)}
       />
     </div>
   );
