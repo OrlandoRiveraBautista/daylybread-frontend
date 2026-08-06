@@ -1,16 +1,12 @@
 import React, { useState } from "react";
 import {
-  IonButton,
   IonContent,
   IonGrid,
-  IonRow,
-  IonCol,
   IonPage,
-  IonText,
   IonRefresher,
   IonRefresherContent,
 } from "@ionic/react";
-import { useHistory, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 /* Components */
 import SEOHead from "../components/SEO/SEOHead";
@@ -18,6 +14,7 @@ import QuickActions from "../components/Home/QuickActions";
 import AppFeatures from "../components/Home/AppFeatures";
 import MoodCheckIn from "../components/Home/MoodCheckIn";
 import PersonalizedDashboard from "../components/Home/PersonalizedDashboard";
+import VerseOfTheDay from "../components/Home/VerseOfTheDay";
 
 /* Context */
 import { useAppContext } from "../context/context";
@@ -29,21 +26,9 @@ import { generateMoodCheckInSEO } from "../hooks/useSEO";
 import "./Tab1.scss";
 
 const Tab1: React.FC = () => {
-  const history = useHistory();
   const location = useLocation();
-  const { chosenBible, chosenBook, chosenChapterNumber, userInfo } =
-    useAppContext();
+  const { userInfo } = useAppContext();
   const [refreshKey, setRefreshKey] = useState(0);
-
-  const handleQuickRead = () => {
-    if (chosenBible && chosenBook && chosenChapterNumber) {
-      history.push(
-        `/read/${chosenBible.languageId}/${chosenBible.abbr}/${chosenBook.bookId}/${chosenChapterNumber}`
-      );
-    } else {
-      history.push("/read");
-    }
-  };
 
   const handleRefresh = (event: CustomEvent) => {
     // Simulate refresh delay
@@ -151,29 +136,8 @@ const Tab1: React.FC = () => {
           {/* App Features */}
           <AppFeatures />
 
-          {/* Call to Action */}
-          <IonRow>
-            <IonCol size="12">
-              <div className="cta-section">
-                <IonText>
-                  <h3>Ready to dive deeper?</h3>
-                  <p>
-                    Explore the Bible with our advanced reading tools and AI
-                    assistance.
-                  </p>
-                </IonText>
-                <IonButton
-                  expand="block"
-                  shape="round"
-                  color="primary"
-                  size="large"
-                  onClick={handleQuickRead}
-                >
-                  Start Reading
-                </IonButton>
-              </div>
-            </IonCol>
-          </IonRow>
+          {/* Verse of the Day */}
+          <VerseOfTheDay />
         </IonGrid>
       </IonContent>
     </IonPage>

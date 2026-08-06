@@ -1,15 +1,14 @@
 import {
   IonRow,
   IonCol,
-  IonText,
   IonCard,
   IonCardContent,
-  IonCardTitle,
   IonChip,
   IonTextarea,
   IonButton,
   IonSpinner,
   IonIcon,
+  IonText,
 } from "@ionic/react";
 import { useState, useRef, useEffect } from "react";
 import Markdown from "react-markdown";
@@ -75,7 +74,8 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChat> = ({
 
   useEffect(() => {
     scrollToBottom();
-    if (messages.length > 0 && messages[messages.length - 1].sender !== "You") {
+    const last = messages[messages.length - 1];
+    if (messages.length > 0 && last.sender !== "You" && last.message) {
       setLoadingChatResponse(false);
     }
   }, [messages]);
@@ -128,42 +128,47 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChat> = ({
     };
   }, [isInputFocused]);
 
+  const hasMessages = messages.length > 0;
+  const canSend = !!value?.trim() && !loadingChatResponse;
+
   return (
     <>
-      {/* Chat header */}
-      <IonRow className="breadcrumbs-header">
-        <IonCol>
-          <IonText className="product-sans">BreadCrumbs Chat</IonText>
-        </IonCol>
-      </IonRow>
-
       {/* Messages container */}
       <div className="messages-container">
-        {messages.length
-          ? messages.map(({ message, sender }, index) => (
-              <IonRow
-                className={
-                  sender === "You"
-                    ? "right-align-self"
-                    : `chat-respond ${
-                        animatedMessages.has(index) ? "message-animated" : ""
-                      }`
-                }
-                key={index}
+        {hasMessages ? (
+          messages.map(({ message, sender }, index) => (
+            <IonRow
+              className={
+                sender === "You"
+                  ? "right-align-self"
+                  : `chat-respond ${
+                      animatedMessages.has(index) ? "message-animated" : ""
+                    }`
+              }
+              key={index}
+            >
+              <IonCard
+                mode="md"
+                className={sender === "You" ? "right-align-text" : ""}
               >
-                <IonCard
-                  mode="md"
-                  className={sender === "You" ? "right-align-text" : ""}
-                >
-                  <IonCardContent>
-                    <IonCardTitle>{sender}</IonCardTitle>
-                    <Markdown className="chat-message">{message}</Markdown>
-                  </IonCardContent>
-                </IonCard>
-              </IonRow>
-            ))
-          : null}
-        {/* Div to move the panel down when a new message is created */}
+                <IonCardContent>
+                  {sender !== "You" && (
+                    <IonText className="chat-sender-label">{sender}</IonText>
+                  )}
+                  <Markdown className="chat-message">{message}</Markdown>
+                </IonCardContent>
+              </IonCard>
+            </IonRow>
+          ))
+        ) : (
+          <div className="chat-empty-state">
+            <div className="chat-empty-icon">✦</div>
+            <IonText className="chat-empty-title">BreadCrumbs Chat</IonText>
+            <IonText className="chat-empty-subtitle">
+              Ask me anything — theology, history, prayer, life, you name it.
+            </IonText>
+          </div>
+        )}
         <div ref={messagesContainer} />
       </div>
 
@@ -172,17 +177,15 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChat> = ({
         {useChosenTextVerbage ? (
           <div className="breadcrumbs-suggestions-row">
             <div className="breadcrumbs-suggestions-col">
-              {Object.entries(breadCrumbsSuggestions).map(([key, value]) => {
-                return (
-                  <IonChip
-                    onClick={() => handleSubmit(value)}
-                    color="secondary"
-                    key={key}
-                  >
-                    {key}
-                  </IonChip>
-                );
-              })}
+              {Object.entries(breadCrumbsSuggestions).map(([key, value]) => (
+                <IonChip
+                  onClick={() => handleSubmit(value)}
+                  color="secondary"
+                  key={key}
+                >
+                  {key}
+                </IonChip>
+              ))}
             </div>
           </div>
         ) : null}
@@ -192,7 +195,6 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChat> = ({
           ref={inputRowRef}
           className={`chat-input-row ${isInputFocused ? "focused" : ""}`}
         >
-          {/* Text area input container */}
           <IonCol>
             <IonTextarea
               labelPlacement="floating"
@@ -206,13 +208,12 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChat> = ({
               onIonBlur={handleInputBlur}
             ></IonTextarea>
           </IonCol>
-          {/* Submit/Send button container */}
           <IonCol size="auto" className="textarea-send-button-container">
             <IonButton
               fill="clear"
               className="textarea-send-button"
               color="dark"
-              onClick={() => (value ? handleSubmit(value) : null)}
+              onClick={() => (canSend ? handleSubmit(value!) : null)}
               disabled={loadingChatResponse}
             >
               {loadingChatResponse ? (
