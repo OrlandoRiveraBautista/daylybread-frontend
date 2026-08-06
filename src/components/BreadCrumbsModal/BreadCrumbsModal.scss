@@ -64,8 +64,12 @@
       .quick-action-chip {
         text-transform: capitalize;
         margin: 0;
-        height: 28px;
-        font-size: 12px;
+        height: 30px;
+        font-size: 13px;
+        font-weight: 600;
+        --padding-start: 12px;
+        --padding-end: 12px;
+        letter-spacing: 0.1px;
       }
     }
 

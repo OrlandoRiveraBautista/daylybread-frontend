@@ -3,7 +3,6 @@ import {
   IonRow,
   IonCol,
   IonCard,
-  IonCardHeader,
   IonCardContent,
   IonCardTitle,
   IonCardSubtitle,
@@ -109,26 +108,24 @@ export const BooksPicker: React.FC = () => {
             {renderSkeleton()}
           </>
         ) : (
-          // looping through options
           chosenBibleBooks.map((book, index) => (
             <React.Fragment key={index}>
-              {/* options rendering */}
               <IonCol size="6" size-md="4" size-lg="4" key={book.bookId}>
                 <IonCard
                   id={`book-${book.bookId}`}
                   button
-                  className={`outlined-card ${
+                  className={`outlined-card book-card ${
                     book.bookId === chosenBook?.bookId ? "selected" : ""
                   }`}
                   onClick={() => handleSettingBook(book)}
                 >
-                  <IonCardContent>
+                  <IonCardContent className="book-card-content">
                     <div className="book-number">{index + 1}</div>
+                    <div className="book-info">
+                      <IonCardTitle className="book-title">{book.name}</IonCardTitle>
+                      <IonCardSubtitle className="book-group">{book.bookGroup}</IonCardSubtitle>
+                    </div>
                   </IonCardContent>
-                  <IonCardHeader>
-                    <IonCardTitle>{book.name}</IonCardTitle>
-                    <IonCardSubtitle>{book.bookGroup}</IonCardSubtitle>
-                  </IonCardHeader>
                 </IonCard>
               </IonCol>
             </React.Fragment>
@@ -181,31 +178,19 @@ export const ChapterPicker: React.FC = () => {
   };
 
   return (
-    <div className="nav-selection">
-      <IonRow>
-        {!chosenBook
-          ? renderSkeleton()
-          : // looping through options
-            chosenBook.chapters?.map((chapter, index) => (
-              <React.Fragment key={index}>
-                {/* options rendering */}
-                <IonCol size="6" size-md="4" size-lg="4" key={chapter}>
-                  <IonCard
-                    id={`chapter-${chapter}`}
-                    button
-                    className={`outlined-card ${
-                      chosenChapterNumber === chapter ? "selected" : ""
-                    }`}
-                    onClick={() => handleSettingChapter(chapter)}
-                  >
-                    <IonCardContent>
-                      <div className="book-number">{chapter}</div>
-                    </IonCardContent>
-                  </IonCard>
-                </IonCol>
-              </React.Fragment>
-            ))}
-      </IonRow>
+    <div className="nav-selection chapter-grid">
+      {!chosenBook
+        ? renderSkeleton()
+        : chosenBook.chapters?.map((chapter, index) => (
+            <button
+              key={index}
+              id={`chapter-${chapter}`}
+              className={`chapter-cell ${chosenChapterNumber === chapter ? "chapter-cell--selected" : ""}`}
+              onClick={() => handleSettingChapter(chapter)}
+            >
+              {chapter}
+            </button>
+          ))}
     </div>
   );
 };

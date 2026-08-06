@@ -10,6 +10,9 @@ import { IonCol } from "@ionic/react";
 import BreadCrumbsModal from "../../BreadCrumbsModal/BreadCrumbsModal";
 import Skeleton from "../../Loading/Skeleton";
 
+/* Styles */
+import "./TextViewer.scss";
+
 /* Utils */
 import { getVerseClass } from "../../../utils/support";
 
@@ -86,14 +89,8 @@ const TextViewer = forwardRef<TextViewerRefType, ITextViewer>(
       }
     }, [openSelectedVersesModal]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    const handleMouseDown = (event: string) => {
-      // get the desired html element
-      const span = document.getElementById(event);
-      // get the verse numbers
-      const verseNumber = span?.innerText.split(":")[0];
-
-      // if no text exit function
-      if (!verseNumber) return;
+    const handleMouseDown = (event: string, verseStart: number) => {
+      const verseNumber = verseStart.toString();
 
       const verseObj = chosenChapterVerses?.current![Number(verseNumber) - 1];
 
@@ -165,7 +162,8 @@ const TextViewer = forwardRef<TextViewerRefType, ITextViewer>(
                         chosenBible?.abbr! +
                           chosenBook?.bookId! +
                           chosenChapterNumber +
-                          verse.verseStart?.toString()
+                          verse.verseStart?.toString(),
+                        verse.verseStart!
                       )
                     }
                     id={
@@ -189,7 +187,7 @@ const TextViewer = forwardRef<TextViewerRefType, ITextViewer>(
                     )}
                     `}
                   >
-                    <b>{verse.verseStart}:</b> {verse.verseText}
+                    <b>{verse.verseStart}</b>{verse.verseText}
                   </span>
                 ))}
               </>

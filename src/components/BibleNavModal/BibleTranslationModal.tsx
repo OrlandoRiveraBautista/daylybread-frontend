@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
-  IonButton,
   IonContent,
   IonHeader,
   IonIcon,
@@ -19,7 +18,7 @@ import Skeleton from "../Loading/Skeleton";
 import EmptyState from "../EmptyState/EmptyState";
 
 /* Icons */
-import { text, play, languageOutline, bookOutline } from "ionicons/icons";
+import { play, languageOutline, bookOutline, checkmarkCircle, caretDownOutline } from "ionicons/icons";
 
 /* Context */
 import { useAppContext } from "../../context/context";
@@ -352,7 +351,7 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
     }
 
     return (
-      <IonList className="tour-step-5">
+      <IonList className="tour-step-5 bible-translation-list">
         {/* Start from Beginning Toggle */}
         <IonItem className="start-beginning-toggle">
           <IonIcon icon={play} slot="start" />
@@ -367,21 +366,39 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
           />
         </IonItem>
 
-        {filteredBibles.map((bible, index) => (
-          <IonItem button key={index} onClick={() => handleSettingBible(bible)}>
-            <IonLabel>
-              <h2>{bible.vname ? bible.vname : bible.name}</h2>
-              <p>
-                <IonIcon icon={text} />
-                {bible.filesets["dbp-prod"].some((fileset: any) =>
-                  fileset.type.startsWith("audio")
-                ) ? (
-                  <IonIcon icon={play} />
-                ) : null}
-              </p>
-            </IonLabel>
-          </IonItem>
-        ))}
+        {filteredBibles.map((bible, index) => {
+          const hasAudio = bible.filesets["dbp-prod"].some((fileset: any) =>
+            fileset.type.startsWith("audio")
+          );
+          const isSelected = chosenBible?.abbr === bible.abbr;
+          return (
+            <IonItem
+              button
+              key={index}
+              onClick={() => handleSettingBible(bible)}
+              className={`bible-list-item ${isSelected ? "bible-list-item--selected" : ""}`}
+            >
+              <IonLabel>
+                <div className="bible-item-row">
+                  <span className="bible-item-name">
+                    {bible.vname ? bible.vname : bible.name}
+                  </span>
+                  <div className="bible-item-tags">
+                    <span className="bible-abbr-tag">{bible.abbr?.slice(3)}</span>
+                    {hasAudio && (
+                      <span className="bible-audio-tag">
+                        <IonIcon icon={play} /> Audio
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </IonLabel>
+              {isSelected && (
+                <IonIcon icon={checkmarkCircle} color="primary" slot="end" className="bible-selected-check" />
+              )}
+            </IonItem>
+          );
+        })}
       </IonList>
     );
   };
@@ -394,21 +411,21 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
       onDidDismiss={onDismiss}
       ref={modal}
     >
-      <IonHeader className="ion-padding">
-        <IonTitle className="ion-text-center">
-          {biblesData ? biblesData?.getListOFBibles.data.length : null} Bibles
+      <IonHeader className="translation-modal-header ion-no-border">
+        <IonTitle className="translation-modal-title">
+          {biblesData
+            ? `${biblesData.getListOFBibles.data.length} Translations`
+            : "Pick a Translation"}
         </IonTitle>
-        <IonButton
-          shape="round"
-          fill="clear"
-          color="dark"
-          size="large"
+        <button
           id="select-language"
-          className="flat full-width tour-step-2"
+          className="language-selector-chip tour-step-2"
           onClick={() => setTimeout(nextStep, 100)}
         >
-          Language: {chosenLanguage ? chosenLanguage.name : null}
-        </IonButton>
+          <IonIcon icon={languageOutline} />
+          <span>{chosenLanguage ? chosenLanguage.name : "Select Language"}</span>
+          <IonIcon icon={caretDownOutline} className="language-chip-chevron" />
+        </button>
       </IonHeader>
       <IonContent className="ion-padding">{renderModalOptions()}</IonContent>
 

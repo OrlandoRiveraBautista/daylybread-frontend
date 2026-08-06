@@ -69,38 +69,41 @@ const Tab2: React.FC = () => {
       {/* Enhanced SEO Head */}
       <SEOHead {...seoConfig} />
       {/* Header */}
-      <IonHeader className="ion-no-border padding-left-right">
+      <IonHeader className="ion-no-border padding-left-right tab2-header">
         {/* Toolbar */}
         <IonToolbar>
           {/* Header Title Button */}
           {chosenBible ? (
             <>
               <IonButton
-                expand="full"
                 fill="clear"
                 color="dark"
-                className="header-button"
+                className="header-nav-pill"
                 onClick={() => setOpenBibleNavModal(!openBibleNavModal)}
                 id="open-bible-nav-modal"
                 disabled={chosenBible ? false : true}
               >
                 {chosenBook ? (
-                  <>
-                    {chosenBook.name}{" "}
-                    <IonIcon icon={caretDownOutline}></IonIcon>
-                  </>
+                  <span className="nav-pill-inner">
+                    <span className="nav-pill-text">
+                      {chosenBook.name}
+                      {chosenChapterNumber ? (
+                        <span className="nav-pill-chapter"> {chosenChapterNumber}</span>
+                      ) : null}
+                    </span>
+                    <IonIcon icon={caretDownOutline} className="nav-pill-chevron" />
+                  </span>
                 ) : null}
               </IonButton>
               {/* Header secondary buttons */}
-              <IonButtons slot="end">
+              <IonButtons slot="end" className="header-end-buttons">
                 <IonButton
                   shape="round"
                   fill="clear"
                   color="dark"
-                  size="large"
                   onClick={() => setOpenModal(!openModal)}
                   id="open-modal"
-                  className="translation-button"
+                  className="translation-chip"
                 >
                   {chosenBible
                     ? displayBibleAbbr(chosenBible.abbr!)

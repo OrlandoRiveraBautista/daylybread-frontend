@@ -86,60 +86,56 @@ const BibleSearchLanguages: React.FC = () => {
     });
   };
 
-  /**
-   * Function to render loading skeleton animation
-   * @augments -
-   * @returns JSX.Element[]
-   */
-  const renderSkeleton = () => {
-    const items = [];
-    for (let i = 0; i < 10; i++) {
-      items.push(
-        <Skeleton height="66px" width="100%" shape="square" key={i} />
-      );
-    }
+  const renderSkeleton = () =>
+    Array.from({ length: 8 }).map((_, i) => (
+      <div className="language-skeleton-row" key={i}>
+        <div className="language-skeleton-left">
+          <Skeleton height="15px" width="120px" shape="square" />
+          <Skeleton height="11px" width="72px" shape="square" />
+        </div>
+        <Skeleton height="26px" width="26px" shape="round" />
+      </div>
+    ));
 
-    return items;
-  };
-
-  /**
-   * Function to render content based on state
-   * @returns JSX.Element
-   */
   const renderContent = () => {
-    // Loading state
     if (loading) {
-      return <div className="flex-column gap-4">{renderSkeleton()}</div>;
+      return <>{renderSkeleton()}</>;
     }
 
-    // No data yet (initial state)
     if (!data) {
       return (
         <EmptyState
+          card={false}
           icon={globeOutline}
           title="Search for a Language"
-          description="Type in the search bar above to find Bible translations in your preferred language"
+          description="Type above to find Bible translations in your language"
+          iconSize="48px"
         />
       );
     }
 
-    // Data exists but no results
     if (data.searchListOfLanguages.data.length === 0) {
       return (
         <EmptyState
+          card={false}
           icon={searchOutline}
           title="No Languages Found"
-          description="Try searching with a different term or check your spelling"
+          description="Try a different search term"
+          iconSize="48px"
         />
       );
     }
 
-    // Data with results
     return data.searchListOfLanguages.data.map((lang, index) => (
-      <IonItem button key={index} onClick={() => handleSettingLanguage(lang)}>
+      <IonItem
+        button
+        key={index}
+        onClick={() => handleSettingLanguage(lang)}
+        className="language-list-item"
+      >
         <IonLabel>
           <h2>{lang.name}</h2>
-          <p>Bibles: {lang.bibles}</p>
+          <p>{lang.bibles} {lang.bibles === 1 ? "translation" : "translations"}</p>
         </IonLabel>
       </IonItem>
     ));
@@ -152,18 +148,19 @@ const BibleSearchLanguages: React.FC = () => {
       trigger="select-language"
       ref={modal}
     >
-      <IonHeader className="ion-padding">
-        <div className="header-container">
-          <IonTitle className="ion-text-center">Languages</IonTitle>
-          <IonSearchbar
-            placeholder="Search a language"
-            onIonInput={handleSearch}
-            className="flat tour-step-3"
-          ></IonSearchbar>
-        </div>
+      <IonHeader className="language-modal-header ion-no-border">
+        <IonTitle className="language-modal-title">Languages</IonTitle>
+        <IonSearchbar
+          placeholder="Search a language..."
+          onIonInput={handleSearch}
+          className="language-searchbar tour-step-3"
+          debounce={200}
+        />
       </IonHeader>
-      <IonContent className="ion-padding tour-step-4">
-        {renderContent()}
+      <IonContent className="tour-step-4">
+        <div className="language-list-container">
+          {renderContent()}
+        </div>
       </IonContent>
     </IonModal>
   );
