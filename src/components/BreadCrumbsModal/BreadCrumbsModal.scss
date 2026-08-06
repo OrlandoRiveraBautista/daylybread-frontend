@@ -180,11 +180,60 @@
 
     .chat-message {
       white-space: pre-wrap;
-      /* This section here allows the user to select the text in the chat */
       -webkit-user-select: text;
       -moz-user-select: text;
       -ms-user-select: text;
       user-select: text;
+    }
+
+    .chat-sender-label {
+      display: block;
+      font-family: "Product Sans";
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      color: var(--ion-outline-color);
+      margin-bottom: 4px;
+    }
+  }
+
+  .chat-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 48px 24px 24px;
+    text-align: center;
+
+    .chat-empty-icon {
+      font-size: 32px;
+      line-height: 1;
+      background: linear-gradient(
+        135deg,
+        var(--ion-color-primary),
+        var(--ion-color-secondary)
+      );
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .chat-empty-title {
+      display: block;
+      font-family: "Product Sans";
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--ion-text-color);
+    }
+
+    .chat-empty-subtitle {
+      display: block;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--ion-color-medium);
+      max-width: 260px;
     }
   }
 
@@ -267,12 +316,14 @@
       overflow-x: auto;
       height: fit-content;
       min-height: 40px;
+      padding-top: 4px;
 
       .breadcrumbs-suggestions-col {
         display: flex;
         flex-wrap: nowrap;
         width: max-content;
         height: fit-content;
+        gap: 4px;
       }
     }
     .chat-input-row {
