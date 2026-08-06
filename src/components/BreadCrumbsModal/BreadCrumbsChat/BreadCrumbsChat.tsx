@@ -1,7 +1,6 @@
 import {
   IonRow,
   IonCol,
-  IonText,
   IonCard,
   IonCardContent,
   IonCardTitle,
@@ -130,13 +129,6 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChat> = ({
 
   return (
     <>
-      {/* Chat header */}
-      <IonRow className="breadcrumbs-header">
-        <IonCol>
-          <IonText className="product-sans">BreadCrumbs Chat</IonText>
-        </IonCol>
-      </IonRow>
-
       {/* Messages container */}
       <div className="messages-container">
         {messages.length
