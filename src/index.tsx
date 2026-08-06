@@ -18,13 +18,9 @@ import {
 } from "@apollo/client";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
-import { createClient } from "graphql-ws";
+import { wsClient } from "./graphql/wsClient";
 
-const wsLink = new GraphQLWsLink(
-  createClient({
-    url: process.env.REACT_APP_API_WS_URL!,
-  })
-);
+const wsLink = new GraphQLWsLink(wsClient);
 
 const httpLink = createHttpLink({
   uri: process.env.REACT_APP_API_URL, // will need to make it an environmet variable

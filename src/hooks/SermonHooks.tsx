@@ -284,12 +284,24 @@ export const useStreamSermonContent = () => {
   );
 };
 
-export const useSermonAIStream = (sessionId: string, skip: boolean = true) => {
+export const useSermonAIStream = (
+  sessionId: string,
+  skip: boolean = true,
+  onToken?: (token: string) => void
+) => {
   return useSubscription<{ sermonAIStream: string }>(
     SermonAIStreamSubscription,
     {
       variables: { sessionId },
       skip,
+      // Prefer onData over reading `data` in an effect — React 18 can batch
+      // rapid subscription updates and drop intermediate tokens.
+      onData: onToken
+        ? ({ data }) => {
+            const token = data.data?.sermonAIStream;
+            if (token != null) onToken(token);
+          }
+        : undefined,
     }
   );
 };

@@ -144,12 +144,11 @@ const getVerseVerbageByVerses = (verses: Verse[]) => {
   });
   // const citation = `${verses}`;
   // put all the chosen data together in a string
+  const translationAbbr =
+    verses[0].translation?.abbreviation?.replace(/\s/g, "") ?? "";
   const text = `${verses[0].bookName} ${
     verses[0].chapterNumber
-  }:${clusterVersesVerb} ${verses[0].translation.abbreviation.replace(
-    /\s/g,
-    ""
-  )}`;
+  }:${clusterVersesVerb}${translationAbbr ? ` ${translationAbbr}` : ""}`;
 
   return text;
 };

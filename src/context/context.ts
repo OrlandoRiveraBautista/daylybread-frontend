@@ -26,6 +26,7 @@ import {
 } from "../__generated__/graphql";
 import { getCitationVerbage } from "../utils/support";
 import { useLazyGetCopyrightForBible } from "../hooks/BibleBrainHooks";
+import { reconnectGraphqlWs } from "../graphql/wsClient";
 
 interface IIsProgrammaticSlide {
   value: boolean;
@@ -210,21 +211,37 @@ const context = constate(() => {
    * Sets the user into the context
    */
   const setUser = (dto: User) => {
-    setUserInfo(dto);
+    setUserInfo((prev) => {
+      // Only bounce the WS when the authenticated principal changes.
+      // Reconnecting on every `me` refetch drops in-flight sermon/chat streams.
+      if (prev?._id !== dto._id) {
+        reconnectGraphqlWs();
+      }
+      return dto;
+    });
   };
 
   /**
    * Clears the user from the context (used on logout)
    */
   const clearUser = () => {
-    setUserInfo(undefined);
+    setUserInfo((prev) => {
+      if (prev) reconnectGraphqlWs();
+      return undefined;
+    });
   };
 
   /**
    * Sets the device info to the context
    */
   const setDevice = (dto: IDeviceInfo) => {
-    setDeviceInfo(dto);
+    setDeviceInfo((prev) => {
+      if (prev?.id !== dto.id) {
+        // Bind chat channel deviceId on the next WS ConnectionInit.
+        reconnectGraphqlWs();
+      }
+      return dto;
+    });
   };
 
   /**

@@ -54,7 +54,7 @@ export const useMoodCheckIn = () => {
     moods,
   } = useMoodApi();
 
-  // Function to get the user's most recently used Bible translation
+  // Function to get the user's most recently used Bible translation (full DBP abbr, e.g. SPANTV)
   const getUserPreferredBibleVersion = (): string => {
     // First, try to get from Bible history (most recent reading activity)
     if (userBibleHistoryData) {
@@ -81,6 +81,23 @@ export const useMoodCheckIn = () => {
 
     // Final fallback to NIV
     return "NIV";
+  };
+
+  /** Reflection language for the AI — derived from DBP-style abbr prefixes when present. */
+  const getMoodReflectionLanguage = (bibleAbbr: string): string => {
+    const prefix = bibleAbbr.trim().slice(0, 3).toUpperCase();
+    const byPrefix: Record<string, string> = {
+      SPA: "Spanish",
+      ENG: "English",
+      POR: "Portuguese",
+      FRA: "French",
+      DEU: "German",
+    };
+    // Only treat as a language prefix when abbr is longer than 3 (e.g. SPANTV, not NIV).
+    if (bibleAbbr.trim().length > 3 && byPrefix[prefix]) {
+      return byPrefix[prefix];
+    }
+    return "English";
   };
 
   // Function to get additional context about the user's Bible reading
@@ -121,15 +138,14 @@ export const useMoodCheckIn = () => {
     setCurrentResponse(null); // Clear previous response
 
     try {
-      // Get user's preferred Bible version based on their reading history
+      // Full DBP bible abbr (e.g. SPANTV) — do not truncate; Brain search needs it.
       const userBibleVersion = getUserPreferredBibleVersion();
 
-      // Prepare input object for the API
       const input: MoodRequestInput = {
         mood: mood.tag,
         additionalContext: undefined, // Could add a text input for this later
-        preferredBibleVersion: userBibleVersion.slice(-3),
-        language: userBibleVersion.slice(0, 3),
+        preferredBibleVersion: userBibleVersion,
+        language: getMoodReflectionLanguage(userBibleVersion),
       };
 
       // Call the API

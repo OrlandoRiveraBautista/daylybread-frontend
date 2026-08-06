@@ -179,9 +179,31 @@ const updateBookmark = gql(`
         author {
           _id
         }
+        bibleId
         note
+        newVerses {
+          bookId
+          bookName
+          bookNameAlt
+          chapter
+          chapterAlt
+          verseStart
+          verseStartAlt
+          verseEnd
+          verseEndAlt
+          verseText
+        }
         verses {
           _id
+          translation {
+            name
+            abbreviation
+          }
+          bookName
+          chapterNumber
+          verse
+          text
+          bibleId
         }
       }
     }
@@ -222,14 +244,20 @@ export const useUserUpdate = () => {
 };
 
 export const useUpdateBookmark = () => {
-  const [setBookmarkUpdate, { loading, error, data }] =
-    useMutation(updateBookmark);
+  const [setBookmarkUpdate, { loading, error, data, reset }] = useMutation(
+    updateBookmark,
+    {
+      refetchQueries: ["getBookmarks"],
+      awaitRefetchQueries: true,
+    }
+  );
 
   return {
     setBookmarkUpdate,
     loading,
     error,
     data,
+    reset,
   };
 };
 
