@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   IonCard,
   IonCardContent,
@@ -9,7 +9,7 @@ import {
 } from "@ionic/react";
 import {
   share,
-  // chatbubble,
+  chatbubbleEllipsesOutline,
   bookmarkOutline,
   checkmarkCircle,
   arrowBack,
@@ -17,6 +17,7 @@ import {
 import { VerseResponse as VerseResponseType } from "../hooks/useMoodCheckIn";
 import NextMoodTimer from "./NextMoodTimer";
 import { getBibleUrl } from "../../../../utils/support";
+import BreadCrumbsModal from "../../../BreadCrumbsModal/BreadCrumbsModal";
 import "./VerseResponse.scss";
 
 interface VerseResponseProps {
@@ -26,7 +27,6 @@ interface VerseResponseProps {
   onNewCheckIn: () => void;
   onSave?: () => void;
   onShare?: () => void;
-  onTalkToGod?: () => void;
   saveStatus?: "idle" | "saving" | "saved" | "error";
   isSaving?: boolean;
 }
@@ -38,10 +38,10 @@ const VerseResponse: React.FC<VerseResponseProps> = ({
   onNewCheckIn,
   onSave,
   onShare,
-  // onTalkToGod,
   saveStatus = "idle",
   isSaving = false,
 }) => {
+  const [showAiModal, setShowAiModal] = useState(false);
   const handleSave = () => {
     if (saveStatus === "saved" || isSaving) return; // Prevent double-saving
     if (onSave) {
@@ -94,15 +94,8 @@ const VerseResponse: React.FC<VerseResponseProps> = ({
     }
   };
 
-  // const handleTalkToGod = () => {
-  //   if (onTalkToGod) {
-  //     onTalkToGod();
-  //   } else {
-  //     console.log("Opening prayer chat...");
-  //   }
-  // };
-
   return (
+    <>
     <IonCard className="mood-response-card">
       <IonCardContent>
         {/* Timer for next mood check-in */}
@@ -130,15 +123,7 @@ const VerseResponse: React.FC<VerseResponseProps> = ({
             <p className="verse-text">"{response.verse}"</p>
             <p className="verse-reference">
               — {response.reference}
-              <span
-                style={{
-                  fontSize: "0.8rem",
-                  color: "var(--ion-color-medium)",
-                  marginLeft: "8px",
-                }}
-              >
-                ({bibleVersion})
-              </span>
+              <span className="verse-version-badge">({bibleVersion})</span>
             </p>
           </IonText>
         </div>
@@ -169,19 +154,25 @@ const VerseResponse: React.FC<VerseResponseProps> = ({
             <IonIcon icon={share} slot="start" />
             Share
           </IonButton>
-          {/* <IonButton
+          <IonButton
             fill="solid"
             size="small"
             color="primary"
-            onClick={handleTalkToGod}
+            onClick={() => setShowAiModal(true)}
             className="action-btn talk-btn"
           >
-            <IonIcon icon={chatbubble} slot="start" />
+            <IonIcon icon={chatbubbleEllipsesOutline} slot="start" />
             Talk to God
-          </IonButton> */}
+          </IonButton>
         </div>
       </IonCardContent>
     </IonCard>
+
+    <BreadCrumbsModal
+      isOpen={showAiModal}
+      onDismiss={() => setShowAiModal(false)}
+    />
+    </>
   );
 };
 

@@ -22,9 +22,17 @@
       padding: 20px;
     }
 
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15),
+        0px 2px 4px rgba(0, 0, 0, 0.12);
+    }
+
     .feature-content {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       gap: 16px;
 
       .feature-icon {
@@ -44,11 +52,12 @@
 
       .feature-text {
         flex: 1;
+        min-width: 0;
 
         ion-card-title {
           font-family: "Product Sans", -apple-system, BlinkMacSystemFont,
             "Helvetica Neue", "Roboto", sans-serif;
-          font-size: 18px;
+          font-size: 17px;
           font-weight: 500 !important;
           color: var(--ion-text-color);
           margin: 0 0 4px 0;
@@ -56,10 +65,19 @@
         }
 
         p {
-          font-size: 14px;
+          font-size: 13px;
           color: var(--ion-color-medium);
           margin: 0;
           line-height: 1.4;
+        }
+      }
+
+      .feature-arrow {
+        flex-shrink: 0;
+
+        ion-icon {
+          font-size: 18px;
+          color: var(--ion-color-medium);
         }
       }
     }
