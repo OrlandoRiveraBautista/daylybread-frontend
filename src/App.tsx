@@ -13,7 +13,7 @@ import {
 } from "@ionic/react";
 import { Database } from "@ionic/storage";
 import { IonReactRouter } from "@ionic/react-router";
-import { book, happy, home } from "ionicons/icons";
+import { book, home, person } from "ionicons/icons";
 
 /* Pages */
 import Tab1 from "./pages/Tab1";
@@ -354,7 +354,7 @@ const App: React.FC = () => {
                       </Route>
                     </Switch>
                   </IonRouterOutlet>
-                  <IonTabBar slot="bottom">
+                  <IonTabBar slot="bottom" className="app-tab-bar">
                     <IonTabButton tab="tab1" href="/home">
                       <IonIcon icon={home} />
                       <IonLabel>Home</IonLabel>
@@ -364,8 +364,8 @@ const App: React.FC = () => {
                       <IonLabel>Read</IonLabel>
                     </IonTabButton>
                     <IonTabButton tab="tab3" href="/me">
-                      <IonIcon icon={happy} />
-                      <IonLabel>Me</IonLabel>
+                      <IonIcon icon={person} />
+                      <IonLabel>Profile</IonLabel>
                     </IonTabButton>
                   </IonTabBar>
                 </IonTabs>
@@ -425,7 +425,7 @@ const App: React.FC = () => {
                 </IonRouterOutlet>
 
                 {/* Tab Bar UI */}
-                <IonTabBar slot="bottom">
+                <IonTabBar slot="bottom" className="app-tab-bar">
                   <IonTabButton tab="tab1" href="/home">
                     <IonIcon icon={home} />
                     <IonLabel>Home</IonLabel>
@@ -435,8 +435,8 @@ const App: React.FC = () => {
                     <IonLabel>Read</IonLabel>
                   </IonTabButton>
                   <IonTabButton tab="tab3" href="/me">
-                    <IonIcon icon={happy} />
-                    <IonLabel>Me</IonLabel>
+                    <IonIcon icon={person} />
+                    <IonLabel>Profile</IonLabel>
                   </IonTabButton>
                 </IonTabBar>
               </IonTabs>

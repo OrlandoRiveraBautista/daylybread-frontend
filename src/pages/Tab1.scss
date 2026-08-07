@@ -10,17 +10,14 @@
       --border-width: 0;
       --min-height: 52px;
       padding-inline: 8px;
-      backdrop-filter: none;
-      -webkit-backdrop-filter: none;
       transition:
         background 200ms ease,
         box-shadow 200ms ease;
     }
 
+    // Near-solid fill on scroll — skip blur (compositor cost on mobile)
     &--scrolled ion-toolbar {
-      --background: rgba(250, 249, 253, 0.78);
-      backdrop-filter: blur(12px) saturate(160%);
-      -webkit-backdrop-filter: blur(12px) saturate(160%);
+      --background: rgba(250, 249, 253, 0.94);
       box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
     }
   }
@@ -199,7 +196,7 @@
 @media (prefers-color-scheme: dark) {
   #home {
     .home-header--scrolled ion-toolbar {
-      --background: rgba(20, 22, 24, 0.72);
+      --background: rgba(20, 22, 24, 0.94);
       box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
     }
 
@@ -216,8 +213,6 @@
 @media (prefers-reduced-transparency: reduce) {
   #home .home-header--scrolled ion-toolbar {
     --background: var(--ion-background-color);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
   }
 }
 

@@ -10,28 +10,22 @@
       --border-width: 0;
       --min-height: 52px;
       padding-inline: 8px;
-      backdrop-filter: none;
-      -webkit-backdrop-filter: none;
       transition:
         background 200ms ease,
         box-shadow 200ms ease;
     }
 
-    // Frost only after scroll — clear chrome at the top of the page
+    // Near-solid fill on scroll — no backdrop-filter (mobile scroll perf)
     &--idle.profile-header--scrolled ion-toolbar {
-      --background: rgba(250, 249, 253, 0.78);
-      backdrop-filter: blur(12px) saturate(160%);
-      -webkit-backdrop-filter: blur(12px) saturate(160%);
+      --background: rgba(250, 249, 253, 0.94);
       box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
     }
 
     // Selection chrome always materializes — action affordances need contrast
     &--selecting {
       ion-toolbar {
-        --background: rgba(255, 255, 255, 0.82);
-        backdrop-filter: blur(12px) saturate(160%);
-        -webkit-backdrop-filter: blur(12px) saturate(160%);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.45);
+        --background: rgba(255, 255, 255, 0.96);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
         box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
         animation: profile-chrome-in 0.32s cubic-bezier(0.32, 0.72, 0, 1);
       }
@@ -155,12 +149,12 @@
   #profile {
     .profile-header {
       &--idle.profile-header--scrolled ion-toolbar {
-        --background: rgba(20, 22, 24, 0.72);
+        --background: rgba(20, 22, 24, 0.94);
         box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
       }
 
       &--selecting ion-toolbar {
-        --background: rgba(30, 32, 34, 0.78);
+        --background: rgba(30, 32, 34, 0.96);
         border-bottom-color: rgba(255, 255, 255, 0.08);
       }
     }
@@ -178,8 +172,6 @@
     &--idle.profile-header--scrolled ion-toolbar,
     &--selecting ion-toolbar {
       --background: var(--ion-background-color);
-      backdrop-filter: none;
-      -webkit-backdrop-filter: none;
     }
   }
 }
