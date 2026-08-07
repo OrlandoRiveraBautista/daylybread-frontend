@@ -1,45 +1,200 @@
 @import "../../theme/variables.scss";
-#empty-text-container {
-  height: 50vh;
+
+#empty-text-container,
+.bookmark-empty-state {
+  min-height: 42vh;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  .main-text {
-    font-size: 24px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  padding: 32px 20px;
+
+  .bookmark-empty-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+    background: rgba(var(--ion-color-primary-rgb), 0.1);
+    color: var(--ion-color-primary);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+
+    .material-icons-round {
+      font-size: 30px;
+    }
   }
+
+  .main-text {
+    font-family: $font-family;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    color: var(--ion-text-color);
+  }
+
   .sub-text {
+    max-width: 260px;
     font-size: 14px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.4;
+    color: var(--ion-color-medium);
   }
 }
 
 .bookmark-list-container {
   width: 100%;
 
+  .bookmark-card {
+    text-align: left;
+    height: fit-content;
+    border-radius: 16px !important;
+    border-color: rgba(195, 198, 207, 0.55) !important;
+    // Solid cards — many simultaneous blurs tank scroll performance
+    background: var(--ion-background-color, #fff);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.55) inset,
+      0 4px 16px rgba(0, 0, 0, 0.04);
+    transition:
+      transform 120ms ease-out,
+      box-shadow 180ms ease,
+      border-color 180ms ease,
+      background 180ms ease;
+    will-change: transform;
+
+    &:active {
+      transform: scale(0.975);
+    }
+
+    &.selected {
+      border-color: rgba(var(--ion-color-primary-rgb), 0.55) !important;
+      background: rgba(var(--ion-color-primary-rgb), 0.1);
+      box-shadow:
+        0 0 0 1px rgba(var(--ion-color-primary-rgb), 0.2),
+        0 6px 18px rgba(var(--ion-color-primary-rgb), 0.12);
+    }
+
+    ion-card-content {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 14px;
+    }
+  }
+
+  .bookmark-select-indicator {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0.85);
+    transition:
+      opacity 160ms ease,
+      transform 220ms cubic-bezier(0.32, 0.72, 0, 1),
+      background 160ms ease;
+    pointer-events: none;
+
+    .material-icons-round {
+      font-size: 14px;
+      color: #fff;
+    }
+
+    &.is-ready {
+      opacity: 1;
+      transform: scale(1);
+      border: 1.5px solid rgba(var(--ion-color-primary-rgb), 0.45);
+      background: rgba(255, 255, 255, 0.55);
+    }
+
+    &.is-on {
+      opacity: 1;
+      transform: scale(1);
+      background: var(--ion-color-primary);
+      border: none;
+      box-shadow: 0 2px 8px rgba(var(--ion-color-primary-rgb), 0.35);
+    }
+  }
+
   .bookmark-card-verse {
     color: var(--ion-text-color);
+    font-size: 14px;
+    line-height: 1.45;
+    letter-spacing: -0.01em;
+    padding-right: 18px;
+  }
+
+  .bookmark-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
   }
 
   .bookmark-card-citation {
     font-size: 12px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
     color: var(--ion-outline-color);
+    line-height: 1.3;
   }
 
-  ion-card {
-    text-align: left;
-    height: fit-content;
-    ion-card-content {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+  ion-icon {
+    font-size: 15px;
+    color: var(--ion-color-medium);
+    flex-shrink: 0;
+  }
+
+  ion-text {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 10;
+    -webkit-box-orient: vertical;
+  }
+
+  &.is-selecting .bookmark-card:not(.selected) {
+    opacity: 0.88;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .bookmark-list-container .bookmark-card {
+    background: var(--ion-background-color, #1c1c1e);
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.06) inset,
+      0 4px 16px rgba(0, 0, 0, 0.2);
+
+    &.selected {
+      background: rgba(var(--ion-color-primary-rgb), 0.16);
     }
-    ion-icon {
-      font-size: 16px;
+  }
+
+  .bookmark-list-container .bookmark-select-indicator.is-ready {
+    background: rgba(30, 32, 34, 0.7);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bookmark-list-container {
+    .bookmark-card,
+    .bookmark-select-indicator {
+      transition: none;
     }
-    ion-text {
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-line-clamp: 10;
-      -webkit-box-orient: vertical;
+
+    .bookmark-card:active {
+      transform: none;
     }
   }
 }

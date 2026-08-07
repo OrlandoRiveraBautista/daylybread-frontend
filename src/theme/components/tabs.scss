@@ -1,15 +1,84 @@
-@font-face {
-  font-family: "Product Sans";
-  src: url(../../assets/fonts/google-sans-fonts/ProductSans-Regular.ttf);
-}
+@import "../variables.scss";
 
 ion-tab-bar {
-  --color: #43474e;
-  --background: rgba(0, 96, 168, 8%);
-  font-family: "Product Sans";
-  letter-spacing: 0.5px;
+  // Near-solid fill — no backdrop-filter (always-on chrome; blur is costly on mobile)
+  --ion-tab-bar-background: rgba(250, 249, 253, 0.94);
+  --background: rgba(250, 249, 253, 0.94);
+  --color: var(--ion-color-medium);
+  --color-selected: var(--ion-color-primary);
+  --border: none;
+
+  position: relative;
+  min-height: 56px;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  font-family: $font-family;
+  letter-spacing: -0.01em;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.55) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.04);
+  border-top: 1px solid rgba(255, 255, 255, 0.55);
 }
 
 ion-tab-button {
-  --background: none;
+  --background: transparent;
+  --background-focused: transparent;
+  --color: var(--ion-color-medium);
+  --color-selected: var(--ion-color-primary);
+  --padding-top: 8px;
+  --padding-bottom: 6px;
+
+  max-width: 120px;
+  transition: transform 100ms ease-out;
+  will-change: transform;
+
+  ion-icon {
+    font-size: 24px;
+    margin-bottom: 2px;
+  }
+
+  ion-label {
+    font-family: $font-family;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+
+  &.tab-selected {
+    ion-label {
+      font-weight: 700;
+    }
+  }
+
+  &:active {
+    transform: scale(0.94);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  ion-tab-bar {
+    --ion-tab-bar-background: rgba(20, 22, 24, 0.94);
+    --background: rgba(20, 22, 24, 0.94);
+    border-top-color: rgba(255, 255, 255, 0.08);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.06) inset,
+      0 -1px 0 rgba(0, 0, 0, 0.35);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  ion-tab-bar {
+    --ion-tab-bar-background: var(--ion-background-color);
+    --background: var(--ion-background-color);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ion-tab-button {
+    transition: none;
+
+    &:active {
+      transform: none;
+    }
+  }
 }

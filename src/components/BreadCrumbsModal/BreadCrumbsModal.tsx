@@ -30,7 +30,6 @@ import {
 import { useHaptic } from "../../hooks/useHaptic";
 
 /* Styles */
-import "../BibleNavModal/BibleNavModal.scss";
 import "./BreadCrumbsModal.scss";
 
 /* Interfaces */
@@ -40,32 +39,23 @@ import {
 } from "../../interfaces/BreadCrumbsModalInterfaces";
 
 /**
- * BreadCrumbs Modal is a modal that contains actions for the bible assistant
- * @param {IBreadCrumbsModal} { isOpen: boolean, onDismiss: () => void }
- * @returns
+ * BreadCrumbs Modal — AI bible assistant sheet
  */
 const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
   isOpen,
   onDismiss,
-  // selectedText,
   initialBreakpoint,
 }: IBreadCrumbsModal) => {
-  // state
   const [messages, setMessages] = useState<IMessagesObject[]>([]);
   const [useChosenTextVerbage, setUseChosenTextVerbage] =
     useState<boolean>(false);
 
-  // context values
   const { selectedVersesCitation, deviceInfo } = useAppContext();
   const { getChatGpt, data } = useLazyOpenAI();
   const { streamBuffer: openAIReponseStream } = useOpenAIResponseStream(
     deviceInfo?.id || ""
   );
-  const { triggerSuccessHaptic } = useHaptic();
-
-  // useEffect(() => {
-  //   console.log("getting messages", JSON.stringify(messages));
-  // }, [messages]);
+  const { triggerSuccessHaptic, triggerNavigationHaptic } = useHaptic();
 
   useEffect(() => {
     if (!data) return;
@@ -85,14 +75,12 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
     setMessages(temp);
   }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // use effect for the stream of response
   useEffect(() => {
     if (!openAIReponseStream || !messages.length) return;
 
     setMessages((prevMessages) => {
       const lastMessage = prevMessages[prevMessages.length - 1];
 
-      // If the last message is from the user, create a new AI message
       if (lastMessage.sender === "You") {
         return [
           ...prevMessages,
@@ -103,7 +91,6 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
         ];
       }
 
-      // If the last message is from BreadCrumbs and it doesn't already contain this response
       if (
         lastMessage.sender === "BreadCrumbs" &&
         !lastMessage.message.includes(openAIReponseStream)
@@ -131,7 +118,6 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
     };
     setMessages((prevMessage) => [...prevMessage, messageObject]);
 
-    // Trigger haptic feedback when user submits a message
     triggerSuccessHaptic();
 
     getChatGpt({
@@ -142,47 +128,38 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
         },
       },
     });
+  };
 
-    return;
+  const handleCitationToggle = () => {
+    triggerNavigationHaptic();
+    setUseChosenTextVerbage((prev) => !prev);
   };
 
   /**
-   *  Function will check for modal breakpoint change and set the inner grid accordingly
-   * @param e: IonModalCustomEvent<ModalBreakpointChangeEventDetail>
-   * @returns void
+   * Keep the modal wrapper height in sync with sheet breakpoints
    */
   const handleBreakpointChange = (
     e: IonModalCustomEvent<ModalBreakpointChangeEventDetail | void>
   ) => {
-    // get modal
     const target = document.getElementById("ion-react-wrapper");
+    if (!target) return;
 
-    if (!target) return; // if no modal end function
-
-    // when the modal opens up
     if (!e.detail) {
       target.style.height = `75%`;
       return;
     }
 
-    // check for breakpoint being less than or equal to .75 and if full-height is set
     if (e.detail.breakpoint >= 0.7) {
       target.style.height = `${e.detail.breakpoint * 100}%`;
     }
   };
 
-  const getBreakpoints = () => {
-    // if (navigator.userAgent.includes("iPhone")) {
-    //   return [0, 0.25, 0.75, 0.97];
-    // }
-    return [0, 0.25, 0.75, 1];
-  };
-
   return (
     <IonModal
       initialBreakpoint={initialBreakpoint || 0.25}
-      breakpoints={getBreakpoints()}
-      className="nav-modal"
+      breakpoints={[0, 0.25, 0.75, 1]}
+      handle={true}
+      className="breadcrumbs-modal"
       isOpen={isOpen}
       onDidDismiss={() => (isOpen ? onDismiss() : null)}
       id="bread-crumbs-modal"
@@ -192,12 +169,11 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
     >
       <IonHeader className="ion-no-border breadcrumbs-modal-header">
         <IonToolbar>
-          <IonTitle className="product-sans">BreadCrumbs Chat</IonTitle>
+          <IonTitle>BreadCrumbs</IonTitle>
         </IonToolbar>
         {selectedVersesCitation ? (
           <div className="selected-indicator-container">
             <div className="selected-indicator">
-              {/* Label row */}
               <div className="selected-indicator-top">
                 <IonText className="selected-indicator-label">
                   Selected text
@@ -207,10 +183,13 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
                 </div>
               </div>
 
-              {/* Citation + include toggle — single tappable row */}
               <button
-                className={`citation-toggle ${useChosenTextVerbage ? "citation-toggle--on" : ""}`}
-                onClick={() => setUseChosenTextVerbage(!useChosenTextVerbage)}
+                type="button"
+                className={`citation-toggle ${
+                  useChosenTextVerbage ? "citation-toggle--on" : ""
+                }`}
+                onClick={handleCitationToggle}
+                aria-pressed={useChosenTextVerbage}
               >
                 <div className="citation-toggle-text">
                   <IonText className="selected-citation">
@@ -222,7 +201,11 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
                       : "Tap to include with next message"}
                   </IonText>
                 </div>
-                <div className={`citation-pill ${useChosenTextVerbage ? "citation-pill--on" : ""}`}>
+                <div
+                  className={`citation-pill ${
+                    useChosenTextVerbage ? "citation-pill--on" : ""
+                  }`}
+                >
                   <span>{useChosenTextVerbage ? "On" : "Off"}</span>
                 </div>
               </button>
@@ -237,6 +220,7 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
               onSubmit={handleSubmit}
               messages={messages}
               useChosenTextVerbage={useChosenTextVerbage}
+              isActive={isOpen}
             />
           </div>
         </IonGrid>

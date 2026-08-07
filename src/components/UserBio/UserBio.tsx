@@ -4,7 +4,6 @@ import {
   IonSpinner,
   IonText,
   IonTextarea,
-  IonTitle,
 } from "@ionic/react";
 
 /* Styles */
@@ -13,126 +12,141 @@ import "./UserBio.scss";
 /* GraphQL API/Hooks */
 import { useUserUpdate } from "../../hooks/UserHooks";
 
+/* Context */
+import { useAppContext } from "../../context/context";
+
+/* Services */
+import { hapticService } from "../../services/hapticService";
+
 /* Types */
 import { User } from "../../__generated__/graphql";
+
 interface IUserBio {
   user: User;
 }
 
 const UserBio: React.FC<IUserBio> = ({ user }: IUserBio) => {
-  const [bioText, setBioText] = useState(user.bioText);
-  const [inputActive, setInputActive] = useState<boolean>(false);
+  const { setUser } = useAppContext();
+  const [bioText, setBioText] = useState(user.bioText ?? "");
+  const [inputActive, setInputActive] = useState(false);
 
   const { setUserUpdate, data, loading, error } = useUserUpdate();
 
   useEffect(() => {
-    if (!data) return;
+    if (!inputActive) {
+      setBioText(user.bioText ?? "");
+    }
+  }, [user.bioText, inputActive]);
 
-    setInputActive(!inputActive);
+  useEffect(() => {
+    if (!data?.updateUser?.user) return;
+
+    setUser(data.updateUser.user);
+    setInputActive(false);
+    void hapticService.triggerSuccessHaptic();
   }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!error) return;
+    void hapticService.triggerErrorHaptic();
+  }, [error]);
+
+  const displayName =
+    `${user.firstName || ""} ${user.lastName || ""}`.trim() || "Daylybread";
+
+  const handleCancel = () => {
+    setBioText(user.bioText ?? "");
+    setInputActive(false);
+    void hapticService.triggerNavigationHaptic();
+  };
+
+  const handleBeginEdit = () => {
+    setBioText(user.bioText ?? "");
+    setInputActive(true);
+    void hapticService.triggerNavigationHaptic();
+  };
 
   const handleSubmit = () => {
     setUserUpdate({
       variables: {
         options: {
-          bioText,
+          bioText: bioText?.trim() || "",
         },
       },
     });
   };
+
+  const hasBio = Boolean(user.bioText?.trim());
+  const canSave =
+    (bioText?.trim() || "") !== (user.bioText?.trim() || "") && !loading;
+
   return (
     <div id="profile-user-bio" className="user-bio-container">
-      <IonTitle className="ion-no-padding">
-        {user.firstName} {user.lastName}
-      </IonTitle>
-      {/* I should make this here into a clickable text */}
-      {/* <IonText className="text-user-handle">@IWillBeAHandle</IonText> */}
-      {user.bioText || inputActive ? (
-        <>
-          {user.bioText && !inputActive ? (
-            <IonText>{user.bioText}</IonText>
-          ) : (
-            <IonTextarea
-              labelPlacement="floating"
-              color="primary"
-              value={bioText}
-              fill="outline"
-              autoGrow={true}
-              onIonInput={(e) => setBioText(e.target.value)}
-            />
-          )}
+      <h1 className="user-display-name">{displayName}</h1>
+
+      {user.churchName ? (
+        <IonText className="user-meta">{user.churchName}</IonText>
+      ) : null}
+
+      {inputActive ? (
+        <div className="bio-editor">
+          <IonTextarea
+            className="bio-textarea"
+            color="primary"
+            value={bioText}
+            autoGrow={true}
+            maxlength={280}
+            placeholder="Share a little about your faith journey…"
+            onIonInput={(e) => setBioText(e.target.value ?? "")}
+          />
           <div className="bio-text-input-actions">
-            {inputActive ? (
-              <>
-                <IonButton
-                  shape="round"
-                  fill="clear"
-                  color="medium"
-                  className="flat"
-                  onClick={() => setInputActive(!inputActive)}
-                  disabled={loading}
-                >
-                  Cancel
-                </IonButton>
-                <IonButton
-                  shape="round"
-                  disabled={loading ? true : false}
-                  fill={
-                    !loading && !data
-                      ? "solid"
-                      : error
-                      ? "clear"
-                      : loading && !data
-                      ? "default"
-                      : "outline"
-                  }
-                  onClick={handleSubmit}
-                  color={
-                    !loading && !data
-                      ? "primary"
-                      : error
-                      ? "danger"
-                      : loading && !data
-                      ? "warning"
-                      : "success"
-                  }
-                >
-                  {!loading && !data ? (
-                    "Save"
-                  ) : loading && !data ? (
-                    <IonSpinner />
-                  ) : error ? (
-                    "Something went wrong"
-                  ) : (
-                    "Success"
-                  )}
-                </IonButton>
-              </>
-            ) : (
-              <>
-                <IonButton
-                  shape="round"
-                  fill="solid"
-                  color="secondary"
-                  className="flat"
-                  onClick={() => setInputActive(!inputActive)}
-                  disabled={loading}
-                >
-                  Edit
-                </IonButton>
-              </>
-            )}
+            <IonButton
+              shape="round"
+              fill="clear"
+              color="medium"
+              className="bio-action bio-action--ghost"
+              onClick={handleCancel}
+              disabled={loading}
+            >
+              Cancel
+            </IonButton>
+            <IonButton
+              shape="round"
+              fill="solid"
+              color={error ? "danger" : "primary"}
+              className="bio-action"
+              onClick={handleSubmit}
+              disabled={!canSave && !error}
+            >
+              {loading ? (
+                <IonSpinner name="crescent" />
+              ) : error ? (
+                "Try again"
+              ) : (
+                "Save"
+              )}
+            </IonButton>
           </div>
-        </>
+        </div>
+      ) : hasBio ? (
+        <button
+          type="button"
+          className="bio-text-button"
+          onClick={handleBeginEdit}
+          aria-label="Edit bio"
+        >
+          <IonText className="bio-text">{user.bioText}</IonText>
+          <span className="bio-edit-hint">Edit</span>
+        </button>
       ) : (
         <IonButton
           shape="round"
-          fill="solid"
-          color="secondary"
-          className="flat"
-          onClick={() => setInputActive(!inputActive)}
+          fill="clear"
+          color="primary"
+          className="bio-add-button"
+          onClick={handleBeginEdit}
         >
-          Add a text
+          Add a bio
         </IonButton>
       )}
     </div>

@@ -1,12 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import {
   IonText,
   IonIcon,
-  IonCard,
-  IonCardContent,
-  IonGrid,
-  IonRow,
-  IonCol,
   IonSkeletonText,
 } from "@ionic/react";
 import {
@@ -31,10 +26,22 @@ interface UserStats {
   totalReadingSessions: number;
   totalBookmarks: number;
   currentStreak: number;
-  favoriteBook: string;
   recentMoodCheckins: number;
-  memberSince: string;
 }
+
+const EMPTY_STATS: UserStats = {
+  totalReadingSessions: 0,
+  totalBookmarks: 0,
+  currentStreak: 0,
+  recentMoodCheckins: 0,
+};
+
+const getTimeOfDayGreeting = () => {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Good morning";
+  if (hour < 17) return "Good afternoon";
+  return "Good evening";
+};
 
 const PersonalizedDashboard: React.FC = () => {
   const { userInfo } = useAppContext();
@@ -43,31 +50,10 @@ const PersonalizedDashboard: React.FC = () => {
   const { data: bookmarksData, loading: bookmarksLoading } = useGetBookmarks();
   const { moodHistory, loading: moodLoading } = useMoodHistory();
 
-  const [userStats, setUserStats] = useState<UserStats>({
-    totalReadingSessions: 0,
-    totalBookmarks: 0,
-    currentStreak: 0,
-    favoriteBook: "Genesis",
-    recentMoodCheckins: 0,
-    memberSince: "",
-  });
+  const timeOfDay = getTimeOfDayGreeting();
 
-  const [timeOfDay, setTimeOfDay] = useState<string>("");
-
-  useEffect(() => {
-    // Set greeting based on time of day
-    const hour = new Date().getHours();
-    if (hour < 12) {
-      setTimeOfDay("Good morning");
-    } else if (hour < 17) {
-      setTimeOfDay("Good afternoon");
-    } else {
-      setTimeOfDay("Good evening");
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!bibleHistoryData || !userInfo) return;
+  const userStats = useMemo<UserStats>(() => {
+    if (!bibleHistoryData || !userInfo) return EMPTY_STATS;
 
     const bibleHistory = bibleHistoryData.me?.user?.bibleHistory?.find(
       (history) => history.current
@@ -77,14 +63,11 @@ const PersonalizedDashboard: React.FC = () => {
     const totalBookmarks =
       bookmarksData?.getMyBookmarks?.results?.length || 0;
 
-    // Streak: count unique consecutive calendar days (most recent first),
-    // allowing today or yesterday as the starting point.
     let streak = 0;
     if (bibleHistory?.history?.length) {
       const toDateKey = (d: Date) =>
         `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
 
-      // Deduplicate to one entry per calendar day
       const seenDays = new Set<string>();
       const uniqueDays: Date[] = [];
       for (const entry of bibleHistory.history) {
@@ -97,7 +80,6 @@ const PersonalizedDashboard: React.FC = () => {
         }
       }
 
-      // Sort descending (most recent first)
       uniqueDays.sort((a, b) => b.getTime() - a.getTime());
 
       const today = new Date();
@@ -106,7 +88,6 @@ const PersonalizedDashboard: React.FC = () => {
       yesterdayDate.setDate(today.getDate() - 1);
       const yesterdayKey = toDateKey(yesterdayDate);
 
-      // Streak must start from today or yesterday
       if (
         uniqueDays.length > 0 &&
         (toDateKey(uniqueDays[0]) === todayKey ||
@@ -128,166 +109,137 @@ const PersonalizedDashboard: React.FC = () => {
       }
     }
 
-    // Count recent mood check-ins (last 7 days)
     const weekAgo = new Date();
     weekAgo.setDate(weekAgo.getDate() - 7);
-    const recentMoodCheckins =
-      moodHistory?.filter((mood) => {
-        const moodDate = new Date(mood.createdAt);
-        return !isNaN(moodDate.getTime()) && moodDate >= weekAgo;
-      }).length || 0;
+    const recentMoodCheckins = moodHistory.filter((mood) => {
+      const moodDate = new Date(mood.createdAt);
+      return !isNaN(moodDate.getTime()) && moodDate >= weekAgo;
+    }).length;
 
-    setUserStats((prev) => ({
-      ...prev,
+    return {
       totalReadingSessions: totalSessions,
       totalBookmarks,
       currentStreak: streak,
       recentMoodCheckins,
-    }));
+    };
   }, [bibleHistoryData, bookmarksData, userInfo, moodHistory]);
 
   const getPersonalizedGreeting = () => {
     const firstName = userInfo?.firstName;
     if (firstName) {
-      return `${timeOfDay}, ${firstName}!`;
+      return `${timeOfDay}, ${firstName}`;
     }
-    return `${timeOfDay}!`;
+    return timeOfDay || "Welcome";
   };
 
   const getMotivationalMessage = () => {
     if (userStats.currentStreak > 7) {
-      return `Amazing ${userStats.currentStreak}-day reading streak! 🔥`;
-    } else if (userStats.currentStreak > 0) {
-      return `Keep up your ${userStats.currentStreak}-day streak! 💪`;
-    } else if (userStats.totalReadingSessions > 10) {
-      return "Ready to start a new reading streak?";
-    } else {
-      return "Your spiritual journey continues...";
+      return `Amazing ${userStats.currentStreak}-day reading streak`;
     }
+    if (userStats.currentStreak > 0) {
+      return `Keep up your ${userStats.currentStreak}-day streak`;
+    }
+    if (userStats.totalReadingSessions > 10) {
+      return "Ready to start a new reading streak?";
+    }
+    return "Your spiritual journey continues";
   };
+
+  const stats = [
+    {
+      key: "sessions",
+      label: "Sessions",
+      value: userStats.totalReadingSessions,
+      icon: bookOutline,
+      tone: "sessions",
+    },
+    {
+      key: "bookmarks",
+      label: "Bookmarks",
+      value: userStats.totalBookmarks,
+      icon: bookmarkOutline,
+      tone: "bookmarks",
+    },
+    {
+      key: "streak",
+      label: "Day Streak",
+      value: userStats.currentStreak,
+      icon: userStats.currentStreak > 0 ? flameOutline : trendingUpOutline,
+      tone: userStats.currentStreak > 0 ? "streak-active" : "streak",
+    },
+    {
+      key: "moods",
+      label: "This week",
+      value: userStats.recentMoodCheckins,
+      icon: heartOutline,
+      tone: "moods",
+      sublabel: "Moods",
+    },
+  ];
 
   if (historyLoading || moodLoading || bookmarksLoading) {
     return (
-      <div className="personalized-dashboard">
-        <IonCard className="welcome-card">
-          <IonCardContent>
-            <IonSkeletonText animated style={{ width: "60%" }} />
-            <IonSkeletonText animated style={{ width: "40%" }} />
-          </IonCardContent>
-        </IonCard>
-        <IonGrid>
-          <IonRow>
-            {[1, 2, 3, 4].map((i) => (
-              <IonCol size="6" key={i}>
-                <IonCard className="stat-card">
-                  <IonCardContent>
-                    <IonSkeletonText animated style={{ width: "100%" }} />
-                    <IonSkeletonText
-                      animated
-                      style={{ width: "60%", marginTop: "6px" }}
-                    />
-                  </IonCardContent>
-                </IonCard>
-              </IonCol>
-            ))}
-          </IonRow>
-        </IonGrid>
-      </div>
+      <section className="personalized-dashboard" aria-busy="true">
+        <div className="home-identity">
+          <IonSkeletonText
+            animated
+            className="home-greeting-skeleton"
+            style={{ width: "58%" }}
+          />
+          <IonSkeletonText
+            animated
+            className="home-message-skeleton"
+            style={{ width: "42%" }}
+          />
+        </div>
+        <div className="home-stats-grid">
+          {[1, 2, 3, 4].map((i) => (
+            <div className="home-stat-card" key={i}>
+              <IonSkeletonText animated style={{ width: "40%" }} />
+              <IonSkeletonText
+                animated
+                style={{ width: "55%", marginTop: "8px" }}
+              />
+            </div>
+          ))}
+        </div>
+      </section>
     );
   }
 
   return (
-    <div className="personalized-dashboard">
-      {/* Personalized Welcome */}
-      <IonCard className="welcome-card">
-        <IonCardContent>
-          <IonText>
-            <h2 className="greeting">{getPersonalizedGreeting()}</h2>
-            <p className="motivational-message">{getMotivationalMessage()}</p>
-          </IonText>
-        </IonCardContent>
-      </IonCard>
+    <section className="personalized-dashboard" aria-label="Your dashboard">
+      <div className="home-identity">
+        <IonText>
+          <h1 className="home-greeting">{getPersonalizedGreeting()}</h1>
+        </IonText>
+        <p className="home-message">{getMotivationalMessage()}</p>
+      </div>
 
-      {/* Quick Stats Grid */}
       {userInfo && (
-        <IonGrid className="stats-grid">
-          <IonRow className="stats-row">
-            <IonCol size="6" sizeMd="3">
-              <IonCard className="stat-card reading-sessions">
-                <IonCardContent>
-                  <div className="stat-icon">
-                    <IonIcon icon={bookOutline} />
-                  </div>
-                  <div className="stat-content">
-                    <div className="stat-number">
-                      {userStats.totalReadingSessions}
-                    </div>
-                    <div className="stat-label">Sessions</div>
-                  </div>
-                </IonCardContent>
-              </IonCard>
-            </IonCol>
-
-            <IonCol size="6" sizeMd="3">
-              <IonCard className="stat-card bookmarks">
-                <IonCardContent>
-                  <div className="stat-icon">
-                    <IonIcon icon={bookmarkOutline} />
-                  </div>
-                  <div className="stat-content">
-                    <div className="stat-number">
-                      {userStats.totalBookmarks}
-                    </div>
-                    <div className="stat-label">Bookmarks</div>
-                  </div>
-                </IonCardContent>
-              </IonCard>
-            </IonCol>
-
-            <IonCol size="6" sizeMd="3">
-              <IonCard
-                className={`stat-card streak ${userStats.currentStreak > 0 ? "streak-active" : ""}`}
-              >
-                <IonCardContent>
-                  <div className="stat-icon">
-                    <IonIcon
-                      icon={
-                        userStats.currentStreak > 0
-                          ? flameOutline
-                          : trendingUpOutline
-                      }
-                    />
-                  </div>
-                  <div className="stat-content">
-                    <div className="stat-number">
-                      {userStats.currentStreak}
-                    </div>
-                    <div className="stat-label">Day Streak</div>
-                  </div>
-                </IonCardContent>
-              </IonCard>
-            </IonCol>
-
-            <IonCol size="6" sizeMd="3">
-              <IonCard className="stat-card mood-checkins">
-                <IonCardContent>
-                  <div className="stat-icon">
-                    <IonIcon icon={heartOutline} />
-                  </div>
-                  <div className="stat-content">
-                    <div className="stat-number">
-                      {userStats.recentMoodCheckins}
-                    </div>
-                    <div className="stat-label">Mood Check-ins</div>
-                    <div className="stat-sublabel">This week</div>
-                  </div>
-                </IonCardContent>
-              </IonCard>
-            </IonCol>
-          </IonRow>
-        </IonGrid>
+        <div className="home-stats-grid">
+          {stats.map((stat) => (
+            <div
+              key={stat.key}
+              className={`home-stat-card home-stat-card--${stat.tone}`}
+            >
+              <div className="home-stat-icon" aria-hidden="true">
+                <IonIcon icon={stat.icon} />
+              </div>
+              <div className="home-stat-content">
+                <span className="home-stat-number">{stat.value}</span>
+                <span className="home-stat-label">
+                  {stat.sublabel || stat.label}
+                </span>
+                {stat.sublabel ? (
+                  <span className="home-stat-sublabel">{stat.label}</span>
+                ) : null}
+              </div>
+            </div>
+          ))}
+        </div>
       )}
-    </div>
+    </section>
   );
 };
 

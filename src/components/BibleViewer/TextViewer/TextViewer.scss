@@ -2,12 +2,17 @@
 
 .text-viewer {
   span {
+    font-family: $font-family;
     font-size: 18px;
-    line-height: 1.85;
+    // Comfortable reading leading; body tracking near 0
+    line-height: 1.78;
+    letter-spacing: -0.005em;
     color: var(--ion-text-color);
     cursor: pointer;
-    border-radius: 6px;
-    transition: background-color 0.15s ease;
+    border-radius: 8px;
+    // Instant press feedback — highlight on pointer-down, not only after click
+    transition: background-color 100ms ease-out, box-shadow 100ms ease-out;
+    -webkit-tap-highlight-color: transparent;
 
     b {
       font-size: 11px;
@@ -15,11 +20,9 @@
       color: var(--ion-color-primary);
       vertical-align: super;
       line-height: 0;
-      margin-right: 2px;
-      letter-spacing: 0.2px;
+      margin-right: 3px;
+      letter-spacing: 0.01em;
       font-variant-numeric: tabular-nums;
-
-      /* Remove the colon from display — handled by the verse number alone */
     }
 
     &:hover {
@@ -27,7 +30,18 @@
     }
 
     &:active {
-      background-color: rgba(var(--ion-color-primary-rgb), 0.14);
+      background-color: rgba(var(--ion-color-primary-rgb), 0.16);
     }
+
+    &.verse-selected {
+      background-color: rgba(var(--ion-color-primary-rgb), 0.14);
+      box-shadow: 0 0 0 2px rgba(var(--ion-color-primary-rgb), 0.08);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text-viewer span {
+    transition: none;
   }
 }

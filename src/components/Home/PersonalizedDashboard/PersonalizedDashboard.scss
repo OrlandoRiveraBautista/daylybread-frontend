@@ -1,249 +1,192 @@
 @import "../../../theme/variables.scss";
 
 .personalized-dashboard {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  margin-bottom: 20px;
+  padding: calc(52px + env(safe-area-inset-top, 0px) + 20px) 16px 8px;
 
-  .welcome-card {
-    margin: 0;
-    background: linear-gradient(
-      135deg,
-      var(--ion-color-primary),
-      var(--ion-color-secondary)
-    );
-    border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-
-    ion-card-content {
-      padding: 24px;
-      text-align: center;
-    }
-
-    .greeting {
-      font-family: "Product Sans", -apple-system, BlinkMacSystemFont,
-        "Helvetica Neue", "Roboto", sans-serif;
-      font-size: 24px;
-      font-weight: 600;
-      color: white;
-      margin: 0 0 8px 0;
-      letter-spacing: -0.3px;
-    }
-
-    .motivational-message {
-      font-size: 16px;
-      color: rgba(255, 255, 255, 0.9);
-      margin: 0;
-      font-weight: 400;
-    }
-  }
-
-  .stats-grid {
-    padding: 0;
-    height: 100%;
+  .home-identity {
     display: flex;
     flex-direction: column;
+    gap: 6px;
+    padding: 0 4px 4px;
+  }
+
+  .home-greeting {
+    margin: 0;
+    font-family: $font-family;
+    font-size: clamp(1.75rem, 5vw, 2rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: var(--ion-text-color);
+    font-optical-sizing: auto;
+  }
+
+  .home-message {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.35;
+    color: var(--ion-color-medium);
+  }
+
+  .home-greeting-skeleton,
+  .home-message-skeleton {
+    height: 28px;
+    border-radius: 8px;
+  }
+
+  .home-message-skeleton {
+    height: 16px;
+  }
+
+  .home-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .home-stat-card {
+    display: flex;
+    align-items: center;
     gap: 12px;
+    padding: 14px;
+    border-radius: 16px;
+    border: 1px solid rgba(195, 198, 207, 0.55);
+    background: var(--ion-background-color, #fff);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.55) inset,
+      0 4px 16px rgba(0, 0, 0, 0.04);
+    transition: transform 100ms ease-out;
+    will-change: transform;
 
-    .stats-row {
-      height: 100%;
+    &:active {
+      transform: scale(0.975);
+    }
+  }
+
+  .home-stat-icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(var(--ion-color-primary-rgb), 0.12);
+    color: var(--ion-color-primary);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+
+    ion-icon {
+      font-size: 20px;
+    }
+  }
+
+  .home-stat-content {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .home-stat-number {
+    font-family: $font-family;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    color: var(--ion-text-color);
+  }
+
+  .home-stat-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--ion-color-medium);
+    line-height: 1.25;
+  }
+
+  .home-stat-sublabel {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--ion-color-medium);
+    opacity: 0.8;
+  }
+
+  .home-stat-card--sessions .home-stat-icon {
+    background: rgba(76, 175, 80, 0.14);
+    color: #2e7d32;
+  }
+
+  .home-stat-card--bookmarks .home-stat-icon {
+    background: rgba(var(--ion-color-primary-rgb), 0.12);
+    color: var(--ion-color-primary);
+  }
+
+  .home-stat-card--streak .home-stat-icon {
+    background: rgba(255, 152, 0, 0.14);
+    color: #ef6c00;
+  }
+
+  .home-stat-card--streak-active {
+    border-color: rgba(255, 152, 0, 0.35);
+
+    .home-stat-icon {
+      background: rgba(255, 152, 0, 0.16);
+      color: #ef6c00;
     }
 
-    .stat-card {
-      display: flex;
-      height: 100%;
-      margin: 0;
-      border-radius: 12px;
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-
-      &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
-      }
-
-      ion-card-content {
-        padding: 16px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        // min-height: 70px;
-      }
-
-      .stat-icon {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 40px;
-        height: 40px;
-        border-radius: 8px;
-        flex-shrink: 0;
-
-        ion-icon {
-          font-size: 20px;
-          color: white;
-        }
-      }
-
-      .stat-content {
-        flex: 1;
-        text-align: left;
-
-        .stat-number {
-          font-family: "Product Sans", -apple-system, BlinkMacSystemFont,
-            "Helvetica Neue", "Roboto", sans-serif;
-          font-size: 20px;
-          font-weight: 600;
-          color: var(--ion-text-color);
-          line-height: 1.2;
-        }
-
-        .stat-label {
-          font-size: 12px;
-          color: var(--ion-color-medium);
-          font-weight: 500;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-          margin-top: 2px;
-        }
-
-        .stat-sublabel {
-          font-size: 10px;
-          color: var(--ion-color-medium);
-          font-weight: 400;
-          opacity: 0.8;
-        }
-      }
-
-      // Color themes for different stat cards
-      &.reading-sessions .stat-icon {
-        background: linear-gradient(135deg, #4caf50, #45a049);
-      }
-
-      &.bookmarks .stat-icon {
-        background: linear-gradient(135deg, #2196f3, #1976d2);
-      }
-
-      &.streak .stat-icon {
-        background: linear-gradient(135deg, #ff9800, #f57c00);
-      }
-
-      &.streak.streak-active {
-        border: 1.5px solid rgba(255, 152, 0, 0.3);
-
-        .stat-number {
-          color: #ff9800;
-        }
-      }
-
-      &.mood-checkins .stat-icon {
-        background: linear-gradient(135deg, #e91e63, #c2185b);
-      }
+    .home-stat-number {
+      color: #ef6c00;
     }
+  }
 
-    .info-card {
-      margin: 0;
-      border-radius: 12px;
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-
-      ion-card-content {
-        padding: 16px;
-      }
-
-      .info-header {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 8px;
-
-        ion-icon {
-          font-size: 16px;
-          color: var(--ion-color-primary);
-        }
-
-        span {
-          font-size: 12px;
-          color: var(--ion-color-medium);
-          font-weight: 500;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-        }
-      }
-
-      .info-content {
-        font-family: "Product Sans", -apple-system, BlinkMacSystemFont,
-          "Helvetica Neue", "Roboto", sans-serif;
-        font-size: 16px;
-        font-weight: 500;
-        color: var(--ion-text-color);
-      }
-
-      &.favorite-book .info-content {
-        color: var(--ion-color-primary);
-      }
-    }
+  .home-stat-card--moods .home-stat-icon {
+    background: rgba(var(--ion-color-secondary-rgb), 0.12);
+    color: var(--ion-color-secondary);
   }
 }
 
-// Dark mode adjustments
 @media (prefers-color-scheme: dark) {
   .personalized-dashboard {
-    .welcome-card {
-      background: linear-gradient(
-        135deg,
-        var(--ion-color-primary),
-        var(--ion-color-secondary)
-      );
+    .home-stat-card {
+      border-color: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.04);
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.06) inset,
+        0 4px 16px rgba(0, 0, 0, 0.2);
     }
 
-    .stat-card {
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
-
-      &:hover {
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-      }
-    }
-
-    .info-card {
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+    .home-stat-card--streak-active {
+      border-color: rgba(255, 152, 0, 0.4);
     }
   }
 }
 
-// Responsive design for larger screens
+@media (prefers-reduced-motion: reduce) {
+  .personalized-dashboard .home-stat-card {
+    transition: none;
+
+    &:active {
+      transform: none;
+    }
+  }
+}
+
 @media (min-width: 768px) {
   .personalized-dashboard {
-    .welcome-card {
-      .greeting {
-        font-size: 28px;
-      }
+    padding-inline: 32px;
+    max-width: 920px;
+    margin-inline: auto;
+    width: 100%;
 
-      .motivational-message {
-        font-size: 18px;
-      }
-    }
-
-    .stats-grid {
-      .stat-card {
-        ion-card-content {
-          padding: 20px;
-          min-height: 80px;
-        }
-
-        .stat-icon {
-          width: 48px;
-          height: 48px;
-
-          ion-icon {
-            font-size: 24px;
-          }
-        }
-
-        .stat-content .stat-number {
-          font-size: 24px;
-        }
-      }
+    .home-stats-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
   }
 }

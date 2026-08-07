@@ -1,4 +1,5 @@
 import { gql } from "../__generated__/gql";
+import type { GetUserMoodHistoryQuery } from "../__generated__/graphql";
 import { useLazyQuery, useQuery } from "@apollo/client";
 
 // Types matching the GraphQL schema
@@ -140,6 +141,8 @@ export const useMoodBasedVerse = () => {
   };
 };
 
+const EMPTY_SUPPORTED_MOODS: string[] = [];
+
 // Hook for getting supported moods
 export const useSupportedMoods = () => {
   const { loading, error, data } = useQuery(getSupportedMoodsQuery);
@@ -148,18 +151,26 @@ export const useSupportedMoods = () => {
     fetchSupportedMoods: () => {}, // Not needed with useQuery
     loading,
     error: error?.message || null,
-    moods: data?.getSupportedMoods || [],
+    moods: data?.getSupportedMoods ?? EMPTY_SUPPORTED_MOODS,
   };
 };
+
+type UserMoodHistory = GetUserMoodHistoryQuery["getUserMoodHistory"];
+const EMPTY_MOOD_HISTORY: UserMoodHistory = [];
 
 // Hook for getting user's mood history
 export const useMoodHistory = () => {
   const { loading, error, data, refetch } = useQuery(getUserMoodHistoryQuery);
 
+  const moodHistory: UserMoodHistory =
+    data?.getUserMoodHistory ?? EMPTY_MOOD_HISTORY;
+
   return {
     loading,
     error: error?.message || null,
-    moodHistory: data?.getUserMoodHistory || [],
+    // Stable empty fallback — inline `|| []` creates a new array each render
+    // and can trigger Maximum update depth loops in dependent effects.
+    moodHistory,
     refetchHistory: refetch,
   };
 };

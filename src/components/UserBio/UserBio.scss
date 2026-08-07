@@ -1,19 +1,179 @@
 @import "../../theme/variables.scss";
 
 #profile-user-bio {
-  //   padding-bottom: 8px;
-  //   border-bottom: 1px solid $text-color;
   &.user-bio-container {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .user-display-name {
+    margin: 0;
+    font-family: $font-family;
+    font-size: clamp(1.75rem, 5vw, 2rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: var(--ion-text-color);
+    font-optical-sizing: auto;
+  }
+
+  .user-meta {
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--ion-color-medium);
+    line-height: 1.3;
+  }
+
+  .bio-text-button {
+    appearance: none;
+    border: none;
+    background: transparent;
+    padding: 8px 12px;
+    margin-top: 4px;
+    border-radius: 14px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    max-width: 100%;
+    transition: background 120ms ease-out, transform 100ms ease-out;
+
+    &:active {
+      transform: scale(0.98);
+      background: rgba(var(--ion-color-primary-rgb), 0.08);
+    }
+  }
+
+  .bio-text {
+    font-size: 15px;
+    line-height: 1.45;
+    letter-spacing: 0;
+    color: var(--ion-text-color);
+    opacity: 0.88;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .bio-edit-hint {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--ion-color-primary);
+    opacity: 0.72;
+    transition: opacity 160ms ease;
+  }
+
+  .bio-text-button:hover .bio-edit-hint,
+  .bio-text-button:focus-visible .bio-edit-hint,
+  .bio-text-button:active .bio-edit-hint {
+    opacity: 1;
+  }
+
+  .bio-add-button {
+    margin-top: 4px;
+    --padding-start: 14px;
+    --padding-end: 14px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    transition: transform 100ms ease-out;
+
+    &:active {
+      transform: scale(0.97);
+    }
+  }
+
+  .bio-editor {
+    width: 100%;
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    animation: bio-editor-in 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  .bio-textarea {
+    --background: var(--ion-background-color, #fff);
+    --padding-start: 14px;
+    --padding-end: 14px;
+    --padding-top: 12px;
+    --padding-bottom: 12px;
+    --border-radius: 16px;
+    --border-width: 1px;
+    --border-color: rgba(195, 198, 207, 0.55);
+    --border-style: solid;
+    font-size: 15px;
+    line-height: 1.45;
+    text-align: left;
+  }
+
+  .bio-text-input-actions {
+    display: flex;
+    justify-content: flex-end;
     gap: 8px;
 
-    .bio-text-input-actions {
-      display: flex;
-      justify-content: flex-end;
-      ion-button {
-        width: 100%;
+    .bio-action {
+      margin: 0;
+      min-width: 88px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      transition: transform 100ms ease-out;
+
+      &:active {
+        transform: scale(0.97);
       }
+
+      &--ghost {
+        min-width: auto;
+      }
+    }
+  }
+}
+
+@keyframes bio-editor-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  #profile-user-bio .bio-textarea {
+    --background: var(--ion-background-color, #1c1c1e);
+    --border-color: rgba(255, 255, 255, 0.12);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #profile-user-bio {
+    .bio-editor {
+      animation: none;
+    }
+
+    .bio-text-button,
+    .bio-add-button,
+    .bio-action,
+    .bio-edit-hint {
+      transition: none;
+    }
+
+    .bio-text-button:active,
+    .bio-add-button:active,
+    .bio-action:active {
+      transform: none;
+    }
+
+    .bio-edit-hint {
+      opacity: 1;
     }
   }
 }

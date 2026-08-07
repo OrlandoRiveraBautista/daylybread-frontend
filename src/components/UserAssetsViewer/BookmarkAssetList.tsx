@@ -31,8 +31,10 @@ import { Bookmark } from "../../__generated__/graphql";
 /* Context */
 import { useAppContext } from "../../context/context";
 
+/* Services */
+import { hapticService } from "../../services/hapticService";
+
 const BookmarkAssetList: React.FC = () => {
-  // global context state
   const {
     addUserAssetToList,
     removeUserAssetFromList,
@@ -42,15 +44,14 @@ const BookmarkAssetList: React.FC = () => {
     bookmarksResponse,
   } = useAppContext();
 
-  // local state
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [selectedBookmark, setSelectedBookmark] = useState<Bookmark>();
 
-  const timerRef = useRef<any>();
+  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const selectionMode = selectedUserAssets.length > 0;
 
   useEffect(() => {
     handleGetBookmarks();
-    //upon mount
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Keep the open bookmark in sync after list refetch (e.g. after note save).
@@ -76,86 +77,103 @@ const BookmarkAssetList: React.FC = () => {
 
   const startPressTimer = (bookmarkEntry: Bookmark) => {
     timerRef.current = setTimeout(() => {
-      addUserAssetToList(bookmarkEntry);
-    }, 500);
+      if (!isUserAssetInList(bookmarkEntry)) {
+        addUserAssetToList(bookmarkEntry);
+        void hapticService.triggerCustomHaptic({ intensity: "medium" });
+      }
+    }, 420);
+  };
+
+  const clearPressTimer = () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
   };
 
   const handleSelection = (bookmarkEntry: Bookmark) => {
-    // check if there are any user assets selected
-    if (selectedUserAssets.length) {
-      // check if the asset is in the list
+    if (selectionMode) {
       if (isUserAssetInList(bookmarkEntry)) {
         removeUserAssetFromList(bookmarkEntry);
       } else {
         addUserAssetToList(bookmarkEntry);
       }
-    } else {
-      // view asset if selection mode is not engaged
-      setSelectedBookmark(bookmarkEntry);
-      setIsOpen(true);
+      void hapticService.triggerNavigationHaptic();
+      return;
     }
+
+    setSelectedBookmark(bookmarkEntry);
+    setIsOpen(true);
   };
 
-  const handleOnMouseDown = (bookmarkEntry: Bookmark) => {
-    startPressTimer(bookmarkEntry);
-  };
-
-  const handleOnMouseUp = () => {
-    clearTimeout(timerRef.current);
-  };
-
-  const handleOnTouchStart = (bookmarkEntry: Bookmark) => {
-    startPressTimer(bookmarkEntry);
-  };
-
-  const handleOnTouchEnd = () => {
-    clearTimeout(timerRef.current);
-  };
+  const bookmarks = bookmarksResponse?.getMyBookmarks?.results;
+  const isEmpty = !bookmarks || bookmarks.length === 0;
 
   return (
-    <div className="bookmark-list-container">
+    <div
+      className={`bookmark-list-container ${
+        selectionMode ? "is-selecting" : ""
+      }`}
+    >
       <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
-        <IonRefresherContent></IonRefresherContent>
+        <IonRefresherContent />
       </IonRefresher>
-      <>
-        {!bookmarksResponse?.getMyBookmarks.results ? (
-          <div id="empty-text-container">
-            <IonText className="main-text">No Bookmarks</IonText>
-            <IonText className="sub-text">
-              You can make bookmarks by selecting a text in the bible.
-            </IonText>
+
+      {isEmpty ? (
+        <div id="empty-text-container" className="bookmark-empty-state">
+          <div className="bookmark-empty-icon" aria-hidden="true">
+            <span className="material-icons-round">bookmark_border</span>
           </div>
-        ) : (
-          <ResponsiveMasonry
-            columnsCountBreakPoints={{ 350: 2, 750: 2, 900: 3 }}
-          >
-            <Masonry columnsCount={2} gutter="16px">
-              {bookmarksResponse.getMyBookmarks.results.map(
-                (bookmarkEntry, index) => (
-                  <IonCard
-                    button
-                    className={`outlined-card ${
-                      isUserAssetInList(bookmarkEntry as any)
-                        ? "selected"
-                        : null
-                    }`}
-                    key={index}
-                    onClick={() => handleSelection(bookmarkEntry as any)}
-                    onMouseDown={() => handleOnMouseDown(bookmarkEntry as any)}
-                    onMouseUp={() => handleOnMouseUp()}
-                    onTouchStart={() =>
-                      handleOnTouchStart(bookmarkEntry as any)
-                    }
-                    onTouchEnd={() => handleOnTouchEnd()}
-                  >
-                    <IonCardContent>
-                      <IonText className="bookmark-card-verse">
-                        {bookmarkEntry.verses[0]
-                          ? bookmarkEntry.verses.map((verse) => verse.text)
-                          : bookmarkEntry.newVerses?.map(
-                              (verse) => verse.verseText
-                            )}
-                      </IonText>
+          <IonText className="main-text">No bookmarks yet</IonText>
+          <IonText className="sub-text">
+            Select a verse while reading to save it here.
+          </IonText>
+        </div>
+      ) : (
+        <ResponsiveMasonry
+          columnsCountBreakPoints={{ 350: 2, 750: 2, 900: 3 }}
+        >
+          <Masonry columnsCount={2} gutter="12px">
+            {bookmarks.map((bookmarkEntry, index) => {
+              const selected = isUserAssetInList(bookmarkEntry as Bookmark);
+              return (
+                <IonCard
+                  button
+                  className={`outlined-card bookmark-card ${
+                    selected ? "selected" : ""
+                  }`}
+                  key={bookmarkEntry._id || index}
+                  onClick={() => handleSelection(bookmarkEntry as Bookmark)}
+                  onMouseDown={() =>
+                    startPressTimer(bookmarkEntry as Bookmark)
+                  }
+                  onMouseUp={clearPressTimer}
+                  onMouseLeave={clearPressTimer}
+                  onTouchStart={() =>
+                    startPressTimer(bookmarkEntry as Bookmark)
+                  }
+                  onTouchEnd={clearPressTimer}
+                  onTouchCancel={clearPressTimer}
+                >
+                  <IonCardContent>
+                    <div
+                      className={`bookmark-select-indicator ${
+                        selected ? "is-on" : selectionMode ? "is-ready" : ""
+                      }`}
+                      aria-hidden="true"
+                    >
+                      {selected ? (
+                        <span className="material-icons-round">check</span>
+                      ) : null}
+                    </div>
+
+                    <IonText className="bookmark-card-verse">
+                      {bookmarkEntry.verses[0]
+                        ? bookmarkEntry.verses.map((verse) => verse.text)
+                        : bookmarkEntry.newVerses?.map(
+                            (verse) => verse.verseText
+                          )}
+                    </IonText>
+                    <div className="bookmark-card-footer">
                       <IonText className="bookmark-card-citation">
                         {bookmarkEntry.verses[0]
                           ? getVerseVerbageByVerses(bookmarkEntry.verses!)
@@ -165,22 +183,24 @@ const BookmarkAssetList: React.FC = () => {
                             )}
                       </IonText>
                       {bookmarkEntry.note ? (
-                        <IonIcon icon={CommentIcon} />
+                        <IonIcon icon={CommentIcon} aria-label="Has note" />
                       ) : null}
-                    </IonCardContent>
-                  </IonCard>
-                )
-              )}
-            </Masonry>
-          </ResponsiveMasonry>
-        )}
-      </>
+                    </div>
+                  </IonCardContent>
+                </IonCard>
+              );
+            })}
+          </Masonry>
+        </ResponsiveMasonry>
+      )}
 
-      <SelectedBookmarkModal
-        isOpen={isOpen}
-        onDismiss={onDismiss}
-        selectedBookmark={selectedBookmark!}
-      />
+      {selectedBookmark ? (
+        <SelectedBookmarkModal
+          isOpen={isOpen}
+          onDismiss={onDismiss}
+          selectedBookmark={selectedBookmark}
+        />
+      ) : null}
     </div>
   );
 };

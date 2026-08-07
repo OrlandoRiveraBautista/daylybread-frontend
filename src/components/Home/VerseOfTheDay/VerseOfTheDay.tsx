@@ -1,18 +1,6 @@
 import React, { useMemo, useState } from "react";
-import {
-  IonCard,
-  IonCardContent,
-  IonText,
-  IonIcon,
-  IonButton,
-  IonRow,
-  IonCol,
-} from "@ionic/react";
-import {
-  sunnyOutline,
-  share,
-  bookOutline,
-} from "ionicons/icons";
+import { IonText, IonIcon, IonButton } from "@ionic/react";
+import { sunnyOutline, share, bookOutline } from "ionicons/icons";
 import { useHistory } from "react-router";
 import { useAppContext } from "../../../context/context";
 import { getBibleUrl } from "../../../utils/support";
@@ -125,9 +113,13 @@ const VerseOfTheDay: React.FC = () => {
 
   const handleShare = () => {
     const appUrl = getBibleUrl();
-    const text = `📖 Verse of the Day\n\n"${verse.text}"\n— ${verse.reference}\n\n✨ ${appUrl}`;
+    const text = `Verse of the Day\n\n"${verse.text}"\n— ${verse.reference}\n\n${appUrl}`;
     if (navigator.share) {
-      navigator.share({ title: "Verse of the Day — Daylybread", text, url: appUrl });
+      navigator.share({
+        title: "Verse of the Day — Daylybread",
+        text,
+        url: appUrl,
+      });
     } else {
       navigator.clipboard?.writeText(text);
       setShared(true);
@@ -136,57 +128,53 @@ const VerseOfTheDay: React.FC = () => {
   };
 
   return (
-    <IonRow className="verse-of-the-day-row">
-      <IonCol size="12">
-        <IonCard className="votd-card">
-          <IonCardContent>
-            <div className="votd-header">
-              <div className="votd-label">
-                <IonIcon icon={sunnyOutline} className="votd-sun-icon" />
-                <IonText>
-                  <span className="votd-label-text">Verse of the Day</span>
-                </IonText>
-              </div>
-              <IonText>
-                <span className="votd-date">{today}</span>
-              </IonText>
-            </div>
+    <section className="verse-of-the-day" aria-label="Verse of the day">
+      <div className="home-section-header">
+        <IonText>
+          <h2 className="home-section-title">Verse of the Day</h2>
+        </IonText>
+        <p className="home-section-subtitle">{today}</p>
+      </div>
 
-            <div className="votd-theme-badge">
-              <span>{verse.theme}</span>
-            </div>
+      <div className="votd-card">
+        <div className="votd-header">
+          <div className="votd-label">
+            <IonIcon icon={sunnyOutline} className="votd-sun-icon" />
+            <span className="votd-label-text">Today&apos;s reading</span>
+          </div>
+          <span className="votd-theme-badge">{verse.theme}</span>
+        </div>
 
-            <div className="votd-verse-block">
-              <IonText>
-                <p className="votd-verse-text">"{verse.text}"</p>
-                <p className="votd-reference">— {verse.reference}</p>
-              </IonText>
-            </div>
+        <div className="votd-verse-block">
+          <IonText>
+            <p className="votd-verse-text">&ldquo;{verse.text}&rdquo;</p>
+            <p className="votd-reference">— {verse.reference}</p>
+          </IonText>
+        </div>
 
-            <div className="votd-actions">
-              <IonButton
-                fill="outline"
-                size="small"
-                className="votd-btn"
-                onClick={handleReadInContext}
-              >
-                <IonIcon icon={bookOutline} slot="start" />
-                Read in Context
-              </IonButton>
-              <IonButton
-                fill="outline"
-                size="small"
-                className="votd-btn"
-                onClick={handleShare}
-              >
-                <IonIcon icon={share} slot="start" />
-                {shared ? "Copied!" : "Share"}
-              </IonButton>
-            </div>
-          </IonCardContent>
-        </IonCard>
-      </IonCol>
-    </IonRow>
+        <div className="votd-actions">
+          <IonButton
+            fill="solid"
+            size="small"
+            color="primary"
+            className="votd-btn"
+            onClick={handleReadInContext}
+          >
+            <IonIcon icon={bookOutline} slot="start" />
+            Read in Context
+          </IonButton>
+          <IonButton
+            fill="outline"
+            size="small"
+            className="votd-btn"
+            onClick={handleShare}
+          >
+            <IonIcon icon={share} slot="start" />
+            {shared ? "Copied" : "Share"}
+          </IonButton>
+        </div>
+      </div>
+    </section>
   );
 };
 

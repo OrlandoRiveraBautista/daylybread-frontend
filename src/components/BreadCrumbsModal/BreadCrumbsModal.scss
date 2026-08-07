@@ -1,12 +1,25 @@
-// BreadCrumbs Modal
+@import "../../theme/variables.scss";
+
+#bread-crumbs-modal.breadcrumbs-modal,
 #bread-crumbs-modal {
   --height: 98%;
+  --border-radius: 28px 28px 0 0;
+  --box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.14);
+
+  &::part(handle) {
+    background: rgba(60, 60, 67, 0.22);
+    width: 36px;
+    height: 5px;
+  }
 
   .breadcrumbs-modal-header {
+    background: var(--ion-background-color);
+    padding-top: 8px;
+
     ion-toolbar {
-      --background: var(--ion-background-color);
+      --background: transparent;
       --border-width: 0;
-      --min-height: 56px;
+      --min-height: 48px;
       --padding-start: 16px;
       --padding-end: 16px;
       --padding-top: 4px;
@@ -14,14 +27,13 @@
     }
 
     ion-title {
-      font-family: "Product Sans";
-      font-size: 22px;
-      font-weight: 500;
-      letter-spacing: 0;
+      font-family: $font-family;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
       color: var(--ion-text-color);
       text-align: center;
-      padding: 8px 0;
-      margin-top: 0;
+      padding: 4px 0 8px;
     }
 
     .selected-indicator-container {
@@ -34,7 +46,9 @@
       gap: 10px;
       padding: 12px 14px;
       border-radius: 16px;
+      // Solid surface — no blur on large selection card
       background: var(--ion-surface-container);
+      border: 1px solid rgba(195, 198, 207, 0.35);
     }
 
     .selected-indicator-top {
@@ -45,12 +59,12 @@
     }
 
     .selected-indicator-label {
-      font-family: "Product Sans";
+      font-family: $font-family;
       font-size: 11px;
       font-weight: 600;
-      letter-spacing: 0.6px;
+      letter-spacing: 0.02em;
       text-transform: uppercase;
-      color: var(--ion-outline-color);
+      color: var(--ion-color-medium);
       flex-shrink: 0;
     }
 
@@ -58,8 +72,9 @@
       display: flex;
       align-items: center;
       flex-wrap: nowrap;
-      gap: 4px;
+      gap: 6px;
       overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
 
       .quick-action-chip {
         text-transform: capitalize;
@@ -67,13 +82,22 @@
         height: 30px;
         font-size: 13px;
         font-weight: 600;
+        letter-spacing: -0.01em;
         --padding-start: 12px;
         --padding-end: 12px;
-        letter-spacing: 0.1px;
+        --background: var(--ion-color-secondary-container, #ffd9e2);
+        --color: var(--ion-color-secondary-shade, #d32779);
+        background: var(--ion-color-secondary-container, #ffd9e2);
+        color: var(--ion-color-secondary-shade, #d32779);
+        opacity: 1;
+        transition: transform 100ms ease-out;
+
+        &:active {
+          transform: scale(0.96);
+        }
       }
     }
 
-    /* Custom tappable citation row — no Ionic checkbox offsets */
     .citation-toggle {
       all: unset;
       display: flex;
@@ -86,14 +110,15 @@
       padding: 10px 12px;
       border-radius: 12px;
       background: transparent;
-      transition: background 0.15s ease;
+      transition: background 100ms ease-out, transform 100ms ease-out;
 
       &:active {
-        background: rgba(var(--ion-color-primary-rgb), 0.06);
+        background: rgba(var(--ion-color-primary-rgb), 0.08);
+        transform: scale(0.99);
       }
 
       &--on {
-        background: rgba(var(--ion-color-secondary-rgb), 0.08);
+        background: rgba(var(--ion-color-secondary-rgb), 0.1);
       }
     }
 
@@ -106,9 +131,10 @@
     }
 
     .selected-citation {
-      font-family: "Product Sans";
+      font-family: $font-family;
       font-size: 14px;
-      font-weight: 500;
+      font-weight: 600;
+      letter-spacing: -0.01em;
       line-height: 1.4;
       color: var(--ion-text-color);
       display: -webkit-box;
@@ -119,8 +145,10 @@
     }
 
     .selected-indicator-hint {
-      font-size: 11px;
+      font-size: 12px;
+      font-weight: 500;
       line-height: 1.3;
+      letter-spacing: -0.01em;
       color: var(--ion-color-medium);
     }
 
@@ -129,18 +157,19 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 4px 10px;
+      min-width: 44px;
+      padding: 5px 12px;
       border-radius: 100px;
-      border: 1.5px solid var(--ion-outline-variant-color);
-      background: transparent;
-      transition: all 0.2s ease;
+      border: 1.5px solid rgba(195, 198, 207, 0.55);
+      background: var(--ion-background-color, #fff);
+      transition: background 140ms ease, border-color 140ms ease;
 
       span {
-        font-family: "Product Sans";
+        font-family: $font-family;
         font-size: 12px;
-        font-weight: 600;
-        color: var(--ion-outline-color);
-        letter-spacing: 0.2px;
+        font-weight: 700;
+        color: var(--ion-color-medium);
+        letter-spacing: -0.01em;
       }
 
       &--on {
@@ -156,7 +185,7 @@
 
   .bread-crumbs-modal-content {
     --padding-bottom: 0;
-    --padding-top: 0;
+    --padding-top: 8px;
   }
 
   ion-grid {
@@ -174,6 +203,9 @@
     flex-direction: column;
     position: relative;
     justify-self: flex-end;
+    flex: 1;
+    min-height: 0;
+
     ion-grid {
       padding: 0;
     }
@@ -181,24 +213,49 @@
 
   .messages-container {
     margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-bottom: 8px;
 
     .chat-message {
       white-space: pre-wrap;
       -webkit-user-select: text;
-      -moz-user-select: text;
-      -ms-user-select: text;
       user-select: text;
+      font-size: 15px;
+      line-height: 1.5;
+      letter-spacing: -0.01em;
+      color: var(--ion-text-color);
+
+      p {
+        margin: 0 0 0.6em;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
     }
 
     .chat-sender-label {
       display: block;
-      font-family: "Product Sans";
+      font-family: $font-family;
       font-size: 11px;
       font-weight: 600;
-      letter-spacing: 0.4px;
+      letter-spacing: 0.02em;
       text-transform: uppercase;
-      color: var(--ion-outline-color);
-      margin-bottom: 4px;
+      color: var(--ion-color-medium);
+      margin-bottom: 6px;
+    }
+
+    ion-card {
+      margin: 0;
+      border-radius: 18px;
+      box-shadow: none;
+      max-width: 92%;
+    }
+
+    ion-card-content {
+      padding: 12px 14px;
     }
   }
 
@@ -207,13 +264,14 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    padding: 48px 24px 24px;
+    gap: 8px;
+    padding: 40px 24px 28px;
     text-align: center;
 
     .chat-empty-icon {
       font-size: 32px;
       line-height: 1;
+      margin-bottom: 4px;
       background: linear-gradient(
         135deg,
         var(--ion-color-primary),
@@ -226,181 +284,278 @@
 
     .chat-empty-title {
       display: block;
-      font-family: "Product Sans";
-      font-size: 18px;
-      font-weight: 600;
+      font-family: $font-family;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.15;
       color: var(--ion-text-color);
     }
 
     .chat-empty-subtitle {
       display: block;
       font-size: 14px;
-      line-height: 1.5;
+      font-weight: 500;
+      line-height: 1.45;
+      letter-spacing: -0.01em;
       color: var(--ion-color-medium);
       max-width: 260px;
     }
   }
 
   .right-align-text {
-    text-align: right;
+    text-align: left;
   }
 
   .right-align-self {
     justify-content: flex-end;
+
+    ion-card {
+      background: rgba(var(--ion-color-primary-rgb), 0.12);
+      border: 1px solid rgba(var(--ion-color-primary-rgb), 0.16);
+      border-bottom-right-radius: 6px;
+    }
   }
 
   .chat-respond {
+    justify-content: flex-start;
+
     ion-card {
-      background: var(--ion-background-variant);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-      overflow: hidden;
+      background: var(--ion-surface-container);
+      border: 1px solid rgba(195, 198, 207, 0.35);
+      border-bottom-left-radius: 6px;
+      transition: box-shadow 220ms cubic-bezier(0.32, 0.72, 0, 1);
     }
 
-    // Shadow effect for new AI responses
-    &.message-animated {
-      ion-card {
-        box-shadow: 0 0 0 1px rgba(var(--ion-color-primary-rgb), 0.2),
-          0 4px 20px rgba(var(--ion-color-primary-rgb), 0.15),
-          0 8px 40px rgba(var(--ion-color-primary-rgb), 0.1),
-          0 0 0 1px rgba(var(--ion-color-secondary-rgb), 0.1);
-        transform: translateY(-2px);
-        background: var(--ion-background-variant);
-        position: relative;
-
-        // Shimmer effect overlay
-        &::before {
-          content: "";
-          position: absolute;
-          top: 0;
-          left: -100%;
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(
-            90deg,
-            transparent 0%,
-            rgba(var(--ion-color-primary-rgb), 0.1) 25%,
-            rgba(var(--ion-color-secondary-rgb), 0.15) 50%,
-            rgba(var(--ion-color-primary-rgb), 0.1) 75%,
-            transparent 100%
-          );
-          animation: shimmer 2s ease-in-out;
-          z-index: 1;
-        }
-
-        // Ensure content stays above shimmer
-        ion-card-content {
-          position: relative;
-          z-index: 2;
-        }
-      }
-    }
-  }
-
-  // Shimmer animation keyframes
-  @keyframes shimmer {
-    0% {
-      left: -100%;
-    }
-    100% {
-      left: 100%;
+    // Subtle arrival — no shimmer / perpetual motion
+    &.message-animated ion-card {
+      box-shadow: 0 0 0 1px rgba(var(--ion-color-primary-rgb), 0.12),
+        0 6px 18px rgba(var(--ion-color-primary-rgb), 0.1);
     }
   }
 
   .breadcrumbs-chat-input-and-suggestions-container {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
     position: sticky;
     bottom: 0;
-    padding-bottom: 16px;
-    background-color: var(--ion-background-color);
+    padding: 8px 0 calc(12px + env(safe-area-inset-bottom, 0px));
+    // Opaque sticky footer — cheaper than blurring a wide composer
+    background: linear-gradient(
+      180deg,
+      rgba(var(--ion-background-color-rgb, 250, 249, 253), 0) 0%,
+      var(--ion-background-color) 28%
+    );
 
     .breadcrumbs-suggestions-row {
       overflow-x: auto;
       height: fit-content;
-      min-height: 40px;
-      padding-top: 4px;
+      min-height: 36px;
+      padding: 2px 2px 0;
+      -webkit-overflow-scrolling: touch;
 
       .breadcrumbs-suggestions-col {
         display: flex;
         flex-wrap: nowrap;
         width: max-content;
         height: fit-content;
-        gap: 4px;
-      }
-    }
-    .chat-input-row {
-      background: var(--ion-background-variant);
-      border-radius: var(--ion-border-radius);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-      cursor: pointer;
-
-      // Modern gradient shadow effect when focused
-      &.focused {
-        box-shadow: 0 0 0 1px rgba(var(--ion-color-primary-rgb), 0.2),
-          0 4px 20px rgba(var(--ion-color-primary-rgb), 0.15),
-          0 8px 40px rgba(var(--ion-color-primary-rgb), 0.1),
-          0 0 0 1px rgba(var(--ion-color-secondary-rgb), 0.1);
-        transform: translateY(-2px);
-        background: linear-gradient(
-          135deg,
-          var(--ion-background-variant) 0%,
-          rgba(var(--ion-color-primary-rgb), 0.02) 50%,
-          var(--ion-background-variant) 100%
-        );
+        gap: 6px;
       }
 
-      // Hover effect for better UX
-      &:hover:not(.focused) {
-        box-shadow: 0 2px 8px rgba(var(--ion-color-primary-rgb), 0.08),
-          0 4px 16px rgba(var(--ion-color-primary-rgb), 0.04);
-        transform: translateY(-1px);
-      }
+      ion-chip {
+        margin: 0;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        // Solid fill — Ionic secondary chips default to translucent
+        --background: var(--ion-color-secondary-container, #ffd9e2);
+        --color: var(--ion-color-secondary-shade, #d32779);
+        background: var(--ion-color-secondary-container, #ffd9e2);
+        color: var(--ion-color-secondary-shade, #d32779);
+        opacity: 1;
+        transition: transform 100ms ease-out;
 
-      ion-col {
-        border-radius: 12px;
-      }
-      ion-textarea,
-      .textarea-fill-solid.sc-ion-textarea-md-h {
-        background: transparent;
-        --background: transparent;
-        border: none;
-        border-radius: 12px;
-        --border-radius: 12px;
-        --border-style: none;
-        --border-width: 50%;
-        --highlight-color-focused: none;
-        // --placeholder-opacity: 1;
-      }
-
-      // When focused, ensure textarea background is transparent to show gradient
-      &.focused {
-        ion-textarea,
-        .textarea-fill-solid.sc-ion-textarea-md-h {
-          background: transparent;
-          --background: transparent;
+        &:active {
+          transform: scale(0.96);
         }
       }
+    }
 
-      .textarea-label-placement-floating.sc-ion-textarea-md-h
-        textarea.sc-ion-textarea-md {
-        opacity: 1;
+    .chat-input-row {
+      background: var(--ion-surface-container);
+      border-radius: 18px;
+      border: 1px solid rgba(195, 198, 207, 0.4);
+      // Instant focus feedback — no wait for React/onIonFocus
+      transition: border-color 100ms ease-out, box-shadow 100ms ease-out;
+      position: relative;
+      cursor: text;
+
+      &:focus-within {
+        border-color: rgba(var(--ion-color-primary-rgb), 0.45);
+        box-shadow: 0 0 0 3px rgba(var(--ion-color-primary-rgb), 0.1);
       }
 
       ion-col {
+        border-radius: 12px;
         padding: 0;
         display: flex;
         align-items: center;
-        .textarea-send-button {
-          height: 100% !important;
-          margin: 0;
-          --border-radius: 12px;
-          --padding-start: 12px !important;
-          --padding-end: 12px !important;
+      }
+
+      // Lock padding — outline fill + global --border-width: 50% was collapsing start inset on focus
+      .chat-input-textarea,
+      ion-textarea.chat-input-textarea {
+        width: 100%;
+        background: transparent !important;
+        --background: transparent !important;
+        border: none !important;
+        --border-width: 0 !important;
+        --border-style: none !important;
+        --border-color: transparent !important;
+        --border-radius: 12px;
+        --highlight-color-focused: transparent;
+        --highlight-color-valid: transparent;
+        --highlight-color-invalid: transparent;
+        --padding-start: 14px !important;
+        --padding-end: 8px !important;
+        --padding-top: 12px !important;
+        --padding-bottom: 12px !important;
+        font-size: 15px;
+        letter-spacing: -0.01em;
+        margin: 0;
+      }
+
+      &--listening {
+        border-color: rgba(var(--ion-color-secondary-rgb), 0.55);
+        box-shadow: 0 0 0 3px rgba(var(--ion-color-secondary-rgb), 0.12);
+      }
+
+      .textarea-actions-container {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+        padding-right: 2px;
+      }
+
+      .textarea-dictation-button,
+      .textarea-send-button {
+        height: 44px !important;
+        margin: 0;
+        --border-radius: 12px;
+        --padding-start: 10px !important;
+        --padding-end: 10px !important;
+        transition: transform 100ms ease-out;
+
+        &:active:not([disabled]) {
+          transform: scale(0.92);
         }
       }
+
+      .textarea-send-button {
+        margin-right: 2px;
+      }
+
+      .textarea-dictation-button {
+        position: relative;
+
+        &--listening {
+          --color: var(--ion-color-secondary);
+
+          &::before {
+            content: "";
+            position: absolute;
+            inset: 8px;
+            border-radius: 50%;
+            background: rgba(var(--ion-color-secondary-rgb), 0.18);
+            animation: breadcrumbs-mic-pulse 1.4s ease-out infinite;
+          }
+
+          ion-icon {
+            position: relative;
+            z-index: 1;
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes breadcrumbs-mic-pulse {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.9;
+  }
+  70% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  #bread-crumbs-modal {
+    &::part(handle) {
+      background: rgba(235, 235, 245, 0.28);
+    }
+
+    .selected-indicator {
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .citation-pill {
+      background: var(--ion-background-color, #1c1c1e);
+      border-color: rgba(255, 255, 255, 0.14);
+    }
+
+    .chat-respond ion-card {
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .chat-input-row {
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .quick-action-chip,
+    .breadcrumbs-suggestions-row ion-chip {
+      --background: #4a2236;
+      --color: #ffb0d4;
+      background: #4a2236;
+      color: #ffb0d4;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #bread-crumbs-modal {
+    .quick-action-chip,
+    .citation-toggle,
+    .chat-input-row,
+    .textarea-send-button,
+    .textarea-dictation-button,
+    .breadcrumbs-suggestions-row ion-chip,
+    .chat-respond ion-card {
+      transition: none;
+    }
+
+    .quick-action-chip:active,
+    .citation-toggle:active,
+    .textarea-send-button:active,
+    .textarea-dictation-button:active,
+    .breadcrumbs-suggestions-row ion-chip:active {
+      transform: none;
+    }
+
+    .chat-input-row:focus-within,
+    .chat-input-row--listening {
+      box-shadow: none;
+    }
+
+    .textarea-dictation-button--listening::before {
+      animation: none;
+      opacity: 0.35;
     }
   }
 }
