@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import {
   IonContent,
   IonModal,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
   IonGrid,
-  IonCol,
-  IonRow,
   IonText,
-  IonCheckbox,
 } from "@ionic/react";
 import {
   IonModalCustomEvent,
@@ -190,48 +190,49 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
       backdropBreakpoint={0.5}
       onDidPresent={(e) => handleBreakpointChange(e)}
     >
-      <IonContent className="ion-padding bread-crumbs-modal-content">
-        <IonGrid
-          className={
-            selectedVersesCitation
-              ? "bread-crumbs-modal-main-grid-modified"
-              : ""
-          }
-        >
-          {selectedVersesCitation ? (
-            <IonRow className="selected-indicator-container">
-              <IonCol className="selected-indicator">
-                {/* Row is for quick actions on the selected text, it is always on the selected text */}
-                <IonRow>
+      <IonHeader className="ion-no-border breadcrumbs-modal-header">
+        <IonToolbar>
+          <IonTitle className="product-sans">BreadCrumbs Chat</IonTitle>
+        </IonToolbar>
+        {selectedVersesCitation ? (
+          <div className="selected-indicator-container">
+            <div className="selected-indicator">
+              {/* Label row */}
+              <div className="selected-indicator-top">
+                <IonText className="selected-indicator-label">
+                  Selected text
+                </IonText>
+                <div className="selected-indicator-actions">
                   <SelectedTextQuickActions />
-                </IonRow>
-                <IonRow>
-                  <IonText>
-                    <sub>Selected Text</sub>
+                </div>
+              </div>
+
+              {/* Citation + include toggle — single tappable row */}
+              <button
+                className={`citation-toggle ${useChosenTextVerbage ? "citation-toggle--on" : ""}`}
+                onClick={() => setUseChosenTextVerbage(!useChosenTextVerbage)}
+              >
+                <div className="citation-toggle-text">
+                  <IonText className="selected-citation">
+                    {selectedVersesCitation}
                   </IonText>
-                </IonRow>
-                <IonRow>
-                  <IonCol>
-                    <IonCheckbox
-                      labelPlacement="end"
-                      className="selected-text-checkbox"
-                      checked={useChosenTextVerbage}
-                      onIonChange={() =>
-                        setUseChosenTextVerbage(!useChosenTextVerbage)
-                      }
-                    >
-                      <IonText>{selectedVersesCitation}</IonText>
-                    </IonCheckbox>
-                  </IonCol>
-                </IonRow>
-              </IonCol>
-            </IonRow>
-          ) : null}
-          <div
-            className={`chat-container ${
-              selectedVersesCitation ? "max-height" : ""
-            }`}
-          >
+                  <IonText className="selected-indicator-hint">
+                    {useChosenTextVerbage
+                      ? "Included with your next message"
+                      : "Tap to include with next message"}
+                  </IonText>
+                </div>
+                <div className={`citation-pill ${useChosenTextVerbage ? "citation-pill--on" : ""}`}>
+                  <span>{useChosenTextVerbage ? "On" : "Off"}</span>
+                </div>
+              </button>
+            </div>
+          </div>
+        ) : null}
+      </IonHeader>
+      <IonContent className="ion-padding bread-crumbs-modal-content">
+        <IonGrid>
+          <div className="chat-container">
             <BreadCrumbsChat
               onSubmit={handleSubmit}
               messages={messages}

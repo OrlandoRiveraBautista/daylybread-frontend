@@ -8,7 +8,6 @@ import {
   IonContent,
   IonItem,
   IonLabel,
-  IonInput,
   IonSelect,
   IonSelectOption,
   IonIcon,
@@ -17,6 +16,7 @@ import {
 import { checkmark } from "ionicons/icons";
 import * as IonIcons from "ionicons/icons";
 import { TileConfig, TileSize } from "../../NFC/iPhoneHomeScreen/types";
+import { PlatformForm, PlatformFormInput } from "../PlatformFormInput";
 import "../../../pages/Platform/Platform/Platform.scss";
 
 interface TileConfigModalProps {
@@ -118,36 +118,29 @@ export const TileConfigModal: React.FC<TileConfigModalProps> = ({
           </div>
 
           {/* Form */}
-          <div className="platform-form-container">
-            <div className="platform-form">
-              <IonItem>
-                <IonLabel position="stacked">Label</IonLabel>
-                <IonInput
-                  value={label}
-                  placeholder="Enter tile label"
-                  onIonChange={(e) => setLabel(e.detail.value || "")}
-                />
-              </IonItem>
+          <PlatformForm>
+              <PlatformFormInput
+                label="Label"
+                value={label}
+                placeholder="Enter tile label"
+                onIonChange={(e) => setLabel(e.detail.value || "")}
+              />
 
-              <IonItem>
-                <IonLabel position="stacked">URL</IonLabel>
-                <IonInput
-                  type="url"
-                  value={url}
-                  placeholder="https://example.com"
-                  onIonChange={(e) => setUrl(e.detail.value || "")}
-                />
-              </IonItem>
+              <PlatformFormInput
+                label="URL"
+                type="url"
+                value={url}
+                placeholder="https://example.com"
+                onIonChange={(e) => setUrl(e.detail.value || "")}
+              />
 
               {(size === "medium" || size === "large") && (
-                <IonItem>
-                  <IonLabel position="stacked">Subtitle (optional)</IonLabel>
-                  <IonInput
-                    value={subtitle}
-                    placeholder="Brief description"
-                    onIonChange={(e) => setSubtitle(e.detail.value || "")}
-                  />
-                </IonItem>
+                <PlatformFormInput
+                  label="Subtitle (optional)"
+                  value={subtitle}
+                  placeholder="Brief description"
+                  onIonChange={(e) => setSubtitle(e.detail.value || "")}
+                />
               )}
 
               <IonItem>
@@ -169,8 +162,7 @@ export const TileConfigModal: React.FC<TileConfigModalProps> = ({
                   onIonChange={(e) => setIsInDock(e.detail.checked)}
                 />
               </IonItem>
-            </div>
-          </div>
+          </PlatformForm>
 
           {/* Color Picker */}
           <div className="color-section">

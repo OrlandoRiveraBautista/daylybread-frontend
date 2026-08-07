@@ -35,8 +35,8 @@
 
       .card-icon {
         flex-shrink: 0;
-        width: 48px;
-        height: 48px;
+        width: 44px;
+        height: 44px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -44,7 +44,15 @@
         background: var(--ion-color-light);
 
         ion-icon {
-          font-size: 24px;
+          font-size: 22px;
+        }
+
+        &.primary-icon {
+          background: rgba(var(--ion-color-primary-rgb), 0.1);
+        }
+
+        &.secondary-icon {
+          background: rgba(var(--ion-color-secondary-rgb), 0.1);
         }
       }
 
@@ -52,21 +60,31 @@
         flex: 1;
         min-width: 0;
 
-        ion-card-title {
+        .card-title {
           font-family: "Product Sans", -apple-system, BlinkMacSystemFont,
             "Helvetica Neue", "Roboto", sans-serif;
-          font-size: 18px;
-          font-weight: 500 !important;
+          font-size: 17px;
+          font-weight: 600;
           color: var(--ion-text-color);
-          margin: 0 0 4px 0;
+          margin: 0 0 2px 0;
           letter-spacing: -0.2px;
         }
 
-        p {
+        .card-description {
           font-size: 14px;
           color: var(--ion-color-medium);
-          margin: 0;
+          margin: 0 0 2px 0;
           line-height: 1.4;
+        }
+
+        .card-timestamp {
+          font-size: 11px;
+          color: var(--ion-color-medium);
+          opacity: 0.7;
+          margin: 0;
+          font-weight: 500;
+          text-transform: uppercase;
+          letter-spacing: 0.4px;
         }
       }
 

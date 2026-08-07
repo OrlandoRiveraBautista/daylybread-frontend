@@ -66,8 +66,16 @@ export const ChordImporter: React.FC<ChordImporterProps> = ({ onImport, onCancel
         });
         setShowPreview(true);
       }
-    } catch {
-      setFetchError("Failed to fetch chords. Please check the URL and try again.");
+    } catch (err: unknown) {
+      const message =
+        err && typeof err === "object" && "message" in err
+          ? String((err as { message: unknown }).message)
+          : "";
+      setFetchError(
+        /auth/i.test(message)
+          ? "Please log in to import chords from a URL."
+          : "Failed to fetch chords. Please check the URL and try again."
+      );
     }
   };
 

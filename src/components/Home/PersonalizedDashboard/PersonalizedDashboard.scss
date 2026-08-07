@@ -129,6 +129,14 @@
         background: linear-gradient(135deg, #ff9800, #f57c00);
       }
 
+      &.streak.streak-active {
+        border: 1.5px solid rgba(255, 152, 0, 0.3);
+
+        .stat-number {
+          color: #ff9800;
+        }
+      }
+
       &.mood-checkins .stat-icon {
         background: linear-gradient(135deg, #e91e63, #c2185b);
       }

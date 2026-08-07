@@ -1,7 +1,7 @@
 import React from "react";
 import { IonImg, IonText, IonTitle } from "@ionic/react";
 import { useLocation } from "react-router-dom";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 /* Components */
 import Login from "./Login";

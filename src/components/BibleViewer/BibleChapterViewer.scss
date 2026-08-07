@@ -2,20 +2,22 @@
 
 #chapter-viewer-container {
   height: 100%;
+
   .bibleSwiper {
     height: max-content !important;
+    padding: 12px 16px 8px !important;
 
     .swiper-slide {
       height: max-content !important;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
-      border-radius: 12px;
+      border-radius: 20px;
       text-align: inherit !important;
       font-size: 18px;
       background-color: var(--ion-surface-container);
-      box-shadow: 2px 2px 2px 1px rgb(0 0 0 / 20%);
-      padding: 16px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.06);
+      padding: 24px 20px 20px;
     }
   }
 
@@ -24,23 +26,33 @@
     flex-direction: column;
     justify-content: space-between;
     min-height: 100%;
-    gap: 32px;
+    gap: 24px;
+    width: 100%;
+
     .text-viewer {
       position: relative;
       min-height: 100%;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 0;
 
       .chapter-number {
-        font-size: 24px;
-        margin-right: 8px;
+        font-size: 56px;
+        font-weight: 800;
+        line-height: 1;
+        float: left;
+        margin-right: 6px;
+        margin-top: 4px;
+        margin-bottom: -4px;
+        color: var(--ion-color-primary);
+        letter-spacing: -2px;
       }
 
       .verse-selected {
-        text-decoration: underline;
-        text-decoration-thickness: 2px;
-        text-decoration-color: $color-primary;
+        background-color: rgba(var(--ion-color-primary-rgb), 0.12);
+        border-radius: 6px;
+        padding: 2px 4px;
+        margin: -2px -4px;
       }
 
       .currently-playing-verse {

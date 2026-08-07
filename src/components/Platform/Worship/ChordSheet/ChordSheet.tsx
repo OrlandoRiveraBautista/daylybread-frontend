@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { IonButton, IonIcon, IonBadge } from "@ionic/react";
 import { addCircleOutline, removeCircleOutline } from "ionicons/icons";
 import {
@@ -17,14 +17,25 @@ interface ChordSheetProps {
   originalKey?: string;
   /** Font size in px for lyrics (chords scale proportionally) */
   fontSize?: number;
+  /** Fired when user changes transpose (± semitones from originalKey); for practice audio sync */
+  onTransposeChange?: (semitonesFromDisplayKey: number) => void;
 }
 
 export const ChordSheet: React.FC<ChordSheetProps> = ({
   chordPro,
   originalKey = "",
   fontSize = 15,
+  onTransposeChange,
 }) => {
   const [transpose, setTranspose] = useState(0);
+
+  useEffect(() => {
+    setTranspose(0);
+  }, [chordPro]);
+
+  useEffect(() => {
+    onTransposeChange?.(transpose);
+  }, [transpose, onTransposeChange]);
 
   const useFlats = useMemo(
     () => shouldUseFlats(originalKey || "C"),

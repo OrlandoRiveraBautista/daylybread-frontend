@@ -32,22 +32,46 @@ const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
   onDismiss,
   selectedBookmark,
 }: ISelectedBookmarkModal) => {
-  // hook
-  const { setBookmarkUpdate, data, loading, error } = useUpdateBookmark();
+  const { setBookmarkUpdate, data, loading, error, reset } =
+    useUpdateBookmark();
 
-  // local storage
-  const [inputActive, setInputActive] = useState<boolean>(false);
-  const [noteCopy, setNoteCopy] = useState(
-    selectedBookmark ? selectedBookmark.note : undefined
-  );
+  const [inputActive, setInputActive] = useState(false);
+  const [noteCopy, setNoteCopy] = useState<string | null | undefined>();
+  const [displayedNote, setDisplayedNote] = useState<
+    string | null | undefined
+  >();
+  const [saveSucceeded, setSaveSucceeded] = useState(false);
+
+  // Sync local note state whenever a bookmark is opened.
+  useEffect(() => {
+    if (!isOpen || !selectedBookmark) return;
+
+    setNoteCopy(selectedBookmark.note);
+    setDisplayedNote(selectedBookmark.note);
+    setInputActive(false);
+    setSaveSucceeded(false);
+    reset();
+  }, [isOpen, selectedBookmark?._id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (!data) return;
+    if (!data?.updateBookmark?.results) return;
 
-    setInputActive(!inputActive);
+    const savedNote = data.updateBookmark.results.note;
+    setDisplayedNote(savedNote);
+    setNoteCopy(savedNote);
+    setSaveSucceeded(true);
+
+    const timer = setTimeout(() => {
+      setInputActive(false);
+      setSaveSucceeded(false);
+      reset();
+    }, 900);
+
+    return () => clearTimeout(timer);
   }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSubmit = () => {
+    setSaveSucceeded(false);
     setBookmarkUpdate({
       variables: {
         updateBookmarkId: selectedBookmark._id,
@@ -57,6 +81,15 @@ const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
       },
     });
   };
+
+  const handleCancelEdit = () => {
+    setNoteCopy(displayedNote);
+    setInputActive(false);
+    setSaveSucceeded(false);
+    reset();
+  };
+
+  const hasLegacyVerses = Boolean(selectedBookmark?.verses?.[0]);
 
   return (
     <IonModal
@@ -70,30 +103,25 @@ const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
         className="ion-padding bookmark-modal"
         id="selectedBookmarkModal"
       >
-        {/* Modal content container */}
         <div className="modal-content-container">
-          {/* Title */}
           <IonTitle className="ion-text-center">Bookmark</IonTitle>
 
-          {/* Content */}
           {selectedBookmark ? (
             <div className="selected-bookmark-content">
-              {/* Verses, section label, and note input container */}
               <div className="text-container">
-                {/* Verse and label */}
                 <div className="verse-container">
                   <IonRow>
                     <IonText>
                       <sub>Text:</sub>
                     </IonText>
                   </IonRow>
-                  {selectedBookmark.verses[0]
+                  {hasLegacyVerses
                     ? selectedBookmark.verses
                         .slice()
                         .sort((a, b) => Number(a.verse) - Number(b.verse))
                         .map((verse) => {
                           return (
-                            <IonRow key={verse.bibleId}>
+                            <IonRow key={verse._id || verse.bibleId}>
                               <IonCol>
                                 <IonText>{Number(verse.verse)}.</IonText>
                                 <IonText>{verse.text}</IonText>
@@ -101,8 +129,8 @@ const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
                             </IonRow>
                           );
                         })
-                    : selectedBookmark
-                        .newVerses!.slice()
+                    : selectedBookmark.newVerses
+                        ?.slice()
                         .sort(
                           (a, b) => Number(a.verseStart) - Number(b.verseStart)
                         )
@@ -124,10 +152,9 @@ const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
                           );
                         })}
                 </div>
-                {/* Verse verbage */}
                 <IonRow className="ion-justify-content-end">
                   <IonText>
-                    {selectedBookmark.verses[0]
+                    {hasLegacyVerses
                       ? getVerseVerbageByVerses(selectedBookmark.verses!)
                       : getVerseVerbageByNewVerses(
                           selectedBookmark.newVerses!,
@@ -136,8 +163,7 @@ const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
                   </IonText>
                 </IonRow>
 
-                {/* Note or input field to add note */}
-                {selectedBookmark.note && !inputActive ? (
+                {displayedNote && !inputActive ? (
                   <>
                     <IonRow>
                       <IonText>
@@ -146,7 +172,7 @@ const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
                     </IonRow>
                     <IonRow>
                       <IonCol>
-                        <IonText>{selectedBookmark.note}</IonText>
+                        <IonText>{displayedNote}</IonText>
                       </IonCol>
                     </IonRow>
                   </>
@@ -154,7 +180,7 @@ const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
                   <IonTextarea
                     labelPlacement="floating"
                     color="primary"
-                    value={noteCopy}
+                    value={noteCopy ?? ""}
                     fill="outline"
                     autoGrow={true}
                     onIonInput={(e) => setNoteCopy(e.target.value)}
@@ -162,27 +188,29 @@ const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
                 ) : null}
               </div>
 
-              {/* Set of buttons for action */}
               <IonRow className="action-buttons">
-                {!selectedBookmark.note && !inputActive ? (
+                {!displayedNote && !inputActive ? (
                   <IonButton
                     shape="round"
                     fill="solid"
                     color="secondary"
                     className="flat"
-                    onClick={() => setInputActive(!inputActive)}
+                    onClick={() => setInputActive(true)}
                     disabled={loading}
                     expand="block"
                   >
                     Add a note
                   </IonButton>
-                ) : selectedBookmark.note && !inputActive ? (
+                ) : displayedNote && !inputActive ? (
                   <IonButton
                     shape="round"
                     fill="solid"
                     color="secondary"
                     className="flat"
-                    onClick={() => setInputActive(!inputActive)}
+                    onClick={() => {
+                      setNoteCopy(displayedNote);
+                      setInputActive(true);
+                    }}
                     disabled={loading}
                   >
                     Edit note
@@ -194,46 +222,42 @@ const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
                       fill="clear"
                       color="medium"
                       className="flat"
-                      onClick={() => setInputActive(!inputActive)}
+                      onClick={handleCancelEdit}
                       disabled={loading}
                     >
                       Cancel
                     </IonButton>
                     <IonButton
                       shape="round"
-                      disabled={
-                        loading || (!selectedBookmark.note && !noteCopy)
-                          ? true
-                          : false
-                      }
+                      disabled={loading || (!displayedNote && !noteCopy)}
                       fill={
-                        !loading && !data
-                          ? "solid"
+                        saveSucceeded
+                          ? "outline"
                           : error
                           ? "clear"
-                          : loading && !data
+                          : loading
                           ? "default"
-                          : "outline"
+                          : "solid"
                       }
                       onClick={handleSubmit}
                       color={
-                        !loading && !data
-                          ? "primary"
+                        saveSucceeded
+                          ? "success"
                           : error
                           ? "danger"
-                          : loading && !data
+                          : loading
                           ? "warning"
-                          : "success"
+                          : "primary"
                       }
                     >
-                      {!loading && !data ? (
-                        "Save"
-                      ) : loading && !data ? (
+                      {loading ? (
                         <IonSpinner />
                       ) : error ? (
                         "Something went wrong"
-                      ) : (
+                      ) : saveSucceeded ? (
                         "Success"
+                      ) : (
+                        "Save"
                       )}
                     </IonButton>
                   </>

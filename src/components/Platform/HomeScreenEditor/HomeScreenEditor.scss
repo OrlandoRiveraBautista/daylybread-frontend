@@ -2,226 +2,156 @@
 @import "../../../theme/variables.scss";
 @import "../platform-modal";
 
-// Editor Modal
+// Editor Modal — full-screen on all viewports
 .homescreen-editor-modal {
-  @include platform-modal-medium;
+  --width: 100%;
+  --height: 100%;
+  --border-radius: 0;
+  --max-width: 100%;
+  --max-height: 100%;
+
+  @media (min-width: 768px) {
+    --width: 90vw;
+    --max-width: 1100px;
+    --height: 90vh;
+    --border-radius: 20px;
+  }
 }
 
 .homescreen-editor {
   display: flex;
   flex-direction: column;
   height: 100%;
+  overflow: hidden;
 }
 
-// Header styles are handled by PlatformModalHeader component
+// Body content (fills between header and footer)
+.editor-body-content {
+  --background: var(--ion-background-color);
+  flex: 1;
+  overflow: hidden;
+}
 
-// Controls Wrapper (Accordion)
-.editor-controls-wrapper {
-  border-bottom: 1px solid var(--ion-border-color);
+// Two-column layout container
+.editor-body {
+  display: flex;
+  height: 100%;
+  min-height: 0;
 
-  ion-accordion {
-    ion-item[slot="header"] {
-      --background: $glass-background-light;
-      --color: var(--ion-text-color);
-      --border-color: transparent;
-      --min-height: 56px;
-      font-weight: 600;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-      &:hover {
-        --background: $glass-background-hover;
-      }
-
-      ion-icon {
-        font-size: 20px;
-        color: var(--ion-color-primary);
-      }
-
-      ion-label {
-        font-size: 15px;
-        font-weight: 600;
-      }
-    }
-  }
-
-  .controls-content {
-    background: var(--ion-background-color);
-    padding: 0;
+  @media (max-width: 767px) {
+    flex-direction: column;
+    overflow-y: auto;
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  .editor-controls-wrapper ion-accordion ion-item[slot="header"] {
-    --background: $glass-background-dark;
+// ── Left controls panel ──────────────────────────────────────────────────────
+.editor-controls-panel {
+  width: 420px;
+  min-width: 360px;
+  flex-shrink: 0;
+  overflow-y: auto;
+  border-right: 1px solid var(--ion-border-color, rgba(0, 0, 0, 0.1));
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 
-    &:hover {
-      --background: $glass-background-dark-hover;
-    }
+  @media (max-width: 767px) {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--ion-border-color, rgba(0, 0, 0, 0.1));
+    padding: 16px;
+    overflow-y: visible;
   }
 }
 
-// Name Input Section - uses platform-form styling from Platform.scss
+.editor-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 
-// Toolbar
+.editor-section-label {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--ion-color-medium);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  ion-icon {
+    font-size: 16px;
+    color: var(--ion-color-primary);
+  }
+}
+
+.editor-section-hint {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ion-color-medium);
+  line-height: 1.5;
+}
+
+// Toolbar inside controls
 .editor-toolbar {
   display: flex;
   gap: 6px;
-  padding: 16px;
-  background: var(--ion-background-color);
   flex-wrap: wrap;
 }
 
-// Wallpaper Picker
-.wallpaper-picker {
-  padding: 16px;
-  border-top: 1px solid var(--ion-item-border-color, var(--ion-border-color));
-
-  ion-label.picker-label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--ion-text-color);
-
-    ion-icon {
-      font-size: 20px;
-      color: var(--ion-color-primary);
-    }
-  }
-
-  .wallpaper-options {
-    display: flex;
-    gap: 6px;
-    overflow-x: auto;
-    padding: 16px 0;
-
-    &::-webkit-scrollbar {
-      height: 6px;
-    }
-
-    &::-webkit-scrollbar-track {
-      background: var(--ion-color-light);
-      border-radius: 4px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background: var(--ion-color-medium);
-      border-radius: 4px;
-
-      &:hover {
-        background: var(--ion-color-medium-shade);
-      }
-    }
-  }
-
-  .wallpaper-option {
-    width: 56px;
-    height: 56px;
-    border-radius: 12px;
-    // border: 3px solid transparent;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    flex-shrink: 0;
-    position: relative;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-
-    &::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        var(--ion-color-primary),
-        transparent
-      );
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      z-index: 1;
-    }
-
-    &:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
-      // border-color:;
-      border: 3px solid rgba(var(--ion-color-primary-rgb), 0.5);
-      border-radius: 16px;
-
-      &::before {
-        opacity: 1;
-      }
-    }
-
-    &:active {
-      transform: translateY(-2px);
-      transition-duration: 0.1s;
-    }
-
-    &.active {
-      border: 3px solid var(--ion-color-primary);
-      box-shadow: 0 4px 16px rgba(var(--ion-color-primary-rgb), 0.3);
-      transform: translateY(-2px);
-
-      &::before {
-        opacity: 1;
-      }
-
-      &::after {
-        content: "";
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 20px;
-        height: 20px;
-        background: var(--ion-color-primary);
-        border-radius: 50%;
-        border: 3px solid white;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        z-index: 2;
-      }
-    }
-  }
-}
-
-// Phone Preview Content
-.phone-preview-content {
-  --background: #f0f0f5;
-
-  @media (prefers-color-scheme: dark) {
-    --background: #1a1a1a;
-  }
-}
-
-// Phone Preview Container
-.phone-preview-container {
+// ── Right preview panel ───────────────────────────────────────────────────────
+.editor-preview-panel {
+  flex: 1;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  padding: 40px 20px;
-  min-height: 100%;
+  align-items: center;
+  background: #f0f0f5;
+  overflow: hidden;
+  padding: 24px;
+
+  @media (prefers-color-scheme: dark) {
+    background: #1a1a1a;
+  }
 
   @media (max-width: 767px) {
-    padding: 0;
-    align-items: stretch;
+    padding: 20px 16px;
+    align-items: flex-start;
+    overflow-y: auto;
   }
 }
 
-// Phone Frame - Static iPhone representation
+// Wrapper reserves the scaled visual footprint so transform doesn't overflow layout
+.phone-frame-scale {
+  --phone-scale: 0.78;
+  width: calc(375px * var(--phone-scale));
+  height: calc(812px * var(--phone-scale));
+  position: relative;
+  flex-shrink: 0;
+
+  @media (max-width: 767px) {
+    --phone-scale: 1;
+    width: 100%;
+    height: auto;
+    max-width: 375px;
+    aspect-ratio: 375 / 812;
+  }
+}
+
+// Phone Frame — native 375×812 so tile grid spacing matches mobile
 .phone-frame {
-  // iPhone 14 Pro dimensions (393x852 at scale, but we'll use standard 375x812)
   width: 375px;
   height: 812px;
   background: #000;
   border-radius: 44px;
   padding: 12px;
-  position: relative;
-  flex-shrink: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: scale(var(--phone-scale, 0.78));
+  transform-origin: top left;
   box-shadow:
     0 25px 80px rgba(0, 0, 0, 0.4),
     inset 0 0 0 3px #333;
@@ -259,11 +189,13 @@
   }
 
   @media (max-width: 767px) {
+    position: relative;
     width: 100%;
     height: 100%;
     border-radius: 0;
     padding: 0;
     box-shadow: none;
+    transform: none;
 
     .phone-notch,
     .phone-home-indicator {
@@ -276,7 +208,66 @@
   }
 }
 
-// Footer
+// ── Wallpaper Picker ─────────────────────────────────────────────────────────
+.wallpaper-picker {
+  .wallpaper-options {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+
+    &::-webkit-scrollbar {
+      height: 4px;
+    }
+    &::-webkit-scrollbar-track {
+      background: var(--ion-color-light);
+      border-radius: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: var(--ion-color-medium);
+      border-radius: 4px;
+    }
+  }
+
+  .wallpaper-option {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    position: relative;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    border: 2px solid transparent;
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      border-color: rgba(var(--ion-color-primary-rgb), 0.5);
+    }
+
+    &.active {
+      border-color: var(--ion-color-primary);
+      box-shadow: 0 4px 14px rgba(var(--ion-color-primary-rgb), 0.35);
+      transform: translateY(-2px);
+
+      &::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 16px;
+        height: 16px;
+        background: var(--ion-color-primary);
+        border-radius: 50%;
+        border: 2px solid white;
+      }
+    }
+  }
+}
+
+// ── Footer ───────────────────────────────────────────────────────────────────
 .editor-footer {
   ion-toolbar {
     --padding-start: 0;
@@ -285,16 +276,18 @@
   }
 }
 
-// Instructions
-.editor-instructions {
-  padding: 16px 20px;
-  text-align: center;
+.editor-footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  justify-content: flex-end;
 
-  ion-text {
-    p {
-      margin: 0;
-      font-size: 15px;
-      line-height: 1.6;
+  @media (max-width: 767px) {
+    justify-content: stretch;
+
+    ion-button {
+      flex: 1;
     }
   }
 }

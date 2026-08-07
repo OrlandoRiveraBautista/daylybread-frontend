@@ -2,37 +2,161 @@
 #bread-crumbs-modal {
   --height: 98%;
 
-  .bread-crumbs-modal-content {
-    --padding-bottom: 0;
-    --padding-top: 0;
-  }
+  .breadcrumbs-modal-header {
+    ion-toolbar {
+      --background: var(--ion-background-color);
+      --border-width: 0;
+      --min-height: 56px;
+      --padding-start: 16px;
+      --padding-end: 16px;
+      --padding-top: 4px;
+      --padding-bottom: 4px;
+    }
 
-  .bread-crumbs-modal-main-grid-modified {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    justify-content: space-between;
-    position: relative;
-    padding-top: 0;
-    min-height: 100%;
-  }
+    ion-title {
+      font-family: "Product Sans";
+      font-size: 22px;
+      font-weight: 500;
+      letter-spacing: 0;
+      color: var(--ion-text-color);
+      text-align: center;
+      padding: 8px 0;
+      margin-top: 0;
+    }
 
-  .selected-indicator-container {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background: var(--ion-background-color);
-    padding-top: 22px;
+    .selected-indicator-container {
+      padding: 0 16px 14px;
+    }
 
     .selected-indicator {
       display: flex;
-      gap: 4px;
       flex-direction: column;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: var(--ion-surface-container);
+    }
+
+    .selected-indicator-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .selected-indicator-label {
+      font-family: "Product Sans";
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: var(--ion-outline-color);
+      flex-shrink: 0;
+    }
+
+    .selected-indicator-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: nowrap;
+      gap: 4px;
+      overflow-x: auto;
 
       .quick-action-chip {
         text-transform: capitalize;
+        margin: 0;
+        height: 30px;
+        font-size: 13px;
+        font-weight: 600;
+        --padding-start: 12px;
+        --padding-end: 12px;
+        letter-spacing: 0.1px;
       }
     }
+
+    /* Custom tappable citation row — no Ionic checkbox offsets */
+    .citation-toggle {
+      all: unset;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      width: 100%;
+      cursor: pointer;
+      box-sizing: border-box;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: transparent;
+      transition: background 0.15s ease;
+
+      &:active {
+        background: rgba(var(--ion-color-primary-rgb), 0.06);
+      }
+
+      &--on {
+        background: rgba(var(--ion-color-secondary-rgb), 0.08);
+      }
+    }
+
+    .citation-toggle-text {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .selected-citation {
+      font-family: "Product Sans";
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.4;
+      color: var(--ion-text-color);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .selected-indicator-hint {
+      font-size: 11px;
+      line-height: 1.3;
+      color: var(--ion-color-medium);
+    }
+
+    .citation-pill {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 10px;
+      border-radius: 100px;
+      border: 1.5px solid var(--ion-outline-variant-color);
+      background: transparent;
+      transition: all 0.2s ease;
+
+      span {
+        font-family: "Product Sans";
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--ion-outline-color);
+        letter-spacing: 0.2px;
+      }
+
+      &--on {
+        border-color: var(--ion-color-secondary);
+        background: var(--ion-color-secondary);
+
+        span {
+          color: #fff;
+        }
+      }
+    }
+  }
+
+  .bread-crumbs-modal-content {
+    --padding-bottom: 0;
+    --padding-top: 0;
   }
 
   ion-grid {
@@ -55,20 +179,65 @@
     }
   }
 
-  .breadcrumbs-header {
-    width: 100%;
-  }
-
   .messages-container {
     margin-top: auto;
 
     .chat-message {
       white-space: pre-wrap;
-      /* This section here allows the user to select the text in the chat */
       -webkit-user-select: text;
       -moz-user-select: text;
       -ms-user-select: text;
       user-select: text;
+    }
+
+    .chat-sender-label {
+      display: block;
+      font-family: "Product Sans";
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      color: var(--ion-outline-color);
+      margin-bottom: 4px;
+    }
+  }
+
+  .chat-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 48px 24px 24px;
+    text-align: center;
+
+    .chat-empty-icon {
+      font-size: 32px;
+      line-height: 1;
+      background: linear-gradient(
+        135deg,
+        var(--ion-color-primary),
+        var(--ion-color-secondary)
+      );
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .chat-empty-title {
+      display: block;
+      font-family: "Product Sans";
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--ion-text-color);
+    }
+
+    .chat-empty-subtitle {
+      display: block;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--ion-color-medium);
+      max-width: 260px;
     }
   }
 
@@ -151,12 +320,14 @@
       overflow-x: auto;
       height: fit-content;
       min-height: 40px;
+      padding-top: 4px;
 
       .breadcrumbs-suggestions-col {
         display: flex;
         flex-wrap: nowrap;
         width: max-content;
         height: fit-content;
+        gap: 4px;
       }
     }
     .chat-input-row {

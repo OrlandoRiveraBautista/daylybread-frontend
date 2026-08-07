@@ -1,0 +1,424 @@
+.practice-audio {
+  --practice-audio-play-size: 72px;
+  margin: 16px 20px 24px;
+  padding: 20px 20px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(var(--ion-color-tertiary-rgb), 0.28);
+  background: linear-gradient(
+    165deg,
+    rgba(var(--ion-color-tertiary-rgb), 0.12) 0%,
+    rgba(var(--ion-color-tertiary-rgb), 0.04) 48%,
+    var(--ion-card-background, var(--ion-background-color, #fff)) 100%
+  );
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 8px 24px rgba(0, 0, 0, 0.06);
+  outline: none;
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+
+  &:focus-visible {
+    box-shadow:
+      0 0 0 3px rgba(var(--ion-color-tertiary-rgb), 0.35),
+      0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+
+  &--loading {
+    opacity: 0.95;
+  }
+
+  &--buffering .practice-audio__play {
+    box-shadow: 0 0 0 3px rgba(var(--ion-color-tertiary-rgb), 0.25);
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  &__title-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    min-width: 0;
+    flex: 1;
+  }
+
+  &__eyebrow {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ion-color-medium);
+    margin: 0;
+    line-height: 1;
+  }
+
+  /* Clear + icon-only: color + explicit native size (IonButton defaults are wide) */
+  &__info-btn {
+    margin: 0 0 0 -2px;
+    flex: 0 0 auto;
+    width: 28px;
+    height: 28px;
+    min-width: 0;
+    --padding-start: 0;
+    --padding-end: 0;
+    --color: var(--ion-color-tertiary);
+
+    &::part(native) {
+      padding: 0;
+      width: 28px;
+      height: 28px;
+      min-width: 0;
+    }
+
+    ion-icon {
+      font-size: 20px;
+    }
+  }
+
+  &__seek-backend-notice {
+    margin: 10px 0 0;
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--ion-color-warning-shade, var(--ion-color-warning));
+    font-weight: 600;
+  }
+
+  &__pitch-badge {
+    flex-shrink: 0;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 8px 10px;
+    border-radius: 999px;
+    letter-spacing: 0.02em;
+  }
+
+  &__err {
+    font-size: 14px;
+    line-height: 1.45;
+    margin: 0 0 8px;
+  }
+
+  &__transport {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  /* Skip: pill + inline SVG + “10s” (IonIcon in clear buttons often invisible) */
+  &__skip {
+    --border-radius: 999px;
+    border-radius: 999px;
+    margin: 0;
+    width: auto;
+    min-width: 78px;
+    height: 44px;
+    --padding-start: 10px;
+    --padding-end: 10px;
+    --color: var(--ion-color-tertiary);
+
+    &::part(native) {
+      border-radius: 999px;
+    }
+  }
+
+  &__skip-glyph {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    color: var(--ion-color-tertiary-shade, var(--ion-color-tertiary));
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  &__skip-cap {
+    letter-spacing: -0.03em;
+  }
+
+  &__skip-svg {
+    flex-shrink: 0;
+    display: block;
+  }
+
+  &__play {
+    --border-radius: 50%;
+    border-radius: 50%;
+    overflow: hidden;
+    width: var(--practice-audio-play-size);
+    height: var(--practice-audio-play-size);
+    margin: 0 4px;
+    --padding-start: 0;
+    --padding-end: 0;
+    font-size: 32px;
+    box-shadow:
+      0 4px 14px rgba(var(--ion-color-tertiary-rgb), 0.45),
+      0 1px 0 rgba(255, 255, 255, 0.15) inset;
+
+    &::part(native) {
+      border-radius: 50%;
+    }
+  }
+
+  &__play-ico {
+    font-size: 36px;
+  }
+
+  /* Optical center for triangular play glyph only */
+  &__play-ico--play {
+    margin-left: 4px;
+  }
+
+  &__play-spin {
+    width: 36px;
+    height: 36px;
+  }
+
+  &__times {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    margin-bottom: 6px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__time-current {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ion-text-color);
+    letter-spacing: -0.02em;
+  }
+
+  &__time-sep {
+    font-size: 14px;
+    color: var(--ion-color-medium-shade);
+    font-weight: 500;
+    margin: 0 2px;
+  }
+
+  &__time-duration {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ion-color-medium);
+  }
+
+  &__time-remain {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ion-color-medium);
+    padding: 2px 8px;
+    border-radius: 8px;
+    background: rgba(var(--ion-color-medium-rgb), 0.12);
+  }
+
+  &__buffer-hint {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 4px 0 10px;
+    font-size: 12px;
+    color: var(--ion-color-medium);
+  }
+
+  &__buffer-spin {
+    width: 18px;
+    height: 18px;
+  }
+
+  &__live-hint {
+    text-align: center;
+    font-size: 12px;
+    color: var(--ion-color-medium);
+    margin: 0 0 12px;
+  }
+
+  &__timeline {
+    position: relative;
+    margin: 10px 0 4px;
+  }
+
+  /* YouTube-style: one bar — base (unloaded), buffer tint, IonRange active = played */
+  &__seek-stack {
+    position: relative;
+    width: 100%;
+  }
+
+  &__seek-track {
+    position: absolute;
+    /* Match IonRange bar insets (padding + half knob ≈ 15px) */
+    left: 15px;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 4px;
+    border-radius: 999px;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  &__seek-track-base {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: rgba(var(--ion-color-medium-rgb), 0.22);
+  }
+
+  &__seek-track-buffer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    max-width: 100%;
+    border-radius: inherit;
+    background: rgba(var(--ion-color-medium-rgb), 0.42);
+    transition: width 0.2s ease-out;
+  }
+
+  &__seek {
+    --bar-height: 4px;
+    --knob-size: 22px;
+    --height: 44px;
+    --bar-border-radius: 999px;
+    padding: 0 4px;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+
+    &::part(pin) {
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    &--youtube {
+      /* Inactive segment shows buffer/base stack underneath */
+      --bar-background: transparent;
+      --bar-background-active: rgba(var(--ion-color-tertiary-rgb), 0.95);
+      --bar-box-shadow: none;
+    }
+  }
+
+  &__volume {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(var(--ion-color-medium-rgb), 0.2);
+  }
+
+  &__vol-ico {
+    flex-shrink: 0;
+    font-size: 22px;
+    color: var(--ion-color-medium);
+  }
+
+  &__vol-range {
+    flex: 1;
+    --bar-height: 4px;
+    --knob-size: 16px;
+    --height: 32px;
+    --bar-border-radius: 999px;
+    padding: 0;
+    margin: 0;
+    max-width: 100%;
+  }
+
+}
+
+/* Wide screens: slightly tighter card; width comes from practice layout rail */
+@media (min-width: 768px) {
+  .practice-audio {
+    padding: 16px 18px 14px;
+
+    &__header {
+      margin-bottom: 14px;
+    }
+
+    --practice-audio-play-size: 64px;
+
+    &__play-ico {
+      font-size: 32px;
+    }
+
+    &__play-spin {
+      width: 32px;
+      height: 32px;
+    }
+
+    &__time-current {
+      font-size: 18px;
+    }
+
+    &__seek {
+      --knob-size: 20px;
+      --height: 40px;
+    }
+  }
+}
+
+/* Portaled popover — not nested under .practice-audio */
+.practice-audio__info-popover {
+  --width: min(320px, calc(100vw - 32px));
+  --max-height: 70vh;
+}
+
+.practice-audio__info-popover-body {
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 14px;
+  --padding-bottom: 16px;
+}
+
+.practice-audio__info-popover-title {
+  margin: 0 0 10px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ion-text-color);
+}
+
+.practice-audio__info-popover-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ion-color-medium-shade, var(--ion-color-medium));
+}
+
+.practice-audio__info-popover-note {
+  margin: 12px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ion-color-medium);
+  font-style: italic;
+}
+
+@media (prefers-color-scheme: dark) {
+  .practice-audio {
+    background: linear-gradient(
+      165deg,
+      rgba(var(--ion-color-tertiary-rgb), 0.18) 0%,
+      rgba(var(--ion-color-tertiary-rgb), 0.06) 45%,
+      rgba(20, 22, 28, 0.96) 100%
+    );
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.04) inset,
+      0 10px 28px rgba(0, 0, 0, 0.35);
+  }
+
+  .practice-audio__skip-glyph {
+    color: var(--ion-color-tertiary-tint, var(--ion-color-tertiary));
+  }
+}

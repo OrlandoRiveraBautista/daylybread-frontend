@@ -97,6 +97,7 @@ const GetWorshipService = gql(`
               bpm
               lyrics
               chordChart
+              youtubeLink
             }
           }
         }

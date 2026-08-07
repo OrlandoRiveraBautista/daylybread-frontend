@@ -6,21 +6,42 @@ import {
   IonText,
   IonCard,
   IonCardContent,
-  IonCardTitle,
   IonIcon,
 } from "@ionic/react";
-import { book, chevronForward, happy } from "ionicons/icons";
+import { book, chevronForward, personCircleOutline } from "ionicons/icons";
 import { useHistory } from "react-router";
 
 import { useAppContext } from "../../../context/context";
+import { useUserBibleHistory } from "../../../hooks/UserHooks";
 
 /* Styles */
 import "./QuickActions.scss";
+
+const formatRelativeTime = (dateStr: string | undefined): string => {
+  if (!dateStr) return "";
+  const date = new Date(dateStr);
+  if (isNaN(date.getTime())) return "";
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  if (diffDays === 0) return "Today";
+  if (diffDays === 1) return "Yesterday";
+  if (diffDays < 7) return `${diffDays} days ago`;
+  return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+};
 
 const QuickActions: React.FC = () => {
   const history = useHistory();
   const { chosenBible, chosenBook, chosenChapterNumber, userInfo } =
     useAppContext();
+  const { data: bibleHistoryData } = useUserBibleHistory();
+
+  const lastReadAt = (() => {
+    const currentHistory = bibleHistoryData?.me?.user?.bibleHistory?.find(
+      (h) => h.current
+    );
+    return currentHistory?.history?.[0]?.viewedAt;
+  })();
 
   const handleQuickRead = () => {
     if (chosenBible && chosenBook && chosenChapterNumber) {
@@ -36,26 +57,11 @@ const QuickActions: React.FC = () => {
     history.push("/me");
   };
 
-  const featuredActions = [
-    {
-      title: "Continue Reading",
-      description: chosenBook
-        ? `${chosenBook.name} ${chosenChapterNumber}`
-        : "Pick up where you left off",
-      icon: book,
-      color: "primary",
-      action: handleQuickRead,
-    },
-    {
-      title: "My Profile",
-      description: userInfo?.firstName
-        ? `Welcome back, ${userInfo.firstName}`
-        : "View your reading progress",
-      icon: happy,
-      color: "secondary",
-      action: handleViewProfile,
-    },
-  ];
+  const readDescription = chosenBook
+    ? `${chosenBook.name} ${chosenChapterNumber}`
+    : "Pick up where you left off";
+
+  const readTimestamp = formatRelativeTime(lastReadAt);
 
   return (
     <IonGrid className="quick-actions-grid">
@@ -67,30 +73,52 @@ const QuickActions: React.FC = () => {
         </IonCol>
       </IonRow>
 
-      {featuredActions.map((action, index) => (
-        <IonRow key={index}>
-          <IonCol size="12">
-            <IonCard className="action-card" button onClick={action.action}>
-              <IonCardContent>
-                <div className="card-content">
-                  <div className="card-icon">
-                    <IonIcon icon={action.icon} color={action.color} />
-                  </div>
-                  <div className="card-text">
-                    <IonCardTitle>{action.title}</IonCardTitle>
-                    <IonText>
-                      <p>{action.description}</p>
-                    </IonText>
-                  </div>
-                  <div className="card-arrow">
-                    <IonIcon icon={chevronForward} />
-                  </div>
+      <IonRow>
+        <IonCol size="12" sizeMd="6">
+          <IonCard className="action-card" button onClick={handleQuickRead}>
+            <IonCardContent>
+              <div className="card-content">
+                <div className="card-icon primary-icon">
+                  <IonIcon icon={book} color="primary" />
                 </div>
-              </IonCardContent>
-            </IonCard>
-          </IonCol>
-        </IonRow>
-      ))}
+                <div className="card-text">
+                  <p className="card-title">Continue Reading</p>
+                  <p className="card-description">{readDescription}</p>
+                  {readTimestamp && (
+                    <p className="card-timestamp">{readTimestamp}</p>
+                  )}
+                </div>
+                <div className="card-arrow">
+                  <IonIcon icon={chevronForward} />
+                </div>
+              </div>
+            </IonCardContent>
+          </IonCard>
+        </IonCol>
+
+        <IonCol size="12" sizeMd="6">
+          <IonCard className="action-card" button onClick={handleViewProfile}>
+            <IonCardContent>
+              <div className="card-content">
+                <div className="card-icon secondary-icon">
+                  <IonIcon icon={personCircleOutline} color="secondary" />
+                </div>
+                <div className="card-text">
+                  <p className="card-title">My Profile</p>
+                  <p className="card-description">
+                    {userInfo?.firstName
+                      ? `${userInfo.firstName}'s journey`
+                      : "View your reading progress"}
+                  </p>
+                </div>
+                <div className="card-arrow">
+                  <IonIcon icon={chevronForward} />
+                </div>
+              </div>
+            </IonCardContent>
+          </IonCard>
+        </IonCol>
+      </IonRow>
     </IonGrid>
   );
 };

@@ -35,6 +35,31 @@ export const EMPTY_SONG_FORM: SongFormValues = {
   notes: "",
 };
 
+/** Map API song object to form values */
+export function songToFormValues(song: {
+  title?: string | null;
+  artist?: string | null;
+  defaultKey?: string | null;
+  bpm?: number | null;
+  lyrics?: string | null;
+  chordChart?: string | null;
+  youtubeLink?: string | null;
+  chordsUrl?: string | null;
+  notes?: string | null;
+}): SongFormValues {
+  return {
+    title: song.title ?? "",
+    artist: song.artist ?? "",
+    defaultKey: song.defaultKey ?? "",
+    bpm: song.bpm != null ? String(song.bpm) : "",
+    lyrics: song.lyrics ?? "",
+    chordChart: song.chordChart ?? "",
+    youtubeLink: song.youtubeLink ?? "",
+    chordsUrl: song.chordsUrl ?? "",
+    notes: song.notes ?? "",
+  };
+}
+
 interface SongFormProps {
   isOpen: boolean;
   onClose: () => void;
@@ -44,6 +69,8 @@ interface SongFormProps {
   isSaving: boolean;
   showImporter: boolean;
   onShowImporter: (show: boolean) => void;
+  /** "create" shows Add Song; "edit" shows Edit Song */
+  mode?: "create" | "edit";
 }
 
 export const SongForm: React.FC<SongFormProps> = ({
@@ -55,7 +82,9 @@ export const SongForm: React.FC<SongFormProps> = ({
   isSaving,
   showImporter,
   onShowImporter,
+  mode = "create",
 }) => {
+  const isEdit = mode === "edit";
   const set = (field: keyof SongFormValues) => (val: string) =>
     onChange({ ...values, [field]: val });
 
@@ -63,9 +92,9 @@ export const SongForm: React.FC<SongFormProps> = ({
     <PlatformBottomSheet
       isOpen={isOpen}
       onClose={onClose}
-      title="Add Song"
+      title={isEdit ? "Edit Song" : "Add Song"}
       onSave={onSave}
-      saveLabel="Add Song"
+      saveLabel={isEdit ? "Save Changes" : "Add Song"}
       saveDisabled={!values.title.trim()}
       isSaving={isSaving}
       breakpoints={[0, 0.85, 1]}

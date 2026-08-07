@@ -5,9 +5,6 @@ import {
   IonGrid,
   IonCol,
   IonRow,
-  IonTitle,
-  IonCard,
-  IonText,
 } from "@ionic/react";
 
 /** Components */
@@ -34,29 +31,24 @@ const BibleNavModal: React.FC<IBibleNavModal> = ({ isOpen, onDismiss }) => {
   // context values
   const { chosenChapterNumber, chosenBook } = useAppContext();
 
-  // bible navigation butons
+  // bible navigation buttons
   const renderNavButtons = () => {
-    const stages = {
-      book: chosenBook?.name?.slice(0, 3),
-      chapter: chosenChapterNumber,
-      // verse: "All",
+    const stages: Record<bibleNavOptions, { label: string; value: string | number | undefined }> = {
+      book: { label: "Book", value: chosenBook?.name ?? undefined },
+      chapter: { label: "Chapter", value: chosenChapterNumber },
     };
 
-    const render = Object.keys(stages).map((stage) => (
+    return Object.entries(stages).map(([stage, { label, value }]) => (
       <IonCol key={stage}>
-        <IonCard
-          button
+        <button
+          className={`nav-stage-pill ${navTab === stage ? "nav-stage-pill--active" : ""}`}
           onClick={() => setNavTab(stage as bibleNavOptions)}
-          className={navTab === stage ? "selected" : ""}
         >
-          <IonTitle className="chosen-bible-option">
-            {stages[stage as bibleNavOptions]}
-          </IonTitle>
-          <IonText>{stage}</IonText>
-        </IonCard>
+          <span className="nav-stage-pill-value">{value ?? "—"}</span>
+          <span className="nav-stage-pill-label">{label}</span>
+        </button>
       </IonCol>
     ));
-    return render;
   };
 
   return (

@@ -43,12 +43,17 @@ const InitialBiblePicker: React.FC = () => {
     <>
       <div className="helper-container">
         <div className="image-and-text">
-          <IonImg
-            src={PatternImage}
-            alt="Pattern image"
-            className="helper-image"
-          />
-          <IonText>Please pick a bible to begin</IonText>
+          <div className="logo-wrapper">
+            <IonImg
+              src={PatternImage}
+              alt="Pattern image"
+              className="helper-image"
+            />
+          </div>
+          <IonText className="helper-headline">Start reading the Bible</IonText>
+          <IonText className="helper-subtext">
+            Choose a translation to begin your reading journey
+          </IonText>
         </div>
         <div className="button-container">
           <IonButton
@@ -70,7 +75,7 @@ const InitialBiblePicker: React.FC = () => {
           >
             {chosenBible?.abbr
               ? displayBibleAbbr(chosenBible?.abbr)
-              : "Pick bible"}
+              : "Pick a Translation"}
           </IonButton>
         </div>
       </div>
