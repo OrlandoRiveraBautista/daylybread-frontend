@@ -194,11 +194,13 @@ const BookmarkAssetList: React.FC = () => {
         </ResponsiveMasonry>
       )}
 
-      <SelectedBookmarkModal
-        isOpen={isOpen}
-        onDismiss={onDismiss}
-        selectedBookmark={selectedBookmark!}
-      />
+      {selectedBookmark ? (
+        <SelectedBookmarkModal
+          isOpen={isOpen}
+          onDismiss={onDismiss}
+          selectedBookmark={selectedBookmark}
+        />
+      ) : null}
     </div>
   );
 };

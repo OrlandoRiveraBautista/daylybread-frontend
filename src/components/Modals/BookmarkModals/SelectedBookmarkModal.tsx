@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
 import {
   IonButton,
-  IonCol,
   IonContent,
   IonHeader,
   IonModal,
-  IonRow,
   IonSpinner,
   IonText,
   IonTextarea,
   IonTitle,
+  IonToolbar,
 } from "@ionic/react";
 
 /* Utils */
@@ -21,13 +20,21 @@ import {
 /* GraphQL API/Hook */
 import { useUpdateBookmark } from "../../../hooks/UserHooks";
 
+/* Services */
+import { hapticService } from "../../../services/hapticService";
+
+/* Styles */
+import "./BookmarkModal.scss";
+
 /* Interfaces */
 import { Bookmark } from "../../../__generated__/graphql";
+
 interface ISelectedBookmarkModal {
   isOpen: boolean;
   onDismiss: () => void;
   selectedBookmark: Bookmark;
 }
+
 const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
   isOpen,
   onDismiss,
@@ -37,17 +44,16 @@ const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
     useUpdateBookmark();
 
   const [inputActive, setInputActive] = useState(false);
-  const [noteCopy, setNoteCopy] = useState<string | null | undefined>();
+  const [noteCopy, setNoteCopy] = useState("");
   const [displayedNote, setDisplayedNote] = useState<
     string | null | undefined
   >();
   const [saveSucceeded, setSaveSucceeded] = useState(false);
 
-  // Sync local note state whenever a bookmark is opened.
   useEffect(() => {
     if (!isOpen || !selectedBookmark) return;
 
-    setNoteCopy(selectedBookmark.note);
+    setNoteCopy(selectedBookmark.note ?? "");
     setDisplayedNote(selectedBookmark.note);
     setInputActive(false);
     setSaveSucceeded(false);
@@ -59,8 +65,9 @@ const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
 
     const savedNote = data.updateBookmark.results.note;
     setDisplayedNote(savedNote);
-    setNoteCopy(savedNote);
+    setNoteCopy(savedNote ?? "");
     setSaveSucceeded(true);
+    void hapticService.triggerSuccessHaptic();
 
     const timer = setTimeout(() => {
       setInputActive(false);
@@ -70,6 +77,11 @@ const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
 
     return () => clearTimeout(timer);
   }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!error) return;
+    void hapticService.triggerErrorHaptic();
+  }, [error]);
 
   const handleSubmit = () => {
     setSaveSucceeded(false);
@@ -84,63 +96,80 @@ const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
   };
 
   const handleCancelEdit = () => {
-    setNoteCopy(displayedNote);
+    setNoteCopy(displayedNote ?? "");
     setInputActive(false);
     setSaveSucceeded(false);
     reset();
+    void hapticService.triggerNavigationHaptic();
+  };
+
+  const handleBeginEdit = () => {
+    setNoteCopy(displayedNote ?? "");
+    setInputActive(true);
+    void hapticService.triggerNavigationHaptic();
   };
 
   const hasLegacyVerses = Boolean(selectedBookmark?.verses?.[0]);
+  const citation = !selectedBookmark
+    ? ""
+    : hasLegacyVerses
+      ? getVerseVerbageByVerses(selectedBookmark.verses!)
+      : getVerseVerbageByNewVerses(
+          selectedBookmark.newVerses!,
+          selectedBookmark.bibleId!
+        );
 
   return (
     <IonModal
       initialBreakpoint={1}
       breakpoints={[0, 1]}
+      handle={true}
       id="openBookmarkModal"
       isOpen={isOpen}
       onDidDismiss={onDismiss}
     >
-      <IonHeader className="bookmark-modal-header ion-no-border">
-        <IonTitle className="ion-text-center bookmark-modal-title">
-          Bookmark
-        </IonTitle>
+      <IonHeader className="ion-no-border bookmark-modal-header">
+        <IonToolbar>
+          <IonTitle className="bookmark-modal-title">Bookmark</IonTitle>
+        </IonToolbar>
       </IonHeader>
-      <IonContent
-        className="ion-padding bookmark-modal"
-        id="selectedBookmarkModal"
-      >
-        <div className="modal-content-container">
+
+      <IonContent className="ion-padding bookmark-modal">
+        <div className="bookmark-sheet-body">
           {selectedBookmark ? (
             <div className="selected-bookmark-content">
-              <div className="text-container">
-                <div className="verse-container">
-                  <IonRow>
-                    <IonText>
-                      <sub>Text:</sub>
-                    </IonText>
-                  </IonRow>
-                  {hasLegacyVerses
-                    ? selectedBookmark.verses
-                        .slice()
-                        .sort((a, b) => Number(a.verse) - Number(b.verse))
-                        .map((verse) => {
-                          return (
-                            <IonRow key={verse._id || verse.bibleId}>
-                              <IonCol>
-                                <IonText>{Number(verse.verse)}.</IonText>
-                                <IonText>{verse.text}</IonText>
-                              </IonCol>
-                            </IonRow>
-                          );
-                        })
-                    : selectedBookmark.newVerses
-                        ?.slice()
-                        .sort(
-                          (a, b) => Number(a.verseStart) - Number(b.verseStart)
-                        )
-                        .map((verse) => {
-                          return (
-                            <IonRow
+              <section className="bookmark-section" aria-label="Verse">
+                <p className="bookmark-label">Verse</p>
+                <div className="bookmark-panel">
+                  <div className="bookmark-verse-list">
+                    {hasLegacyVerses
+                      ? selectedBookmark.verses
+                          .slice()
+                          .sort((a, b) => Number(a.verse) - Number(b.verse))
+                          .map((verse) => (
+                            <div
+                              className="bookmark-verse-line"
+                              key={verse._id || verse.bibleId}
+                            >
+                              <span className="bookmark-verse-number">
+                                {Number(verse.verse)}.
+                              </span>
+                              <IonText>
+                                <p className="bookmark-verse-text">
+                                  {verse.text}
+                                </p>
+                              </IonText>
+                            </div>
+                          ))
+                      : selectedBookmark.newVerses
+                          ?.slice()
+                          .sort(
+                            (a, b) =>
+                              Number(a.verseStart) - Number(b.verseStart)
+                          )
+                          .map((verse) => (
+                            <div
+                              className="bookmark-verse-line"
                               key={
                                 selectedBookmark.bibleId! +
                                 verse.bookId! +
@@ -148,58 +177,69 @@ const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
                                 verse.verseStart!
                               }
                             >
-                              <IonCol>
-                                <IonText>{Number(verse.verseStart)}.</IonText>
-                                <IonText>{verse.verseText}</IonText>
-                              </IonCol>
-                            </IonRow>
-                          );
-                        })}
-                </div>
-                <IonRow className="ion-justify-content-end">
+                              <span className="bookmark-verse-number">
+                                {Number(verse.verseStart)}.
+                              </span>
+                              <IonText>
+                                <p className="bookmark-verse-text">
+                                  {verse.verseText}
+                                </p>
+                              </IonText>
+                            </div>
+                          ))}
+                  </div>
                   <IonText>
-                    {hasLegacyVerses
-                      ? getVerseVerbageByVerses(selectedBookmark.verses!)
-                      : getVerseVerbageByNewVerses(
-                          selectedBookmark.newVerses!,
-                          selectedBookmark.bibleId!
-                        )}
+                    <p className="bookmark-citation bookmark-citation--meta">
+                      {citation}
+                    </p>
                   </IonText>
-                </IonRow>
+                </div>
+              </section>
+
+              <section className="bookmark-section" aria-label="Note">
+                <p className="bookmark-label">Note</p>
 
                 {displayedNote && !inputActive ? (
-                  <>
-                    <IonRow>
-                      <IonText>
-                        <sub>Note:</sub>
-                      </IonText>
-                    </IonRow>
-                    <IonRow>
-                      <IonCol>
-                        <IonText>{displayedNote}</IonText>
-                      </IonCol>
-                    </IonRow>
-                  </>
+                  <button
+                    type="button"
+                    className="bookmark-panel bookmark-note-button"
+                    onClick={handleBeginEdit}
+                    aria-label="Edit note"
+                  >
+                    <IonText>
+                      <p className="bookmark-note-text">{displayedNote}</p>
+                    </IonText>
+                  </button>
                 ) : inputActive ? (
-                  <IonTextarea
-                    labelPlacement="floating"
-                    color="primary"
-                    value={noteCopy ?? ""}
-                    fill="outline"
-                    autoGrow={true}
-                    onIonInput={(e) => setNoteCopy(e.target.value)}
-                  />
-                ) : null}
-              </div>
+                  <div className="bookmark-field">
+                    <IonTextarea
+                      className="bookmark-textarea"
+                      color="primary"
+                      value={noteCopy}
+                      autoGrow={true}
+                      rows={3}
+                      placeholder="Add a note…"
+                      onIonInput={(e) =>
+                        setNoteCopy(
+                          typeof e.target.value === "string"
+                            ? e.target.value
+                            : ""
+                        )
+                      }
+                    />
+                  </div>
+                ) : (
+                  <p className="bookmark-note-hint">No note yet</p>
+                )}
+              </section>
 
-              <IonRow className="action-buttons">
+              <div className="bookmark-actions">
                 {!displayedNote && !inputActive ? (
                   <IonButton
                     shape="round"
                     fill="solid"
-                    color="secondary"
-                    className="flat"
-                    onClick={() => setInputActive(true)}
+                    color="primary"
+                    onClick={handleBeginEdit}
                     disabled={loading}
                     expand="block"
                   >
@@ -208,14 +248,11 @@ const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
                 ) : displayedNote && !inputActive ? (
                   <IonButton
                     shape="round"
-                    fill="solid"
-                    color="secondary"
-                    className="flat"
-                    onClick={() => {
-                      setNoteCopy(displayedNote);
-                      setInputActive(true);
-                    }}
+                    fill="outline"
+                    color="primary"
+                    onClick={handleBeginEdit}
                     disabled={loading}
+                    expand="block"
                   >
                     Edit note
                   </IonButton>
@@ -225,7 +262,7 @@ const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
                       shape="round"
                       fill="clear"
                       color="medium"
-                      className="flat"
+                      className="bookmark-action--ghost"
                       onClick={handleCancelEdit}
                       disabled={loading}
                     >
@@ -233,40 +270,41 @@ const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
                     </IonButton>
                     <IonButton
                       shape="round"
-                      disabled={loading || (!displayedNote && !noteCopy)}
+                      expand="block"
+                      disabled={loading || !noteCopy.trim()}
                       fill={
                         saveSucceeded
                           ? "outline"
                           : error
-                          ? "clear"
-                          : loading
-                          ? "default"
-                          : "solid"
+                            ? "clear"
+                            : loading
+                              ? "default"
+                              : "solid"
                       }
                       onClick={handleSubmit}
                       color={
                         saveSucceeded
                           ? "success"
                           : error
-                          ? "danger"
-                          : loading
-                          ? "warning"
-                          : "primary"
+                            ? "danger"
+                            : loading
+                              ? "warning"
+                              : "primary"
                       }
                     >
                       {loading ? (
-                        <IonSpinner />
+                        <IonSpinner name="crescent" />
                       ) : error ? (
-                        "Something went wrong"
+                        "Try again"
                       ) : saveSucceeded ? (
-                        "Success"
+                        "Saved"
                       ) : (
                         "Save"
                       )}
                     </IonButton>
                   </>
                 )}
-              </IonRow>
+              </div>
             </div>
           ) : null}
         </div>
