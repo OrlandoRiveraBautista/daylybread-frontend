@@ -21,6 +21,7 @@ import { useAppContext } from "../../context/context";
 
 /* Graphql API/Hooks */
 import { useDeleteBookmarks } from "../../hooks/UserHooks";
+import { useHeaderScrolled } from "../../hooks/useHeaderScrolled";
 
 /* Services */
 import { hapticService } from "../../services/hapticService";
@@ -39,6 +40,7 @@ const Profile: React.FC = () => {
 
   const { deleteBookmarks, loading, data } = useDeleteBookmarks();
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+  const { isScrolled, handleScroll } = useHeaderScrolled();
 
   useEffect(() => {
     if (!data || !data.deleteBookmarks) return;
@@ -106,7 +108,7 @@ const Profile: React.FC = () => {
       <IonHeader
         className={`ion-no-border profile-header ${
           isSelecting ? "profile-header--selecting" : "profile-header--idle"
-        }`}
+        }${isScrolled ? " profile-header--scrolled" : ""}`}
       >
         <IonToolbar>
           {isSelecting ? (
@@ -147,7 +149,12 @@ const Profile: React.FC = () => {
         </IonToolbar>
       </IonHeader>
 
-      <IonContent fullscreen className="profile-content">
+      <IonContent
+        fullscreen
+        className="profile-content"
+        scrollEvents
+        onIonScroll={handleScroll}
+      >
         <div className="profile-atmosphere" aria-hidden="true" />
 
         <section

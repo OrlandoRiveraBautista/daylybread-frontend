@@ -158,7 +158,7 @@ const VerseResponse: React.FC<VerseResponseProps> = ({
             className="action-btn talk-btn"
           >
             <IonIcon icon={chatbubbleEllipsesOutline} slot="start" />
-            Talk to God
+            Ask BreadCrumbs
           </IonButton>
         </div>
       </div>

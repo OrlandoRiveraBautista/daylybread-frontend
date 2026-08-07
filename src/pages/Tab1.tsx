@@ -23,6 +23,7 @@ import { useAppContext } from "../context/context";
 
 /* Hooks */
 import { generateMoodCheckInSEO } from "../hooks/useSEO";
+import { useHeaderScrolled } from "../hooks/useHeaderScrolled";
 
 /* Styles */
 import "./Tab1.scss";
@@ -31,6 +32,7 @@ const Tab1: React.FC = () => {
   const location = useLocation();
   const { userInfo } = useAppContext();
   const [refreshKey, setRefreshKey] = useState(0);
+  const { isScrolled, handleScroll } = useHeaderScrolled();
 
   const handleRefresh = (event: CustomEvent) => {
     setTimeout(() => {
@@ -110,13 +112,22 @@ const Tab1: React.FC = () => {
     <IonPage id="home">
       <SEOHead {...seoConfig} />
 
-      <IonHeader className="ion-no-border home-header">
+      <IonHeader
+        className={`ion-no-border home-header${
+          isScrolled ? " home-header--scrolled" : ""
+        }`}
+      >
         <IonToolbar>
           <IonText className="home-nav-title">Home</IonText>
         </IonToolbar>
       </IonHeader>
 
-      <IonContent fullscreen className="home-content">
+      <IonContent
+        fullscreen
+        className="home-content"
+        scrollEvents
+        onIonScroll={handleScroll}
+      >
         <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
           <IonRefresherContent
             pullingText="Pull to refresh..."
