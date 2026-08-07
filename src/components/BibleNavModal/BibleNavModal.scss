@@ -1,32 +1,44 @@
 @import "../../theme/variables.scss";
 
 .nav-modal {
-  --height: 75vh;
+  --height: 78vh;
   --border-radius: 28px 28px 0 0;
+  --box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.14);
+
+  &::part(handle) {
+    background: rgba(60, 60, 67, 0.22);
+    width: 36px;
+    height: 5px;
+  }
 }
 
 .nav-container {
   max-height: 100%;
-  margin-bottom: 25% !important;
+  margin-bottom: 20% !important;
   border-radius: 28px 28px 0 0;
+
   &.ion-padding {
-    --padding-top: 0;
+    --padding-top: 8px;
+    --padding-bottom: 32px;
   }
 }
 
-/* ── Nav modal header ── */
+/* ── Sheet header chrome (small blur only) ── */
 .nav-modal-header {
-  background-color: var(--ion-background-color);
+  background: rgba(250, 249, 253, 0.88);
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
   box-shadow: none;
+  // Room under the sheet grabber so stage tabs never feel cramped
+  padding: 12px 0 0;
 }
 
-/* ── Nav stage pill buttons ── */
 .nav-toolbar {
-  padding: 20px 8px 12px;
+  padding: 8px 12px 16px;
 }
 
 .nav-toolbar ion-col {
-  padding: 0 4px;
+  padding: 0 5px;
 }
 
 .nav-stage-pill {
@@ -36,27 +48,34 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding: 10px 8px;
-  border-radius: 14px;
+  min-height: 58px;
+  padding: 12px 10px;
+  border-radius: 16px;
+  // Solid interactive surface — no blur on pills
   background: var(--ion-surface-container);
   cursor: pointer;
-  transition: background 0.15s ease, transform 0.1s ease;
-  gap: 2px;
+  transition: background 100ms ease-out, transform 100ms ease-out;
+  gap: 3px;
   box-sizing: border-box;
 
   .nav-stage-pill-value {
-    font-size: 18px;
+    font-family: $font-family;
+    font-size: 17px;
     font-weight: 700;
     color: var(--ion-text-color);
-    letter-spacing: -0.3px;
-    line-height: 1.2;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .nav-stage-pill-label {
     font-size: 11px;
-    font-weight: 500;
-    color: var(--ion-outline-color);
-    letter-spacing: 0.3px;
+    font-weight: 600;
+    color: var(--ion-color-medium);
+    letter-spacing: 0.02em;
     text-transform: uppercase;
   }
 
@@ -69,31 +88,43 @@
     }
   }
 
-  &:active:not(&--active) {
-    background: var(--ion-outline-variant-color);
+  &:active {
     transform: scale(0.97);
+  }
+
+  &:active:not(&--active) {
+    background: rgba(var(--ion-color-primary-rgb), 0.12);
   }
 }
 
-/* ── Book cards ── */
+/* ── Book / chapter content ── */
 .nav-selection-container {
   position: relative;
 }
 
 .nav-selection {
   overflow: auto;
+  animation: nav-stage-in 0.28s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 .book-card {
   margin: 4px;
   border-radius: 14px !important;
   box-shadow: none !important;
-  border: 1.5px solid var(--ion-outline-variant-color);
-  scroll-margin-top: 300px;
+  border: 1.5px solid rgba(195, 198, 207, 0.55);
+  background: var(--ion-background-color, #fff);
+  scroll-margin-top: 120px;
+  transition: transform 100ms ease-out, border-color 140ms ease,
+    background 140ms ease;
+
+  &:active {
+    transform: scale(0.98);
+  }
 
   &.selected {
-    border-color: var(--ion-color-primary);
-    background: rgba(var(--ion-color-primary-rgb), 0.06);
+    border-color: rgba(var(--ion-color-primary-rgb), 0.55);
+    background: rgba(var(--ion-color-primary-rgb), 0.08);
+    box-shadow: 0 0 0 1px rgba(var(--ion-color-primary-rgb), 0.12) !important;
 
     .book-number {
       background-color: var(--ion-color-primary) !important;
@@ -109,7 +140,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 10px 10px !important;
+    padding: 12px 12px !important;
   }
 
   .book-number {
@@ -123,19 +154,23 @@
     background-color: var(--ion-surface-container);
     font-size: 12px;
     font-weight: 700;
+    letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums;
     color: var(--ion-text-color);
   }
 
   .book-info {
     display: flex;
     flex-direction: column;
-    gap: 1px;
+    gap: 2px;
     min-width: 0;
   }
 
   .book-title {
-    font-size: 13px !important;
+    font-family: $font-family;
+    font-size: 14px !important;
     font-weight: 600 !important;
+    letter-spacing: -0.015em;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -143,7 +178,10 @@
   }
 
   .book-group {
-    font-size: 10px !important;
+    font-size: 11px !important;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--ion-color-medium) !important;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -164,26 +202,52 @@
   align-items: center;
   justify-content: center;
   aspect-ratio: 1;
-  border-radius: 12px;
-  font-size: 15px;
+  border-radius: 14px;
+  font-family: $font-family;
+  font-size: 16px;
   font-weight: 600;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
   cursor: pointer;
   color: var(--ion-text-color);
   background: var(--ion-surface-container);
-  transition: background 0.12s ease, transform 0.1s ease;
+  transition: background 100ms ease-out, transform 100ms ease-out,
+    box-shadow 140ms ease;
+  box-sizing: border-box;
 
   &--selected {
     background: var(--ion-color-primary);
     color: #fff;
+    box-shadow: 0 4px 14px rgba(var(--ion-color-primary-rgb), 0.28);
+  }
+
+  &--skeleton {
+    background: var(--ion-surface-container);
+    opacity: 0.55;
+    pointer-events: none;
+  }
+
+  &:active {
+    transform: scale(0.94);
   }
 
   &:active:not(&--selected) {
-    background: var(--ion-outline-variant-color);
-    transform: scale(0.94);
+    background: rgba(var(--ion-color-primary-rgb), 0.12);
   }
 }
 
-/* ── Translation modal header ── */
+@keyframes nav-stage-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Translation modal header (shared sheet file) ── */
 .translation-modal-header {
   padding: 20px 16px 12px;
   display: flex;
@@ -192,8 +256,10 @@
   gap: 12px;
 
   .translation-modal-title {
+    font-family: $font-family;
     font-size: 18px;
     font-weight: 700;
+    letter-spacing: -0.02em;
     color: var(--ion-text-color);
     padding: 0;
     text-align: center;
@@ -201,7 +267,6 @@
   }
 }
 
-/* Tappable language chip — clearly a button */
 .language-selector-chip {
   all: unset;
   display: inline-flex;
@@ -211,12 +276,13 @@
   border-radius: 100px;
   background: var(--ion-surface-container);
   cursor: pointer;
-  transition: background 0.15s ease, transform 0.1s ease;
+  transition: background 100ms ease-out, transform 100ms ease-out;
   box-sizing: border-box;
 
   span {
     font-size: 14px;
     font-weight: 600;
+    letter-spacing: -0.01em;
     color: var(--ion-color-primary);
   }
 
@@ -236,7 +302,6 @@
   }
 }
 
-/* ── Bible list items ── */
 .bible-translation-list {
   background: transparent;
 
@@ -262,6 +327,7 @@
 .bible-item-name {
   font-size: 15px;
   font-weight: 500;
+  letter-spacing: -0.01em;
   color: var(--ion-text-color);
   line-height: 1.3;
 }
@@ -275,7 +341,7 @@
 .bible-abbr-tag {
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.02em;
   color: var(--ion-outline-color);
   text-transform: uppercase;
 }
@@ -297,7 +363,6 @@
   font-size: 22px;
 }
 
-// Styling for Start from Beginning toggle in translation modal
 .start-beginning-toggle {
   --background: var(--ion-surface-container);
   border-radius: var(--ion-border-radius);
@@ -311,6 +376,7 @@
   h2 {
     font-size: 15px;
     font-weight: 600;
+    letter-spacing: -0.01em;
     color: var(--ion-text-color);
     margin: 0;
   }
@@ -318,5 +384,45 @@
   p {
     font-size: 12px;
     color: var(--ion-color-medium);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .nav-modal-header {
+    background: rgba(20, 22, 24, 0.82);
+  }
+
+  .nav-modal::part(handle) {
+    background: rgba(235, 235, 245, 0.28);
+  }
+
+  .book-card {
+    background: var(--ion-background-color, #1c1c1e);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .nav-modal-header {
+    background: var(--ion-background-color);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-selection {
+    animation: none;
+  }
+
+  .nav-stage-pill,
+  .book-card,
+  .chapter-cell,
+  .language-selector-chip {
+    transition: none;
+
+    &:active {
+      transform: none;
+    }
   }
 }
