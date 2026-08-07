@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
+  IonAlert,
   IonButton,
   IonButtons,
   IonContent,
@@ -21,24 +22,28 @@ import { useAppContext } from "../../context/context";
 /* Graphql API/Hooks */
 import { useDeleteBookmarks } from "../../hooks/UserHooks";
 
+/* Services */
+import { hapticService } from "../../services/hapticService";
+
 /* Styles */
 import "./Profile.scss";
 
 const Profile: React.FC = () => {
-  // global context
   const {
     userInfo,
     selectedUserAssets,
     resetUserAssetList,
     handleGetBookmarks,
+    bookmarksResponse,
   } = useAppContext();
 
-  // api/graphql
   const { deleteBookmarks, loading, data } = useDeleteBookmarks();
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
 
   useEffect(() => {
     if (!data || !data.deleteBookmarks) return;
     resetUserAssetList();
+    void hapticService.triggerSuccessHaptic();
 
     // ?-- for some reason just waiting 50ms allows for the refresh to work, I guess cache takes some time to update
     setTimeout(() => {
@@ -48,11 +53,18 @@ const Profile: React.FC = () => {
 
   const handleDeleteAssets = () => {
     const assetIds = selectedUserAssets.map((asset) => asset._id);
-
     deleteBookmarks({ variables: { ids: assetIds } });
+    setShowDeleteAlert(false);
   };
 
-  // Generate SEO data
+  const handleCancelSelection = () => {
+    void hapticService.triggerNavigationHaptic();
+    resetUserAssetList();
+  };
+
+  const bookmarkCount =
+    bookmarksResponse?.getMyBookmarks?.results?.length ?? 0;
+
   const userName = `${userInfo?.firstName || ""} ${
     userInfo?.lastName || ""
   }`.trim();
@@ -85,80 +97,105 @@ const Profile: React.FC = () => {
     },
   };
 
-  return !userInfo ? null : (
-    <div id="profile">
-      {/* Enhanced SEO Head */}
-      <SEOHead {...profileSEO} />
-      {/* Header */}
-      <IonHeader className="ion-no-border padding-left-right">
-        {/* Toolbar */}
-        <IonToolbar>
-          {/* Header Title Button */}
-          {!selectedUserAssets.length ? (
-            <>
-              <IonButton
-                fill="clear"
-                color="dark"
-                className="header-profile-button"
-              >
-                <Avatar
-                  alt="Silhouette of a person's head"
-                  name={`${userInfo.firstName} ${userInfo.lastName}`}
-                  size={120}
-                  variant="beam"
-                />
-              </IonButton>
+  const isSelecting = selectedUserAssets.length > 0;
 
-              {/* Header secondary buttons */}
-              {/* <IonButtons slot="end">
-            <IonButton
-              shape="round"
-              fill="outline"
-              color="primary"
-              size="large"
-              className="translation-button"
-            ></IonButton>
-          </IonButtons> */}
-            </>
-          ) : (
+  return !userInfo ? null : (
+    <div id="profile" className={isSelecting ? "is-selecting" : undefined}>
+      <SEOHead {...profileSEO} />
+
+      <IonHeader
+        className={`ion-no-border profile-header ${
+          isSelecting ? "profile-header--selecting" : "profile-header--idle"
+        }`}
+      >
+        <IonToolbar>
+          {isSelecting ? (
             <>
               <IonButtons slot="start">
                 <IonButton
                   fill="clear"
-                  color="dark"
-                  className="header-profile-button"
-                  onClick={resetUserAssetList}
+                  className="profile-chrome-btn"
+                  onClick={handleCancelSelection}
+                  aria-label="Cancel selection"
                 >
                   <span className="material-icons-round">close</span>
                 </IonButton>
               </IonButtons>
-              <IonText className="header-helper">
+              <IonText className="profile-selection-count header-helper">
                 {selectedUserAssets.length} selected
               </IonText>
-              {/* Header secondary buttons */}
               <IonButtons slot="end">
                 <IonButton
                   fill="clear"
-                  color="dark"
-                  className="header-profile-button"
-                  onClick={handleDeleteAssets}
+                  color="danger"
+                  className="profile-chrome-btn"
+                  onClick={() => setShowDeleteAlert(true)}
                   disabled={loading}
+                  aria-label="Delete selected bookmarks"
                 >
                   {loading ? (
-                    <IonSpinner />
+                    <IonSpinner name="crescent" />
                   ) : (
                     <span className="material-icons-round">delete_outline</span>
                   )}
                 </IonButton>
               </IonButtons>
             </>
+          ) : (
+            <IonText className="profile-nav-title">Profile</IonText>
           )}
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen className="ion-padding">
-        <UserBio user={userInfo} />
-        <UserAssetsViewer />
+
+      <IonContent fullscreen className="profile-content">
+        <div className="profile-atmosphere" aria-hidden="true" />
+
+        <section
+          className="profile-identity"
+          aria-label={userName || "Your profile"}
+        >
+          <div className="profile-avatar-wrap">
+            <Avatar
+              name={
+                `${userInfo.firstName || ""} ${userInfo.lastName || ""}`.trim() ||
+                userInfo.email
+              }
+              size={96}
+              variant="beam"
+              colors={["#2989e3", "#f02c89", "#724498", "#a2c9ff", "#ffd9e2"]}
+            />
+          </div>
+          <UserBio user={userInfo} />
+        </section>
+
+        <UserAssetsViewer bookmarkCount={bookmarkCount} />
       </IonContent>
+
+      <IonAlert
+        isOpen={showDeleteAlert}
+        onDidDismiss={() => setShowDeleteAlert(false)}
+        header={
+          selectedUserAssets.length === 1
+            ? "Delete Bookmark"
+            : "Delete Bookmarks"
+        }
+        message={
+          selectedUserAssets.length === 1
+            ? "This bookmark will be permanently removed."
+            : `${selectedUserAssets.length} bookmarks will be permanently removed.`
+        }
+        buttons={[
+          {
+            text: "Cancel",
+            role: "cancel",
+          },
+          {
+            text: "Delete",
+            role: "destructive",
+            handler: handleDeleteAssets,
+          },
+        ]}
+      />
     </div>
   );
 };
