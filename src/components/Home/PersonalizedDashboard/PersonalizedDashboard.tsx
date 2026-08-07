@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import {
   IonText,
   IonIcon,
@@ -29,6 +29,20 @@ interface UserStats {
   recentMoodCheckins: number;
 }
 
+const EMPTY_STATS: UserStats = {
+  totalReadingSessions: 0,
+  totalBookmarks: 0,
+  currentStreak: 0,
+  recentMoodCheckins: 0,
+};
+
+const getTimeOfDayGreeting = () => {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Good morning";
+  if (hour < 17) return "Good afternoon";
+  return "Good evening";
+};
+
 const PersonalizedDashboard: React.FC = () => {
   const { userInfo } = useAppContext();
   const { data: bibleHistoryData, loading: historyLoading } =
@@ -36,28 +50,10 @@ const PersonalizedDashboard: React.FC = () => {
   const { data: bookmarksData, loading: bookmarksLoading } = useGetBookmarks();
   const { moodHistory, loading: moodLoading } = useMoodHistory();
 
-  const [userStats, setUserStats] = useState<UserStats>({
-    totalReadingSessions: 0,
-    totalBookmarks: 0,
-    currentStreak: 0,
-    recentMoodCheckins: 0,
-  });
+  const timeOfDay = getTimeOfDayGreeting();
 
-  const [timeOfDay, setTimeOfDay] = useState<string>("");
-
-  useEffect(() => {
-    const hour = new Date().getHours();
-    if (hour < 12) {
-      setTimeOfDay("Good morning");
-    } else if (hour < 17) {
-      setTimeOfDay("Good afternoon");
-    } else {
-      setTimeOfDay("Good evening");
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!bibleHistoryData || !userInfo) return;
+  const userStats = useMemo<UserStats>(() => {
+    if (!bibleHistoryData || !userInfo) return EMPTY_STATS;
 
     const bibleHistory = bibleHistoryData.me?.user?.bibleHistory?.find(
       (history) => history.current
@@ -115,18 +111,17 @@ const PersonalizedDashboard: React.FC = () => {
 
     const weekAgo = new Date();
     weekAgo.setDate(weekAgo.getDate() - 7);
-    const recentMoodCheckins =
-      moodHistory?.filter((mood) => {
-        const moodDate = new Date(mood.createdAt);
-        return !isNaN(moodDate.getTime()) && moodDate >= weekAgo;
-      }).length || 0;
+    const recentMoodCheckins = moodHistory.filter((mood) => {
+      const moodDate = new Date(mood.createdAt);
+      return !isNaN(moodDate.getTime()) && moodDate >= weekAgo;
+    }).length;
 
-    setUserStats({
+    return {
       totalReadingSessions: totalSessions,
       totalBookmarks,
       currentStreak: streak,
       recentMoodCheckins,
-    });
+    };
   }, [bibleHistoryData, bookmarksData, userInfo, moodHistory]);
 
   const getPersonalizedGreeting = () => {
