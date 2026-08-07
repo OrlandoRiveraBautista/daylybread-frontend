@@ -1,93 +1,79 @@
 @import "../../../theme/variables.scss";
 
-.verse-of-the-day-row {
-  margin-bottom: 8px;
+.verse-of-the-day {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 .votd-card {
-  margin: 0;
-  border-radius: 20px;
-  overflow: hidden;
-  background: linear-gradient(
-    145deg,
-    var(--ion-color-primary),
-    var(--ion-color-primary-shade) 60%,
-    var(--ion-color-secondary)
-  );
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
-
-  ion-card-content {
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
+  border-radius: 16px;
+  border: 1px solid rgba(195, 198, 207, 0.55);
+  background: var(--ion-background-color, #fff);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.55) inset,
+    0 4px 16px rgba(0, 0, 0, 0.04);
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .votd-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
+}
 
-  .votd-label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
+.votd-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 
-    .votd-sun-icon {
-      font-size: 18px;
-      color: rgba(255, 255, 255, 0.9);
-    }
-
-    .votd-label-text {
-      font-size: 12px;
-      font-weight: 700;
-      color: rgba(255, 255, 255, 0.9);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
+  .votd-sun-icon {
+    font-size: 18px;
+    color: var(--ion-color-primary);
   }
 
-  .votd-date {
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.7);
-    font-weight: 400;
+  .votd-label-text {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--ion-color-medium);
   }
 }
 
 .votd-theme-badge {
-  align-self: flex-start;
-
-  span {
-    display: inline-block;
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 3px 10px;
-    border-radius: 20px;
-    letter-spacing: 0.3px;
-    border: 1px solid rgba(255, 255, 255, 0.25);
-  }
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 22px;
+  padding: 0 9px;
+  border-radius: 11px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ion-color-primary);
+  background: rgba(var(--ion-color-primary-rgb), 0.12);
 }
 
 .votd-verse-block {
-  padding: 4px 0;
-
   .votd-verse-text {
+    margin: 0 0 12px;
     font-size: 1.05rem;
     font-weight: 400;
-    line-height: 1.7;
-    color: white;
-    margin: 0 0 12px 0;
-    font-style: italic;
+    letter-spacing: -0.01em;
+    line-height: 1.6;
+    color: var(--ion-text-color);
   }
 
   .votd-reference {
+    margin: 0;
     font-size: 0.875rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.85);
-    margin: 0;
+    letter-spacing: -0.01em;
+    color: var(--ion-color-primary);
     text-align: right;
   }
 }
@@ -98,36 +84,44 @@
 
   .votd-btn {
     flex: 1;
-    --color: white;
-    --border-color: rgba(255, 255, 255, 0.5);
-    --background: transparent;
-    --background-hover: rgba(255, 255, 255, 0.1);
-    --border-radius: 10px;
+    --border-radius: 12px;
     font-size: 0.8rem;
-    font-weight: 500;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    transition: transform 100ms ease-out;
 
-    &:hover {
-      --border-color: rgba(255, 255, 255, 0.8);
+    &:active {
+      transform: scale(0.97);
     }
   }
 }
 
-// Dark mode — gradient already works, just subtle shadow tweak
 @media (prefers-color-scheme: dark) {
   .votd-card {
-    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.04);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.06) inset,
+      0 4px 16px rgba(0, 0, 0, 0.2);
   }
 }
 
-// Responsive
+@media (prefers-reduced-motion: reduce) {
+  .votd-actions .votd-btn {
+    transition: none;
+
+    &:active {
+      transform: none;
+    }
+  }
+}
+
 @media (min-width: 768px) {
   .votd-card {
-    ion-card-content {
-      padding: 32px;
-    }
+    padding: 22px 20px;
+  }
 
-    .votd-verse-block .votd-verse-text {
-      font-size: 1.15rem;
-    }
+  .votd-verse-block .votd-verse-text {
+    font-size: 1.12rem;
   }
 }

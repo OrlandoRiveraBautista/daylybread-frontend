@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import {
-  IonCard,
-  IonCardContent,
   IonText,
   IonButton,
   IonIcon,
@@ -42,12 +40,11 @@ const VerseResponse: React.FC<VerseResponseProps> = ({
   isSaving = false,
 }) => {
   const [showAiModal, setShowAiModal] = useState(false);
+
   const handleSave = () => {
-    if (saveStatus === "saved" || isSaving) return; // Prevent double-saving
+    if (saveStatus === "saved" || isSaving) return;
     if (onSave) {
       onSave();
-    } else {
-      console.log("Saving verse to bookmarks...");
     }
   };
 
@@ -67,7 +64,7 @@ const VerseResponse: React.FC<VerseResponseProps> = ({
       return (
         <>
           <IonIcon icon={checkmarkCircle} slot="start" />
-          Saved!
+          Saved
         </>
       );
     }
@@ -81,7 +78,7 @@ const VerseResponse: React.FC<VerseResponseProps> = ({
 
   const handleShare = () => {
     const appUrl = getBibleUrl();
-    const shareText = `"${response.verse}"\n\n— ${response.reference} (${bibleVersion})\n\n💭 ${response.reflection}\n\n✨ Discover personalized verses for your mood:\n${appUrl}\n\n📖 Shared via Daylybread`;
+    const shareText = `"${response.verse}"\n\n— ${response.reference} (${bibleVersion})\n\n${response.reflection}\n\nDiscover personalized verses for your mood:\n${appUrl}\n\nShared via Daylybread`;
 
     if (onShare) {
       onShare();
@@ -96,31 +93,30 @@ const VerseResponse: React.FC<VerseResponseProps> = ({
 
   return (
     <>
-    <IonCard className="mood-response-card">
-      <IonCardContent>
-        {/* Timer for next mood check-in */}
+      <div className="mood-response-card">
         <NextMoodTimer
           nextRequestAllowed={nextRequestAllowed}
           className="verse-response-timer"
         />
+
         <div className="response-header">
           <IonText>
-            <h3>A word for your heart today</h3>
+            <h3 className="response-title">A word for your heart</h3>
           </IonText>
           <IonButton
-            fill="outline"
+            fill="clear"
             size="small"
             onClick={onNewCheckIn}
             className="new-checkin-btn"
           >
             <IonIcon icon={arrowBack} slot="start" />
-            Check in again
+            Again
           </IonButton>
         </div>
 
         <div className="verse-content">
           <IonText>
-            <p className="verse-text">"{response.verse}"</p>
+            <p className="verse-text">&ldquo;{response.verse}&rdquo;</p>
             <p className="verse-reference">
               — {response.reference}
               <span className="verse-version-badge">({bibleVersion})</span>
@@ -165,13 +161,12 @@ const VerseResponse: React.FC<VerseResponseProps> = ({
             Talk to God
           </IonButton>
         </div>
-      </IonCardContent>
-    </IonCard>
+      </div>
 
-    <BreadCrumbsModal
-      isOpen={showAiModal}
-      onDismiss={() => setShowAiModal(false)}
-    />
+      <BreadCrumbsModal
+        isOpen={showAiModal}
+        onDismiss={() => setShowAiModal(false)}
+      />
     </>
   );
 };

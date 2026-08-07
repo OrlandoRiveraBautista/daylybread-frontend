@@ -1,14 +1,5 @@
 import React, { useState } from "react";
-import {
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonText,
-  IonCard,
-  IonCardContent,
-  IonCardTitle,
-  IonIcon,
-} from "@ionic/react";
+import { IonText, IonIcon } from "@ionic/react";
 import { library, sparkles, chevronForward } from "ionicons/icons";
 import { useHistory } from "react-router";
 import BreadCrumbsModal from "../../BreadCrumbsModal/BreadCrumbsModal";
@@ -25,56 +16,53 @@ const AppFeatures: React.FC = () => {
       title: "Multiple Translations",
       description: "Explore the Bible in 1,600+ languages and translations",
       icon: library,
+      tone: "tertiary" as const,
       action: () => history.push("/read"),
     },
     {
       title: "BreadCrumbs AI",
       description: "Get spiritual insights and answers with our AI assistant",
       icon: sparkles,
+      tone: "primary" as const,
       action: () => setShowAiModal(true),
     },
   ];
 
   return (
     <>
-      <IonGrid className="app-features-grid">
-        <IonRow>
-          <IonCol size="12">
-            <IonText>
-              <h2>Discover Features</h2>
-            </IonText>
-          </IonCol>
-        </IonRow>
+      <section className="app-features" aria-label="Discover features">
+        <div className="home-section-header">
+          <IonText>
+            <h2 className="home-section-title">Discover</h2>
+          </IonText>
+          <p className="home-section-subtitle">Tools to deepen your study</p>
+        </div>
 
-        <IonRow>
-          {appFeatures.map((feature, index) => (
-            <IonCol size="12" sizeMd="6" key={index}>
-              <IonCard
-                className="feature-card"
-                button
-                onClick={feature.action}
+        <div className="app-features-list">
+          {appFeatures.map((feature) => (
+            <button
+              type="button"
+              className="home-list-card"
+              key={feature.title}
+              onClick={feature.action}
+            >
+              <div
+                className={`home-list-icon home-list-icon--${feature.tone}`}
+                aria-hidden="true"
               >
-                <IonCardContent>
-                  <div className="feature-content">
-                    <div className="feature-icon">
-                      <IonIcon icon={feature.icon} color="tertiary" />
-                    </div>
-                    <div className="feature-text">
-                      <IonCardTitle>{feature.title}</IonCardTitle>
-                      <IonText>
-                        <p>{feature.description}</p>
-                      </IonText>
-                    </div>
-                    <div className="feature-arrow">
-                      <IonIcon icon={chevronForward} />
-                    </div>
-                  </div>
-                </IonCardContent>
-              </IonCard>
-            </IonCol>
+                <IonIcon icon={feature.icon} />
+              </div>
+              <div className="home-list-text">
+                <span className="home-list-title">{feature.title}</span>
+                <span className="home-list-description">
+                  {feature.description}
+                </span>
+              </div>
+              <IonIcon className="home-list-chevron" icon={chevronForward} />
+            </button>
           ))}
-        </IonRow>
-      </IonGrid>
+        </div>
+      </section>
 
       <BreadCrumbsModal
         isOpen={showAiModal}

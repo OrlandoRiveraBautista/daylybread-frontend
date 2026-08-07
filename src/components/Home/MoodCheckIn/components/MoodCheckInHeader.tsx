@@ -14,12 +14,14 @@ const MoodCheckInHeader: React.FC<MoodCheckInHeaderProps> = ({
   return (
     <div className="mood-checkin-header">
       <IonText>
-        <h2>🤔 How are you feeling today?</h2>
-        <p>Let God's Word speak to your heart</p>
-        <p className="bible-context-label">
-          Using {bibleVersion} {bibleContext}
-        </p>
+        <h2 className="mood-checkin-title">How are you feeling?</h2>
       </IonText>
+      <p className="mood-checkin-subtitle">
+        Let God&apos;s Word speak to your heart
+      </p>
+      <p className="bible-context-label">
+        Using {bibleVersion} {bibleContext}
+      </p>
     </div>
   );
 };

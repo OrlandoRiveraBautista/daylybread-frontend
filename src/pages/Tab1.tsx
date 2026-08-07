@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import {
   IonContent,
-  IonGrid,
+  IonHeader,
   IonPage,
   IonRefresher,
   IonRefresherContent,
+  IonText,
+  IonToolbar,
 } from "@ionic/react";
 import { useLocation } from "react-router-dom";
 
@@ -31,28 +33,22 @@ const Tab1: React.FC = () => {
   const [refreshKey, setRefreshKey] = useState(0);
 
   const handleRefresh = (event: CustomEvent) => {
-    // Simulate refresh delay
     setTimeout(() => {
-      // Force re-render by updating a dummy state or trigger context refresh
       setRefreshKey((prev) => prev + 1);
       event.detail.complete();
     }, 1000);
   };
 
-  // Check if this is a mood check-in page
   const urlParams = new URLSearchParams(location.search);
   const isMoodCheckin = urlParams.get("mood") === "checkin";
   const currentMood = urlParams.get("feeling");
 
-  // Generate URLs
   const canonicalUrl = window.location.origin + window.location.pathname;
 
-  // Generate personalized metadata
   const userName = userInfo
     ? `${userInfo.firstName || ""} ${userInfo.lastName || ""}`.trim()
     : "";
 
-  // Generate SEO based on page type
   let seoConfig;
   if (isMoodCheckin) {
     seoConfig = generateMoodCheckInSEO(currentMood || undefined);
@@ -111,11 +107,16 @@ const Tab1: React.FC = () => {
   }
 
   return (
-    <IonPage>
-      {/* Enhanced SEO Head */}
+    <IonPage id="home">
       <SEOHead {...seoConfig} />
 
-      <IonContent className="home-content">
+      <IonHeader className="ion-no-border home-header">
+        <IonToolbar>
+          <IonText className="home-nav-title">Home</IonText>
+        </IonToolbar>
+      </IonHeader>
+
+      <IonContent fullscreen className="home-content">
         <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
           <IonRefresherContent
             pullingText="Pull to refresh..."
@@ -123,22 +124,16 @@ const Tab1: React.FC = () => {
           />
         </IonRefresher>
 
-        {/* Personalized Dashboard */}
+        <div className="home-atmosphere" aria-hidden="true" />
+
         <PersonalizedDashboard />
 
-        <IonGrid className="home-grid">
-          {/* Mood Check-In */}
+        <div className="home-sections">
           <MoodCheckIn key={`mood-${refreshKey}`} />
-
-          {/* Quick Actions */}
           <QuickActions />
-
-          {/* App Features */}
           <AppFeatures />
-
-          {/* Verse of the Day */}
           <VerseOfTheDay />
-        </IonGrid>
+        </div>
       </IonContent>
     </IonPage>
   );

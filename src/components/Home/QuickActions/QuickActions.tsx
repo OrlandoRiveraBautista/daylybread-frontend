@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonText,
-  IonCard,
-  IonCardContent,
-  IonIcon,
-} from "@ionic/react";
+import { IonText, IonIcon } from "@ionic/react";
 import { book, chevronForward, personCircleOutline } from "ionicons/icons";
 import { useHistory } from "react-router";
 
@@ -64,62 +56,56 @@ const QuickActions: React.FC = () => {
   const readTimestamp = formatRelativeTime(lastReadAt);
 
   return (
-    <IonGrid className="quick-actions-grid">
-      <IonRow>
-        <IonCol size="12">
-          <IonText>
-            <h2>Quick Actions</h2>
-          </IonText>
-        </IonCol>
-      </IonRow>
+    <section className="quick-actions" aria-label="Quick actions">
+      <div className="home-section-header">
+        <IonText>
+          <h2 className="home-section-title">Quick Actions</h2>
+        </IonText>
+        <p className="home-section-subtitle">Jump back into your day</p>
+      </div>
 
-      <IonRow>
-        <IonCol size="12" sizeMd="6">
-          <IonCard className="action-card" button onClick={handleQuickRead}>
-            <IonCardContent>
-              <div className="card-content">
-                <div className="card-icon primary-icon">
-                  <IonIcon icon={book} color="primary" />
-                </div>
-                <div className="card-text">
-                  <p className="card-title">Continue Reading</p>
-                  <p className="card-description">{readDescription}</p>
-                  {readTimestamp && (
-                    <p className="card-timestamp">{readTimestamp}</p>
-                  )}
-                </div>
-                <div className="card-arrow">
-                  <IonIcon icon={chevronForward} />
-                </div>
-              </div>
-            </IonCardContent>
-          </IonCard>
-        </IonCol>
+      <div className="quick-actions-list">
+        <button
+          type="button"
+          className="home-list-card"
+          onClick={handleQuickRead}
+        >
+          <div className="home-list-icon home-list-icon--primary" aria-hidden="true">
+            <IonIcon icon={book} />
+          </div>
+          <div className="home-list-text">
+            <span className="home-list-title">Continue Reading</span>
+            <span className="home-list-description">{readDescription}</span>
+            {readTimestamp ? (
+              <span className="home-list-meta">{readTimestamp}</span>
+            ) : null}
+          </div>
+          <IonIcon className="home-list-chevron" icon={chevronForward} />
+        </button>
 
-        <IonCol size="12" sizeMd="6">
-          <IonCard className="action-card" button onClick={handleViewProfile}>
-            <IonCardContent>
-              <div className="card-content">
-                <div className="card-icon secondary-icon">
-                  <IonIcon icon={personCircleOutline} color="secondary" />
-                </div>
-                <div className="card-text">
-                  <p className="card-title">My Profile</p>
-                  <p className="card-description">
-                    {userInfo?.firstName
-                      ? `${userInfo.firstName}'s journey`
-                      : "View your reading progress"}
-                  </p>
-                </div>
-                <div className="card-arrow">
-                  <IonIcon icon={chevronForward} />
-                </div>
-              </div>
-            </IonCardContent>
-          </IonCard>
-        </IonCol>
-      </IonRow>
-    </IonGrid>
+        <button
+          type="button"
+          className="home-list-card"
+          onClick={handleViewProfile}
+        >
+          <div
+            className="home-list-icon home-list-icon--secondary"
+            aria-hidden="true"
+          >
+            <IonIcon icon={personCircleOutline} />
+          </div>
+          <div className="home-list-text">
+            <span className="home-list-title">My Profile</span>
+            <span className="home-list-description">
+              {userInfo?.firstName
+                ? `${userInfo.firstName}'s journey`
+                : "View your reading progress"}
+            </span>
+          </div>
+          <IonIcon className="home-list-chevron" icon={chevronForward} />
+        </button>
+      </div>
+    </section>
   );
 };
 

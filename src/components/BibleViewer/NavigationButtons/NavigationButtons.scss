@@ -25,16 +25,13 @@
       width: 52px;
       height: 52px;
       // Glass fab — thicker surface than chips (material weight)
-      --background: rgba(255, 255, 255, 0.88);
+      --background: #ffffff;
       --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12),
         0 1px 0 rgba(255, 255, 255, 0.55) inset;
-      // 52px control — light blur is cheap enough
-      backdrop-filter: blur(10px) saturate(160%);
-      -webkit-backdrop-filter: blur(10px) saturate(160%);
       transition: transform 100ms ease-out;
 
       @media (prefers-color-scheme: dark) {
-        --background: rgba(30, 32, 34, 0.82);
+        --background: #1e2022;
         --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35),
           0 1px 0 rgba(255, 255, 255, 0.06) inset;
       }
@@ -83,14 +80,6 @@
         }
       }
     }
-  }
-}
-
-@media (prefers-reduced-transparency: reduce) {
-  #navigation-buttons ion-fab-button.bread-crumbs-button {
-    --background: var(--ion-background-color);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
   }
 }
 
