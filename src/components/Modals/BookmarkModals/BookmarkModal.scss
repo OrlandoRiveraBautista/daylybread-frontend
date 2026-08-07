@@ -6,8 +6,23 @@
     height: 400px !important;
   }
 
+  .bookmark-modal-header {
+    background-color: var(--ion-background-color);
+    box-shadow: none;
+    padding: 20px 16px 12px;
+
+    .bookmark-modal-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ion-text-color);
+      padding: 0;
+      text-align: center;
+      position: static;
+    }
+  }
+
   .bookmark-modal {
-    --padding-top: 24px;
+    --padding-top: 12px;
   }
 
   .modal-content-container {

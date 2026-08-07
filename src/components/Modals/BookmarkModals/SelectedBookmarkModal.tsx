@@ -3,6 +3,7 @@ import {
   IonButton,
   IonCol,
   IonContent,
+  IonHeader,
   IonModal,
   IonRow,
   IonSpinner,
@@ -99,13 +100,16 @@ const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
       isOpen={isOpen}
       onDidDismiss={onDismiss}
     >
+      <IonHeader className="bookmark-modal-header ion-no-border">
+        <IonTitle className="ion-text-center bookmark-modal-title">
+          Bookmark
+        </IonTitle>
+      </IonHeader>
       <IonContent
         className="ion-padding bookmark-modal"
         id="selectedBookmarkModal"
       >
         <div className="modal-content-container">
-          <IonTitle className="ion-text-center">Bookmark</IonTitle>
-
           {selectedBookmark ? (
             <div className="selected-bookmark-content">
               <div className="text-container">

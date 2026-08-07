@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   IonModal,
   IonContent,
+  IonHeader,
   IonTitle,
   IonRow,
   IonText,
@@ -82,9 +83,13 @@ const BookmarkModal: React.FC<IBookmarkModal> = ({
       breakpoints={[0, 1]}
       ref={modal}
     >
+      <IonHeader className="bookmark-modal-header ion-no-border">
+        <IonTitle className="ion-text-center bookmark-modal-title">
+          Bookmark
+        </IonTitle>
+      </IonHeader>
       <IonContent className="ion-padding bookmark-modal">
         <div className="modal-content-container">
-          <IonTitle className="ion-text-center">Bookmark</IonTitle>
           {userInfo ? (
             <>
               <div>

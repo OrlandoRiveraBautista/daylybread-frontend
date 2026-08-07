@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   IonContent,
+  IonHeader,
   IonModal,
   IonGrid,
   IonCol,
@@ -60,12 +61,12 @@ const BibleNavModal: React.FC<IBibleNavModal> = ({ isOpen, onDismiss }) => {
       isOpen={isOpen}
       onDidDismiss={onDismiss}
     >
-      <IonContent className="ion-padding nav-container">
-        {/* Navigation Toolbar */}
+      <IonHeader className="nav-modal-header ion-no-border">
         <IonGrid className="nav-toolbar">
           <IonRow>{renderNavButtons()}</IonRow>
         </IonGrid>
-        {/* Options */}
+      </IonHeader>
+      <IonContent className="ion-padding nav-container">
         <IonGrid className="nav-selection-container">
           {navTab === "book" ? (
             <BooksPicker />
