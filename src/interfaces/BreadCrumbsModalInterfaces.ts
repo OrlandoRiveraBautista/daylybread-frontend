@@ -18,6 +18,8 @@ export interface IBreadCrumbsChat {
   onSubmit: (value: string) => void;
   messages: IMessagesObject[];
   useChosenTextVerbage: boolean;
+  /** When false, active dictation should stop (e.g. modal dismissed) */
+  isActive?: boolean;
 }
 
 /**

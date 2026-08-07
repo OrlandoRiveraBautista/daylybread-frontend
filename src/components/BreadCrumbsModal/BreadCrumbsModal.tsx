@@ -220,6 +220,7 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
               onSubmit={handleSubmit}
               messages={messages}
               useChosenTextVerbage={useChosenTextVerbage}
+              isActive={isOpen}
             />
           </div>
         </IonGrid>

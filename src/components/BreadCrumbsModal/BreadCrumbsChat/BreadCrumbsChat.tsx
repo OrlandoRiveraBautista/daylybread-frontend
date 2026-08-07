@@ -9,14 +9,22 @@ import {
   IonSpinner,
   IonIcon,
   IonText,
+  IonToast,
 } from "@ionic/react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Markdown from "react-markdown";
 /* Icons */
-import { send } from "ionicons/icons";
+import { send, micOutline, mic } from "ionicons/icons";
 
 /* Utils */
 import breadCrumbsSuggestions from "../../../assets/ts/breadCrumbsSuggestions";
+
+/* Hooks */
+import {
+  useSpeechDictation,
+  SpeechDictationError,
+} from "../../../hooks/useSpeechDictation";
+import { useHaptic } from "../../../hooks/useHaptic";
 
 /* Interfaces */
 import { IBreadCrumbsChat } from "../../../interfaces/BreadCrumbsModalInterfaces";
@@ -25,6 +33,7 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChat> = ({
   onSubmit,
   messages,
   useChosenTextVerbage,
+  isActive = true,
 }: IBreadCrumbsChat) => {
   // state
   const [value, setValue] = useState<string | undefined | null>();
@@ -33,22 +42,37 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChat> = ({
   const [animatedMessages, setAnimatedMessages] = useState<Set<number>>(
     new Set()
   );
+  const [dictationToast, setDictationToast] = useState<string>("");
 
   // references
   const messagesContainer = useRef<HTMLInputElement>(null);
+  const valueRef = useRef(value);
 
-  /**
-   * Function to handle submitting a message
-   * it should call the function passed in the props and delete the current message state
-   * This function can also be used for the chip suggestions and useChosenTextVerbage
-   * which will direct the handler function in the parent
-   */
-  const handleSubmit = (value: string) => {
-    onSubmit(value);
-    setValue(""); // reset value
-    setLoadingChatResponse(true);
-    scrollToBottom();
-  };
+  useEffect(() => {
+    valueRef.current = value;
+  }, [value]);
+
+  const { triggerNavigationHaptic, triggerErrorHaptic } = useHaptic();
+
+  const handleTranscript = useCallback((text: string) => {
+    setValue(text);
+  }, []);
+
+  const getBaseText = useCallback(() => valueRef.current || "", []);
+
+  const handleDictationError = useCallback(
+    (_code: SpeechDictationError, message: string) => {
+      setDictationToast(message);
+      triggerErrorHaptic();
+    },
+    [triggerErrorHaptic]
+  );
+
+  const { isSupported, isListening, toggle, stop } = useSpeechDictation({
+    onTranscript: handleTranscript,
+    getBaseText,
+    onError: handleDictationError,
+  });
 
   const scrollToBottom = () => {
     if (!messagesContainer.current) return;
@@ -62,6 +86,33 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChat> = ({
       behavior: reduceMotion ? "auto" : "smooth",
     });
   };
+
+  /**
+   * Function to handle submitting a message
+   * it should call the function passed in the props and delete the current message state
+   * This function can also be used for the chip suggestions and useChosenTextVerbage
+   * which will direct the handler function in the parent
+   */
+  const handleSubmit = (nextValue: string) => {
+    if (isListening) stop();
+    onSubmit(nextValue);
+    setValue(""); // reset value
+    setLoadingChatResponse(true);
+    scrollToBottom();
+  };
+
+  const handleMicClick = () => {
+    if (loadingChatResponse) return;
+    triggerNavigationHaptic();
+    toggle();
+  };
+
+  // Stop the mic when the sheet closes so recognition doesn't keep running
+  useEffect(() => {
+    if (!isActive && isListening) {
+      stop();
+    }
+  }, [isActive, isListening, stop]);
 
   useEffect(() => {
     scrollToBottom();
@@ -162,12 +213,16 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChat> = ({
         ) : null}
 
         {/* Chat Input — focus ring via :focus-within (instant, no React lag) */}
-        <IonRow className="chat-input-row">
+        <IonRow
+          className={`chat-input-row${
+            isListening ? " chat-input-row--listening" : ""
+          }`}
+        >
           <IonCol>
             <IonTextarea
               className="chat-input-textarea"
               color="primary"
-              placeholder="Ask anything…"
+              placeholder={isListening ? "Listening…" : "Ask anything…"}
               autoGrow={true}
               fill="solid"
               rows={1}
@@ -176,7 +231,22 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChat> = ({
               aria-label="Message BreadCrumbs"
             />
           </IonCol>
-          <IonCol size="auto" className="textarea-send-button-container">
+          <IonCol size="auto" className="textarea-actions-container">
+            {isSupported ? (
+              <IonButton
+                fill="clear"
+                className={`textarea-dictation-button${
+                  isListening ? " textarea-dictation-button--listening" : ""
+                }`}
+                color={isListening ? "secondary" : "medium"}
+                onClick={handleMicClick}
+                disabled={loadingChatResponse}
+                aria-label={isListening ? "Stop dictation" : "Start dictation"}
+                aria-pressed={isListening}
+              >
+                <IonIcon icon={isListening ? mic : micOutline} />
+              </IonButton>
+            ) : null}
             <IonButton
               fill="clear"
               className="textarea-send-button"
@@ -194,6 +264,15 @@ const BreadCrumbsChat: React.FC<IBreadCrumbsChat> = ({
           </IonCol>
         </IonRow>
       </div>
+
+      <IonToast
+        isOpen={!!dictationToast}
+        message={dictationToast}
+        duration={3200}
+        position="bottom"
+        color="medium"
+        onDidDismiss={() => setDictationToast("")}
+      />
     </>
   );
 };

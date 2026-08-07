@@ -425,19 +425,73 @@
         margin: 0;
       }
 
+      &--listening {
+        border-color: rgba(var(--ion-color-secondary-rgb), 0.55);
+        box-shadow: 0 0 0 3px rgba(var(--ion-color-secondary-rgb), 0.12);
+      }
+
+      .textarea-actions-container {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+        padding-right: 2px;
+      }
+
+      .textarea-dictation-button,
       .textarea-send-button {
         height: 44px !important;
-        margin: 0 4px 0 0;
+        margin: 0;
         --border-radius: 12px;
-        --padding-start: 12px !important;
-        --padding-end: 12px !important;
+        --padding-start: 10px !important;
+        --padding-end: 10px !important;
         transition: transform 100ms ease-out;
 
         &:active:not([disabled]) {
           transform: scale(0.92);
         }
       }
+
+      .textarea-send-button {
+        margin-right: 2px;
+      }
+
+      .textarea-dictation-button {
+        position: relative;
+
+        &--listening {
+          --color: var(--ion-color-secondary);
+
+          &::before {
+            content: "";
+            position: absolute;
+            inset: 8px;
+            border-radius: 50%;
+            background: rgba(var(--ion-color-secondary-rgb), 0.18);
+            animation: breadcrumbs-mic-pulse 1.4s ease-out infinite;
+          }
+
+          ion-icon {
+            position: relative;
+            z-index: 1;
+          }
+        }
+      }
     }
+  }
+}
+
+@keyframes breadcrumbs-mic-pulse {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.9;
+  }
+  70% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.35);
+    opacity: 0;
   }
 }
 
@@ -480,6 +534,7 @@
     .citation-toggle,
     .chat-input-row,
     .textarea-send-button,
+    .textarea-dictation-button,
     .breadcrumbs-suggestions-row ion-chip,
     .chat-respond ion-card {
       transition: none;
@@ -488,12 +543,19 @@
     .quick-action-chip:active,
     .citation-toggle:active,
     .textarea-send-button:active,
+    .textarea-dictation-button:active,
     .breadcrumbs-suggestions-row ion-chip:active {
       transform: none;
     }
 
-    .chat-input-row:focus-within {
+    .chat-input-row:focus-within,
+    .chat-input-row--listening {
       box-shadow: none;
+    }
+
+    .textarea-dictation-button--listening::before {
+      animation: none;
+      opacity: 0.35;
     }
   }
 }
