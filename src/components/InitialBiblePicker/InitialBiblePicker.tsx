@@ -13,6 +13,9 @@ import BreadCrumbsIcon from "../../assets/icons/BreadCrumbs-icon.svg";
 import { useAppContext } from "../../context/context";
 import { useTour } from "../../context/TourContext";
 
+/* Services */
+import { hapticService } from "../../services/hapticService";
+
 /* Utils */
 import { displayBibleAbbr } from "../../utils/support";
 
@@ -30,12 +33,14 @@ const InitialBiblePicker: React.FC = () => {
   const { nextStep, run: tourIsRunning } = useTour();
 
   const handleOpenTranslationModal = () => {
+    void hapticService.triggerNavigationHaptic();
     setOpenSelectedTranslationModal(!openSelectedTranslationModal);
     if (openSelectedTranslationModal || !tourIsRunning) return;
     setTimeout(nextStep, 100);
   };
 
   const handleOpenBreadCrumbsModal = () => {
+    void hapticService.triggerNavigationHaptic();
     setOpenBreadCrumbsModal(!openBreadCrumbsModal);
   };
 

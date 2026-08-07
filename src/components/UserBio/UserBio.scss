@@ -98,7 +98,7 @@
   }
 
   .bio-textarea {
-    --background: rgba(255, 255, 255, 0.55);
+    --background: var(--ion-background-color, #fff);
     --padding-start: 14px;
     --padding-end: 14px;
     --padding-top: 12px;
@@ -107,8 +107,6 @@
     --border-width: 1px;
     --border-color: rgba(195, 198, 207, 0.55);
     --border-style: solid;
-    backdrop-filter: blur(16px) saturate(160%);
-    -webkit-backdrop-filter: blur(16px) saturate(160%);
     font-size: 15px;
     line-height: 1.45;
     text-align: left;
@@ -150,16 +148,8 @@
 
 @media (prefers-color-scheme: dark) {
   #profile-user-bio .bio-textarea {
-    --background: rgba(255, 255, 255, 0.06);
+    --background: var(--ion-background-color, #1c1c1e);
     --border-color: rgba(255, 255, 255, 0.12);
-  }
-}
-
-@media (prefers-reduced-transparency: reduce) {
-  #profile-user-bio .bio-textarea {
-    --background: var(--ion-background-color);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
   }
 }
 

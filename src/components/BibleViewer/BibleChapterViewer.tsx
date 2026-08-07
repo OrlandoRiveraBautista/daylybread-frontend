@@ -55,9 +55,12 @@ const BibleChapterViewer: React.FC = () => {
    * Called after sliding to a new chapter
    */
   const scrollToTop = () => {
-    const ionContent = document.querySelector("ion-content");
+    // Prefer the Bible tab content; settle with a short critically damped feel
+    const ionContent =
+      document.querySelector(".tab2-content") ||
+      document.querySelector("ion-content");
     if (ionContent) {
-      (ionContent as HTMLIonContentElement).scrollToTop(100);
+      (ionContent as HTMLIonContentElement).scrollToTop(320);
     }
   };
 

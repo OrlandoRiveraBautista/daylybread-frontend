@@ -23,6 +23,9 @@ import BibleTranslationModal from "../components/BibleNavModal/BibleTranslationM
 import BibleChapterViewer from "../components/BibleViewer/BibleChapterViewer";
 import Player from "../components/Player/Player";
 
+/* Services */
+import { hapticService } from "../services/hapticService";
+
 /* Styles */
 import "./Tab2.scss";
 
@@ -64,44 +67,57 @@ const Tab2: React.FC = () => {
     verseText: firstVerseText,
   });
 
+  const openBibleNav = () => {
+    void hapticService.triggerNavigationHaptic();
+    setOpenBibleNavModal(true);
+  };
+
+  const openTranslationPicker = () => {
+    void hapticService.triggerNavigationHaptic();
+    setOpenModal(true);
+  };
+
   return (
-    <IonPage style={{ overflow: "clip" }}>
-      {/* Enhanced SEO Head */}
+    <IonPage style={{ overflow: "clip" }} className="tab2-page">
       <SEOHead {...seoConfig} />
-      {/* Header */}
-      <IonHeader className="ion-no-border padding-left-right tab2-header">
-        {/* Toolbar */}
+
+      <IonHeader className="ion-no-border tab2-header">
         <IonToolbar>
-          {/* Header Title Button */}
           {chosenBible ? (
             <>
               <IonButton
                 fill="clear"
                 color="dark"
                 className="header-nav-pill"
-                onClick={() => setOpenBibleNavModal(!openBibleNavModal)}
+                onClick={openBibleNav}
                 id="open-bible-nav-modal"
-                disabled={chosenBible ? false : true}
+                disabled={!chosenBible}
               >
                 {chosenBook ? (
                   <span className="nav-pill-inner">
                     <span className="nav-pill-text">
                       {chosenBook.name}
                       {chosenChapterNumber ? (
-                        <span className="nav-pill-chapter"> {chosenChapterNumber}</span>
+                        <span className="nav-pill-chapter">
+                          {" "}
+                          {chosenChapterNumber}
+                        </span>
                       ) : null}
                     </span>
-                    <IonIcon icon={caretDownOutline} className="nav-pill-chevron" />
+                    <IonIcon
+                      icon={caretDownOutline}
+                      className="nav-pill-chevron"
+                    />
                   </span>
                 ) : null}
               </IonButton>
-              {/* Header secondary buttons */}
+
               <IonButtons slot="end" className="header-end-buttons">
                 <IonButton
                   shape="round"
                   fill="clear"
                   color="dark"
-                  onClick={() => setOpenModal(!openModal)}
+                  onClick={openTranslationPicker}
                   id="open-modal"
                   className="translation-chip"
                 >
@@ -119,21 +135,19 @@ const Tab2: React.FC = () => {
         </IonToolbar>
       </IonHeader>
 
-      {/* Body */}
-      <IonContent>
+      {/* fullscreen: verses scroll under translucent chrome */}
+      <IonContent fullscreen className="tab2-content">
+        <div className="tab2-atmosphere" aria-hidden="true" />
         <BibleChapterViewer />
 
-        {/* Modals */}
-        {/* translation selection */}
         <BibleTranslationModal
           isOpen={openModal}
-          onDismiss={() => setOpenModal(!openModal)}
+          onDismiss={() => setOpenModal(false)}
         />
 
-        {/* bible navigation */}
         <BibleNavModal
           isOpen={openBibleNavModal}
-          onDismiss={() => setOpenBibleNavModal(!openBibleNavModal)}
+          onDismiss={() => setOpenBibleNavModal(false)}
         />
       </IonContent>
     </IonPage>

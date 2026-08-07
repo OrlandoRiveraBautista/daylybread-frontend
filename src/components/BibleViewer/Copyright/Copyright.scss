@@ -1,15 +1,23 @@
 .copyright {
   display: flex;
   flex-direction: column;
-  min-height: 150px;
-  margin-top: 24px;
+  min-height: 120px;
+  margin-top: 8px;
+  margin-bottom: 48px;
   justify-content: center;
   align-items: center;
-  padding: 24px;
+  padding: 20px 28px 32px;
+  gap: 10px;
+  text-align: center;
   font-size: 11px;
   font-weight: 500;
-  gap: 12px;
+  letter-spacing: 0.01em;
+  line-height: 1.45;
+  color: var(--ion-color-medium);
+  opacity: 0.85;
+
   .copyright-image {
-    height: 32px;
+    height: 28px;
+    opacity: 0.9;
   }
 }

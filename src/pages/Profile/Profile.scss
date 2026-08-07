@@ -14,17 +14,18 @@
 
     &--idle {
       ion-toolbar {
-        --background: rgba(250, 249, 253, 0.72);
-        backdrop-filter: blur(20px) saturate(180%);
-        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        --background: rgba(250, 249, 253, 0.78);
+        // Header strip only — modest blur for mobile perf
+        backdrop-filter: blur(12px) saturate(160%);
+        -webkit-backdrop-filter: blur(12px) saturate(160%);
       }
     }
 
     &--selecting {
       ion-toolbar {
-        --background: rgba(255, 255, 255, 0.72);
-        backdrop-filter: blur(24px) saturate(180%);
-        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        --background: rgba(255, 255, 255, 0.82);
+        backdrop-filter: blur(12px) saturate(160%);
+        -webkit-backdrop-filter: blur(12px) saturate(160%);
         border-bottom: 1px solid rgba(255, 255, 255, 0.45);
         box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
         animation: profile-chrome-in 0.32s cubic-bezier(0.32, 0.72, 0, 1);

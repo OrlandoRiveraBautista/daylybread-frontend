@@ -5,10 +5,10 @@
   justify-content: flex-end;
   align-items: center;
   gap: 8px;
+  z-index: 2;
 
   ion-fab-button {
     margin: 0;
-
     --box-shadow: 0;
 
     &.left {
@@ -20,18 +20,23 @@
     }
 
     &.bread-crumbs-button {
-      --box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.18),
-        0px 2px 6px rgba(0, 0, 0, 0.12);
       position: relative;
       --border-radius: 30%;
       width: 52px;
       height: 52px;
-      --background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      // Glass fab — thicker surface than chips (material weight)
+      --background: rgba(255, 255, 255, 0.88);
+      --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12),
+        0 1px 0 rgba(255, 255, 255, 0.55) inset;
+      // 52px control — light blur is cheap enough
+      backdrop-filter: blur(10px) saturate(160%);
+      -webkit-backdrop-filter: blur(10px) saturate(160%);
+      transition: transform 100ms ease-out;
 
       @media (prefers-color-scheme: dark) {
-        --background: rgba(30, 32, 34, 0.92);
+        --background: rgba(30, 32, 34, 0.82);
+        --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35),
+          0 1px 0 rgba(255, 255, 255, 0.06) inset;
       }
 
       &::before {
@@ -48,11 +53,13 @@
           var(--ion-color-tertiary),
           var(--ion-color-primary)
         );
-        background-size: 300% 300%;
+        background-size: 220% 220%;
+        background-position: 0% 50%;
         border-radius: 32%;
         z-index: -1;
-        animation: gradient-border 3s ease-in-out infinite;
         opacity: 0.85;
+        // Static by default — perpetual loops feel noisy (Apple reduced motion guidance)
+        transition: opacity 160ms ease, background-position 0.8s ease;
       }
 
       .bread-crumbs-icon {
@@ -62,30 +69,41 @@
         height: 22px;
       }
 
-      &:hover::before {
+      &:hover::before,
+      &:focus-visible::before {
         opacity: 1;
-        animation-duration: 1.5s;
+        background-position: 100% 50%;
       }
 
       &:active {
         transform: scale(0.94);
 
         &::before {
-          animation-duration: 0.8s;
+          opacity: 1;
         }
       }
     }
   }
 }
 
-@keyframes gradient-border {
-  0% {
-    background-position: 0% 50%;
+@media (prefers-reduced-transparency: reduce) {
+  #navigation-buttons ion-fab-button.bread-crumbs-button {
+    --background: var(--ion-background-color);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #navigation-buttons ion-fab-button.bread-crumbs-button {
+    transition: none;
+
+    &::before {
+      transition: none;
+    }
+
+    &:active {
+      transform: none;
+    }
   }
 }
