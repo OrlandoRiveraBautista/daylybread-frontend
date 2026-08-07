@@ -1,22 +1,65 @@
-ion-toolbar {
+@import "../theme/variables.scss";
+
+.tab2-page {
+  position: relative;
+}
+
+// Scope toolbar chrome to this tab — avoid leaking opaque fills app-wide
+.tab2-header {
+  ion-toolbar {
+    --border-width: 0;
+    --min-height: 52px;
+    --padding-start: 8px;
+    --padding-end: 8px;
+    // Translucent structural layer — content scrolls underneath
+    --background: rgba(250, 249, 253, 0.78);
+    // Small chrome only — keep blur modest for mobile GPU cost
+    backdrop-filter: blur(12px) saturate(160%);
+    -webkit-backdrop-filter: blur(12px) saturate(160%);
+  }
+}
+
+.tab2-content {
+  // Keep Ionic's header offset for first paint; fullscreen lets verses
+  // scroll under the glass chrome (scroll-edge, not a hard divider)
   --background: var(--ion-background-color);
-  --min-height: 52px;
+  position: relative;
+}
+
+.tab2-atmosphere {
+  pointer-events: none;
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 320px;
+  z-index: 0;
+  background:
+    radial-gradient(
+      120% 70% at 50% -15%,
+      rgba(var(--ion-color-primary-rgb), 0.12) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      70% 50% at 100% 10%,
+      rgba(var(--ion-color-secondary-rgb), 0.07) 0%,
+      transparent 50%
+    );
 }
 
 ion-toolbar ion-title .toolbar-title {
   pointer-events: all !important;
 }
 
-.tab2-header ion-toolbar {
-  --padding-start: 8px;
-  --padding-end: 8px;
-}
-
 .header-nav-pill {
   --padding-start: 4px !important;
   --padding-end: 4px !important;
-  --border-radius: 100px !important;
+  --border-radius: 12px !important;
   height: 40px;
+  transition: transform 100ms ease-out, background 120ms ease-out;
+
+  &:active {
+    transform: scale(0.97);
+    background: rgba(var(--ion-color-primary-rgb), 0.08);
+  }
 
   .nav-pill-inner {
     display: flex;
@@ -26,41 +69,143 @@ ion-toolbar ion-title .toolbar-title {
   }
 
   .nav-pill-text {
+    font-family: $font-family;
     font-size: 17px;
     font-weight: 700;
-    letter-spacing: -0.3px;
+    // Vibrancy over glass: tighter tracking + weight, not flat gray
+    letter-spacing: -0.02em;
     color: var(--ion-text-color);
 
     .nav-pill-chapter {
-      font-weight: 400;
-      color: var(--ion-outline-color);
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      color: var(--ion-color-medium);
     }
   }
 
   .nav-pill-chevron {
     font-size: 12px;
-    color: var(--ion-outline-color);
+    color: var(--ion-color-medium);
     margin-top: 1px;
   }
 }
 
 .header-end-buttons {
-  gap: 2px;
+  gap: 6px;
+  align-items: center;
 }
 
 .translation-chip {
-  --padding-start: 10px !important;
-  --padding-end: 10px !important;
+  --padding-start: 12px !important;
+  --padding-end: 12px !important;
   --border-radius: 100px !important;
   height: 32px;
-  background-color: var(--ion-surface-container);
+  // Lighter interactive material on top of structural glass (don't stack frost)
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(195, 198, 207, 0.45);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
   border-radius: 100px;
   font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.2px;
+  letter-spacing: -0.01em;
+  transition: transform 100ms ease-out, background 120ms ease-out;
+
+  &:active {
+    transform: scale(0.96);
+    background: rgba(255, 255, 255, 0.72);
+  }
+}
+
+.tab2-header {
+  #player .play-button-player-standalone {
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(195, 198, 207, 0.45);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
+    transition: transform 100ms ease-out;
+
+    &:active {
+      transform: scale(0.94);
+    }
+  }
 }
 
 .header-button-translation {
   --padding-start: 16px !important;
   --padding-end: 16px !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .tab2-atmosphere {
+    background:
+      radial-gradient(
+        120% 70% at 50% -15%,
+        rgba(var(--ion-color-primary-rgb), 0.16) 0%,
+        transparent 55%
+      ),
+      radial-gradient(
+        70% 50% at 100% 10%,
+        rgba(var(--ion-color-secondary-rgb), 0.1) 0%,
+        transparent 50%
+      );
+  }
+
+  .tab2-header ion-toolbar {
+    --background: rgba(20, 22, 24, 0.72);
+  }
+
+  .translation-chip {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset;
+
+    &:active {
+      background: rgba(255, 255, 255, 0.14);
+    }
+  }
+
+  .tab2-header #player .play-button-player-standalone {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .tab2-header ion-toolbar {
+    --background: var(--ion-background-color);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .translation-chip,
+  .tab2-header #player .play-button-player-standalone {
+    background: var(--ion-surface-container);
+    border-color: var(--ion-outline-variant-color, #c3c6cf);
+    box-shadow: none;
+  }
+}
+
+@media (prefers-contrast: more) {
+  .tab2-header ion-toolbar {
+    --background: var(--ion-background-color);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-bottom: 1px solid var(--ion-outline-color);
+  }
+
+  .translation-chip {
+    border-color: var(--ion-outline-color);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header-nav-pill,
+  .translation-chip,
+  .tab2-header #player .play-button-player-standalone {
+    transition: none;
+
+    &:active {
+      transform: none;
+    }
+  }
 }

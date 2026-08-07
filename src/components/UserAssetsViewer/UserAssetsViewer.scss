@@ -1,8 +1,57 @@
+@import "../../theme/variables.scss";
+
 .user-assets-viewer-container {
-  .swiper-slide {
-    padding: 0 !important;
+  position: relative;
+  z-index: 1;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .assets-section-header {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 0 4px;
   }
-  ion-segment {
-    margin-bottom: 24px;
+
+  .assets-section-title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .assets-section-title {
+    margin: 0;
+    font-family: $font-family;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    color: var(--ion-text-color);
+  }
+
+  .assets-section-count {
+    min-width: 22px;
+    height: 22px;
+    padding: 0 7px;
+    border-radius: 11px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--ion-color-primary);
+    background: rgba(var(--ion-color-primary-rgb), 0.12);
+  }
+
+  .assets-section-subtitle {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--ion-color-medium);
+    line-height: 1.3;
   }
 }

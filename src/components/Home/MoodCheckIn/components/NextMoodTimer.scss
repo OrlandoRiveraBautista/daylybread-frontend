@@ -7,8 +7,7 @@
   padding: 8px 12px;
   border-radius: 16px;
   font-size: 0.75rem;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+  transition: background 160ms ease, border-color 160ms ease;
   border: 1px solid transparent;
 
   .timer-icon {
@@ -89,8 +88,6 @@
 // Dark mode adjustments
 @media (prefers-color-scheme: dark) {
   .next-mood-timer {
-    backdrop-filter: blur(10px);
-
     &.ready {
       background: rgba(var(--ion-color-success-rgb), 0.15);
       border-color: rgba(var(--ion-color-success-rgb), 0.25);

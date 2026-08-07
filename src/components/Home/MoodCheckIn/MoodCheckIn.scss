@@ -1,27 +1,27 @@
 @import "../../../theme/variables.scss";
 
-.mood-checkin-grid {
-  margin-bottom: 24px;
-
-  .mood-checkin-card {
-    margin: 0 0 12px 0;
-    border-radius: 12px;
-    box-shadow:
-      0px 1px 3px rgba(0, 0, 0, 0.12),
-      0px 1px 2px rgba(0, 0, 0, 0.24);
-    transition: all 0.2s ease;
-
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow:
-        0px 4px 8px rgba(0, 0, 0, 0.15),
-        0px 2px 4px rgba(0, 0, 0, 0.12);
-    }
-
-    ion-card-content {
-      padding: 20px;
-    }
-  }
+.mood-checkin {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-// Dark mode support - styles automatically handled by CSS variables
+.mood-checkin-surface {
+  border-radius: 16px;
+  border: 1px solid rgba(195, 198, 207, 0.55);
+  background: var(--ion-background-color, #fff);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.55) inset,
+    0 4px 16px rgba(0, 0, 0, 0.04);
+  padding: 18px 16px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .mood-checkin-surface {
+    border-color: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.04);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.06) inset,
+      0 4px 16px rgba(0, 0, 0, 0.2);
+  }
+}

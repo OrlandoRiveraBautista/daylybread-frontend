@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonCard,
-  IonCardContent,
-  IonLoading,
-  IonToast,
-} from "@ionic/react";
+import { IonLoading, IonToast } from "@ionic/react";
 import { MoodOption, useMoodCheckIn } from "./hooks/useMoodCheckIn";
 import MoodCheckInHeader from "./components/MoodCheckInHeader";
 import MoodSelector from "./components/MoodSelector";
@@ -58,29 +50,22 @@ const MoodCheckIn: React.FC = () => {
 
   if (!selectedMood || !currentResponse) {
     return (
-      <IonGrid className="mood-checkin-grid">
-        <IonRow>
-          <IonCol size="12">
-            <IonCard className="mood-checkin-card">
-              <IonCardContent>
-                <MoodCheckInHeader
-                  key={getUserPreferredBibleVersion()}
-                  bibleVersion={getUserPreferredBibleVersion()}
-                  bibleContext={getBibleHistoryContext()}
-                />
+      <section className="mood-checkin" aria-label="Mood check-in">
+        <div className="mood-checkin-surface">
+          <MoodCheckInHeader
+            key={getUserPreferredBibleVersion()}
+            bibleVersion={getUserPreferredBibleVersion()}
+            bibleContext={getBibleHistoryContext()}
+          />
 
-                <MoodSelector
-                  moodOptions={MOOD_OPTIONS}
-                  onMoodSelect={handleMoodSelectWithHaptic}
-                  isLoading={verseLoading}
-                  disabled={verseLoading}
-                />
-              </IonCardContent>
-            </IonCard>
-          </IonCol>
-        </IonRow>
+          <MoodSelector
+            moodOptions={MOOD_OPTIONS}
+            onMoodSelect={handleMoodSelectWithHaptic}
+            isLoading={verseLoading}
+            disabled={verseLoading}
+          />
+        </div>
 
-        {/* Error toast */}
         <IonToast
           isOpen={showErrorToast}
           onDidDismiss={handleErrorToastDismiss}
@@ -94,39 +79,32 @@ const MoodCheckIn: React.FC = () => {
           position="top"
         />
 
-        {/* Sign-in modal */}
         <SignInModal
           isOpen={showSignInModal}
           onDismiss={handleSignInModalDismiss}
         />
-      </IonGrid>
+      </section>
     );
   }
 
   return (
-    <IonGrid className="mood-checkin-grid">
-      <IonRow>
-        <IonCol size="12">
-          <VerseResponse
-            response={currentResponse}
-            bibleVersion={getUserPreferredBibleVersion()}
-            nextRequestAllowed={nextRequestAllowed}
-            onNewCheckIn={handleNewCheckInWithHaptic}
-            onSave={handleSaveWithHaptic}
-            saveStatus={saveStatus}
-            isSaving={bookmarkLoading}
-          />
-        </IonCol>
-      </IonRow>
+    <section className="mood-checkin" aria-label="Mood check-in">
+      <VerseResponse
+        response={currentResponse}
+        bibleVersion={getUserPreferredBibleVersion()}
+        nextRequestAllowed={nextRequestAllowed}
+        onNewCheckIn={handleNewCheckInWithHaptic}
+        onSave={handleSaveWithHaptic}
+        saveStatus={saveStatus}
+        isSaving={bookmarkLoading}
+      />
 
-      {/* Loading overlay */}
       <IonLoading
         isOpen={verseLoading}
         message="Getting your verse..."
         duration={0}
       />
 
-      {/* Error toast */}
       <IonToast
         isOpen={showErrorToast}
         onDidDismiss={() => {
@@ -141,12 +119,11 @@ const MoodCheckIn: React.FC = () => {
         position="top"
       />
 
-      {/* Sign-in modal */}
       <SignInModal
         isOpen={showSignInModal}
         onDismiss={handleSignInModalDismiss}
       />
-    </IonGrid>
+    </section>
   );
 };
 

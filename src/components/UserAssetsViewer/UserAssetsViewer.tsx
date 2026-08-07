@@ -1,61 +1,39 @@
-import React, { useState } from "react";
-import { IonSegment, IonSegmentButton, IonLabel } from "@ionic/react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Swiper as SwiperEvent } from "swiper/types";
+import React from "react";
 
 /* Components */
-import {
-  IonSegmentCustomEvent,
-  SegmentChangeEventDetail,
-} from "@ionic/core/dist/types/components";
 import BookmarkAssetList from "./BookmarkAssetList";
 
 /* Styles */
 import "./UserAssetsViewer.scss";
 
-const UserAssetsViewer: React.FC = () => {
-  const [segmentState, setSegmentState] = useState<string>("bookmarks");
-  const [swiper, setSwiper] = useState<SwiperEvent>();
+interface UserAssetsViewerProps {
+  bookmarkCount?: number;
+}
 
-  const slideOpts = {
-    initalSlide: 0,
-    speed: 300,
-  };
-
-  const options = ["posts", "bookmarks"];
-
-  const onSegmentChange = (
-    e: IonSegmentCustomEvent<SegmentChangeEventDetail>
-  ) => {
-    swiper?.slideTo(options.indexOf(e.detail.value!));
-  };
-
-  const onSlideChange = (e: SwiperEvent) => {
-    setSegmentState(options[e.activeIndex]);
-  };
-
+const UserAssetsViewer: React.FC<UserAssetsViewerProps> = ({
+  bookmarkCount = 0,
+}) => {
   return (
     <div className="user-assets-viewer-container">
-      <IonSegment value={segmentState} onIonChange={(e) => onSegmentChange(e)}>
-        {/* <IonSegmentButton value="posts">
-          <IonLabel>Posts</IonLabel>
-        </IonSegmentButton> */}
-        <IonSegmentButton value="bookmarks">
-          <IonLabel>Bookmarks</IonLabel>
-        </IonSegmentButton>
-      </IonSegment>
-      <Swiper
-        initialSlide={slideOpts.initalSlide}
-        tabIndex={1}
-        speed={slideOpts.speed}
-        onSlideChange={(e: SwiperEvent) => onSlideChange(e)}
-        onSwiper={(s: SwiperEvent) => setSwiper(s)}
-      >
-        {/* <SwiperSlide>Slide 1</SwiperSlide> */}
-        <SwiperSlide>
-          <BookmarkAssetList />
-        </SwiperSlide>
-      </Swiper>
+      <header className="assets-section-header">
+        <div className="assets-section-title-row">
+          <h2 className="assets-section-title">Bookmarks</h2>
+          {bookmarkCount > 0 ? (
+            <span
+              className="assets-section-count"
+              aria-label={`${bookmarkCount} bookmarks`}
+            >
+              {bookmarkCount}
+            </span>
+          ) : null}
+        </div>
+        {bookmarkCount > 0 ? (
+          <p className="assets-section-subtitle">
+            Long-press a card to select and manage
+          </p>
+        ) : null}
+      </header>
+      <BookmarkAssetList />
     </div>
   );
 };

@@ -2,13 +2,13 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   IonModal,
   IonContent,
+  IonHeader,
   IonTitle,
-  IonRow,
   IonText,
-  IonCol,
   IonButton,
   IonSpinner,
   IonTextarea,
+  IonToolbar,
 } from "@ionic/react";
 import { IonTextareaCustomEvent, TextareaInputEventDetail } from "@ionic/core";
 import { useHistory } from "react-router";
@@ -22,34 +22,31 @@ import "./BookmarkModal.scss";
 /* Graphql API/Hooks */
 import { useCreateBookmarks } from "../../../hooks/UserHooks";
 
-/* Interfaces */
+/* Services */
+import { hapticService } from "../../../services/hapticService";
+
 interface IBookmarkModal {
   isOpen: boolean;
   onDismiss: () => void;
 }
+
 const BookmarkModal: React.FC<IBookmarkModal> = ({
   isOpen,
   onDismiss,
 }: IBookmarkModal) => {
   const history = useHistory();
-  // global state
   const { selectedVerseList, selectedVersesCitation, userInfo, chosenBible } =
     useAppContext();
 
-  // graphql hooks
   const { setBookmarks, data, error, loading } = useCreateBookmarks();
-
-  // local state
-  const [note, setNote] = useState<string | undefined>();
-
+  const [note, setNote] = useState("");
   const modal = useRef<HTMLIonModalElement>(null);
 
   const handleBookmarkNoteInput = (
     e: IonTextareaCustomEvent<TextareaInputEventDetail>
   ) => {
     const text = e.target.value;
-    if (!text || typeof text === "number") return;
-    setNote(text);
+    setNote(typeof text === "string" ? text : "");
   };
 
   const handleSubmit = () => {
@@ -67,10 +64,26 @@ const BookmarkModal: React.FC<IBookmarkModal> = ({
   };
 
   useEffect(() => {
-    setTimeout(() => {
+    if (!isOpen) {
+      setNote("");
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!data) return;
+
+    void hapticService.triggerSuccessHaptic();
+    const timer = setTimeout(() => {
       modal.current?.dismiss();
-    }, 1000);
+    }, 700);
+
+    return () => clearTimeout(timer);
   }, [data]);
+
+  useEffect(() => {
+    if (!error) return;
+    void hapticService.triggerErrorHaptic();
+  }, [error]);
 
   return (
     <IonModal
@@ -80,98 +93,102 @@ const BookmarkModal: React.FC<IBookmarkModal> = ({
       onDidDismiss={onDismiss}
       initialBreakpoint={1}
       breakpoints={[0, 1]}
+      handle={true}
       ref={modal}
     >
+      <IonHeader className="ion-no-border bookmark-modal-header">
+        <IonToolbar>
+          <IonTitle className="bookmark-modal-title">Bookmark</IonTitle>
+        </IonToolbar>
+      </IonHeader>
+
       <IonContent className="ion-padding bookmark-modal">
-        <div className="modal-content-container">
-          <IonTitle className="ion-text-center">Bookmark</IonTitle>
+        <div className="bookmark-sheet-body">
           {userInfo ? (
-            <>
-              <div>
-                <IonRow>
+            <div className="bookmark-form">
+              <section className="bookmark-section" aria-label="Selected text">
+                <p className="bookmark-label">Selected text</p>
+                <div className="bookmark-panel">
                   <IonText>
-                    <sub>Selected Text</sub>
+                    <p className="bookmark-citation">
+                      {selectedVersesCitation}
+                    </p>
                   </IonText>
-                </IonRow>
-                <IonRow>
-                  <IonCol>
-                    <IonText>{selectedVersesCitation}</IonText>
-                  </IonCol>
-                </IonRow>
-              </div>
-              <div className="bookmark-form">
-                <IonRow>
-                  <IonCol>
-                    <IonTextarea
-                      labelPlacement="floating"
-                      color="primary"
-                      placeholder="Leave a note!"
-                      autoGrow={true}
-                      fill="outline"
-                      value={note}
-                      onIonInput={(event) => handleBookmarkNoteInput(event)}
-                    ></IonTextarea>
-                  </IonCol>
-                </IonRow>
-                <IonRow>
-                  <IonCol>
-                    <IonButton
-                      shape="round"
-                      expand="block"
-                      disabled={loading ? true : false}
-                      fill={
-                        !loading && !data
-                          ? "solid"
-                          : error
-                          ? "clear"
-                          : loading && !data
+                </div>
+              </section>
+
+              <section className="bookmark-section" aria-label="Note">
+                <p className="bookmark-label">Note</p>
+                <div className="bookmark-field">
+                  <IonTextarea
+                    className="bookmark-textarea"
+                    color="primary"
+                    placeholder="Add a note…"
+                    autoGrow={true}
+                    rows={3}
+                    value={note}
+                    onIonInput={handleBookmarkNoteInput}
+                  />
+                </div>
+              </section>
+
+              <div className="bookmark-actions">
+                <IonButton
+                  shape="round"
+                  expand="block"
+                  disabled={loading}
+                  fill={
+                    !loading && !data
+                      ? "solid"
+                      : error
+                        ? "clear"
+                        : loading
                           ? "default"
                           : "outline"
-                      }
-                      onClick={handleSubmit}
-                      color={
-                        !loading && !data
-                          ? "primary"
-                          : error
-                          ? "danger"
-                          : loading && !data
+                  }
+                  onClick={handleSubmit}
+                  color={
+                    !loading && !data
+                      ? "primary"
+                      : error
+                        ? "danger"
+                        : loading
                           ? "warning"
                           : "success"
-                      }
-                    >
-                      {!loading && !data ? (
-                        "Save"
-                      ) : loading && !data ? (
-                        <IonSpinner />
-                      ) : error ? (
-                        "Something went wrong"
-                      ) : (
-                        "Success"
-                      )}
-                    </IonButton>
-                  </IonCol>
-                </IonRow>
+                  }
+                >
+                  {!loading && !data ? (
+                    "Save"
+                  ) : loading ? (
+                    <IonSpinner name="crescent" />
+                  ) : error ? (
+                    "Try again"
+                  ) : (
+                    "Saved"
+                  )}
+                </IonButton>
               </div>
-            </>
+            </div>
           ) : (
-            <div className="bookmark-form">
-              <IonTitle className="ion-text-center">
-                Sign in to create a bookmark
-              </IonTitle>
-              <IonRow>
-                <IonCol>
-                  <IonButton
-                    shape="round"
-                    expand="block"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      history.push("/login");
-                    }}
-                  >
-                    Sign in
-                  </IonButton>
-                </IonCol>
-              </IonRow>
+            <div className="bookmark-signin">
+              <h2 className="bookmark-signin-title">Sign in to bookmark</h2>
+              <p className="bookmark-signin-copy">
+                Save verses and notes to your profile so you can return to them
+                anytime.
+              </p>
+              <div className="bookmark-actions">
+                <IonButton
+                  shape="round"
+                  expand="block"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    void hapticService.triggerNavigationHaptic();
+                    history.push("/login");
+                  }}
+                >
+                  Sign in
+                </IonButton>
+              </div>
             </div>
           )}
         </div>

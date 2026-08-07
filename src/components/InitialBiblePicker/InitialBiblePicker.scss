@@ -1,3 +1,5 @@
+@import "../../theme/variables.scss";
+
 .helper-container {
   display: flex;
   flex-direction: column;
@@ -6,49 +8,67 @@
   gap: 0;
   padding: 24px;
   height: 100%;
+  min-height: 70vh;
 
   .image-and-text {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 20px;
+    gap: 16px;
     flex: 1;
-    padding-top: 32px;
+    padding-top: 48px;
 
     .logo-wrapper {
       position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
+      width: 112px;
+      height: 112px;
+      border-radius: 28px;
+      background: var(--ion-background-color, #fff);
+      border: 1px solid rgba(195, 198, 207, 0.4);
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.55) inset,
+        0 10px 28px rgba(0, 0, 0, 0.08);
     }
 
     .helper-headline {
-      font-size: 22px;
+      font-family: $font-family;
+      font-size: clamp(1.35rem, 4vw, 1.6rem);
       font-weight: 700;
       color: var(--ion-text-color);
       text-align: center;
-      line-height: 1.3;
-      letter-spacing: -0.3px;
+      line-height: 1.15;
+      letter-spacing: -0.025em;
     }
 
     .helper-subtext {
       font-size: 15px;
-      font-weight: 400;
-      color: var(--ion-outline-color);
+      font-weight: 500;
+      color: var(--ion-color-medium);
       text-align: center;
-      line-height: 1.5;
-      max-width: 260px;
+      line-height: 1.45;
+      letter-spacing: -0.01em;
+      max-width: 280px;
     }
   }
 
   .translation-button {
     width: 100%;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    transition: transform 100ms ease-out;
+
+    &:active {
+      transform: scale(0.98);
+    }
   }
 }
 
 .helper-container ion-img {
-  width: 92px;
+  width: 72px;
   position: relative;
   z-index: 1;
 }
@@ -58,16 +78,18 @@
   flex-direction: column;
   gap: 12px;
   width: 100%;
-  padding-bottom: 24px;
+  padding-bottom: 32px;
 
   .bread-crumbs-button {
     width: 100%;
-    --box-shadow: 0px 4px 8px 3px rgba(0, 0, 0, 0.15),
-      0px 1px 3px rgba(0, 0, 0, 0.3);
+    --box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
     --background: var(--ion-color-light);
     --ion-color-base: var(--ion-color-light) !important;
     position: relative;
-    --border-radius: 12px;
+    --border-radius: 14px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    transition: transform 100ms ease-out;
 
     &::before {
       content: "";
@@ -77,42 +99,60 @@
       right: -2px;
       bottom: -2px;
       background: linear-gradient(
-        90deg,
+        135deg,
         var(--ion-color-secondary),
         var(--ion-color-tertiary),
         var(--ion-color-primary)
       );
-      border-radius: 14px;
-      background-size: 300% 300%;
+      border-radius: 16px;
+      background-size: 220% 220%;
+      background-position: 0% 50%;
       z-index: -1;
-      animation: gradient-border 3s ease-in-out infinite;
       opacity: 0.8;
+      transition: opacity 160ms ease, background-position 0.8s ease;
     }
 
     .bread-crumbs-icon {
       fill: var(--ion-color-primary);
     }
 
-    &:hover::before {
+    &:hover::before,
+    &:focus-visible::before {
       opacity: 1;
-      animation-duration: 1.5s;
+      background-position: 100% 50%;
     }
 
-    &:active::before {
-      animation-duration: 0.8s;
+    &:active {
+      transform: scale(0.98);
+
+      &::before {
+        opacity: 1;
+      }
     }
   }
 }
 
-@keyframes gradient-border {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
+@media (prefers-color-scheme: dark) {
+  .helper-container .image-and-text .logo-wrapper {
+    background: var(--ion-background-color, #1c1c1e);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.06) inset,
+      0 10px 28px rgba(0, 0, 0, 0.3);
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .helper-container .translation-button,
+  .button-container .bread-crumbs-button {
+    transition: none;
+
+    &:active {
+      transform: none;
+    }
+
+    &::before {
+      transition: none;
+    }
+  }
+}

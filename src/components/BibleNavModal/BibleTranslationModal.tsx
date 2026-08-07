@@ -35,6 +35,12 @@ import {
 import { BibleReadParams } from "../../assets/ts/types";
 import { BbBible } from "../../__generated__/graphql";
 
+/* Services */
+import { hapticService } from "../../services/hapticService";
+
+/* Styles */
+import "./BibleNavModal.scss";
+
 /**
  * Interface for the BreadCrumbs modal
  * @property {boolean} isOpen
@@ -267,11 +273,11 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
    * Function to handle setting the bible and pushing the path
    */
   const handleSettingBible = (bible: BbBible) => {
-    // set the bible to the global state
-    setBible(bible);
-    setIsNewBible(true); // set the new bible flag to true
+    void hapticService.triggerSuccessHaptic();
 
-    // find the books associated with the bible
+    setBible(bible);
+    setIsNewBible(true);
+
     getListOfBooksFromBible({
       variables: {
         options: {
@@ -281,19 +287,18 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
     });
 
     handlePathSetting(bible);
-
-    // dismiss the modal
     modal.current?.dismiss();
-
-    // tour
     setTimeout(tourFunc, 2000);
   };
 
-  /**
-   * Function to toggle start from beginning
-   */
   const handleToggleStartFromBeginning = () => {
+    void hapticService.triggerNavigationHaptic();
     setStartFromBeginning(!startFromBeginning);
+  };
+
+  const handleOpenLanguagePicker = () => {
+    void hapticService.triggerNavigationHaptic();
+    setTimeout(nextStep, 100);
   };
 
   /**
@@ -403,33 +408,41 @@ const BibleTranslationModal: React.FC<IBibleTranslationModal> = ({
     );
   };
 
+  const translationCount = biblesData?.getListOFBibles.data.length;
+
   return (
     <IonModal
       initialBreakpoint={0.75}
       breakpoints={[0, 0.75, 1]}
+      handle={true}
+      className="translation-modal"
       isOpen={isOpen}
       onDidDismiss={onDismiss}
       ref={modal}
     >
       <IonHeader className="translation-modal-header ion-no-border">
         <IonTitle className="translation-modal-title">
-          {biblesData
-            ? `${biblesData.getListOFBibles.data.length} Translations`
+          {translationCount
+            ? `${translationCount} Translations`
             : "Pick a Translation"}
         </IonTitle>
         <button
+          type="button"
           id="select-language"
           className="language-selector-chip tour-step-2"
-          onClick={() => setTimeout(nextStep, 100)}
+          onClick={handleOpenLanguagePicker}
         >
           <IonIcon icon={languageOutline} />
-          <span>{chosenLanguage ? chosenLanguage.name : "Select Language"}</span>
+          <span>
+            {chosenLanguage ? chosenLanguage.name : "Select Language"}
+          </span>
           <IonIcon icon={caretDownOutline} className="language-chip-chevron" />
         </button>
       </IonHeader>
-      <IonContent className="ion-padding">{renderModalOptions()}</IonContent>
+      <IonContent className="ion-padding translation-modal-content">
+        {renderModalOptions()}
+      </IonContent>
 
-      {/* Languages Modal */}
       <BibleSearchLanguages />
     </IonModal>
   );

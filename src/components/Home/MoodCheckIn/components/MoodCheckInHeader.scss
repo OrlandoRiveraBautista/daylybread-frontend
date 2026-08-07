@@ -1,26 +1,38 @@
 @import "../../../../theme/variables.scss";
 
 .mood-checkin-header {
-  text-align: center;
-  margin-bottom: 24px;
+  text-align: left;
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 2px;
+}
 
-  h2 {
-    color: var(--ion-color-primary);
-    font-size: 1.4rem;
-    font-weight: 600;
-    margin-bottom: 8px;
-    font-family: "Product Sans", sans-serif;
-  }
+.mood-checkin-title {
+  margin: 0;
+  font-family: $font-family;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  color: var(--ion-text-color);
+}
 
-  p {
-    color: var(--ion-text-color);
-    font-size: 0.9rem;
-    margin: 0;
-  }
+.mood-checkin-subtitle {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+  color: var(--ion-color-medium);
+}
 
-  .bible-context-label {
-    font-size: 0.75rem;
-    color: var(--ion-color-medium);
-    margin-top: 4px;
-  }
+.bible-context-label {
+  margin: 4px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ion-color-medium);
+  opacity: 0.8;
 }
