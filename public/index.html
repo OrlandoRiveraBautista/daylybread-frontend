@@ -220,6 +220,11 @@
       href="%PUBLIC_URL%/assets/icon/Daylybread Icon-small.png"
     />
 
+    <!-- Default canonical; the script below rewrites it per page. It must stay
+         above that script. The es/fr/pt hreflang tags were removed because
+         those subdomains do not exist. -->
+    <link rel="canonical" href="https://bible.daylybread.com/" />
+
     <script>
       (function () {
         try {
@@ -286,6 +291,15 @@
           setMeta('meta[property="og:description"]',"content", pageDesc);
           setMeta('meta[name="twitter:title"]',     "content", pageTitle);
           setMeta('meta[name="twitter:description"]',"content", pageDesc);
+
+          // ── Per-page canonical (no query string or hash) ─────────────────────
+          // The static tag below points at the homepage, which would make every
+          // chapter look like a duplicate of it.
+          setMeta(
+            'link[rel="canonical"]',
+            "href",
+            window.location.origin + (pathname || "/")
+          );
 
           // ── Platform / variant detection ─────────────────────────────────
           var urlParams = new URLSearchParams(window.location.search);
@@ -594,29 +608,6 @@
     </script>
 
     <!-- Additional SEO Enhancements -->
-    <link rel="canonical" href="https://bible.daylybread.com/" />
-    <link rel="alternate" hreflang="en" href="https://bible.daylybread.com/" />
-    <link
-      rel="alternate"
-      hreflang="es"
-      href="https://es.bible.daylybread.com/"
-    />
-    <link
-      rel="alternate"
-      hreflang="fr"
-      href="https://fr.bible.daylybread.com/"
-    />
-    <link
-      rel="alternate"
-      hreflang="pt"
-      href="https://pt.bible.daylybread.com/"
-    />
-    <link
-      rel="alternate"
-      hreflang="x-default"
-      href="https://bible.daylybread.com/"
-    />
-
     <!-- DNS Prefetch for Performance -->
     <link rel="dns-prefetch" href="//fonts.googleapis.com" />
     <link rel="dns-prefetch" href="//fonts.gstatic.com" />
