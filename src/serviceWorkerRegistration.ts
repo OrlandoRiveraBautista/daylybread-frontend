@@ -25,6 +25,30 @@ type Config = {
   onUpdate?: (registration: ServiceWorkerRegistration) => void;
 };
 
+const SW_RELOAD_KEY = "daylybread-sw-reload";
+const SW_RELOAD_WINDOW_MS = 60_000;
+
+// One automatic reload per minute. A new service worker that immediately
+// looks outdated again, or an error page served in place of the worker,
+// would otherwise refresh forever and re-download the app each time.
+function reloadForServiceWorker(reason: string) {
+  try {
+    const now = Date.now();
+    const previous = Number(sessionStorage.getItem(SW_RELOAD_KEY) || 0);
+    if (previous && now - previous < SW_RELOAD_WINDOW_MS) {
+      console.warn(`Skipped service worker reload (${reason}).`);
+      return;
+    }
+    sessionStorage.setItem(SW_RELOAD_KEY, String(now));
+  } catch {
+    console.warn(
+      `Skipped service worker reload (${reason}); reload guard unavailable.`
+    );
+    return;
+  }
+  window.location.reload();
+}
+
 export function register(config?: Config) {
   if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
     // The URL constructor is available in all browsers that support SW.
@@ -81,7 +105,7 @@ function registerValidSW(swUrl: string, config?: Config) {
                 () => {
                   if (hasReloaded) return;
                   hasReloaded = true;
-                  window.location.reload();
+                  reloadForServiceWorker("update");
                 }
               );
             } else {
@@ -114,7 +138,7 @@ function checkValidServiceWorker(swUrl: string, config?: Config) {
         // No service worker found. Probably a different app. Reload the page.
         navigator.serviceWorker.ready.then((registration) => {
           registration.unregister().then(() => {
-            window.location.reload();
+            reloadForServiceWorker("missing-worker");
           });
         });
       } else {
