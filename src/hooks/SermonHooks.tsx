@@ -6,14 +6,14 @@ const GetSermons = gql(`
   query GetSermons {
     getSermons {
       results {
-        _id
+        id
         title
         content
         status
         createdAt
         updatedAt
         author {
-          _id
+          id
           firstName
           lastName
         }
@@ -30,14 +30,14 @@ const GetSermon = gql(`
   query GetSermon($id: String!) {
     getSermon(id: $id) {
       results {
-        _id
+        id
         title
         content
         status
         createdAt
         updatedAt
         author {
-          _id
+          id
           firstName
           lastName
         }
@@ -55,14 +55,14 @@ const CreateSermon = gql(`
   mutation CreateSermon($options: SermonInput!) {
     createSermon(options: $options) {
       results {
-        _id
+        id
         title
         content
         status
         createdAt
         updatedAt
         author {
-          _id
+          id
           firstName
           lastName
         }
@@ -79,14 +79,14 @@ const UpdateSermon = gql(`
   mutation UpdateSermon($id: String!, $options: SermonInput!) {
     updateSermon(id: $id, options: $options) {
       results {
-        _id
+        id
         title
         content
         status
         createdAt
         updatedAt
         author {
-          _id
+          id
           firstName
           lastName
         }
@@ -103,7 +103,7 @@ const DeleteSermon = gql(`
   mutation DeleteSermon($id: String!) {
     deleteSermon(id: $id) {
       results {
-        _id
+        id
         title
       }
       errors {

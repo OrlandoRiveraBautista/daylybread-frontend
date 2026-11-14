@@ -45,7 +45,7 @@ export const ServicesManagement: React.FC = () => {
 
   const services: any[] = data?.getWorshipServices?.results || [];
   const teams: any[] = teamsData?.getWorshipTeams?.results || [];
-  const ownedTeams = teams.filter((t) => t.author?._id === userInfo?._id);
+  const ownedTeams = teams.filter((t) => t.author?.id === userInfo?.id);
   const canCreateService = ownedTeams.length > 0;
 
   const { deletingId, handleDelete } = useDeleteWithAnimation(
@@ -54,7 +54,7 @@ export const ServicesManagement: React.FC = () => {
   );
 
   const filteredServices = services.filter((s) => {
-    return s.name.toLowerCase().includes(searchQuery.toLowerCase()) || deletingId === s._id;
+    return s.name.toLowerCase().includes(searchQuery.toLowerCase()) || deletingId === s.id;
   });
 
   const handleCreate = async () => {
@@ -115,15 +115,15 @@ export const ServicesManagement: React.FC = () => {
       {!loading && !error && filteredServices.length > 0 && (
         <div className="services-list">
           {filteredServices.map((service) => {
-            const isBeingDeleted = deletingId === service._id;
+            const isBeingDeleted = deletingId === service.id;
             const serviceDate = parseServiceDate(service.date);
             const isPast = serviceDate < new Date();
-            const isOwner = service.author?._id === userInfo?._id;
+            const isOwner = service.author?.id === userInfo?.id;
             return (
               <IonCard
-                key={service._id}
+                key={service.id}
                 className={`service-card ${isBeingDeleted ? "deleting" : ""} ${isPast ? "past" : ""}`}
-                onClick={() => !isBeingDeleted && history.push(`/worship/services/${service._id}`)}
+                onClick={() => !isBeingDeleted && history.push(`/worship/services/${service.id}`)}
                 button={!isBeingDeleted}
               >
                 <IonCardContent>
@@ -162,7 +162,7 @@ export const ServicesManagement: React.FC = () => {
                   {isOwner && (
                     <div className="service-card__actions" onClick={(e) => e.stopPropagation()}>
                       <IonButton fill="clear" size="small" shape="round" color="danger" disabled={isBeingDeleted}
-                        onClick={(e) => { e.stopPropagation(); setShowDeleteConfirm(service._id); }}>
+                        onClick={(e) => { e.stopPropagation(); setShowDeleteConfirm(service.id); }}>
                         <IonIcon slot="icon-only" icon={trash} />
                       </IonButton>
                     </div>
@@ -211,7 +211,7 @@ export const ServicesManagement: React.FC = () => {
             placeholder="Select a team"
           >
             {ownedTeams.map((team: any) => (
-              <IonSelectOption key={team._id} value={team._id}>{team.name}</IonSelectOption>
+              <IonSelectOption key={team.id} value={team.id}>{team.name}</IonSelectOption>
             ))}
           </IonSelect>
         </IonItem>

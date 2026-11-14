@@ -23,7 +23,7 @@ export const LiveSetlistDrawer: React.FC<LiveSetlistDrawerProps> = ({
       <div className="live-service__setlist-items">
         {items.map((item: any, idx: number) => (
           <button
-            key={item._id}
+            key={item.id}
             className={`live-service__setlist-item ${idx === currentIndex ? "active" : ""}`}
             onClick={() => onNavigate(idx)}
           >

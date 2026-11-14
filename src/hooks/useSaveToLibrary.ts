@@ -14,7 +14,7 @@ export function useSaveToLibrary(
 
   const saveToLibrary = async (song: any) => {
     try {
-      setSavingToLibraryId(song._id);
+      setSavingToLibraryId(song.id);
       await createSong({
         variables: {
           options: {

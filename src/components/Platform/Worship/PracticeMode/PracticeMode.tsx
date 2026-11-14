@@ -187,7 +187,7 @@ export const PracticeMode: React.FC = () => {
     bpm?: number;
     notes?: string;
     song?: {
-      _id?: string;
+      id?: string;
       title?: string;
       artist?: string;
       defaultKey?: string;

@@ -117,7 +117,7 @@ const UpdateUserAfterSignup: React.FC = () => {
    * Calls after signup has been successfull to get the user
    */
   useEffect(() => {
-    if (!data?.updateUser.user?._id) return;
+    if (!data?.updateUser.user?.id) return;
     setUser(data.updateUser.user);
     handleRedirect();
   }, [data]); // eslint-disable-line react-hooks/exhaustive-deps

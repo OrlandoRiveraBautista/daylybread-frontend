@@ -38,7 +38,7 @@ export const SermonEditorPage: React.FC<SermonEditorPageProps> = () => {
         if (sermon) {
           setInitialTitle(sermon.title);
           setInitialContent(sermon.content);
-          setCurrentSermonId(sermon._id);
+          setCurrentSermonId(sermon.id);
         }
       }
       setIsInitialLoad(false);
@@ -75,11 +75,11 @@ export const SermonEditorPage: React.FC<SermonEditorPageProps> = () => {
           });
 
           const newSermon = result.data?.createSermon?.results;
-          if (newSermon?._id) {
+          if (newSermon?.id) {
             // Update state with new ID
-            setCurrentSermonId(newSermon._id);
+            setCurrentSermonId(newSermon.id);
             // Replace the URL from /sermons/new to /sermons/:id
-            history.replace(`/sermons/${newSermon._id}`);
+            history.replace(`/sermons/${newSermon.id}`);
           }
         }
       } catch (err) {

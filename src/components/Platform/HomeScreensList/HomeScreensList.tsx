@@ -60,7 +60,6 @@ const copyTextToClipboard = async (text: string): Promise<boolean> => {
 };
 
 export interface HomeScreen {
-  _id: string;
   id: string;
   name?: string;
   shareableLink: string;
@@ -73,14 +72,14 @@ export interface HomeScreen {
 }
 
 export interface AvailableNFCDevice {
-  _id: string;
+  id: string;
   nfcId: string;
   name: string;
   deviceType?: string;
 }
 
 export interface AssignedNFCDevice {
-  _id: string;
+  id: string;
   nfcId: string;
   name: string;
   deviceType?: string;
@@ -133,9 +132,9 @@ export const HomeScreensList: React.FC<HomeScreensListProps> = ({
   // Sync editingHomeScreen with homeScreens prop when it updates (after save)
   useEffect(() => {
     if (editingHomeScreen && homeScreens.length > 0) {
-      const homeScreenId = editingHomeScreen._id || editingHomeScreen.id;
+      const homeScreenId = editingHomeScreen.id || editingHomeScreen.id;
       const updatedHomeScreen = homeScreens.find(
-        (hs) => hs._id === homeScreenId || hs.id === homeScreenId,
+        (hs) => hs.id === homeScreenId || hs.id === homeScreenId,
       );
       if (updatedHomeScreen && updatedHomeScreen.tiles) {
         // Only update if tiles exist (meaning data was fetched from server)
@@ -156,7 +155,7 @@ export const HomeScreensList: React.FC<HomeScreensListProps> = ({
     wallpaper?: string,
     name?: string,
   ) => {
-    const homeScreenId = editingHomeScreen?._id ?? editingHomeScreen?.id;
+    const homeScreenId = editingHomeScreen?.id ?? editingHomeScreen?.id;
 
     if (homeScreenId) {
       // Update existing home screen
@@ -180,7 +179,7 @@ export const HomeScreensList: React.FC<HomeScreensListProps> = ({
   };
 
   const getHomeScreenUrl = (homeScreen: HomeScreen) => {
-    const shareableLink = homeScreen.shareableLink || homeScreen._id;
+    const shareableLink = homeScreen.shareableLink || homeScreen.id;
     const { hostname, protocol, port } = window.location;
     if (hostname === "localhost" || hostname === "127.0.0.1") {
       return `${window.location.origin}/nfc?hs=${shareableLink}`;
@@ -199,7 +198,7 @@ export const HomeScreensList: React.FC<HomeScreensListProps> = ({
 
   const handleConfirmDelete = async () => {
     if (homeScreenToDelete) {
-      const homeScreenId = homeScreenToDelete._id || homeScreenToDelete.id;
+      const homeScreenId = homeScreenToDelete.id || homeScreenToDelete.id;
       if (homeScreenId) {
         try {
           await onDelete(homeScreenId);
@@ -243,7 +242,7 @@ export const HomeScreensList: React.FC<HomeScreensListProps> = ({
 
           {/* Existing Home Screens */}
           {homeScreens.map((homeScreen) => (
-            <IonCard key={homeScreen._id} className="device-card">
+            <IonCard key={homeScreen.id} className="device-card">
               <IonCardHeader>
                 <div className="device-card-header">
                   <div className="device-info">
@@ -373,7 +372,7 @@ export const HomeScreensList: React.FC<HomeScreensListProps> = ({
 
                 {/* Show assigned NFC devices */}
                 {(() => {
-                  const homeScreenId = homeScreen._id || homeScreen.id;
+                  const homeScreenId = homeScreen.id || homeScreen.id;
                   const assignedToThisScreen = assignedNFCDevices.filter(
                     (nfc) => nfc.homeScreenId === homeScreenId,
                   );
@@ -382,7 +381,7 @@ export const HomeScreensList: React.FC<HomeScreensListProps> = ({
                     <div style={{ marginTop: "8px", marginBottom: "8px" }}>
                       {assignedToThisScreen.map((nfcDevice) => (
                         <div
-                          key={nfcDevice._id}
+                          key={nfcDevice.id}
                           style={{
                             display: "flex",
                             alignItems: "center",
@@ -412,7 +411,7 @@ export const HomeScreensList: React.FC<HomeScreensListProps> = ({
                               fill="clear"
                               size="small"
                               color="medium"
-                              onClick={() => onUnassignNFC(nfcDevice._id)}
+                              onClick={() => onUnassignNFC(nfcDevice.id)}
                             >
                               <IonIcon slot="icon-only" icon={close} />
                             </IonButton>
@@ -432,7 +431,7 @@ export const HomeScreensList: React.FC<HomeScreensListProps> = ({
                       onIonChange={(e) => {
                         const nfcDeviceId = e.detail.value;
                         if (nfcDeviceId && onAssignNFC) {
-                          const homeScreenId = homeScreen._id || homeScreen.id;
+                          const homeScreenId = homeScreen.id || homeScreen.id;
                           if (homeScreenId) {
                             onAssignNFC(nfcDeviceId, homeScreenId);
                           }
@@ -447,8 +446,8 @@ export const HomeScreensList: React.FC<HomeScreensListProps> = ({
                     >
                       {availableNFCDevices.map((nfcDevice) => (
                         <IonSelectOption
-                          key={nfcDevice._id}
-                          value={nfcDevice._id}
+                          key={nfcDevice.id}
+                          value={nfcDevice.id}
                         >
                           {nfcDevice.name} ({nfcDevice.nfcId.slice(0, 8)}...)
                         </IonSelectOption>
@@ -457,7 +456,7 @@ export const HomeScreensList: React.FC<HomeScreensListProps> = ({
                   </div>
                 ) : (
                   (() => {
-                    const homeScreenId = homeScreen._id || homeScreen.id;
+                    const homeScreenId = homeScreen.id || homeScreen.id;
                     const assignedToThisScreen = assignedNFCDevices.filter(
                       (nfc) => nfc.homeScreenId === homeScreenId,
                     );

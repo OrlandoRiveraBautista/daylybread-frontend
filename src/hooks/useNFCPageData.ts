@@ -8,12 +8,12 @@ import {
 } from "../components/NFC/iPhoneHomeScreen/types";
 
 interface NFCConfigExtended {
-  _id: string;
-  owner?: { _id: string };
+  id: string;
+  owner?: { id: string };
   nfcId: string;
   name: string;
   homeScreen?: {
-    _id: string;
+    id: string;
     tiles?: TileConfig[];
     wallpaper?: string;
   };

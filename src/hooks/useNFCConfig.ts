@@ -36,7 +36,7 @@ export const useNFCConfig = (userId: string) => {
       if (nfcConfig) {
         const { data: updateData } = await updateNFCConfig({
           variables: {
-            id: nfcConfig._id,
+            id: nfcConfig.id,
             options: formData,
           },
         });

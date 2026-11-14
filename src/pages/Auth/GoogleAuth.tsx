@@ -28,7 +28,7 @@ const GoogleAuth: React.FC<IGoogleAuth> = ({ onSuccess }: IGoogleAuth) => {
     if (!data?.loginWithGoogle) return;
 
     const { user, errors } = data.loginWithGoogle;
-    if (!user?._id) return;
+    if (!user?.id) return;
     if (errors?.length) return;
 
     setUser(user);

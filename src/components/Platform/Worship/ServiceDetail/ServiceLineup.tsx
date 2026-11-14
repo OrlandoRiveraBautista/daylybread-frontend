@@ -91,7 +91,7 @@ export const ServiceLineup: React.FC<ServiceLineupProps> = ({
         ) : (
           <div className="assignments-list">
             {assignments.map((assignment: any) => (
-              <IonCard key={assignment._id} className="assignment-card">
+              <IonCard key={assignment.id} className="assignment-card">
                 <IonCardContent>
                   <div className="assignment-card__info">
                     <IonIcon
@@ -112,10 +112,10 @@ export const ServiceLineup: React.FC<ServiceLineupProps> = ({
                       size="small"
                       shape="round"
                       color="danger"
-                      disabled={removingAssignmentId === assignment._id}
-                      onClick={() => handleRemoveAssignment(assignment._id)}
+                      disabled={removingAssignmentId === assignment.id}
+                      onClick={() => handleRemoveAssignment(assignment.id)}
                     >
-                      {removingAssignmentId === assignment._id
+                      {removingAssignmentId === assignment.id
                         ? <IonSpinner name="crescent" style={{ width: 18, height: 18 }} />
                         : <IonIcon slot="icon-only" icon={trash} />}
                     </IonButton>
@@ -144,14 +144,14 @@ export const ServiceLineup: React.FC<ServiceLineupProps> = ({
             value={assignForm.memberId}
             onIonChange={(e) => {
               const memberId = e.detail.value;
-              const member = teamMembers.find((m: any) => m._id === memberId);
+              const member = teamMembers.find((m: any) => m.id === memberId);
               setAssignForm({ memberId, role: member?.role || "OTHER" });
             }}
             interface="action-sheet"
             placeholder="Select a member"
           >
             {teamMembers.map((m: any) => (
-              <IonSelectOption key={m._id} value={m._id}>
+              <IonSelectOption key={m.id} value={m.id}>
                 {m.user?.firstName} {m.user?.lastName}
               </IonSelectOption>
             ))}

@@ -8,7 +8,7 @@ import { gql, useQuery, useMutation } from "@apollo/client";
 const GET_MY_IN_APP_NOTIFICATIONS = gql`
   query GetMyInAppNotifications {
     getMyInAppNotifications {
-      _id
+      id
       title
       message
       contentType
@@ -32,7 +32,7 @@ const RESPOND_TO_INVITE = gql`
   mutation RespondToTeamInvite($inviteId: String!, $accept: Boolean!) {
     respondToInvite(inviteId: $inviteId, accept: $accept) {
       results {
-        _id
+        id
         status
       }
       errors {
@@ -57,7 +57,7 @@ export type NotificationContentType =
   | "team_invite";
 
 export interface InAppNotification {
-  _id: string;
+  id: string;
   title: string;
   message: string;
   contentType: NotificationContentType;
@@ -126,7 +126,7 @@ export const useNotificationCenter = () => {
       try {
         await markReadMutation({ variables: { notificationId } });
         setNotifications((prev) =>
-          prev.filter((n) => n._id !== notificationId)
+          prev.filter((n) => n.id !== notificationId)
         );
       } catch (err) {
         console.error("Failed to mark notification as read:", err);
@@ -157,7 +157,7 @@ export const useNotificationCenter = () => {
         }
 
         // Remove the notification after responding
-        await markRead(notification._id);
+        await markRead(notification.id);
         return { success: true };
       } catch (err) {
         const msg =

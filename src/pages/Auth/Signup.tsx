@@ -151,7 +151,7 @@ const Signup: React.FC = () => {
    * Calls after signup has been successfull to get the user
    */
   useEffect(() => {
-    if (!data?.register.user?._id) return;
+    if (!data?.register.user?.id) return;
     setUser(data.register.user);
     history.push("/signupupdateuser");
   }, [data]); // eslint-disable-line react-hooks/exhaustive-deps

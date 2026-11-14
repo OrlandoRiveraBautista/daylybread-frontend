@@ -50,7 +50,7 @@ export function getServiceStatusColor(status: string): string {
 export function buildMySongTitles(songs: any[], userId: string | undefined): Set<string> {
   return new Set(
     songs
-      .filter((s) => s.author?._id === userId)
+      .filter((s) => s.author?.id === userId)
       .map((s) => s.title.toLowerCase().trim()),
   );
 }

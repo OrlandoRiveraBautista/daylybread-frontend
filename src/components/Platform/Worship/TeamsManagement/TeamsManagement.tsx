@@ -56,8 +56,8 @@ export const TeamsManagement: React.FC = () => {
   const allTeams = data?.getWorshipTeams?.results ?? [];
   const myInvites = invitesData?.getMyInvites?.results ?? [];
 
-  const myTeams = allTeams.filter((t) => t.author?._id === userInfo?._id);
-  const joinedTeams = allTeams.filter((t) => t.author?._id !== userInfo?._id);
+  const myTeams = allTeams.filter((t) => t.author?.id === userInfo?.id);
+  const joinedTeams = allTeams.filter((t) => t.author?.id !== userInfo?.id);
 
   const { deletingId, handleDelete } = useDeleteWithAnimation(
     (opts) => deleteTeam(opts),
@@ -68,7 +68,7 @@ export const TeamsManagement: React.FC = () => {
     teams.filter(
       (t) =>
         t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        deletingId === t._id,
+        deletingId === t.id,
     );
 
   const handleCreate = async () => {
@@ -125,8 +125,8 @@ export const TeamsManagement: React.FC = () => {
           <AddCard label="New Team" onClick={() => setShowCreateModal(true)} color="primary" className="team-card" />
         )}
         {filtered.map((team) => {
-          const isBeingDeleted = deletingId === team._id;
-          const isOwner = team.author?._id === userInfo?._id;
+          const isBeingDeleted = deletingId === team.id;
+          const isOwner = team.author?.id === userInfo?.id;
           const isInvited = !isOwner;
           const badges: { text: string; color: "primary" | "secondary" | "tertiary" | "success" | "warning" | "danger" | "medium" }[] = [
             { text: `${team.members?.length ?? 0} members`, color: "primary" },
@@ -136,7 +136,7 @@ export const TeamsManagement: React.FC = () => {
           }
           return (
             <ItemCard
-              key={team._id}
+              key={team.id}
               icon={people}
               iconClassName="team-icon"
               title={team.name}
@@ -148,9 +148,9 @@ export const TeamsManagement: React.FC = () => {
                   <span>{isOwner ? "You (owner)" : ownerName(team)}</span>
                 </div>
               }
-              onClick={() => history.push(`/worship/teams/${team._id}`)}
-              onEdit={() => history.push(`/worship/teams/${team._id}`)}
-              onDelete={isOwner ? () => setShowDeleteConfirm(team._id) : undefined}
+              onClick={() => history.push(`/worship/teams/${team.id}`)}
+              onEdit={() => history.push(`/worship/teams/${team.id}`)}
+              onDelete={isOwner ? () => setShowDeleteConfirm(team.id) : undefined}
               isDeleting={isBeingDeleted}
               className="team-card"
               searchWords={searchQuery ? [searchQuery] : []}
@@ -279,9 +279,9 @@ export const TeamsManagement: React.FC = () => {
               <div className="invites-list">
                 {myInvites.map((invite) => {
                   const by = invite.invitedBy;
-                  const isResponding = respondingId === invite._id;
+                  const isResponding = respondingId === invite.id;
                   return (
-                    <IonCard key={invite._id} className="invite-card">
+                    <IonCard key={invite.id} className="invite-card">
                       <IonCardContent>
                         <div className="invite-card__top">
                           <div className="invite-card__team-info">
@@ -346,7 +346,7 @@ export const TeamsManagement: React.FC = () => {
                             shape="round"
                             color="success"
                             disabled={isResponding}
-                            onClick={() => handleRespond(invite._id, true)}
+                            onClick={() => handleRespond(invite.id, true)}
                           >
                             <IonIcon slot="start" icon={checkmark} />
                             Accept
@@ -356,7 +356,7 @@ export const TeamsManagement: React.FC = () => {
                             shape="round"
                             color="danger"
                             disabled={isResponding}
-                            onClick={() => handleRespond(invite._id, false)}
+                            onClick={() => handleRespond(invite.id, false)}
                           >
                             <IonIcon slot="start" icon={close} />
                             Decline
@@ -386,10 +386,10 @@ export const TeamsManagement: React.FC = () => {
               ) : (
                 <div className="teams-grid">
                   {joinedTeams.map((team) => {
-                    const isBeingDeleted = deletingId === team._id;
+                    const isBeingDeleted = deletingId === team.id;
                     return (
                       <ItemCard
-                        key={team._id}
+                        key={team.id}
                         icon={people}
                         iconClassName="team-icon"
                         title={team.name}
@@ -404,8 +404,8 @@ export const TeamsManagement: React.FC = () => {
                             <span>{ownerName(team)}</span>
                           </div>
                         }
-                        onClick={() => history.push(`/worship/teams/${team._id}`)}
-                        onEdit={() => history.push(`/worship/teams/${team._id}`)}
+                        onClick={() => history.push(`/worship/teams/${team.id}`)}
+                        onEdit={() => history.push(`/worship/teams/${team.id}`)}
                         isDeleting={isBeingDeleted}
                         className="team-card"
                         searchWords={searchQuery ? [searchQuery] : []}

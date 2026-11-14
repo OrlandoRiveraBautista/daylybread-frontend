@@ -24,8 +24,8 @@ export interface FieldError {
 }
 
 export interface MoodCache {
-  _id: string;
-  userId: string;
+  id: string;
+  user: { id: string };
   mood: string;
   verse: string;
   reference: string;
@@ -70,8 +70,10 @@ const getSupportedMoodsQuery = gql(`
 const getUserMoodHistoryQuery = gql(`
   query GetUserMoodHistory {
     getUserMoodHistory {
-      _id
-      userId
+      id
+      user {
+        id
+      }
       mood
       verse
       reference

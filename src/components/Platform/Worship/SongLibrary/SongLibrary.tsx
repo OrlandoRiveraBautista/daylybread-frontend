@@ -53,7 +53,7 @@ function hasYoutubeLink(link: string | null | undefined): boolean {
 export const SongLibrary: React.FC = () => {
   const history = useHistory();
   const { userInfo } = useAppContext();
-  const isLoggedIn = !!userInfo?._id;
+  const isLoggedIn = !!userInfo?.id;
   const [searchQuery, setSearchQuery] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
@@ -71,7 +71,7 @@ export const SongLibrary: React.FC = () => {
   const [deleteSong, { loading: isDeleting }] = useDeleteSong();
 
   const songs: any[] = data?.getSongs?.results || [];
-  const mySongTitles = buildMySongTitles(songs, userInfo?._id);
+  const mySongTitles = buildMySongTitles(songs, userInfo?.id);
 
   const { deletingId, handleDelete } = useDeleteWithAnimation(
     (opts) => deleteSong(opts),
@@ -88,7 +88,7 @@ export const SongLibrary: React.FC = () => {
     return (
       song.title.toLowerCase().includes(q) ||
       (song.artist && song.artist.toLowerCase().includes(q)) ||
-      deletingId === song._id
+      deletingId === song.id
     );
   });
 
@@ -125,7 +125,7 @@ export const SongLibrary: React.FC = () => {
 
   const openEditModal = (song: any) => {
     setShowCreateModal(false);
-    setEditingSongId(song._id);
+    setEditingSongId(song.id);
     setEditSong(songToFormValues(song));
     setShowEditImporter(false);
   };
@@ -164,7 +164,7 @@ export const SongLibrary: React.FC = () => {
       }
       closeEditModal();
       setToast({ message: "Song updated.", color: "success" });
-      if (showSongDetail?._id === editingSongId) {
+      if (showSongDetail?.id === editingSongId) {
         await refetch();
         const updated = result.data?.updateSong?.results;
         if (updated) setShowSongDetail(updated);
@@ -221,9 +221,9 @@ export const SongLibrary: React.FC = () => {
             />
           )}
           {filteredSongs.map((song) => {
-            const isBeingDeleted = deletingId === song._id;
-            const isSavingThis = savingToLibraryId === song._id;
-            const isOwner = isLoggedIn && song.author?._id === userInfo?._id;
+            const isBeingDeleted = deletingId === song.id;
+            const isSavingThis = savingToLibraryId === song.id;
+            const isOwner = isLoggedIn && song.author?.id === userInfo?.id;
             const alreadyInMyLibrary = mySongTitles.has(song.title.toLowerCase().trim());
             const ownerLine = formatSongOwnerLine(song.author, isOwner);
             const withVideo = hasYoutubeLink(song.youtubeLink);
@@ -233,7 +233,7 @@ export const SongLibrary: React.FC = () => {
 
             return (
               <ItemCard
-                key={song._id}
+                key={song.id}
                 icon={musicalNotes}
                 iconClassName="song-icon"
                 title={song.title}
@@ -265,7 +265,7 @@ export const SongLibrary: React.FC = () => {
                 badges={badges}
                 onClick={() => setShowSongDetail(song)}
                 onEdit={isLoggedIn ? () => openEditModal(song) : undefined}
-                onDelete={isOwner ? () => setShowDeleteConfirm(song._id) : undefined}
+                onDelete={isOwner ? () => setShowDeleteConfirm(song.id) : undefined}
                 customActions={
                   isLoggedIn && !isOwner && !alreadyInMyLibrary
                     ? [{ icon: bookmarkOutline, color: "tertiary", onClick: () => handleSaveToLibrary(song), hidden: isSavingThis }]
@@ -285,7 +285,7 @@ export const SongLibrary: React.FC = () => {
         song={showSongDetail}
         onDismiss={() => setShowSongDetail(null)}
         mySongTitles={mySongTitles}
-        currentUserId={userInfo?._id}
+        currentUserId={userInfo?.id}
         isLoggedIn={isLoggedIn}
         onSaveToLibrary={handleSaveToLibrary}
         savingToLibraryId={savingToLibraryId}

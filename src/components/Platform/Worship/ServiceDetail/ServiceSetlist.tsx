@@ -88,7 +88,7 @@ export const ServiceSetlist: React.FC<ServiceSetlistProps> = ({
   const handleAddSong = async () => {
     if (!songForm.songId) return;
 
-    let setlistId = setlist?._id;
+    let setlistId = setlist?.id;
 
     if (!setlistId) {
       try {
@@ -97,7 +97,7 @@ export const ServiceSetlist: React.FC<ServiceSetlistProps> = ({
             options: { name: `${serviceName} Setlist`, serviceId },
           },
         });
-        setlistId = result.data?.createSetlist?.results?._id;
+        setlistId = result.data?.createSetlist?.results?.id;
       } catch (err) {
         console.error("Error creating setlist:", err);
         return;
@@ -139,9 +139,9 @@ export const ServiceSetlist: React.FC<ServiceSetlistProps> = ({
     try {
       await updateSetlistItem({
         variables: {
-          id: editingItem._id,
+          id: editingItem.id,
           options: {
-            songId: editingItem.song._id,
+            songId: editingItem.song.id,
             order: editingItem.order,
             key: editForm.key || undefined,
             bpm: editForm.bpm ? parseInt(editForm.bpm) : undefined,
@@ -162,12 +162,12 @@ export const ServiceSetlist: React.FC<ServiceSetlistProps> = ({
     sortedItemsCopy.splice(event.detail.to, 0, movedItem);
     event.detail.complete();
 
-    if (!setlist?._id) return;
+    if (!setlist?.id) return;
     try {
       await reorderSetlistItems({
         variables: {
-          setlistId: setlist._id,
-          itemIds: sortedItemsCopy.map((item: any) => item._id),
+          setlistId: setlist.id,
+          itemIds: sortedItemsCopy.map((item: any) => item.id),
         },
       });
       onRefetch();
@@ -210,9 +210,9 @@ export const ServiceSetlist: React.FC<ServiceSetlistProps> = ({
       setShowNewSongForm(false);
       setShowImporter(false);
       setNewSongForm(EMPTY_SONG_FORM);
-      if (created?._id) {
+      if (created?.id) {
         setSongForm({
-          songId: created._id,
+          songId: created.id,
           key: created.defaultKey || "",
           bpm: created.bpm?.toString() || "",
           notes: "",
@@ -245,7 +245,7 @@ export const ServiceSetlist: React.FC<ServiceSetlistProps> = ({
               .sort((a: any, b: any) => a.order - b.order)
               .map((item: any, index: number) => (
                 <IonCard
-                  key={item._id}
+                  key={item.id}
                   className="setlist-item-card"
                   button
                   onClick={() => history.push(`/worship/services/${serviceId}/live?song=${index}`)}
@@ -273,9 +273,9 @@ export const ServiceSetlist: React.FC<ServiceSetlistProps> = ({
                           <IonIcon slot="icon-only" icon={createOutline} />
                         </IonButton>
                         <IonButton fill="clear" size="small" shape="round" color="danger"
-                          disabled={removingSongId === item._id}
-                          onClick={() => handleRemoveSong(item._id)}>
-                          {removingSongId === item._id
+                          disabled={removingSongId === item.id}
+                          onClick={() => handleRemoveSong(item.id)}>
+                          {removingSongId === item.id
                             ? <IonSpinner name="crescent" style={{ width: 18, height: 18 }} />
                             : <IonIcon slot="icon-only" icon={trash} />}
                         </IonButton>
@@ -283,9 +283,9 @@ export const ServiceSetlist: React.FC<ServiceSetlistProps> = ({
                     ) : !mySongTitles.has(item.song?.title?.toLowerCase().trim()) && (
                       <div className="setlist-item__actions" onClick={(e) => e.stopPropagation()}>
                         <IonButton fill="clear" size="small" shape="round" color="tertiary"
-                          disabled={savingToLibraryId === item.song?._id}
+                          disabled={savingToLibraryId === item.song?.id}
                           onClick={() => handleSaveToLibrary(item.song)}>
-                          {savingToLibraryId === item.song?._id
+                          {savingToLibraryId === item.song?.id
                             ? <IonSpinner name="crescent" style={{ width: 18, height: 18 }} />
                             : <IonIcon slot="icon-only" icon={bookmarkOutline} />}
                         </IonButton>
@@ -324,7 +324,7 @@ export const ServiceSetlist: React.FC<ServiceSetlistProps> = ({
           />
 
           {songForm.songId && (() => {
-            const selected = songs.find((s: any) => s._id === songForm.songId);
+            const selected = songs.find((s: any) => s.id === songForm.songId);
             return selected ? (
               <div className="song-picker__selected-banner">
                 <IonIcon icon={checkmarkCircle} color="tertiary" />
@@ -355,12 +355,12 @@ export const ServiceSetlist: React.FC<ServiceSetlistProps> = ({
               <>
               {filteredSongs.map((s: any) => (
                 <div
-                  key={s._id}
-                  className={`song-picker__item${songForm.songId === s._id ? " song-picker__item--selected" : ""}`}
+                  key={s.id}
+                  className={`song-picker__item${songForm.songId === s.id ? " song-picker__item--selected" : ""}`}
                   onClick={() =>
                     setSongForm({
                       ...songForm,
-                      songId: s._id,
+                      songId: s.id,
                       key: s.defaultKey || "",
                       bpm: s.bpm?.toString() || "",
                     })

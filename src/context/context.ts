@@ -214,7 +214,7 @@ const context = constate(() => {
     setUserInfo((prev) => {
       // Only bounce the WS when the authenticated principal changes.
       // Reconnecting on every `me` refetch drops in-flight sermon/chat streams.
-      if (prev?._id !== dto._id) {
+      if (prev?.id !== dto.id) {
         reconnectGraphqlWs();
       }
       return dto;
@@ -258,7 +258,7 @@ const context = constate(() => {
   const removeUserAssetFromList = (dto: Bookmark) => {
     //grab the selected verse list into temp
     var temp = selectedUserAssets.filter((obj) => {
-      return obj._id !== dto._id;
+      return obj.id !== dto.id;
     });
 
     //set to state

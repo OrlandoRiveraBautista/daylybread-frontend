@@ -6,15 +6,15 @@ const GetNFCConfig = gqlTag`
   query GetNFCConfig($id: String!) {
     getNFCConfig(id: $id) {
       results {
-        _id
+        id
         owner {
-          _id
+          id
         }
         nfcId
         name
         deviceType
         homeScreen {
-          _id
+          id
           name
           shareableLink
           tiles {
@@ -53,15 +53,15 @@ const GetNFCConfigsByOwner = gqlTag`
   query GetNFCConfigsByOwner($ownerId: String!) {
     getNFCConfigsByOwner(ownerId: $ownerId) {
       results {
-        _id
+        id
         owner {
-          _id
+          id
         }
         nfcId
         name
         deviceType
         homeScreen {
-          _id
+          id
           name
           shareableLink
         }
@@ -83,15 +83,15 @@ const CreateNFCConfig = gqlTag`
   mutation CreateNFCConfig($options: NFCConfigInput!) {
     createNFCConfig(options: $options) {
       results {
-        _id
+        id
         owner {
-          _id
+          id
         }
         nfcId
         name
         deviceType
         homeScreen {
-          _id
+          id
           name
           shareableLink
         }
@@ -112,15 +112,15 @@ const UpdateNFCConfig = gqlTag`
   mutation UpdateNFCConfig($id: String!, $options: NFCConfigInput!) {
     updateNFCConfig(id: $id, options: $options) {
       results {
-        _id
+        id
         owner {
-          _id
+          id
         }
         nfcId
         name
         deviceType
         homeScreen {
-          _id
+          id
           name
           shareableLink
         }
@@ -141,7 +141,7 @@ const DeleteNFCConfig = gqlTag`
   mutation DeleteNFCConfig($id: String!) {
     deleteNFCConfig(id: $id) {
       results {
-        _id
+        id
         nfcId
         name
       }
@@ -157,11 +157,11 @@ const AssignHomeScreenToNFCConfig = gqlTag`
   mutation AssignHomeScreenToNFCConfig($id: String!, $homeScreenId: String) {
     assignHomeScreenToNFCConfig(id: $id, homeScreenId: $homeScreenId) {
       results {
-        _id
+        id
         nfcId
         name
         homeScreen {
-          _id
+          id
           name
           shareableLink
         }

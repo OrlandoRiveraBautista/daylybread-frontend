@@ -30,8 +30,8 @@ export interface ScheduleNotificationInput {
 }
 
 export interface UserNotificationSettings {
-  _id: string;
-  userId: string;
+  id: string;
+  user: { id: string };
   enableWebSocketNotifications: boolean;
   enableBrowserPushNotifications: boolean;
   enableEmailNotifications: boolean;
@@ -42,7 +42,7 @@ export interface UserNotificationSettings {
 }
 
 export interface MoodNotification {
-  _id: string;
+  id: string;
   mood?: string | null;
   type: string;
   scheduledFor?: any;
@@ -77,8 +77,10 @@ const getUserNotificationSettingsQuery = gql(`
         message
       }
       settings {
-        _id
-        userId
+        id
+        user {
+          id
+        }
         enableWebSocketNotifications
         enableBrowserPushNotifications
         enableEmailNotifications
@@ -98,8 +100,10 @@ const updateNotificationSettingsMutation = gql(`
         message
       }
       settings {
-        _id
-        userId
+        id
+        user {
+          id
+        }
         enableWebSocketNotifications
         enableBrowserPushNotifications
         enableEmailNotifications
@@ -119,7 +123,7 @@ const scheduleMoodNotificationMutation = gql(`
         message
       }
       notification {
-        _id
+        id
         mood
         type
         scheduledFor

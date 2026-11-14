@@ -5,7 +5,7 @@ import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 const getTranslations = gql(`
   query GetTranslations {
     getTranslations {
-      _id
+      id
       name
       abbreviation
       language
@@ -30,7 +30,7 @@ const getBooks = gql(`
 const getBooksById = gql(`
   query GetBookById($bibleId: String!) {
   getBookById(bibleId: $bibleId) {
-    _id
+    id
     bookName
     bibleId
     chapters {
@@ -48,7 +48,7 @@ const getBooksById = gql(`
 const getChapter = gql(`
   query GetChapter($bibleId: String!) {
     getChapter(bibleId: $bibleId) {
-      _id
+      id
       chapterNumber
       bibleId
       bookName
@@ -68,7 +68,7 @@ const getChapter = gql(`
 const getVerseByIdQuery = gql(`
   query GetVerseById($bibleId: String!) {
     getVerseByBibleId(bibleId: $bibleId) {
-      _id
+      id
       translation {
         name
         abbreviation

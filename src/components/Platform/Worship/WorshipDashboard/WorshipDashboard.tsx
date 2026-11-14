@@ -134,10 +134,10 @@ export const WorshipDashboard: React.FC = () => {
           <div className="upcoming-list">
             {upcomingServices.map((service: any) => (
               <IonCard
-                key={service._id}
+                key={service.id}
                 className="upcoming-card"
                 button
-                onClick={() => history.push(`/worship/services/${service._id}`)}
+                onClick={() => history.push(`/worship/services/${service.id}`)}
               >
                 <IonCardContent>
                   <div className="upcoming-card__date">
@@ -185,10 +185,10 @@ export const WorshipDashboard: React.FC = () => {
           <div className="teams-preview">
             {teams.slice(0, 4).map((team: any) => (
               <IonCard
-                key={team._id}
+                key={team.id}
                 className="team-preview-card"
                 button
-                onClick={() => history.push(`/worship/teams/${team._id}`)}
+                onClick={() => history.push(`/worship/teams/${team.id}`)}
               >
                 <IonCardContent>
                   <IonIcon icon={people} className="team-preview-card__icon" />

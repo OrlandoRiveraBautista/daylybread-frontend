@@ -23,7 +23,7 @@ export const SongView: React.FC = () => {
   const history = useHistory();
   const { id } = useParams<{ id: string }>();
   const { userInfo } = useAppContext();
-  const isLoggedIn = !!userInfo?._id;
+  const isLoggedIn = !!userInfo?.id;
   const [isZenMode, setIsZenMode] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editForm, setEditForm] = useState<SongFormValues>(EMPTY_SONG_FORM);
@@ -72,7 +72,7 @@ export const SongView: React.FC = () => {
     try {
       const result = await updateSong({
         variables: {
-          id: song._id,
+          id: song.id,
           options: {
             title: editForm.title,
             artist: editForm.artist || undefined,

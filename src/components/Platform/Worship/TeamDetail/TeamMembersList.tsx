@@ -53,14 +53,14 @@ export const TeamMembersList: React.FC<TeamMembersListProps> = ({
           .filter(Boolean)
           .join(" ") || "Unknown";
         const initials = getInitials(member.user?.firstName, member.user?.lastName);
-        const hue = stringToHue(member.user?._id ?? name);
+        const hue = stringToHue(member.user?.id ?? name);
         const roleLabel =
           TEAM_ROLES.find((r) => r.value === member.role)?.label ?? member.role;
-        const isRemoving = removingMemberId === member._id;
-        const isTeamOwner = authorId && member.user?._id === authorId;
+        const isRemoving = removingMemberId === member.id;
+        const isTeamOwner = authorId && member.user?.id === authorId;
 
         return (
-          <div key={member._id} className={`member-card${isRemoving ? " member-card--removing" : ""}`}>
+          <div key={member.id} className={`member-card${isRemoving ? " member-card--removing" : ""}`}>
             {/* Avatar */}
             <div
               className="member-card__avatar"
@@ -106,7 +106,7 @@ export const TeamMembersList: React.FC<TeamMembersListProps> = ({
                 color="danger"
                 className="member-card__remove-btn"
                 disabled={isRemoving}
-                onClick={() => onRemoveMember(member._id)}
+                onClick={() => onRemoveMember(member.id)}
                 title="Remove member"
               >
                 {isRemoving ? (

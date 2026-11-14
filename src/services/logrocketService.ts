@@ -84,7 +84,7 @@ class LogRocketService {
       const userTraits: Record<string, string | number | boolean> = {
         name: userName,
         email: user.email,
-        id: user._id,
+        id: user.id,
       };
 
       // Only add optional fields if they exist
@@ -95,7 +95,7 @@ class LogRocketService {
         userTraits.lastName = user.lastName;
       }
 
-      LogRocket.identify(user._id, userTraits);
+      LogRocket.identify(user.id, userTraits);
     } catch (error) {
       console.error("Failed to identify user in LogRocket:", error);
     }

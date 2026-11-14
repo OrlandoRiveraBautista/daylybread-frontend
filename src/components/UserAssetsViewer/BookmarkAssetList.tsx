@@ -20,10 +20,7 @@ import "./BookmarkAssetList.scss";
 import CommentIcon from "../../assets/icons/comment-icon.svg";
 
 /* Utility */
-import {
-  getVerseVerbageByNewVerses,
-  getVerseVerbageByVerses,
-} from "../../utils/support";
+import { getVerseVerbageByNewVerses } from "../../utils/support";
 
 /* Interfaces */
 import { Bookmark } from "../../__generated__/graphql";
@@ -56,9 +53,9 @@ const BookmarkAssetList: React.FC = () => {
 
   // Keep the open bookmark in sync after list refetch (e.g. after note save).
   useEffect(() => {
-    if (!selectedBookmark?._id) return;
+    if (!selectedBookmark?.id) return;
     const fresh = bookmarksResponse?.getMyBookmarks?.results?.find(
-      (bookmark) => bookmark._id === selectedBookmark._id
+      (bookmark) => bookmark.id === selectedBookmark.id
     );
     if (fresh) {
       setSelectedBookmark(fresh as Bookmark);
@@ -141,7 +138,7 @@ const BookmarkAssetList: React.FC = () => {
                   className={`outlined-card bookmark-card ${
                     selected ? "selected" : ""
                   }`}
-                  key={bookmarkEntry._id || index}
+                  key={bookmarkEntry.id || index}
                   onClick={() => handleSelection(bookmarkEntry as Bookmark)}
                   onMouseDown={() =>
                     startPressTimer(bookmarkEntry as Bookmark)
@@ -167,20 +164,16 @@ const BookmarkAssetList: React.FC = () => {
                     </div>
 
                     <IonText className="bookmark-card-verse">
-                      {bookmarkEntry.verses[0]
-                        ? bookmarkEntry.verses.map((verse) => verse.text)
-                        : bookmarkEntry.newVerses?.map(
-                            (verse) => verse.verseText
-                          )}
+                      {bookmarkEntry.newVerses?.map(
+                        (verse) => verse.verseText
+                      )}
                     </IonText>
                     <div className="bookmark-card-footer">
                       <IonText className="bookmark-card-citation">
-                        {bookmarkEntry.verses[0]
-                          ? getVerseVerbageByVerses(bookmarkEntry.verses!)
-                          : getVerseVerbageByNewVerses(
-                              bookmarkEntry.newVerses!,
-                              bookmarkEntry.bibleId!
-                            )}
+                        {getVerseVerbageByNewVerses(
+                          bookmarkEntry.newVerses,
+                          bookmarkEntry.bibleId
+                        )}
                       </IonText>
                       {bookmarkEntry.note ? (
                         <IonIcon icon={CommentIcon} aria-label="Has note" />

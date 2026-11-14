@@ -62,7 +62,7 @@ const Platform: React.FC = () => {
     deleteDevice,
     deleteNFCDevice,
     fetchConfig 
-  } = usePlatformNFCDevices(userInfo?._id!);
+  } = usePlatformNFCDevices(userInfo?.id!);
 
   // NFC assignment mutation
   const [assignHomeScreenToNFCConfig] = useAssignHomeScreenToNFCConfig();
@@ -75,7 +75,7 @@ const Platform: React.FC = () => {
   }, [isAuthenticated, userInfo]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Check if user is sudo admin
-  const isSudoAdmin = userInfo?._id === SUDO_ADMIN_USER_ID;
+  const isSudoAdmin = userInfo?.id === SUDO_ADMIN_USER_ID;
 
   // ── Per-route SEO metadata ────────────────────────────────────────────────
   const PLATFORM_SEO: Array<{

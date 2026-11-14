@@ -12,7 +12,7 @@ const Login = gql(`
     query Login($options: UsernamePasswordInput!) {
         login(options: $options) {
             user {
-               _id
+               id
                 createdAt
                 updatedAt
                 email
@@ -35,7 +35,7 @@ const Register = gql(`
     mutation Register($options: UsernamePasswordInput!) {
       register(options: $options) {
         user {
-          _id
+          id
           createdAt
           updatedAt
           email
@@ -58,7 +58,7 @@ const LoginWithGoogleMutation = gql(`
     mutation LoginWithGoogleMutation($options: LogInWithGoogleArgs!) {
       loginWithGoogle(options: $options) {
         user {
-          _id
+          id
           createdAt
           updatedAt
           email

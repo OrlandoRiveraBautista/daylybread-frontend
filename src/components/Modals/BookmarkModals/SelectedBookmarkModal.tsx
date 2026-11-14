@@ -12,10 +12,7 @@ import {
 } from "@ionic/react";
 
 /* Utils */
-import {
-  getVerseVerbageByNewVerses,
-  getVerseVerbageByVerses,
-} from "../../../utils/support";
+import { getVerseVerbageByNewVerses } from "../../../utils/support";
 
 /* GraphQL API/Hook */
 import { useUpdateBookmark } from "../../../hooks/UserHooks";
@@ -58,7 +55,7 @@ const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
     setInputActive(false);
     setSaveSucceeded(false);
     reset();
-  }, [isOpen, selectedBookmark?._id]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isOpen, selectedBookmark?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!data?.updateBookmark?.results) return;
@@ -87,7 +84,7 @@ const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
     setSaveSucceeded(false);
     setBookmarkUpdate({
       variables: {
-        updateBookmarkId: selectedBookmark._id,
+        updateBookmarkId: selectedBookmark.id,
         options: {
           note: noteCopy,
         },
@@ -109,15 +106,12 @@ const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
     void hapticService.triggerNavigationHaptic();
   };
 
-  const hasLegacyVerses = Boolean(selectedBookmark?.verses?.[0]);
   const citation = !selectedBookmark
     ? ""
-    : hasLegacyVerses
-      ? getVerseVerbageByVerses(selectedBookmark.verses!)
-      : getVerseVerbageByNewVerses(
-          selectedBookmark.newVerses!,
-          selectedBookmark.bibleId!
-        );
+    : getVerseVerbageByNewVerses(
+        selectedBookmark.newVerses,
+        selectedBookmark.bibleId
+      );
 
   return (
     <IonModal
@@ -142,51 +136,32 @@ const SelectedBookmarkModal: React.FC<ISelectedBookmarkModal> = ({
                 <p className="bookmark-label">Verse</p>
                 <div className="bookmark-panel">
                   <div className="bookmark-verse-list">
-                    {hasLegacyVerses
-                      ? selectedBookmark.verses
-                          .slice()
-                          .sort((a, b) => Number(a.verse) - Number(b.verse))
-                          .map((verse) => (
-                            <div
-                              className="bookmark-verse-line"
-                              key={verse._id || verse.bibleId}
-                            >
-                              <span className="bookmark-verse-number">
-                                {Number(verse.verse)}.
-                              </span>
-                              <IonText>
-                                <p className="bookmark-verse-text">
-                                  {verse.text}
-                                </p>
-                              </IonText>
-                            </div>
-                          ))
-                      : selectedBookmark.newVerses
-                          ?.slice()
-                          .sort(
-                            (a, b) =>
-                              Number(a.verseStart) - Number(b.verseStart)
-                          )
-                          .map((verse) => (
-                            <div
-                              className="bookmark-verse-line"
-                              key={
-                                selectedBookmark.bibleId! +
-                                verse.bookId! +
-                                verse.chapter! +
-                                verse.verseStart!
-                              }
-                            >
-                              <span className="bookmark-verse-number">
-                                {Number(verse.verseStart)}.
-                              </span>
-                              <IonText>
-                                <p className="bookmark-verse-text">
-                                  {verse.verseText}
-                                </p>
-                              </IonText>
-                            </div>
-                          ))}
+                    {selectedBookmark.newVerses
+                      ?.slice()
+                      .sort(
+                        (a, b) =>
+                          Number(a.verseStart) - Number(b.verseStart)
+                      )
+                      .map((verse) => (
+                        <div
+                          className="bookmark-verse-line"
+                          key={
+                            selectedBookmark.bibleId! +
+                            verse.bookId! +
+                            verse.chapter! +
+                            verse.verseStart!
+                          }
+                        >
+                          <span className="bookmark-verse-number">
+                            {Number(verse.verseStart)}.
+                          </span>
+                          <IonText>
+                            <p className="bookmark-verse-text">
+                              {verse.verseText}
+                            </p>
+                          </IonText>
+                        </div>
+                      ))}
                   </div>
                   <IonText>
                     <p className="bookmark-citation bookmark-citation--meta">

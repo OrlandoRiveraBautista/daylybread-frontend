@@ -7,22 +7,22 @@ const GetWorshipTeams = gql(`
   query GetWorshipTeams {
     getWorshipTeams {
       results {
-        _id
+        id
         name
         description
         createdAt
         updatedAt
         author {
-          _id
+          id
           firstName
           lastName
         }
         members {
-          _id
+          id
           role
           skills
           user {
-            _id
+            id
             firstName
             lastName
             email
@@ -41,22 +41,22 @@ const GetWorshipTeam = gql(`
   query GetWorshipTeam($id: String!) {
     getWorshipTeam(id: $id) {
       results {
-        _id
+        id
         name
         description
         createdAt
         updatedAt
         author {
-          _id
+          id
           firstName
           lastName
         }
         members {
-          _id
+          id
           role
           skills
           user {
-            _id
+            id
             firstName
             lastName
             email
@@ -75,7 +75,7 @@ const CreateWorshipTeam = gql(`
   mutation CreateWorshipTeam($options: WorshipTeamInput!) {
     createWorshipTeam(options: $options) {
       results {
-        _id
+        id
         name
         description
       }
@@ -91,7 +91,7 @@ const UpdateWorshipTeam = gql(`
   mutation UpdateWorshipTeam($id: String!, $options: WorshipTeamInput!) {
     updateWorshipTeam(id: $id, options: $options) {
       results {
-        _id
+        id
         name
         description
       }
@@ -107,7 +107,7 @@ const DeleteWorshipTeam = gql(`
   mutation DeleteWorshipTeam($id: String!) {
     deleteWorshipTeam(id: $id) {
       results {
-        _id
+        id
       }
       errors {
         field
@@ -123,18 +123,18 @@ const GetTeamMembers = gql(`
   query GetTeamMembers($teamId: String!) {
     getTeamMembers(teamId: $teamId) {
       results {
-        _id
+        id
         role
         skills
         createdAt
         user {
-          _id
+          id
           firstName
           lastName
           email
         }
         team {
-          _id
+          id
           name
         }
       }
@@ -150,11 +150,11 @@ const AddTeamMember = gql(`
   mutation AddTeamMember($options: TeamMemberInput!) {
     addTeamMember(options: $options) {
       results {
-        _id
+        id
         role
         skills
         user {
-          _id
+          id
           firstName
           lastName
           email
@@ -172,7 +172,7 @@ const UpdateTeamMember = gql(`
   mutation UpdateTeamMember($id: String!, $options: UpdateTeamMemberInput!) {
     updateTeamMember(id: $id, options: $options) {
       results {
-        _id
+        id
         role
         skills
       }
@@ -188,7 +188,7 @@ const RemoveTeamMember = gql(`
   mutation RemoveTeamMember($id: String!) {
     removeTeamMember(id: $id) {
       results {
-        _id
+        id
       }
       errors {
         field
@@ -204,7 +204,7 @@ const GetTeamInvites = gql(`
   query GetTeamInvites($teamId: String!) {
     getTeamInvites(teamId: $teamId) {
       results {
-        _id
+        id
         email
         role
         status
@@ -214,18 +214,18 @@ const GetTeamInvites = gql(`
         createdAt
         skills
         invitedBy {
-          _id
+          id
           firstName
           lastName
         }
         invitedUser {
-          _id
+          id
           firstName
           lastName
           email
         }
         team {
-          _id
+          id
           name
         }
       }
@@ -241,7 +241,7 @@ const GetMyInvites = gql(`
   query GetMyInvites {
     getMyInvites {
       results {
-        _id
+        id
         email
         role
         status
@@ -250,14 +250,14 @@ const GetMyInvites = gql(`
         createdAt
         skills
         invitedBy {
-          _id
+          id
           firstName
           lastName
           email
           churchName
         }
         team {
-          _id
+          id
           name
           description
         }
@@ -274,7 +274,7 @@ const SendTeamInvite = gql(`
   mutation SendTeamInvite($options: TeamInviteInput!) {
     sendTeamInvite(options: $options) {
       results {
-        _id
+        id
         email
         role
         status
@@ -293,7 +293,7 @@ const RespondToInvite = gql(`
   mutation RespondToInvite($inviteId: String!, $accept: Boolean!) {
     respondToInvite(inviteId: $inviteId, accept: $accept) {
       results {
-        _id
+        id
         status
       }
       errors {
@@ -308,17 +308,17 @@ const GetInviteByToken = gql(`
   query GetInviteByToken($token: String!) {
     getInviteByToken(token: $token) {
       results {
-        _id
+        id
         role
         skills
         status
         expiresAt
         team {
-          _id
+          id
           name
         }
         invitedBy {
-          _id
+          id
           firstName
           lastName
         }
@@ -335,10 +335,10 @@ const AcceptInviteByToken = gql(`
   mutation AcceptInviteByToken($token: String!) {
     acceptInviteByToken(token: $token) {
       results {
-        _id
+        id
         status
         team {
-          _id
+          id
           name
         }
       }
@@ -354,7 +354,7 @@ const CancelTeamInvite = gql(`
   mutation CancelTeamInvite($inviteId: String!) {
     cancelTeamInvite(inviteId: $inviteId) {
       results {
-        _id
+        id
       }
       errors {
         field
@@ -368,7 +368,7 @@ const ResendTeamInvite = gql(`
   mutation ResendTeamInvite($inviteId: String!) {
     resendTeamInvite(inviteId: $inviteId) {
       results {
-        _id
+        id
         status
         expiresAt
       }

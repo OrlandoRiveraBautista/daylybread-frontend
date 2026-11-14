@@ -19,7 +19,7 @@ const SearchUsers = gqlTag`
   query SearchUsers($searchTerm: String!, $limit: Float) {
     searchUsers(searchTerm: $searchTerm, limit: $limit) {
       results {
-        _id
+        id
         email
         firstName
         lastName
@@ -37,7 +37,7 @@ const AdminGetAllNFCConfigs = gqlTag`
   query AdminGetAllNFCConfigs($limit: Float) {
     adminGetAllNFCConfigs(limit: $limit) {
       results {
-        _id
+        id
         nfcId
         name
         deviceType
@@ -46,13 +46,13 @@ const AdminGetAllNFCConfigs = gqlTag`
         createdAt
         updatedAt
         owner {
-          _id
+          id
           email
           firstName
           lastName
         }
         homeScreen {
-          _id
+          id
           name
           shareableLink
         }
@@ -69,20 +69,20 @@ const AdminCreateNFCConfig = gqlTag`
   mutation AdminCreateNFCConfig($options: AdminNFCConfigInput!) {
     adminCreateNFCConfig(options: $options) {
       results {
-        _id
+        id
         nfcId
         name
         deviceType
         views
         createdAt
         owner {
-          _id
+          id
           email
           firstName
           lastName
         }
         homeScreen {
-          _id
+          id
           name
           shareableLink
         }
@@ -99,7 +99,7 @@ const GetHomeScreensByOwnerId = gqlTag`
   query GetHomeScreensByOwnerId($ownerId: String!) {
     getHomeScreensByOwnerId(ownerId: $ownerId) {
       results {
-        _id
+        id
         name
         shareableLink
       }
@@ -112,7 +112,7 @@ const GetHomeScreensByOwnerId = gqlTag`
 ` as any;
 
 interface UserSearchResult {
-  _id: string;
+  id: string;
   email: string;
   firstName?: string;
   lastName?: string;
@@ -167,7 +167,7 @@ export const useAdminNFCConfigs = (): UseAdminNFCConfigsResult => {
    * Fetch all NFC configs (admin view - all configs)
    */
   const refetch = useCallback(async () => {
-    if (!userInfo?._id) return;
+    if (!userInfo?.id) return;
 
     setIsLoading(true);
     setError(null);
@@ -189,7 +189,7 @@ export const useAdminNFCConfigs = (): UseAdminNFCConfigsResult => {
     } finally {
       setIsLoading(false);
     }
-  }, [userInfo?._id, fetchAllNFCConfigs]);
+  }, [userInfo?.id, fetchAllNFCConfigs]);
 
   /**
    * Search users by email, name, or church name

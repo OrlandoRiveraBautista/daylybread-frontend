@@ -46,7 +46,7 @@ export const RehearsalsManagement: React.FC = () => {
   const teams: any[] = teamsData?.getWorshipTeams?.results || [];
   const services: any[] = servicesData?.getWorshipServices?.results || [];
   const songs: any[] = songsData?.getSongs?.results || [];
-  const ownedTeams = teams.filter((t) => t.author?._id === userInfo?._id);
+  const ownedTeams = teams.filter((t) => t.author?.id === userInfo?.id);
   const canCreateRehearsal = ownedTeams.length > 0;
 
   const { deletingId, handleDelete } = useDeleteWithAnimation(
@@ -104,15 +104,18 @@ export const RehearsalsManagement: React.FC = () => {
       {!loading && !error && rehearsals.length > 0 && (
         <div className="rehearsals-list">
           {rehearsals.map((rehearsal: any) => {
-            const isBeingDeleted = deletingId === rehearsal._id;
-            const isOwner = rehearsal.author?._id === userInfo?._id;
+            const isBeingDeleted = deletingId === rehearsal.id;
+            const isOwner = rehearsal.author?.id === userInfo?.id;
             const rehearsalDate = new Date(Number(rehearsal.date));
-            const rehearsalSongs = rehearsal.songIds
-              ? songs.filter((s: any) => rehearsal.songIds.includes(s._id))
-              : [];
+            const rehearsalSongs =
+              rehearsal.rehearsalSongs
+                ?.slice()
+                .sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0))
+                .map((rs: any) => rs.song)
+                .filter(Boolean) ?? [];
 
             return (
-              <IonCard key={rehearsal._id} className={`rehearsal-card ${isBeingDeleted ? "deleting" : ""}`}>
+              <IonCard key={rehearsal.id} className={`rehearsal-card ${isBeingDeleted ? "deleting" : ""}`}>
                 <IonCardContent>
                   <div className="rehearsal-card__date">
                     <span className="rehearsal-card__day">{rehearsalDate.toLocaleDateString("en-US", { day: "numeric" })}</span>
@@ -144,14 +147,14 @@ export const RehearsalsManagement: React.FC = () => {
                     {rehearsalSongs.length > 0 && (
                       <div className="rehearsal-card__songs">
                         {rehearsalSongs.map((song: any) => (
-                          <span key={song._id} className="rehearsal-song-tag">{song.title}</span>
+                          <span key={song.id} className="rehearsal-song-tag">{song.title}</span>
                         ))}
                       </div>
                     )}
                   </div>
                   {isOwner && (
                     <IonButton fill="clear" size="small" shape="round" color="danger" disabled={isBeingDeleted}
-                      onClick={() => setShowDeleteConfirm(rehearsal._id)}>
+                      onClick={() => setShowDeleteConfirm(rehearsal.id)}>
                       <IonIcon slot="icon-only" icon={trash} />
                     </IonButton>
                   )}
@@ -182,7 +185,7 @@ export const RehearsalsManagement: React.FC = () => {
             placeholder="Select a team"
           >
             {ownedTeams.map((team: any) => (
-              <IonSelectOption key={team._id} value={team._id}>{team.name}</IonSelectOption>
+              <IonSelectOption key={team.id} value={team.id}>{team.name}</IonSelectOption>
             ))}
           </IonSelect>
         </IonItem>
@@ -195,7 +198,7 @@ export const RehearsalsManagement: React.FC = () => {
             placeholder="Select a service"
           >
             {services.map((service: any) => (
-              <IonSelectOption key={service._id} value={service._id}>
+              <IonSelectOption key={service.id} value={service.id}>
                 {service.name} — {parseServiceDate(service.date).toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit", hour12: true })}
               </IonSelectOption>
             ))}
@@ -219,7 +222,7 @@ export const RehearsalsManagement: React.FC = () => {
             multiple
           >
             {songs.map((song: any) => (
-              <IonSelectOption key={song._id} value={song._id}>{song.title}</IonSelectOption>
+              <IonSelectOption key={song.id} value={song.id}>{song.title}</IonSelectOption>
             ))}
           </IonSelect>
         </IonItem>

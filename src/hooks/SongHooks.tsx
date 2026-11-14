@@ -5,7 +5,7 @@ const GetSongs = gql(`
   query GetSongs {
     getSongs {
       results {
-        _id
+        id
         title
         artist
         defaultKey
@@ -18,7 +18,7 @@ const GetSongs = gql(`
         createdAt
         updatedAt
         author {
-          _id
+          id
           firstName
           lastName
         }
@@ -35,7 +35,7 @@ const GetSong = gql(`
   query GetSong($id: String!) {
     getSong(id: $id) {
       results {
-        _id
+        id
         title
         artist
         defaultKey
@@ -48,7 +48,7 @@ const GetSong = gql(`
         createdAt
         updatedAt
         author {
-          _id
+          id
           firstName
           lastName
         }
@@ -65,7 +65,7 @@ const SearchSongs = gql(`
   query SearchSongs($searchTerm: String!) {
     searchSongs(searchTerm: $searchTerm) {
       results {
-        _id
+        id
         title
         artist
         defaultKey
@@ -78,7 +78,7 @@ const SearchSongs = gql(`
         createdAt
         updatedAt
         author {
-          _id
+          id
           firstName
           lastName
         }
@@ -95,7 +95,7 @@ const CreateSong = gql(`
   mutation CreateSong($options: SongInput!) {
     createSong(options: $options) {
       results {
-        _id
+        id
         title
         artist
         defaultKey
@@ -108,7 +108,7 @@ const CreateSong = gql(`
         createdAt
         updatedAt
         author {
-          _id
+          id
           firstName
           lastName
         }
@@ -125,7 +125,7 @@ const UpdateSong = gql(`
   mutation UpdateSong($id: String!, $options: SongInput!) {
     updateSong(id: $id, options: $options) {
       results {
-        _id
+        id
         title
         artist
         defaultKey
@@ -138,7 +138,7 @@ const UpdateSong = gql(`
         createdAt
         updatedAt
         author {
-          _id
+          id
           firstName
           lastName
         }
@@ -155,7 +155,7 @@ const DeleteSong = gql(`
   mutation DeleteSong($id: String!) {
     deleteSong(id: $id) {
       results {
-        _id
+        id
         title
       }
       errors {

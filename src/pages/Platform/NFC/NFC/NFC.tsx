@@ -58,11 +58,11 @@ const NFC: React.FC = () => {
     ? nfcData.wallpaper
     : hsData?.getHomeScreenByLink?.results?.wallpaper;
   const homeScreenId = nfcId
-    ? nfcData.nfcConfig?.homeScreen?._id
-    : hsData?.getHomeScreenByLink?.results?._id;
+    ? nfcData.nfcConfig?.homeScreen?.id
+    : hsData?.getHomeScreenByLink?.results?.id;
   const ownerId = nfcId
-    ? nfcData.nfcConfig?.owner?._id
-    : hsData?.getHomeScreenByLink?.results?.owner?._id;
+    ? nfcData.nfcConfig?.owner?.id
+    : hsData?.getHomeScreenByLink?.results?.owner?.id;
 
   // Edit mode management
   const {
@@ -80,7 +80,7 @@ const NFC: React.FC = () => {
     initialTiles: tiles,
     initialWallpaper: wallpaper,
     ownerId,
-    currentUserId: userInfo?._id,
+    currentUserId: userInfo?.id,
     onSaveSuccess: async () => {
       setToastMessage("Changes saved successfully!");
       setShowToast(true);

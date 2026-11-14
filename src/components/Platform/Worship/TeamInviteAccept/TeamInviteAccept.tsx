@@ -35,7 +35,7 @@ export const TeamInviteAccept: React.FC = () => {
   const hasFetched = useRef(false);
   const [responded, setResponded] = useState<"accepted" | "declined" | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
-  const [acceptedTeam, setAcceptedTeam] = useState<{ _id: string; name: string } | null>(null);
+  const [acceptedTeam, setAcceptedTeam] = useState<{ id: string; name: string } | null>(null);
 
   const [fetchInvite, { data: inviteData, loading: inviteLoading }] = useGetInviteByToken();
   const [acceptInvite, { loading: acceptLoading }] = useAcceptInviteByToken();
@@ -60,15 +60,15 @@ export const TeamInviteAccept: React.FC = () => {
       return;
     }
     const team = result.data?.acceptInviteByToken?.results?.team;
-    setAcceptedTeam(team ? { _id: team._id as string, name: team.name } : null);
+    setAcceptedTeam(team ? { id: team.id as string, name: team.name } : null);
     setResponded("accepted");
   };
 
   const handleDecline = async () => {
-    if (!invite?._id) return;
+    if (!invite?.id) return;
     setActionError(null);
     const result = await declineInvite({
-      variables: { inviteId: invite._id as string, accept: false },
+      variables: { inviteId: invite.id as string, accept: false },
     });
     const errors = result.data?.respondToInvite?.errors;
     if (errors?.length) {
@@ -121,7 +121,7 @@ export const TeamInviteAccept: React.FC = () => {
                 color="primary"
                 onClick={() =>
                   history.push(
-                    acceptedTeam ? `/worship/teams/${acceptedTeam._id}` : "/worship/teams"
+                    acceptedTeam ? `/worship/teams/${acceptedTeam.id}` : "/worship/teams"
                   )
                 }
               >

@@ -54,7 +54,7 @@ export const TeamDetail: React.FC = () => {
   const team = data?.getWorshipTeam?.results;
   const members = team?.members || [];
   const invites = invitesData?.getTeamInvites?.results || [];
-  const isOwner = team?.author?._id === userInfo?._id;
+  const isOwner = team?.author?.id === userInfo?.id;
 
   const METHOD_LABELS: Record<string, string> = {
     EMAIL: "email",
@@ -188,7 +188,7 @@ export const TeamDetail: React.FC = () => {
           isOwner={isOwner}
           removingMemberId={removingMemberId}
           onRemoveMember={handleRemoveMember}
-          authorId={team.author?._id}
+          authorId={team.author?.id}
         />
       )}
 

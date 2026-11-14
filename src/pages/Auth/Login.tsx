@@ -148,7 +148,7 @@ const Login: React.FC = () => {
    * Calls after login has been successfull to get the user
    */
   useEffect(() => {
-    if (!data?.login.user?._id) return;
+    if (!data?.login.user?.id) return;
     setUser(data.login.user);
     handleRedirect();
   }, [data]); // eslint-disable-line react-hooks/exhaustive-deps

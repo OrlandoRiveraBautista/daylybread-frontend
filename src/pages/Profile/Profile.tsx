@@ -54,7 +54,7 @@ const Profile: React.FC = () => {
   }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleDeleteAssets = () => {
-    const assetIds = selectedUserAssets.map((asset) => asset._id);
+    const assetIds = selectedUserAssets.map((asset) => asset.id);
     deleteBookmarks({ variables: { ids: assetIds } });
     setShowDeleteAlert(false);
   };

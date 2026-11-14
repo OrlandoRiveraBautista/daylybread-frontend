@@ -6,7 +6,7 @@ const Me = gql(`
     query Me {
         me {
             user {
-              _id
+              id
               createdAt
               updatedAt
               email
@@ -26,7 +26,7 @@ const UserBibleHistoryQuery = gql(`
         me {
           user{
             bibleHistory {
-              _id
+              id
               history {
                 language
                 bibleAbbr
@@ -47,11 +47,11 @@ const getBookmarks = gql(`
   query getBookmarks {
     getMyBookmarks {
       results {
-        _id
+        id
         createdAt
         updatedAt
         author {
-          _id
+          id
         }
         bibleId
         newVerses {
@@ -66,18 +66,6 @@ const getBookmarks = gql(`
           verseEndAlt
           verseText
         }
-        verses {
-          _id
-          translation {
-            name
-            abbreviation
-          }
-          bookName
-          chapterNumber
-          verse
-          text
-          bibleId
-        }
         note
       }
     }
@@ -88,12 +76,16 @@ const getBookmarks = gql(`
 const createBookmark = gql(`
   mutation CreateBookmark($options: BookmarkOptions!) {
     createBookmark(options: $options) {
+      errors {
+        field
+        message
+      }
       results {
-        _id
+        id
         createdAt
         updatedAt
         author {
-          _id
+          id
           createdAt
           updatedAt
           email
@@ -103,7 +95,7 @@ const createBookmark = gql(`
           dob
           count
           bookmarks {
-            _id
+            id
             createdAt
             updatedAt
             bibleId
@@ -124,18 +116,6 @@ const createBookmark = gql(`
           verseEndAlt
           verseText
         }
-        verses {
-          _id
-          translation {
-            name
-            abbreviation
-          }
-          bookName
-          chapterNumber
-          verse
-          text
-          bibleId
-        }
         note
       }
     }
@@ -146,7 +126,7 @@ const userUpdate = gql(`
   mutation UpdateUser($options: UserUpdateInput!) {
     updateUser(options: $options) {
       user {
-        _id
+        id
         createdAt
         updatedAt
         email
@@ -173,11 +153,11 @@ const updateBookmark = gql(`
         message
       }
       results {
-        _id
+        id
         createdAt
         updatedAt
         author {
-          _id
+          id
         }
         bibleId
         note
@@ -192,18 +172,6 @@ const updateBookmark = gql(`
           verseEnd
           verseEndAlt
           verseText
-        }
-        verses {
-          _id
-          translation {
-            name
-            abbreviation
-          }
-          bookName
-          chapterNumber
-          verse
-          text
-          bibleId
         }
       }
     }

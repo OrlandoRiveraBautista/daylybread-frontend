@@ -123,8 +123,8 @@ export const SudoAdminManager: React.FC = () => {
 
   // Fetch home screens when owner is selected
   useEffect(() => {
-    if (selectedOwner?._id) {
-      fetchHomeScreensForOwner(selectedOwner._id);
+    if (selectedOwner?.id) {
+      fetchHomeScreensForOwner(selectedOwner.id);
       setFormData((prev) => ({ ...prev, homeScreenId: "" }));
     }
   }, [selectedOwner, fetchHomeScreensForOwner]);
@@ -146,13 +146,13 @@ export const SudoAdminManager: React.FC = () => {
       if (editingId) {
         await updateNFCConfig(editingId, {
           ...formData,
-          ownerId: selectedOwner?._id,
+          ownerId: selectedOwner?.id,
         });
         setEditingId(null);
       } else {
         await createNFCConfig({
           ...formData,
-          ownerId: selectedOwner?._id,
+          ownerId: selectedOwner?.id,
         });
       }
       setFormData(initialFormData);
@@ -168,17 +168,17 @@ export const SudoAdminManager: React.FC = () => {
       nfcId: config.nfcId,
       name: config.name,
       deviceType: config.deviceType || "",
-      homeScreenId: config.homeScreen?._id || "",
+      homeScreenId: config.homeScreen?.id || "",
     });
     if (config.owner) {
       setSelectedOwner({
-        _id: config.owner._id,
+        id: config.owner.id,
         email: config.owner.email,
         firstName: config.owner.firstName,
         lastName: config.owner.lastName,
       });
     }
-    setEditingId(config._id);
+    setEditingId(config.id);
     setActiveTab("create");
   };
 
@@ -349,7 +349,7 @@ export const SudoAdminManager: React.FC = () => {
                           <IonList>
                             {users.map((user) => (
                               <IonItem
-                                key={user._id}
+                                key={user.id}
                                 button
                                 onClick={() => handleSelectOwner(user)}
                               >
@@ -483,7 +483,7 @@ export const SudoAdminManager: React.FC = () => {
                 >
                   <IonSelectOption value="">None</IonSelectOption>
                   {homeScreens.map((screen: any) => (
-                    <IonSelectOption key={screen._id} value={screen._id}>
+                    <IonSelectOption key={screen.id} value={screen.id}>
                       {screen.name}
                     </IonSelectOption>
                   ))}
@@ -552,7 +552,7 @@ export const SudoAdminManager: React.FC = () => {
           ) : (
             <div className="configs-grid">
               {filteredConfigs.map((config: any) => (
-                <IonCard key={config._id} className="config-card">
+                <IonCard key={config.id} className="config-card">
                   <IonCardHeader>
                     <div className="config-card-header">
                       <div className="config-info">
@@ -596,7 +596,7 @@ export const SudoAdminManager: React.FC = () => {
                           shape="round"
                           color="danger"
                           onClick={() => {
-                            setDeleteTargetId(config._id);
+                            setDeleteTargetId(config.id);
                             setShowDeleteAlert(true);
                           }}
                         >

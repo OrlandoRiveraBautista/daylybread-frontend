@@ -2,7 +2,7 @@ import { BbVerse } from "../__generated__/graphql";
 
 export interface ITranslation {
   __typename?: "Translation" | undefined;
-  _id: string;
+  id: string;
   name: string;
   abbreviation: string;
   language: string;
@@ -16,7 +16,7 @@ export interface ITranslation {
 
 export interface IBookInterface {
   __typename?: "Book" | undefined;
-  _id: string;
+  id: string;
   bookName: string;
   bibleId: string;
   chapters: {
@@ -40,7 +40,7 @@ export interface IVerseInterface {
 
 export interface IChapterInterface {
   __typename?: "Chapter" | undefined;
-  _id: string;
+  id: string;
   chapterNumber: string;
   bibleId: string;
   bookName: string;

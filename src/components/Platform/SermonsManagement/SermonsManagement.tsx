@@ -21,14 +21,14 @@ import { PageHeader } from "../PageHeader";
 import "./SermonsManagement.scss";
 
 interface SermonData {
-  _id: string;
+  id: string;
   title: string;
   content: string;
   status: SermonStatus;
   createdAt: string;
   updatedAt: string;
   author: {
-    _id: string;
+    id: string;
     firstName?: string | null;
     lastName?: string | null;
   };
@@ -51,7 +51,7 @@ export const SermonsManagement: React.FC = () => {
   // Filter sermons based on search, but keep deleting sermon visible for animation
   const filteredSermons = sermons.filter((sermon) => {
     const matchesSearch = sermon.title.toLowerCase().includes(searchQuery.toLowerCase());
-    const isDeleting = deletingSermonId === sermon._id;
+    const isDeleting = deletingSermonId === sermon.id;
     return matchesSearch || isDeleting;
   });
 
@@ -60,7 +60,7 @@ export const SermonsManagement: React.FC = () => {
   };
 
   const handleEditSermon = (sermon: SermonData) => {
-    history.push(`/sermons/${sermon._id}`);
+    history.push(`/sermons/${sermon.id}`);
   };
 
   const handleDeleteSermon = async (sermonId: string) => {
@@ -158,10 +158,10 @@ export const SermonsManagement: React.FC = () => {
 
           {/* Existing Sermons */}
           {filteredSermons.map((sermon) => {
-            const isDeleting = deletingSermonId === sermon._id;
+            const isDeleting = deletingSermonId === sermon.id;
             return (
               <ItemCard
-                key={sermon._id}
+                key={sermon.id}
                 icon={document}
                 iconClassName="doc-icon"
                 title={sermon.title}
@@ -176,7 +176,7 @@ export const SermonsManagement: React.FC = () => {
                 }
                 onClick={() => handleEditSermon(sermon)}
                 onEdit={() => handleEditSermon(sermon)}
-                onDelete={() => setShowDeleteConfirm(sermon._id)}
+                onDelete={() => setShowDeleteConfirm(sermon.id)}
                 isDeleting={isDeleting}
                 className="sermon-card"
                 searchWords={searchQuery ? [searchQuery] : []}

@@ -39,7 +39,7 @@ export const SongDetailSheet: React.FC<SongDetailSheetProps> = ({
 }) => {
   const history = useHistory();
 
-  const isOwner = song?.author?._id === currentUserId;
+  const isOwner = song?.author?.id === currentUserId;
   const alreadySaved = song
     ? mySongTitles.has(song.title.toLowerCase().trim())
     : false;
@@ -76,7 +76,7 @@ export const SongDetailSheet: React.FC<SongDetailSheetProps> = ({
                 shape="round"
                 onClick={() => {
                   onDismiss();
-                  history.push(`/worship/songs/${song._id}`);
+                  history.push(`/worship/songs/${song.id}`);
                 }}
               >
                 <IonIcon slot="start" icon={expandOutline} />
@@ -100,10 +100,10 @@ export const SongDetailSheet: React.FC<SongDetailSheetProps> = ({
                   size="small"
                   shape="round"
                   color="tertiary"
-                  disabled={savingToLibraryId === song._id}
+                  disabled={savingToLibraryId === song.id}
                   onClick={() => onSaveToLibrary(song)}
                 >
-                  {savingToLibraryId === song._id ? (
+                  {savingToLibraryId === song.id ? (
                     <IonSpinner name="crescent" style={{ width: 16, height: 16 }} />
                   ) : (
                     <>

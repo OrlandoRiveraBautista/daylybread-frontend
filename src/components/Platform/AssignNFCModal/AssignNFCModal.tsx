@@ -93,10 +93,10 @@ export const AssignNFCModal: React.FC<AssignNFCModalProps> = ({
             <IonList>
               {availableDevices.map((device) => (
                 <IonItem
-                  key={device._id}
+                  key={device.id}
                   button
-                  onClick={() => setSelectedDeviceId(device._id)}
-                  className={selectedDeviceId === device._id ? "selected" : ""}
+                  onClick={() => setSelectedDeviceId(device.id)}
+                  className={selectedDeviceId === device.id ? "selected" : ""}
                 >
                   <IonIcon icon={card} slot="start" color="primary" />
                   <IonLabel>
@@ -106,7 +106,7 @@ export const AssignNFCModal: React.FC<AssignNFCModalProps> = ({
                       {device.deviceType && ` • ${device.deviceType}`}
                     </p>
                   </IonLabel>
-                  {selectedDeviceId === device._id && (
+                  {selectedDeviceId === device.id && (
                     <IonIcon
                       icon={checkmarkCircle}
                       slot="end"

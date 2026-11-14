@@ -89,7 +89,7 @@ const InviteRow: React.FC<InviteRowProps> = ({
   const cfg = getStatusConfig(status);
   const isAccepted = status === "accepted";
   const isBusy =
-    resendingInviteId === invite._id || cancellingInviteId === invite._id;
+    resendingInviteId === invite.id || cancellingInviteId === invite.id;
 
   const displayName = invite.invitedUser?.firstName
     ? `${invite.invitedUser.firstName} ${invite.invitedUser.lastName ?? ""}`.trim()
@@ -98,7 +98,7 @@ const InviteRow: React.FC<InviteRowProps> = ({
   const roleLabel =
     TEAM_ROLES.find((r) => r.value === invite.role)?.label ?? invite.role;
 
-  const isCancelling = cancellingInviteId === invite._id;
+  const isCancelling = cancellingInviteId === invite.id;
 
   return (
     <IonCard
@@ -140,13 +140,13 @@ const InviteRow: React.FC<InviteRowProps> = ({
               disabled={isBusy}
               onClick={() =>
                 onResendInvite(
-                  invite._id,
+                  invite.id,
                   invite.invitedUser?.email ?? invite.email,
                 )
               }
               title="Resend invite"
             >
-              {resendingInviteId === invite._id ? (
+              {resendingInviteId === invite.id ? (
                 <IonSpinner name="crescent" style={{ width: 18, height: 18 }} />
               ) : (
                 <IonIcon slot="icon-only" icon={refresh} />
@@ -158,10 +158,10 @@ const InviteRow: React.FC<InviteRowProps> = ({
               shape="round"
               color="danger"
               disabled={isBusy}
-              onClick={() => onCancelInvite(invite._id)}
+              onClick={() => onCancelInvite(invite.id)}
               title="Cancel invite"
             >
-              {cancellingInviteId === invite._id ? (
+              {cancellingInviteId === invite.id ? (
                 <IonSpinner name="crescent" style={{ width: 18, height: 18 }} />
               ) : (
                 <IonIcon slot="icon-only" icon={trash} />
@@ -216,7 +216,7 @@ export const TeamInvitesList: React.FC<TeamInvitesListProps> = ({
       )}
 
       {activeInvites.map((invite) => (
-        <InviteRow key={invite._id} invite={invite} {...rowProps} />
+        <InviteRow key={invite.id} invite={invite} {...rowProps} />
       ))}
 
       {/* Accepted invites — collapsed section at the bottom */}
@@ -243,7 +243,7 @@ export const TeamInvitesList: React.FC<TeamInvitesListProps> = ({
           {acceptedExpanded && (
             <div className="invites-accepted-section__list">
               {acceptedInvites.map((invite) => (
-                <InviteRow key={invite._id} invite={invite} {...rowProps} dimmed />
+                <InviteRow key={invite.id} invite={invite} {...rowProps} dimmed />
               ))}
             </div>
           )}

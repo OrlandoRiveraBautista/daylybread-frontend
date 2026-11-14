@@ -151,7 +151,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
                   fill="solid"
                   color="primary"
                   onClick={() =>
-                    history.push(`/worship/services/${primaryTodaysService._id}/live`)
+                    history.push(`/worship/services/${primaryTodaysService.id}/live`)
                   }
                   className="todays-service-btn-primary"
                 >
@@ -162,7 +162,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
                   fill="outline"
                   color="primary"
                   onClick={() =>
-                    history.push(`/worship/services/${primaryTodaysService._id}`)
+                    history.push(`/worship/services/${primaryTodaysService.id}`)
                   }
                 >
                   View service

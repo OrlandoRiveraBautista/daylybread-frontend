@@ -86,12 +86,11 @@ export const usePlatformNFCDevices = (
 
       // Find all NFC devices assigned to this home screen
       const assignedNFCIds = nfcDevices
-        .filter((nfcDevice: any) => nfcDevice.homeScreen?._id === homeScreen._id)
-        .map((nfcDevice: any) => nfcDevice._id);
+        .filter((nfcDevice: any) => nfcDevice.homeScreen?.id === homeScreen.id)
+        .map((nfcDevice: any) => nfcDevice.id);
 
       return {
-        id: homeScreen._id,
-        _id: homeScreen._id,
+        id: homeScreen.id,
         name: homeScreen.name || "Home Screen",
         shareableLink: homeScreen.shareableLink,
         nfcIds: assignedNFCIds,
@@ -117,7 +116,7 @@ export const usePlatformNFCDevices = (
       try {
         // Find the home screen to get its name if not provided
         const homeScreen = homeScreens.find(
-          (hs: any) => hs._id === homeScreenId,
+          (hs: any) => hs.id === homeScreenId,
         );
         if (!homeScreen) {
           throw new Error("Home screen not found");

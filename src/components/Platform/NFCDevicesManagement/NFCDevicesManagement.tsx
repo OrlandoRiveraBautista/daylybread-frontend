@@ -28,12 +28,12 @@ import { PageHeader } from "../PageHeader";
 import "./NFCDevicesManagement.scss";
 
 export interface NFCDeviceConfig {
-  _id: string;
+  id: string;
   nfcId: string;
   name: string;
   deviceType?: string;
   homeScreen?: {
-    _id: string;
+    id: string;
     name: string;
     shareableLink: string;
   };
@@ -103,7 +103,7 @@ export const NFCDevicesManagement: React.FC<NFCDevicesManagementProps> = ({
           />
 
           {nfcDevices.map((device) => (
-            <IonCard key={device._id} className="device-card">
+            <IonCard key={device.id} className="device-card">
               <IonCardHeader>
                 <div className="device-card-header">
                   <div className="device-info">
@@ -132,7 +132,7 @@ export const NFCDevicesManagement: React.FC<NFCDevicesManagementProps> = ({
                       fill="clear"
                       shape="round"
                       color="danger"
-                      onClick={() => handleDeleteClick(device._id)}
+                      onClick={() => handleDeleteClick(device.id)}
                     >
                       <IonIcon slot="icon-only" icon={trash} />
                     </IonButton>
@@ -182,7 +182,7 @@ export const NFCDevicesManagement: React.FC<NFCDevicesManagementProps> = ({
                     shape="round"
                     color="medium"
                     size="small"
-                    onClick={() => onUnassign(device._id)}
+                    onClick={() => onUnassign(device.id)}
                   >
                     Unassign from Home Screen
                   </IonButton>

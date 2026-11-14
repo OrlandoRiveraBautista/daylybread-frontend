@@ -7,9 +7,9 @@ const GetHomeScreen = gqlTag`
   query GetHomeScreen($id: String!) {
     getHomeScreen(id: $id) {
       results {
-        _id
+        id
         owner {
-          _id
+          id
         }
         name
         shareableLink
@@ -46,9 +46,9 @@ const GetHomeScreenByLink = gqlTag`
   query GetHomeScreenByLink($shareableLink: String!) {
     getHomeScreenByLink(shareableLink: $shareableLink) {
       results {
-        _id
+        id
         owner {
-          _id
+          id
         }
         name
         shareableLink
@@ -85,9 +85,9 @@ const GetHomeScreensByOwner = gqlTag`
   query GetHomeScreensByOwner {
     getHomeScreensByOwner {
       results {
-        _id
+        id
         owner {
-          _id
+          id
         }
         name
         shareableLink
@@ -125,9 +125,9 @@ const CreateHomeScreen = gqlTag`
   mutation CreateHomeScreen($options: HomeScreenInput!) {
     createHomeScreen(options: $options) {
       results {
-        _id
+        id
         owner {
-          _id
+          id
         }
         name
         shareableLink
@@ -164,9 +164,9 @@ const UpdateHomeScreen = gqlTag`
   mutation UpdateHomeScreen($id: String!, $options: HomeScreenInput!) {
     updateHomeScreen(id: $id, options: $options) {
       results {
-        _id
+        id
         owner {
-          _id
+          id
         }
         name
         shareableLink
@@ -203,7 +203,7 @@ const DeleteHomeScreen = gqlTag`
   mutation DeleteHomeScreen($id: String!) {
     deleteHomeScreen(id: $id) {
       results {
-        _id
+        id
         name
         shareableLink
       }
@@ -219,7 +219,7 @@ const IncrementHomeScreenViews = gqlTag`
   mutation IncrementHomeScreenViews($id: String!) {
     incrementHomeScreenViews(id: $id) {
       results {
-        _id
+        id
         views
         lastViewedAt
       }

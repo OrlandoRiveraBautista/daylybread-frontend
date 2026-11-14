@@ -5,7 +5,7 @@ import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 const GetMedia = gql(`
   query GetMedia($id: String!) {
     getMedia(id: $id) {
-      _id
+      id
       fileKey
       filename
       mimeType
@@ -14,7 +14,7 @@ const GetMedia = gql(`
       isPublic
       description
       owner {
-        _id
+        id
       }
       cache {
         url
@@ -30,7 +30,7 @@ const GetMedia = gql(`
 const GetMediaByPurpose = gql(`
   query GetMediaByPurpose($purpose: String!) {
     getMediaByPurpose(purpose: $purpose) {
-      _id
+      id
       fileKey
       filename
       mimeType
@@ -39,7 +39,7 @@ const GetMediaByPurpose = gql(`
       isPublic
       description
       owner {
-        _id
+        id
       }
       cache {
         url
@@ -96,7 +96,7 @@ const CreateMedia = gql(`
   mutation CreateMedia($options: MediaInput!) {
     createMedia(options: $options) {
       results {
-        _id
+        id
         fileKey
         filename
         mimeType
@@ -105,7 +105,7 @@ const CreateMedia = gql(`
         isPublic
         description
         owner {
-          _id
+          id
         }
         cache {
           url
@@ -127,7 +127,7 @@ const UpdateMedia = gql(`
   mutation UpdateMedia($id: String!, $options: MediaInput!) {
     updateMedia(id: $id, options: $options) {
       results {
-        _id
+        id
         fileKey
         filename
         mimeType
@@ -136,7 +136,7 @@ const UpdateMedia = gql(`
         isPublic
         description
         owner {
-          _id
+          id
         }
         cache {
           url
@@ -158,7 +158,7 @@ const DeleteMedia = gql(`
   mutation DeleteMedia($id: String!) {
     deleteMedia(id: $id) {
       results {
-        _id
+        id
         fileKey
         filename
         mimeType
@@ -167,7 +167,7 @@ const DeleteMedia = gql(`
         isPublic
         description
         owner {
-          _id
+          id
         }
         cache {
           url

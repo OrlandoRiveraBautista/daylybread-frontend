@@ -54,7 +54,7 @@ export const NFCAndHomeScreensPage: React.FC<NFCAndHomeScreensPageProps> = ({
     return nfcDevices
       .filter((device) => !device.homeScreen)
       .map((device) => ({
-        _id: device._id,
+        id: device.id,
         nfcId: device.nfcId,
         name: device.name,
         deviceType: device.deviceType,
@@ -67,11 +67,11 @@ export const NFCAndHomeScreensPage: React.FC<NFCAndHomeScreensPageProps> = ({
     return nfcDevices
       .filter((device) => device.homeScreen)
       .map((device) => ({
-        _id: device._id,
+        id: device.id,
         nfcId: device.nfcId,
         name: device.name,
         deviceType: device.deviceType,
-        homeScreenId: device.homeScreen!._id,
+        homeScreenId: device.homeScreen!.id,
       }));
   }, [nfcDevices]);
 

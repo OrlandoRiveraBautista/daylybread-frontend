@@ -82,7 +82,7 @@ export const useMediaUpload = (options?: UseMediaUploadOptions) => {
         }
 
         options?.onSuccess?.(
-          data.createMedia.results._id,
+          data.createMedia.results.id,
           data.createMedia.results.cache?.url || ""
         );
         setUploadState({

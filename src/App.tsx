@@ -88,7 +88,7 @@ const App: React.FC = () => {
     shouldShowPrompt: showNotificationPrompt,
     requestPermission: requestNotificationPermission,
     dismissPrompt: dismissNotificationPrompt,
-  } = useNotificationPrompt(localStorage, hasSession, userData?.me?.user?._id);
+  } = useNotificationPrompt(localStorage, hasSession, userData?.me?.user?.id);
 
   // Add version check effect
   useEffect(() => {
@@ -126,7 +126,7 @@ const App: React.FC = () => {
 
         if (subscription) {
           // Get the current user ID from your context
-          const userId = userData?.me?.user?._id || "anonymous";
+          const userId = userData?.me?.user?.id || "anonymous";
           await pushService.sendSubscriptionToBackend(subscription, userId);
         }
       }

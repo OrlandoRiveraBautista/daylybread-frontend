@@ -137,14 +137,14 @@ const NotificationItem: React.FC<{
               <a
                 className="nc-btn nc-btn-view"
                 href={notification.actionUrl}
-                onClick={() => onMarkRead(notification._id)}
+                onClick={() => onMarkRead(notification.id)}
               >
                 {notification.actionText || "View"}
               </a>
             )}
             <button
               className="nc-btn nc-btn-dismiss"
-              onClick={() => onMarkRead(notification._id)}
+              onClick={() => onMarkRead(notification.id)}
             >
               Dismiss
             </button>
@@ -255,7 +255,7 @@ export const NotificationCenter: React.FC = () => {
           <div className="nc-list">
             {notifs.map((n) => (
               <NotificationItem
-                key={n._id}
+                key={n.id}
                 notification={n}
                 onMarkRead={markRead}
                 onAcceptInvite={(item) => respondToInvite(item, true)}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   IonContent,
   IonModal,
@@ -56,6 +56,7 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
     deviceInfo?.id || ""
   );
   const { triggerSuccessHaptic, triggerNavigationHaptic } = useHaptic();
+  const modalRef = useRef<HTMLIonModalElement>(null);
 
   useEffect(() => {
     if (!data) return;
@@ -136,32 +137,50 @@ const BreadCrumbsModal: React.FC<IBreadCrumbsModal> = ({
   };
 
   /**
-   * Keep the modal wrapper height in sync with sheet breakpoints
+   * Keep this sheet's inner wrapper as tall as the current breakpoint so the
+   * composer stays on the visible bottom while the sheet is dragged.
+   * Must query inside this modal — other sheets also use #ion-react-wrapper.
    */
-  const handleBreakpointChange = (
-    e: IonModalCustomEvent<ModalBreakpointChangeEventDetail | void>
+  const syncComposerToBreakpoint = (
+    modal: HTMLElement | null,
+    breakpoint: number
   ) => {
-    const target = document.getElementById("ion-react-wrapper");
-    if (!target) return;
+    const wrapper = modal?.querySelector(
+      "#ion-react-wrapper"
+    ) as HTMLElement | null;
+    if (!wrapper) return;
 
-    if (!e.detail) {
-      target.style.height = `75%`;
+    if (breakpoint <= 0) {
+      wrapper.style.height = "";
       return;
     }
 
-    if (e.detail.breakpoint >= 0.7) {
-      target.style.height = `${e.detail.breakpoint * 100}%`;
-    }
+    wrapper.style.height = `${breakpoint * 100}%`;
+  };
+
+  const handleBreakpointChange = (
+    e: IonModalCustomEvent<ModalBreakpointChangeEventDetail | void>
+  ) => {
+    const modal = (e.target as HTMLIonModalElement) ?? modalRef.current;
+    const breakpoint =
+      e.detail && typeof e.detail.breakpoint === "number"
+        ? e.detail.breakpoint
+        : initialBreakpoint || 0.25;
+    syncComposerToBreakpoint(modal, breakpoint);
   };
 
   return (
     <IonModal
+      ref={modalRef}
       initialBreakpoint={initialBreakpoint || 0.25}
       breakpoints={[0, 0.25, 0.75, 1]}
       handle={true}
       className="breadcrumbs-modal"
       isOpen={isOpen}
-      onDidDismiss={() => (isOpen ? onDismiss() : null)}
+      onDidDismiss={() => {
+        syncComposerToBreakpoint(modalRef.current, 0);
+        if (isOpen) onDismiss();
+      }}
       id="bread-crumbs-modal"
       onIonBreakpointDidChange={(e) => handleBreakpointChange(e)}
       backdropBreakpoint={0.5}

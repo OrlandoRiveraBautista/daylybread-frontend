@@ -49,8 +49,8 @@ export const ServiceDetail: React.FC = () => {
   const [publishService, { loading: publishing }] = usePublishWorshipService();
 
   const service = data?.getWorshipService?.results;
-  const teamId = service?.team?._id;
-  const isOwner = service?.author?._id === userInfo?._id;
+  const teamId = service?.team?.id;
+  const isOwner = service?.author?.id === userInfo?.id;
 
   const { data: membersData } = useGetTeamMembers(teamId || "");
   const { data: songsData } = useGetSongs();
@@ -61,7 +61,7 @@ export const ServiceDetail: React.FC = () => {
   const teamMembers = membersData?.getTeamMembers?.results || [];
   const songs = (songsData?.getSongs?.results || []) as any[];
 
-  const mySongTitles = buildMySongTitles(songs, userInfo?._id);
+  const mySongTitles = buildMySongTitles(songs, userInfo?.id);
 
   if (loading) {
     return (

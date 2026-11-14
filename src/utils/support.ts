@@ -153,7 +153,12 @@ const getVerseVerbageByVerses = (verses: Verse[]) => {
   return text;
 };
 
-const getVerseVerbageByNewVerses = (verses: BbVerse[], bibleId: string) => {
+const getVerseVerbageByNewVerses = (
+  verses?: BbVerse[] | null,
+  bibleId?: string | null
+) => {
+  if (!verses?.length || !bibleId) return "";
+
   // sort the verse numbers in the array in ascenting order
   const sortedNumbersAsc = verses
     .map((v) => v.verseStart)

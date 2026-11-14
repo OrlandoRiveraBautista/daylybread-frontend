@@ -5,7 +5,7 @@ const GetWorshipServices = gql(`
   query GetWorshipServices($teamId: String) {
     getWorshipServices(teamId: $teamId) {
       results {
-        _id
+        id
         name
         date
         notes
@@ -13,24 +13,24 @@ const GetWorshipServices = gql(`
         createdAt
         updatedAt
         author {
-          _id
+          id
           firstName
           lastName
         }
         team {
-          _id
+          id
           name
         }
         assignments {
-          _id
+          id
           role
           status
           notes
           member {
-            _id
+            id
             role
             user {
-              _id
+              id
               firstName
               lastName
             }
@@ -49,7 +49,7 @@ const GetWorshipService = gql(`
   query GetWorshipService($id: String!) {
     getWorshipService(id: $id) {
       results {
-        _id
+        id
         name
         date
         notes
@@ -57,40 +57,40 @@ const GetWorshipService = gql(`
         createdAt
         updatedAt
         author {
-          _id
+          id
           firstName
           lastName
         }
         team {
-          _id
+          id
           name
         }
         assignments {
-          _id
+          id
           role
           status
           notes
           member {
-            _id
+            id
             role
             user {
-              _id
+              id
               firstName
               lastName
             }
           }
         }
         setlist {
-          _id
+          id
           name
           items {
-            _id
+            id
             order
             key
             bpm
             notes
             song {
-              _id
+              id
               title
               artist
               defaultKey
@@ -114,12 +114,12 @@ const CreateWorshipService = gql(`
   mutation CreateWorshipService($options: WorshipServiceInput!) {
     createWorshipService(options: $options) {
       results {
-        _id
+        id
         name
         date
         status
         team {
-          _id
+          id
           name
         }
       }
@@ -135,7 +135,7 @@ const UpdateWorshipService = gql(`
   mutation UpdateWorshipService($id: String!, $options: WorshipServiceInput!) {
     updateWorshipService(id: $id, options: $options) {
       results {
-        _id
+        id
         name
         date
         status
@@ -152,7 +152,7 @@ const DeleteWorshipService = gql(`
   mutation DeleteWorshipService($id: String!) {
     deleteWorshipService(id: $id) {
       results {
-        _id
+        id
       }
       errors {
         field
@@ -166,7 +166,7 @@ const PublishWorshipService = gql(`
   mutation PublishWorshipService($id: String!) {
     publishWorshipService(id: $id) {
       results {
-        _id
+        id
         name
         status
       }
@@ -184,13 +184,13 @@ const CreateServiceAssignment = gql(`
   mutation CreateServiceAssignment($options: ServiceAssignmentInput!) {
     createServiceAssignment(options: $options) {
       results {
-        _id
+        id
         role
         status
         member {
-          _id
+          id
           user {
-            _id
+            id
             firstName
             lastName
           }
@@ -208,7 +208,7 @@ const RespondToAssignment = gql(`
   mutation RespondToAssignment($assignmentId: String!, $accept: Boolean!) {
     respondToAssignment(assignmentId: $assignmentId, accept: $accept) {
       results {
-        _id
+        id
         status
       }
       errors {
@@ -223,7 +223,7 @@ const RemoveServiceAssignment = gql(`
   mutation RemoveServiceAssignment($id: String!) {
     removeServiceAssignment(id: $id) {
       results {
-        _id
+        id
       }
       errors {
         field
@@ -239,16 +239,16 @@ const GetSetlist = gql(`
   query GetSetlist($serviceId: String!) {
     getSetlist(serviceId: $serviceId) {
       results {
-        _id
+        id
         name
         items {
-          _id
+          id
           order
           key
           bpm
           notes
           song {
-            _id
+            id
             title
             artist
             defaultKey
@@ -270,7 +270,7 @@ const CreateSetlist = gql(`
   mutation CreateSetlist($options: SetlistInput!) {
     createSetlist(options: $options) {
       results {
-        _id
+        id
         name
       }
       errors {
@@ -285,13 +285,13 @@ const AddSetlistItem = gql(`
   mutation AddSetlistItem($setlistId: String!, $options: SetlistItemInput!) {
     addSetlistItem(setlistId: $setlistId, options: $options) {
       results {
-        _id
+        id
         order
         key
         bpm
         notes
         song {
-          _id
+          id
           title
           artist
         }
@@ -308,13 +308,13 @@ const UpdateSetlistItem = gql(`
   mutation UpdateSetlistItem($id: String!, $options: SetlistItemInput!) {
     updateSetlistItem(id: $id, options: $options) {
       results {
-        _id
+        id
         order
         key
         bpm
         notes
         song {
-          _id
+          id
           title
           artist
         }
@@ -331,7 +331,7 @@ const RemoveSetlistItem = gql(`
   mutation RemoveSetlistItem($id: String!) {
     removeSetlistItem(id: $id) {
       results {
-        _id
+        id
       }
       errors {
         field
@@ -345,12 +345,12 @@ const ReorderSetlistItems = gql(`
   mutation ReorderSetlistItems($setlistId: String!, $itemIds: [String!]!) {
     reorderSetlistItems(setlistId: $setlistId, itemIds: $itemIds) {
       results {
-        _id
+        id
         items {
-          _id
+          id
           order
           song {
-            _id
+            id
             title
           }
         }
@@ -369,22 +369,29 @@ const GetRehearsals = gql(`
   query GetRehearsals($teamId: String, $serviceId: String) {
     getRehearsals(teamId: $teamId, serviceId: $serviceId) {
       results {
-        _id
+        id
         date
         notes
-        songIds
+        rehearsalSongs {
+          id
+          order
+          song {
+            id
+            title
+          }
+        }
         createdAt
         team {
-          _id
+          id
           name
         }
         service {
-          _id
+          id
           name
           date
         }
         author {
-          _id
+          id
           firstName
           lastName
         }
@@ -401,16 +408,23 @@ const CreateRehearsal = gql(`
   mutation CreateRehearsal($options: RehearsalInput!) {
     createRehearsal(options: $options) {
       results {
-        _id
+        id
         date
         notes
-        songIds
+        rehearsalSongs {
+          id
+          order
+          song {
+            id
+            title
+          }
+        }
         team {
-          _id
+          id
           name
         }
         service {
-          _id
+          id
           name
           date
         }
@@ -427,10 +441,17 @@ const UpdateRehearsal = gql(`
   mutation UpdateRehearsal($id: String!, $options: RehearsalInput!) {
     updateRehearsal(id: $id, options: $options) {
       results {
-        _id
+        id
         date
         notes
-        songIds
+        rehearsalSongs {
+          id
+          order
+          song {
+            id
+            title
+          }
+        }
       }
       errors {
         field
@@ -444,7 +465,7 @@ const DeleteRehearsal = gql(`
   mutation DeleteRehearsal($id: String!) {
     deleteRehearsal(id: $id) {
       results {
-        _id
+        id
       }
       errors {
         field

@@ -7,7 +7,6 @@ import { TileConfig } from "../components/NFC/iPhoneHomeScreen/types";
  */
 export interface NFCDevice {
   id: string;
-  _id: string;
   name?: string;
   shareableLink: string;
   nfcIds: string[];
